@@ -1,19 +1,14 @@
 import React from "react";
-import UserProfile from "./pages/MainPage";
-import ProjectList from "./pages/Profile";
-import BottomNav from "./pages/ProjectManagement";
-import Header from "./pages/TeamApplicants";
-
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import ProjectManagement from "./pages/ProjectManagement/ProjectManagement";
+import "./App.css";
 const App = () => {
   return (
-    <div className="bg-gray-100 min-h-screen w-full flex flex-col items-center p-4">
-      <Header />
-      <UserProfile />
-      <div className="w-full mt-4 space-y-4">
-        <ProjectList />
-      </div>
-      <BottomNav />
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/project-management" element={<ProjectManagement />} />
+      </Routes>
+    </Router>
   );
 };
 

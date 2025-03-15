@@ -1,0 +1,79 @@
+.project-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  border-radius: 0.75rem;
+  background: #fff;
+  box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.05);
+  width: 100%;
+  height: 100%;
+  margin: 0.5rem 0;
+
+  position: relative;
+
+  .card-content {
+    flex: 1;
+
+    .info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem;
+
+      .title {
+        font-size: 1rem;
+        font-weight: bold;
+        color: #333;
+      }
+
+      .time-ago {
+        font-size: 0.875rem;
+        color: #888;
+        display: flex;
+        align-items: center;
+
+        .dot {
+          width: 0.25rem;
+          height: 0.25rem;
+          background: red;
+          border-radius: 50%;
+          margin-left: 0.25rem;
+        }
+      }
+    }
+
+    .details {
+      font-size: 0.875rem;
+      color: #555;
+      margin-bottom: 1rem;
+
+      p {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 0.25rem;
+      }
+    }
+
+    .team {
+      display: flex;
+      align-items: center;
+      position: relative;
+      height: 2rem;
+
+      .member {
+        width: 2rem;
+        height: 2rem;
+        border-radius: 50%;
+        position: absolute;
+        border: 2px solid #fff;
+      }
+    }
+  }
+
+  .progress {
+    width: 3rem;
+    height: 3rem;
+  }
+}
