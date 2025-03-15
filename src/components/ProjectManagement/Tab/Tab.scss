@@ -1,0 +1,21 @@
+.tab-container {
+  display: flex;
+  padding: 0 1rem;
+  background-color: #fff;
+  border-bottom: 0.0625rem solid #eaeaea;
+
+  .tab-item {
+    flex: 1;
+    padding: 1rem 0;
+    font-size: 0.875rem;
+    color: #888;
+    background: none;
+    border: none;
+    cursor: pointer;
+    
+    &.active {
+      color: #ff4d4f;
+      border-bottom: 0.125rem solid #ff4d4f;
+    }
+  }
+}

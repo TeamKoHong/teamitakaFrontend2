@@ -1,0 +1,38 @@
+.header {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 160px;
+  width: 100%;
+  box-sizing: border-box;
+
+  background-color: #fff;
+
+  .header-first {
+    padding: 2rem 1rem;
+    display: flex;
+    justify-content: space-between;
+
+    .header-right {
+      display: flex;
+
+      .icon-mark {
+        width: 2rem;
+        height: 2rem;
+      }
+
+      .icon-day {
+        width: 2rem;
+        height: 2rem;
+        cursor: pointer;
+        margin-left: 1rem;
+      }
+    }
+  }
+
+  .title {
+    font-size: 1.75rem; // 16px -> 1rem
+    font-weight: 600;
+    color: #f76241;
+  }
+}
