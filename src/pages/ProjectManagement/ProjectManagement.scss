@@ -5,13 +5,14 @@
   display: flex;
   flex-direction: column;
   overflow: hidden; // 전체 스크롤 없애기
+  background-color: #f2f2f2;
 
   main {
     width: 100%;
-    padding: 0 1rem;
   }
   /* 프로젝트 리스트 */
   .project-info {
+    padding: 0px 22px;
     width: 100%;
     margin-top: 1rem;
     ma .project-explain {
@@ -35,6 +36,7 @@
   }
 
   .project-list {
+    padding: 0px 22px;
     box-sizing: border-box;
     width: 100%;
     display: flex;

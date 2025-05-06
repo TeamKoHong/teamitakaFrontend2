@@ -6,16 +6,16 @@
 
   .tab-item {
     flex: 1;
-    padding: 1rem 0;
-    font-size: 0.875rem;
-    color: #888;
+    padding: 10px 0;
+    font-size: 17px;
+    color: #bfbdbd;
     background: none;
     border: none;
     cursor: pointer;
-    
+
     &.active {
-      color: #ff4d4f;
-      border-bottom: 0.125rem solid #ff4d4f;
+      color: #140805;
+      border-bottom: 2.9px solid #140805;
     }
   }
 }
