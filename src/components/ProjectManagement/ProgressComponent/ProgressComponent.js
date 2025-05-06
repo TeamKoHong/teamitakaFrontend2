@@ -1,23 +1,22 @@
 import React from "react";
 import ProjectCard from "../ProjectCard";
-
+import SectionHeader from "../Common/SectionHeader";
 function ProgressComponent() {
   return (
     <>
       <main>
         <section className="project-info">
-          <p className="project-explain">
-            팀원들과 함께 프로젝트를 공유하고 <br />
-            <strong>티미타카</strong>가 해보세요!
-          </p>
+          <SectionHeader
+            explainText={`팀원들과 함께 프로젝트를 공유하고\n티미타카 해보세요!`}
+            highlightText="티미타카"
+            filterOptions={[
+              { value: "latest", label: "최신순" },
+              { value: "date", label: "날짜순" },
+              { value: "meeting", label: "회의 빠른 순" },
+            ]}
+            onFilterChange={(e) => console.log(e.target.value)}
+          />
         </section>
-        <div className="project-filter">
-          <select className="project-select">
-            <option value="all">최신순 </option>
-            <option value="progress">날짜 순</option>
-            <option value="complete">회의 빠른 순</option>
-          </select>
-        </div>
         <section className="project-list">
           <ProjectCard />
           <ProjectCard />
