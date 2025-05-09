@@ -1,6 +1,7 @@
 import React from "react";
-import ProjectCard from "../ProjectCard";
+import ProjectCard from "../Common/ProjectCard";
 import SectionHeader from "../Common/SectionHeader";
+
 function ProgressComponent() {
   return (
     <>

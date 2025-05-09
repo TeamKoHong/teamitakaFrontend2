@@ -2,7 +2,6 @@ import React from "react";
 import "./CompletedComponent.scss";
 import SectionHeader from "../Common/SectionHeader";
 import { FaStar } from "react-icons/fa"; // 즐겨찾기 아이콘
-import { RiArrowRightSLine } from "react-icons/ri"; // 오른쪽 화살표 아이콘 추가
 import avatar1 from "../../../assets/icons/avatar1.png";
 import avatar2 from "../../../assets/icons/avatar2.png";
 import avatar3 from "../../../assets/icons/avatar3.png";

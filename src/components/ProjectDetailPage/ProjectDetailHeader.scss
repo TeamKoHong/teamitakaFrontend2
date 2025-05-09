@@ -1,0 +1,18 @@
+.project-detail-header-container {
+  width: 100%;
+  height: 262px;
+  position: relative;
+  background: linear-gradient(180deg, rgba(236, 236, 236, 0) 0%, #868686 100%);
+  padding: 74px 29px 26px 22px;
+  .project-detail-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    p {
+      font-size: 17px;
+      font-style: normal;
+      font-weight: 600;
+      line-height: normal;
+    }
+  }
+}
