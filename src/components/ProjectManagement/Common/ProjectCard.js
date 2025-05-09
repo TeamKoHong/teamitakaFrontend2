@@ -1,10 +1,10 @@
 import React from "react";
 import "./ProjectCard.scss";
-import avatar1 from "../../assets/icons/avatar1.png";
-import avatar2 from "../../assets/icons/avatar2.png";
-import avatar3 from "../../assets/icons/avatar3.png";
-import avatar4 from "../../assets/icons/avatar4.png";
-// 아이콘 라이브러리 (react-icons) 사용
+import avatar1 from "../../../assets/icons/avatar1.png";
+import avatar2 from "../../../assets/icons/avatar2.png";
+import avatar3 from "../../../assets/icons/avatar3.png";
+import avatar4 from "../../../assets/icons/avatar4.png";
+import { useNavigate } from "react-router-dom";
 import { IoCalendarOutline, IoTimeOutline } from "react-icons/io5";
 
 // 원형 프로그레스 바
@@ -57,8 +57,18 @@ const CircularProgress = ({ percentage }) => {
 };
 
 const ProjectCard = () => {
+  const navigate = useNavigate();
+
+  const handleGoToProjectDetail = (projectId) => {
+    navigate(`/project/${projectId}`);
+  };
   return (
-    <div className="project-card">
+    <div
+      className="project-card"
+      onClick={
+        () => handleGoToProjectDetail(1) // 클릭 시 프로젝트 상세 페이지로 이동
+      }
+    >
       <div className="card-content">
         {/* 프로젝트 정보 */}
         <div className="info">
