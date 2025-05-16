@@ -1,8 +1,8 @@
 .main-floating-box {
-  margin: -40px 22px 30px 22px; // 헤더 밑으로 겹치게
+  margin: -40px 22px -10px 22px; // 헤더 밑으로 겹치게
   height: auto;
   z-index: 2;
-  border-radius: 20px;
+  border-radius: 20px 20px 0 0;
 
   background-color: #d1cccb;
   position: relative;
