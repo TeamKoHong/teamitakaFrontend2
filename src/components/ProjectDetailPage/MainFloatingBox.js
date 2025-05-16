@@ -4,7 +4,7 @@ import groupCalendarIcon from "../../assets/icons/groupCalendarIcon.png";
 import meetingNoteIcon from "../../assets/icons/meetingNoteIcon.png";
 import teamMemberIcon from "../../assets/icons/teamMemberIcon.png";
 import voteIcon from "../../assets/icons/voteIcon.png";
-import ProjectDetailSlideBox from "./ProjectDetailSlideBox";
+
 function MainFloatingBox() {
   return (
     <div className="main-floating-box">
@@ -37,7 +37,6 @@ function MainFloatingBox() {
           <p>공유 캘린더</p>
         </div>
       </div>
-      <ProjectDetailSlideBox />
     </div>
   );
 }
