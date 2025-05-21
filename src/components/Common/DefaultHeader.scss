@@ -1,0 +1,27 @@
+.member-header-container {
+  display: flex;
+  align-items: center;
+  box-shadow: 0px 1px 1px 0px rgba(0, 0, 0, 0.15);
+  height: 121px;
+  padding: 81px 22px 23px 21px;
+  background: #fffdfc;
+
+  .member-header-back,
+  .member-header-chat {
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+
+  .member-header-title {
+    font-size: 17px;
+    font-weight: 600;
+    margin: 0;
+    flex: 1;
+    text-align: center;
+  }
+
+  .member-header-chat--placeholder {
+    width: 24px; /* 아이콘 크기와 동일하게 */
+  }
+}
