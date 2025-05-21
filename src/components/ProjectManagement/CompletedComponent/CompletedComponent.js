@@ -70,7 +70,11 @@ const CompletedComponent = () => {
 
       {/* 완료된 프로젝트 리스트 */}
       <div className="completed-section">
-        <h4 className="completed-section-title">완료 프로젝트</h4>
+        <div className="completed-header">
+          <h4 className="completed-section-title">완료 프로젝트</h4>
+          <p className="my-star-button">내 별점 관리</p>
+        </div>
+
         <div className="completed-list">
           <div className="completed-item">
             <div className="completed-item-left">

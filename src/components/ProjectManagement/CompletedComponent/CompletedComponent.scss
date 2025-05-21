@@ -90,16 +90,42 @@
 
   .completed-section {
     padding: 0px 22px;
-    .completed-section-title {
-      font-size: 15px;
-      font-weight: bold;
-      margin-bottom: 12px;
+    .completed-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      .completed-section-title {
+        font-size: 15px;
+        font-weight: bold;
+
+        font-style: normal;
+        list-style: normal;
+        text-transform: capitalize;
+      }
+      .my-star-button {
+        color: #f76241;
+        text-align: right;
+        font-family: Pretendard;
+        font-size: 11px;
+        font-style: normal;
+        font-weight: 600;
+        line-height: normal;
+        text-decoration-line: underline;
+        text-decoration-style: solid;
+        text-decoration-skip-ink: auto;
+        text-decoration-thickness: 8%; /* 0.88px */
+        text-underline-offset: 25%; /* 2.75px */
+        text-underline-position: from-font;
+        text-transform: capitalize;
+        cursor: pointer;
+      }
     }
 
     .completed-list {
       display: flex;
       flex-direction: column;
       gap: 7px;
+      margin-top: 20px;
 
       .completed-item {
         background: #fff;
