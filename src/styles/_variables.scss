@@ -1,0 +1,39 @@
+// src/styles/_variables.scss
+
+// 색상(Color)
+$primary-color: #FF4D4F;
+$secondary-color: #52C41A;
+$accent-color: #FFC107;
+$gray-dark: #333333;
+$gray: #888888;
+$gray-light: #e0e0e0;
+$background: #f8f8f8;
+$white: #ffffff;
+$error: #FF4D4F;
+$success: #52C41A;
+
+// 폰트(Font)
+$font-family-base: 'Pretendard', 'Apple SD Gothic Neo', Arial, sans-serif;
+$font-size-xs: 12px;
+$font-size-sm: 14px;
+$font-size-md: 16px;
+$font-size-lg: 18px;
+$font-size-xl: 22px;
+$font-weight-regular: 400;
+$font-weight-bold: 700;
+
+// 라운드(Radius)
+$border-radius-base: 10px;
+$border-radius-sm: 6px;
+$border-radius-lg: 20px;
+
+// 그림자(Shadow)
+$shadow-base: 0 2px 8px rgba(0, 0, 0, 0.08);
+$shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.1);
+
+// 여백(Spacing)
+$spacing-xs: 4px;
+$spacing-sm: 8px;
+$spacing-md: 16px;
+$spacing-lg: 24px;
+$spacing-xl: 32px; 

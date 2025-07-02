@@ -1,0 +1,32 @@
+html, body, #root, .App, .scrollArea {
+  margin: 0 !important;
+  padding: 0 !important;
+  gap: 0 !important;
+  box-sizing: border-box !important;
+  width: 100vw;
+  min-height: 100vh;
+  background: #f8f8f8;
+}
+
+*, *::before, *::after {
+  margin: 0 !important;
+  padding: 0 !important;
+  box-sizing: border-box !important;
+  gap: 0 !important;
+}
+
+ul, li, p, h1, h2, h3, h4, h5, h6 {
+  margin: 0 !important;
+  padding: 0 !important;
+  list-style: none;
+}
+
+body, html, #root {
+  background: #f2f2f2;
+}
+
+body {
+  font-family: 'Pretendard', 'SF Pro Text', 'Inter', sans-serif;
+  color: #222;
+  font-size: 15px;
+} 

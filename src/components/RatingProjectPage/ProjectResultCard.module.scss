@@ -1,0 +1,28 @@
+.card {
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  padding: 20px;
+  margin: 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+.title {
+  font-family: 'Pretendard', 'SF Pro Text', 'Inter', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: #222;
+  margin-bottom: 8px;
+}
+.link {
+  font-size: 15px;
+  color: #222;
+  text-decoration: underline;
+  word-break: break-all;
+}
+.divider {
+  height: 1px;
+  background: #e0e0e0;
+  margin: 24px 0;
+  border: none;
+} 

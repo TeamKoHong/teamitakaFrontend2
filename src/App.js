@@ -8,6 +8,11 @@ import ProjectMemberPage from "./pages/ProjectMemberPage/ProjectMemberPage";
 import ProceedingsPage from "./pages/ProceedingsPage/ProceedingsPage";
 // import ProjectVotePage from "./pages/ProjectVotePage/ProjectVotePage";
 import ProjectCalender from "./pages/ProjectCalendar/ProjectCalendar";
+
+import RatingManagementPage from './pages/RatingManagementPage/RatingManagementPage';
+import RatingProjectPage from './pages/RatingProjectPage/RatingProjectPage';
+import RatingProjectStatusPage from './pages/RatingProjectStatusPage/RatingProjectStatusPage';
+
 const App = () => {
   return (
     <Router>
@@ -18,6 +23,9 @@ const App = () => {
         <Route path="/project/:id/proceedings" element={<ProceedingsPage />} />
         {/*<Route path="/project/:id/vote" element={<ProjectVotePage />} />*/}
         <Route path="/project/:id/calender" element={<ProjectCalender />} />
+        <Route path="/project/rating-management" element={<RatingManagementPage/>}/>
+        <Route path="/project/:projectId/rating-project" element={<RatingProjectPage/>}/>
+        <Route path="/project/:projectId/rating-status" element={<RatingProjectPage />}/>
       </Routes>
     </Router>
   );
