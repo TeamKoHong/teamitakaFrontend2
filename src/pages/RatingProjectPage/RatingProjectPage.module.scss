@@ -1,0 +1,163 @@
+// 임시 변수 (이 부분들이 정확히 들어가 있어야 합니다!)
+$primary-color: #007bff;
+$accent-color: #28a745;
+$text-dark: #333;
+$text-gray: #7B797A;
+$background-light: #f0f2f5;
+$border-light: #e0e0e0;
+
+.container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: $background-light;
+}
+
+.content {
+  flex: 1;
+  padding: 20px;
+  max-width: 700px; // Adjust width for rating page
+  margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.pageTitle {
+  font-size: 1.8em;
+  font-weight: bold;
+  color: $text-dark;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.pageDescription {
+  font-size: 0.9em;
+  color: $text-gray;
+  margin-bottom: 25px;
+  text-align: center;
+  line-height: 1.5;
+}
+
+.memberRatingSection {
+  background-color: #fff; // Using literal white instead of $color-white
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+  padding: 25px;
+  margin-bottom: 30px;
+}
+
+.memberName {
+  font-size: 1.3em;
+  font-weight: bold;
+  color: $primary-color; // Highlight member name
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.ratingCategories {
+  display: flex;
+  flex-direction: column;
+  gap: 15px; // Space between category items
+}
+
+.submitButton {
+  display: block;
+  width: 100%;
+  max-width: 300px; // Limit button width
+  margin: 30px auto 20px auto; // Center button with margin
+  padding: 15px 20px;
+  background-color: $accent-color;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1em;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+
+  &:hover {
+    background-color: darken($accent-color, 10%); // Use darken or color.adjust
+    transform: translateY(-2px);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+.loading, .error, .noData {
+  text-align: center;
+  padding: 20px;
+  color: $text-gray;
+  font-size: 1.2em;
+}
+
+.pageBg {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #f2f2f2;
+  padding-top: 18px;
+}
+
+.scrollArea {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 18px 18px 0 18px;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 430px;
+  margin: 0 auto;
+}
+
+.scrollArea > * {
+  margin: 0 !important;
+}
+
+.contentWrap {
+  padding: 0 24px 44px 24px;
+  max-width: 390px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.card, .projectSummaryCard, .teamMemberEvaluation {
+  margin-bottom: 0;
+}
+
+// 프로젝트카드 ~ 프로젝트 결과물
+.ProjectInfoCard_card__wYPQF,
+.ProjectResultCard_card__xB5Pr,
+.ProjectSummaryCard_summaryROW__bDMjX,
+.TeamMemberEvaluation_card__LZ1_o {
+  margin: 0 !important;
+}
+
+// 좋아요/개선 ~ 팀원 평가지
+.좋아요개선_wrapper {
+  margin-bottom: 24px;
+}
+
+// 팀원 평가지 ~ 업무 분담
+.TeamMemberEvaluation_card__LZ1_o {
+  margin-top: 8px;
+}
+
+// 업무 분담 ~ 구체적 역할
+.업무분담 {
+  margin-bottom: 16px;
+}
+
+// 구체적 역할 리스트 사이
+.구체적역할 {
+  margin-bottom: 8px;
+}
+
+// 상세 내용 더보기
+.상세더보기 {
+  margin-top: 8px;
+  margin-bottom: 31px;
+}

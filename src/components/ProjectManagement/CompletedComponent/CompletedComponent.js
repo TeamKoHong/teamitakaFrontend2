@@ -6,8 +6,16 @@ import avatar1 from "../../../assets/icons/avatar1.png";
 import avatar2 from "../../../assets/icons/avatar2.png";
 import avatar3 from "../../../assets/icons/avatar3.png";
 import avatar4 from "../../../assets/icons/avatar4.png";
+import { useNavigate } from 'react-router-dom';
 
 const CompletedComponent = () => {
+  const navigate = useNavigate();
+
+  // '내 별점 관리' 클릭 시 호출될 함수
+  const handleNavigateToRatingManagement = () => {
+    navigate('/project/rating-management'); // RatingManagementPage 경로로 이동
+  }
+
   return (
     <div className="completed-container">
       {/* 상단 - 팀원 평가 안내 */}
@@ -72,7 +80,10 @@ const CompletedComponent = () => {
       <div className="completed-section">
         <div className="completed-header">
           <h4 className="completed-section-title">완료 프로젝트</h4>
-          <p className="my-star-button">내 별점 관리</p>
+          <p
+            className="my-star-button"
+            onClick={handleNavigateToRatingManagement} // 클릭 이벤트 추가
+          >내 별점 관리</p>
         </div>
 
         <div className="completed-list">

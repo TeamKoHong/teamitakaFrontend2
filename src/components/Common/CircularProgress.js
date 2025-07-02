@@ -25,7 +25,7 @@ const CircularProgress = ({ percentage }) => {
         stroke="#F76241"
         strokeWidth={strokeWidth}
         strokeDasharray={circumference}
-        strokeDashoffset={offset}
+        strokeDashoffset={isNaN(offset) ? 0 : offset}
         strokeLinecap="round"
         transform="rotate(-90 22 22)"
       />
@@ -34,7 +34,7 @@ const CircularProgress = ({ percentage }) => {
         x="50%"
         y="50%"
         textAnchor="middle"
-        font-family="KIMM_Bold"
+        fontFamily="KIMM_Bold"
         fontStyle="normal"
         dy=".3em"
         fontSize="12px"

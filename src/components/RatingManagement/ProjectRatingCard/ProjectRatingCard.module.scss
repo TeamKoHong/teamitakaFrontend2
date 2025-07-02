@@ -101,30 +101,36 @@ $padding-base: 16px;
   gap: 6px;
 }
 
+.myRatingRow {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+}
+
 .myRatingLabel {
   font-size: 13px;
   color: #807c7c;
-  margin-bottom: 2px;
   font-weight: 600;
 }
 
 .myRatingStars {
   display: flex;
   align-items: center;
-  gap: 8px;
   .star-rating {
-    margin-right: 4px;
+    margin-right: 0;
     svg {
       color: #FFC107;
       font-size: 16px;
     }
   }
-  .myRatingScore {
-    font-size: 17px;
-    font-weight: 700;
-    color: #f76241;
-    margin-left: 2px;
-  }
+}
+
+.myRatingScore {
+  font-size: 17px;
+  font-weight: 700;
+  color: #f76241;
+  margin-left: 2px;
 }
 
 .statusText {
