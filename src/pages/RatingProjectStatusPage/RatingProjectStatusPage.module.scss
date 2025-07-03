@@ -14,10 +14,16 @@ $border-light: #e0e0e0;
   padding: $spacing-lg $spacing-md $spacing-xl $spacing-md;
   background: $background;
   min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 .content {
-  margin-bottom: 80px;
+  flex: 1 1 auto;
+  overflow-y: auto;
+  min-height: 0;
+  padding-bottom: 80px;
+  margin-bottom: 0;
 }
 
 .pageTitle {

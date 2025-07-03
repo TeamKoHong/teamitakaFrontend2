@@ -14,19 +14,23 @@ $padding-base: 16px;
 .container {
   max-width: 420px;
   margin: 0 auto;
-  padding: 0 20px;
+  padding: 0 12px;
   background: $background;
   min-height: 100vh;
 }
 
 .customHeader {
-  background-color: $white-color;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  padding: $padding-base;
-  padding-bottom: $padding-base / 2; // 아래쪽 여백 조금 줄이기
-  position: sticky; // 스크롤 시 상단 고정
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2em;
+  font-weight: bold;
+  background: #fff;
+  position: sticky;
   top: 0;
-  z-index: 100; // 다른 요소 위에 표시
+  z-index: 100;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
 
 .headerTop {
@@ -73,27 +77,19 @@ $padding-base: 16px;
 
 .filterButton {
   padding: 8px 16px;
+  border-radius: 20px;
   border: none;
-  background-color: transparent;
-  color: $text-gray; // 비활성화된 버튼 텍스트 색상
+  background: #eee;
+  color: $text-gray;
   font-weight: bold;
-  cursor: pointer;
-  transition: background-color 0.2s ease, color 0.2s ease;
   font-size: 0.9em;
-
-  &:first-child {
-    border-top-left-radius: 20px;
-    border-bottom-left-radius: 20px;
-  }
-  &:last-child {
-    border-top-right-radius: 20px;
-    border-bottom-right-radius: 20px;
-  }
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
 }
 
 .filterButtonActive {
-  background-color: $primary-color; // 활성화된 버튼 배경색
-  color: $white-color; // 활성화된 버튼 텍스트 색상
+  background: $primary-color;
+  color: #fff;
 }
 
 .sortOption {
@@ -114,10 +110,16 @@ $padding-base: 16px;
 .content {
   margin-top: 24px;
   margin-bottom: 80px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
 }
 
 .projectList {
-  margin-top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 0;
 }
 
 .noProjects {
@@ -125,4 +127,21 @@ $padding-base: 16px;
   color: $text-gray;
   margin-top: 30px;
   font-size: 1.1em;
+}
+
+.card {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  padding: 16px;
+  margin: 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.divider {
+  height: 1px;
+  background: #ededed;
+  margin: 20px 0;
+  border: none;
 }
