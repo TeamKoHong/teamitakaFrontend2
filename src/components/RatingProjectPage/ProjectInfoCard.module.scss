@@ -32,6 +32,18 @@
   align-items: flex-start;
   justify-content: flex-end;
 }
+.progressAndId {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+.projectId {
+  margin-top: 4px;
+  font-size: 13px;
+  color: #f76241;
+  font-weight: bold;
+}
 .projectName {
   font-family: 'Pretendard', 'SF Pro Text', 'Inter', sans-serif;
   font-size: 18px;
