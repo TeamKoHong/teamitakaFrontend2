@@ -129,6 +129,7 @@ function RatingProjectPage() {
 
   // 실제 데이터는 props 또는 API로 받아옴
   const project = {
+    id: 47,
     name: '프로젝트명',
     period: '2024.01.01 ~ 2024.02.01',
     meetingTime: '매주 수요일 19:00',
@@ -152,7 +153,7 @@ function RatingProjectPage() {
     <div className={styles.pageBg}>
       <DefaultHeader title="프로젝트 별점" />
       <div className={styles.scrollArea}>
-        <ProjectInfoCard {...project} />
+        <ProjectInfoCard {...project} id={project.id} />
         <ProjectResultCard resultLink={project.resultLink} />
         <ProjectSummaryCard {...summary} />
         <TeamMemberEvaluation {...evaluation} />

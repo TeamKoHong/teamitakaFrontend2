@@ -46,9 +46,11 @@ function RatingManagementPage() {
 
   const handleCardClick = (projectId, myRatingStatus) => {
     if (myRatingStatus === 'PENDING') {
-      navigate(`/project/${projectId}/rating-project`); // 평가하기 페이지로 이동
+      navigate(`/project/${projectId}/rating-project`); // 평가 입력
+    } else if (myRatingStatus === 'COMPLETED') {
+      navigate(`/project/${projectId}/rating-status`); // 평가 결과
     } else {
-      navigate(`/project/${projectId}/rating-status`); // 평가 결과 확인 페이지로 이동
+      alert('이 프로젝트의 평가 상태를 확인할 수 없습니다.');
     }
   };
 
@@ -79,7 +81,7 @@ function RatingManagementPage() {
               <ProjectRatingCard
                 key={project.id}
                 project={project}
-                onClick={() => handleCardClick(project.id, project.myRatingStatus)}
+                onClick={() => handleCardClick(project.id, project.myRatingStatus || null)}
               />
             ))
           ) : (

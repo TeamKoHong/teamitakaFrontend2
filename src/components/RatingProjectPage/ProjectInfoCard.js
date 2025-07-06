@@ -2,7 +2,7 @@ import styles from './ProjectInfoCard.module.scss';
 import { PiCalendarBlankDuotone, PiClockDuotone } from "react-icons/pi";
 import DdayProgress from './DdayProgress';
 
-export default function ProjectInfoCard({ name, period, meetingTime, avatars, dday }) {
+export default function ProjectInfoCard({ name, period, meetingTime, avatars, dday, id }) {
   return (
     <div className={styles.card}>
       <div className={styles.headerRow}>
@@ -19,7 +19,9 @@ export default function ProjectInfoCard({ name, period, meetingTime, avatars, dd
           </div>
         </div>
         <div className={styles.headerRight}>
-          <DdayProgress dday={dday} />
+          <div className={styles.progressAndId}>
+            <DdayProgress dday={dday} />
+          </div>
         </div>
       </div>
     </div>
