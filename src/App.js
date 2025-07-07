@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes, Navigate, useParams } from "react-router-dom";
 import ProjectManagement from "./pages/ProjectManagement/ProjectManagement";
 import "./App.css";
 import ProjectDetailPage from "./pages/ProjectDetailPage/ProjectDetailPage";
@@ -25,10 +25,17 @@ const App = () => {
         <Route path="/project/:id/calender" element={<ProjectCalender />} />
         <Route path="/project/rating-management" element={<RatingManagementPage/>}/>
         <Route path="/project/:projectId/rating-project" element={<RatingProjectPage/>}/>
-        <Route path="/project/:projectId/rating-status" element={<RatingProjectPage />}/>
+        <Route path="/project/:projectId/rating-status/given" element={<RatingProjectStatusPage />} />
+        <Route path="/project/:projectId/rating-status/received" element={<RatingProjectStatusPage />} />
+        <Route path="/project/:projectId/rating-status" element={<RedirectToReceived />} />
       </Routes>
     </Router>
   );
 };
+
+function RedirectToReceived() {
+  const { projectId } = useParams();
+  return <Navigate to={`/project/${projectId}/rating-status/received`} replace />;
+}
 
 export default App;

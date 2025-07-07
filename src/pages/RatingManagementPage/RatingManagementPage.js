@@ -50,7 +50,8 @@ function RatingManagementPage() {
     } else if (myRatingStatus === 'COMPLETED') {
       navigate(`/project/${projectId}/rating-status`); // 평가 결과
     } else {
-      alert('이 프로젝트의 평가 상태를 확인할 수 없습니다.');
+      // fallback: 무조건 평가 입력 폼으로 이동
+      navigate(`/project/${projectId}/rating-project`);
     }
   };
 

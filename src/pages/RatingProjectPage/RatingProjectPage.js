@@ -10,13 +10,19 @@ import TeamMemberEvaluation from '../../components/RatingProjectPage/TeamMemberE
 import BottomNav from '../../components/Common/BottomNav/BottomNav';
 import ProjectResultCard from '../../components/RatingProjectPage/ProjectResultCard';
 
-function RatingProjectPage() {
-  const { projectId } = useParams();
+function RatingProjectPage(props) {
+  const { projectId: propProjectId } = props;
+  const { projectId: paramProjectId } = useParams();
+  const projectId = propProjectId || paramProjectId;
   const navigate = useNavigate();
   const [projectData, setProjectData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [ratings, setRatings] = useState({}); // Stores ratings for each member and category
+  const [overallRating, setOverallRating] = useState(0); // 전체 별점
+  const [comment, setComment] = useState(''); // 추가 코멘트
+  const [tagInput, setTagInput] = useState('');
+  const [tags, setTags] = useState([]);
 
   useEffect(() => {
     const fetchProjectData = async () => {
@@ -33,44 +39,24 @@ function RatingProjectPage() {
               name: "김철수",
               position: "프론트엔드 개발자",
               categories: [
-                { id: 1, name: "협업 능력" },
-                { id: 2, name: "문제 해결 능력" },
-                { id: 3, name: "소통 능력" },
-              ],
-            },
-            {
-              id: 102,
-              name: "이영희",
-              position: "백엔드 개발자",
-              categories: [
-                { id: 1, name: "협업 능력" },
-                { id: 2, name: "문제 해결 능력" },
-                { id: 3, name: "소통 능력" },
-              ],
-            },
-            {
-              id: 103,
-              name: "박민수",
-              position: "디자이너",
-              categories: [
-                { id: 1, name: "협업 능력" },
-                { id: 2, name: "문제 해결 능력" },
-                { id: 3, name: "소통 능력" },
+                { id: 1, name: "참여도" },
+                { id: 2, name: "소통" },
+                { id: 3, name: "책임감" },
+                { id: 4, name: "협력" },
+                { id: 5, name: "개인 능력" },
               ],
             },
           ],
         };
         setProjectData(dummyProject);
-
         // Initialize ratings state
         const initialRatings = {};
         dummyProject.members.forEach(member => {
           member.categories.forEach(category => {
-            initialRatings[`<span class="math-inline">\{member\.id\}\-</span>{category.id}`] = 0; // Initialize with 0 stars
+            initialRatings[`${member.id}-${category.id}`] = 0;
           });
         });
         setRatings(initialRatings);
-
       } catch (err) {
         setError("프로젝트 정보를 불러오는데 실패했습니다.");
         console.error("Failed to fetch project data:", err);
@@ -78,39 +64,44 @@ function RatingProjectPage() {
         setLoading(false);
       }
     };
-
     fetchProjectData();
   }, [projectId]);
 
   const handleRatingChange = (memberId, categoryId, rating) => {
     setRatings(prevRatings => ({
       ...prevRatings,
-      [`<span class="math-inline">\{memberId\}\-</span>{categoryId}`]: rating,
+      [`${memberId}-${categoryId}`]: rating,
     }));
+  };
+
+  const handleTagAdd = () => {
+    if (tagInput.trim() && !tags.includes(tagInput.trim())) {
+      setTags([...tags, tagInput.trim()]);
+      setTagInput('');
+    }
+  };
+
+  const handleTagRemove = (tag) => {
+    setTags(tags.filter(t => t !== tag));
   };
 
   const handleSubmit = async () => {
     if (!projectData) return;
-
     // Prepare the data to be sent to the backend
     const submittedRatings = projectData.members.map(member => ({
       memberId: member.id,
       memberRatings: member.categories.map(category => ({
         categoryId: category.id,
-        rating: ratings[`<span class="math-inline">\{member\.id\}\-</span>{category.id}`],
+        rating: ratings[`${member.id}-${category.id}`],
       })),
     }));
-
-    console.log("Submitted Ratings:", submittedRatings);
-
+    console.log("Submitted Ratings:", submittedRatings, overallRating, tags, comment);
     try {
       // Simulate API call to submit ratings
-      // In a real app: await api.post('/submit-ratings', { projectId, submittedRatings });
       alert('평가가 성공적으로 제출되었습니다!');
-      navigate(`/rating-project-status/${projectId}`); // Navigate to status page after submission
+      navigate(`/project/${projectId}/rating-status`); // 평가 완료 후 결과 페이지로 이동
     } catch (err) {
       setError("평가 제출에 실패했습니다.");
-      console.error("Failed to submit ratings:", err);
       alert('평가 제출에 실패했습니다.');
     }
   };
@@ -118,16 +109,13 @@ function RatingProjectPage() {
   if (loading) {
     return <div className={styles.loading}>로딩 중...</div>;
   }
-
   if (error) {
     return <div className={styles.error}>오류: {error}</div>;
   }
-
   if (!projectData) {
     return <div className={styles.noData}>프로젝트 데이터를 찾을 수 없습니다.</div>;
   }
 
-  // 실제 데이터는 props 또는 API로 받아옴
   const project = {
     id: 47,
     name: '프로젝트명',
@@ -141,13 +129,6 @@ function RatingProjectPage() {
     good: ['업무 능력이 뛰어나요.', '열정이 넘치는 팀원이에요.'],
     improve: ['의사 소통이 원활하면 좋겠어요.', '열심히 성장하는 모습이 필요해요.']
   };
-  const evaluation = {
-    question: '업무 분담 및 구체적인 역할은 무엇이었나요?',
-    answers: [
-      '구체적인 역할은 어쩌구어쩌구 입니다.',
-      '구체적인 역할은 어쩌구어쩌구 입니다.'
-    ]
-  };
 
   return (
     <div className={styles.pageBg}>
@@ -156,7 +137,82 @@ function RatingProjectPage() {
         <ProjectInfoCard {...project} id={project.id} />
         <ProjectResultCard resultLink={project.resultLink} />
         <ProjectSummaryCard {...summary} />
-        <TeamMemberEvaluation {...evaluation} />
+        {/* 평가 입력 UI */}
+        <div className={styles.ratingForm}>
+          <div className={styles.tagSection}>
+            <div className={styles.tagList}>
+              {tags.map(tag => (
+                <span key={tag} className={styles.tag} onClick={() => handleTagRemove(tag)}>
+                  #{tag} <span className={styles.removeTag}>×</span>
+                </span>
+              ))}
+              <input
+                className={styles.tagInput}
+                type="text"
+                value={tagInput}
+                onChange={e => setTagInput(e.target.value)}
+                onKeyDown={e => e.key === 'Enter' && handleTagAdd()}
+                placeholder="#키워드 입력"
+              />
+              <button className={styles.addTagBtn} onClick={handleTagAdd}>추가</button>
+            </div>
+          </div>
+          <div className={styles.memberSection}>
+            {projectData.members.map(member => (
+              <div key={member.id} className={styles.memberBox}>
+                <h4>{member.name} ({member.position})</h4>
+                {member.categories.map(category => (
+                  <div key={category.id} className={styles.categoryRow}>
+                    <div className={styles.categoryTextWrap}>
+                      <div className={styles.categoryName}>{category.name}</div>
+                      <div className={styles.categoryDesc}>
+                        {category.name === '참여도' && '해당 팀원의 프로젝트 내에서 참여도를 점수로 평가해주세요'}
+                        {category.name === '소통' && '해당 팀원과의 의사소통 태도를 점수로 평가해주세요'}
+                        {category.name === '책임감' && '해당 팀원의 프로젝트 책임감을 점수로 평가해주세요'}
+                        {category.name === '협력' && '해당 팀원의 프로젝트 내에서 보인 협동심을 점수로 평가해주세요'}
+                        {category.name === '개인 능력' && '해당 팀원의 프로젝트 수행 능력을 점수로 평가해주세요'}
+                      </div>
+                    </div>
+                    <div className={styles.sliderWrap}>
+                      <input
+                        type="range"
+                        min={1}
+                        max={5}
+                        step={1}
+                        value={ratings[`${member.id}-${category.id}`] || 1}
+                        onChange={e => handleRatingChange(member.id, category.id, Number(e.target.value))}
+                        className={styles.ratingSlider}
+                        style={{ '--value': ratings[`${member.id}-${category.id}`] || 1 }}
+                      />
+                    </div>
+                    <div className={styles.sliderLabels}>
+                      {[1,2,3,4,5].map(n => <span key={n}>{n}</span>)}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ))}
+          </div>
+          <div className={styles.overallRatingSection}>
+            <div className={styles.overallLabel} style={{ textAlign: 'center', width: '100%' }}>전체 총점은 몇 점인가요?</div>
+            <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
+              <RatingInputStars
+                initialRating={overallRating}
+                onRatingChange={setOverallRating}
+                readOnly={false}
+              />
+            </div>
+          </div>
+          <textarea
+            className={styles.commentInput}
+            placeholder="추가 코멘트가 있다면 입력해 주세요."
+            value={comment}
+            onChange={e => setComment(e.target.value)}
+          />
+          <button className={styles.submitButton} onClick={handleSubmit}>
+            평가 제출
+          </button>
+        </div>
       </div>
       <BottomNav />
     </div>
