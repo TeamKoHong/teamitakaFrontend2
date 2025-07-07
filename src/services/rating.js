@@ -25,28 +25,6 @@ const allDummyProjects = [
     isRatedByMe: true,
   },
   {
-    id: 3,
-    name: "모바일 앱 UI/UX 개선 프로젝트",
-    description: "사용자 경험 향상을 위한 기존 모바일 앱 디자인 개선",
-    period: "2025-01-01 ~ 2025-01-20",
-    createdAt: "2025-01-01T11:00:00Z",
-    imageUrl: "/icons/team-group-icon.svg",
-    myRatingStatus: "VIEW_ONLY",
-    myScore: null,
-    isRatedByMe: false,
-  },
-  {
-    id: 4,
-    name: "웹사이트 리뉴얼 프로젝트",
-    description: "노후된 회사 웹사이트 전면 리뉴얼 및 기능 추가",
-    period: "2024-08-01 ~ 2025-01-31",
-    createdAt: "2024-08-01T14:00:00Z",
-    imageUrl: "/icons/team-group-icon.svg",
-    myRatingStatus: "PENDING",
-    myScore: null,
-    isRatedByMe: false,
-  },
-  {
     id: 5,
     name: "데이터베이스 시스템 구축",
     description: "새로운 서비스에 필요한 데이터베이스 시스템 설계 및 구현",
@@ -56,6 +34,18 @@ const allDummyProjects = [
     myRatingStatus: "COMPLETED",
     myScore: 4.2,
     isRatedByMe: true,
+  },
+  // 새 프로젝트 추가
+  {
+    id: 6,
+    name: "연합동아리 부스전 기획 프로젝트",
+    description: "2024년 상반기 연합동아리 부스전 행사 기획 및 운영",
+    period: "2024-03-01 ~ 2024-06-30",
+    createdAt: "2024-03-01T09:00:00Z",
+    imageUrl: "/icons/team-group-icon.svg",
+    myRatingStatus: "PENDING",
+    myScore: null,
+    isRatedByMe: false,
   },
 ];
 
@@ -89,6 +79,7 @@ export async function fetchProjectStatus(projectId) {
   const dummyStatus = {
     id: parseInt(projectId),
     name: `Project ${projectId} - 평가 현황`,
+    myRatingStatus: "PENDING",
     status: "평가 완료",
     averageRating: 4.2,
     totalMembers: 5,
