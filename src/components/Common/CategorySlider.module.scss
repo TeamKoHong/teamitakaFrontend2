@@ -1,0 +1,337 @@
+@import '../../styles/variables';
+
+.categorySlider {
+  background: $white;
+  border-radius: 20px;
+  padding: 20px 26px;
+  height: 130px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 10px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  transition: all 0.3s ease;
+  
+  &:hover:not(.disabled) {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    transform: translateY(-1px);
+  }
+  
+  &.disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    
+    * {
+      cursor: not-allowed !important;
+    }
+  }
+}
+
+.categoryHeader {
+  margin-bottom: 16px;
+  width: 100%;
+  text-align: center;
+  
+  .categoryName {
+    font-size: 13px;
+    font-weight: $font-weight-bold;
+    color: $gray-dark;
+    margin-bottom: 4px;
+  }
+  
+  .categoryDescription {
+    font-size: 10px;
+    color: $gray;
+    line-height: 1.4;
+  }
+}
+
+.sliderContainer {
+  position: relative;
+  width: 100%;
+  margin-bottom: 8px;
+  
+  .sliderTrack {
+    position: relative;
+    width: 100%;
+    height: 12px;
+    background: $gray-light;
+    border-radius: 6px;
+    cursor: pointer;
+    touch-action: none;
+    outline: none;
+    transition: all 0.2s ease;
+    
+    // 터치 영역 확대를 위한 가상 영역
+    &::before {
+      content: '';
+      position: absolute;
+      top: -16px;
+      left: -8px;
+      right: -8px;
+      bottom: -16px;
+      z-index: 1;
+    }
+    
+    // 포커스 스타일
+    &:focus {
+      box-shadow: 0 0 0 2px rgba($primary-color, 0.3);
+    }
+    
+    &.pressed {
+      transform: scale(1.02);
+      
+      .sliderFill {
+        box-shadow: 0 0 8px rgba($primary-color, 0.4);
+      }
+    }
+    
+    .sliderFill {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      background: linear-gradient(90deg, $primary-color, lighten($primary-color, 10%));
+      border-radius: 6px;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 1px 3px rgba($primary-color, 0.3);
+    }
+    
+    .sliderThumb {
+      position: absolute;
+      top: -8px;
+      width: 28px;
+      height: 28px;
+      background: linear-gradient(135deg, $primary-color, darken($primary-color, 5%));
+      border-radius: 50%;
+      box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.25);
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 2;
+      border: 3px solid $white;
+      
+      // 터치 영역 확대
+      &::before {
+        content: '';
+        position: absolute;
+        top: -8px;
+        left: -8px;
+        right: -8px;
+        bottom: -8px;
+        border-radius: 50%;
+      }
+      
+      // 호버 효과
+      &:hover {
+        transform: scale(1.1);
+        box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.3);
+      }
+      
+      // 터치/클릭 피드백
+      &.pressed {
+        transform: scale(1.15);
+        box-shadow: 0px 4px 12px rgba($primary-color, 0.5);
+        background: linear-gradient(135deg, darken($primary-color, 5%), $primary-color);
+      }
+      
+      // 애니메이션 효과
+      &::after {
+        content: '';
+        position: absolute;
+        top: -2px;
+        left: -2px;
+        right: -2px;
+        bottom: -2px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba($primary-color, 0.3), transparent);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+      
+      &:active::after {
+        opacity: 1;
+        animation: ripple 0.6s ease-out;
+      }
+    }
+  }
+}
+
+.sliderLabels {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 14px;
+  width: 100%;
+  
+  .labelButton {
+    padding: 8px 4px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    user-select: none;
+    transition: all 0.2s ease;
+    font-size: 10px;
+    color: $gray;
+    font-weight: $font-weight-regular;
+    border-radius: 4px;
+    min-width: 24px;
+    min-height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    &:hover:not(:disabled) {
+      color: $primary-color;
+      background: rgba($primary-color, 0.1);
+      transform: scale(1.1);
+    }
+    
+    &:active:not(:disabled) {
+      transform: scale(1.05);
+      background: rgba($primary-color, 0.2);
+    }
+    
+    &.active {
+      color: $primary-color;
+      font-weight: $font-weight-bold;
+      background: rgba($primary-color, 0.15);
+      transform: scale(1.1);
+    }
+    
+    &:disabled {
+      cursor: not-allowed;
+      opacity: 0.5;
+    }
+    
+    // 터치 피드백
+    @media (hover: none) {
+      &:active:not(:disabled) {
+        background: rgba($primary-color, 0.3);
+        transform: scale(1.2);
+      }
+    }
+  }
+}
+
+.valueDisplay {
+  margin-top: 4px;
+  text-align: center;
+  
+  .currentValue {
+    font-size: 12px;
+    font-weight: $font-weight-bold;
+    color: $primary-color;
+    background: rgba($primary-color, 0.1);
+    padding: 2px 8px;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+  }
+}
+
+// 리플 애니메이션
+@keyframes ripple {
+  0% {
+    transform: scale(0);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(2);
+    opacity: 0;
+  }
+}
+
+// 모바일 최적화
+@media (max-width: 768px) {
+  .categorySlider {
+    padding: 20px 24px;
+    height: 140px;
+  }
+  
+  .sliderContainer {
+    .sliderTrack {
+      height: 14px;
+      border-radius: 7px;
+      
+      &::before {
+        top: -20px;
+        left: -12px;
+        right: -12px;
+        bottom: -20px;
+      }
+      
+      .sliderFill {
+        border-radius: 7px;
+      }
+      
+      .sliderThumb {
+        top: -9px;
+        width: 32px;
+        height: 32px;
+        border: 4px solid $white;
+        
+        &::before {
+          top: -12px;
+          left: -12px;
+          right: -12px;
+          bottom: -12px;
+        }
+      }
+    }
+  }
+  
+  .sliderLabels {
+    .labelButton {
+      padding: 10px 6px;
+      min-width: 28px;
+      min-height: 28px;
+      font-size: 11px;
+    }
+  }
+}
+
+// 접근성 개선
+@media (prefers-reduced-motion: reduce) {
+  .categorySlider,
+  .sliderTrack,
+  .sliderFill,
+  .sliderThumb,
+  .labelButton,
+  .currentValue {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+// 고대비 모드 지원
+@media (prefers-contrast: high) {
+  .categorySlider {
+    border: 2px solid $gray-dark;
+  }
+  
+  .sliderTrack {
+    background: $white;
+    border: 1px solid $gray-dark;
+    
+    .sliderFill {
+      background: $gray-dark;
+    }
+    
+    .sliderThumb {
+      background: $gray-dark;
+      border: 2px solid $white;
+    }
+  }
+  
+  .labelButton {
+    border: 1px solid transparent;
+    
+    &:focus {
+      border-color: $gray-dark;
+    }
+    
+    &.active {
+      background: $gray-dark;
+      color: $white;
+    }
+  }
+}
