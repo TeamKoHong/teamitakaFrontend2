@@ -1,6 +1,7 @@
 import React from 'react';
 import styles from '../TeamMemberEvaluationPage.module.scss';
 import ProgressIndicator from './ProgressIndicator';
+import CategorySlider from '../../../components/Common/CategorySlider';
 
 const EvaluationStep1 = ({
   projectData,
@@ -24,6 +25,16 @@ const EvaluationStep1 = ({
       key: 'responsibility',
       name: '책임감',
       description: '해당 팀원의 프로젝트 책임감을 점수로 평가해주세요'
+    },
+    {
+      key: 'collaboration',
+      name: '협력',
+      description: '해당 팀원의 팀워크와 협력 능력을 점수로 평가해주세요'
+    },
+    {
+      key: 'individualAbility',
+      name: '개인능력',
+      description: '해당 팀원의 개인적인 업무 능력을 점수로 평가해주세요'
     }
   ];
 
@@ -84,85 +95,14 @@ const EvaluationStep1 = ({
       {/* 카테고리별 평가 섹션 */}
       <div className={styles.categorySection}>
         {categories.map((category) => (
-          <div key={category.key} className={styles.categoryItem}>
-            <div className={styles.categoryHeader}>
-              <div className={styles.categoryName}>{category.name}</div>
-              <div className={styles.categoryDescription}>{category.description}</div>
-            </div>
-            
-            <div className={styles.sliderContainer}>
-              <div 
-                className={styles.sliderTrack}
-                onClick={(e) => {
-                  const rect = e.currentTarget.getBoundingClientRect();
-                  const clickX = e.clientX - rect.left;
-                  const percentage = (clickX / rect.width) * 100;
-                  const value = Math.round((percentage / 20) + 1);
-                  const clampedValue = Math.max(1, Math.min(5, value));
-                  onCategoryRatingChange(category.key, clampedValue);
-                }}
-                onTouchStart={(e) => {
-                  const rect = e.currentTarget.getBoundingClientRect();
-                  const touch = e.touches[0];
-                  const touchX = touch.clientX - rect.left;
-                  const percentage = (touchX / rect.width) * 100;
-                  const value = Math.round((percentage / 20) + 1);
-                  const clampedValue = Math.max(1, Math.min(5, value));
-                  onCategoryRatingChange(category.key, clampedValue);
-                }}
-                onTouchMove={(e) => {
-                  const rect = e.currentTarget.getBoundingClientRect();
-                  const touch = e.touches[0];
-                  const touchX = touch.clientX - rect.left;
-                  const percentage = (touchX / rect.width) * 100;
-                  const value = Math.round((percentage / 20) + 1);
-                  const clampedValue = Math.max(1, Math.min(5, value));
-                  onCategoryRatingChange(category.key, clampedValue);
-                }}
-              >
-                <div 
-                  className={styles.sliderFill} 
-                  style={{ width: `${(evaluationData.categoryRatings[category.key] || 1) * 20}%` }}
-                />
-                <div 
-                  className={styles.sliderThumb}
-                  style={{ left: `calc(${(evaluationData.categoryRatings[category.key] || 1) * 20}% - 10px)` }}
-                />
-              </div>
-              <div className={styles.sliderLabels}>
-                <span 
-                  onClick={() => onCategoryRatingChange(category.key, 1)}
-                  className={styles.labelButton}
-                >
-                  1
-                </span>
-                <span 
-                  onClick={() => onCategoryRatingChange(category.key, 2)}
-                  className={styles.labelButton}
-                >
-                  2
-                </span>
-                <span 
-                  onClick={() => onCategoryRatingChange(category.key, 3)}
-                  className={styles.labelButton}
-                >
-                  3
-                </span>
-                <span 
-                  onClick={() => onCategoryRatingChange(category.key, 4)}
-                  className={styles.labelButton}
-                >
-                  4
-                </span>
-                <span 
-                  onClick={() => onCategoryRatingChange(category.key, 5)}
-                  className={styles.labelButton}
-                >
-                  5
-                </span>
-              </div>
-            </div>
-          </div>
+          <CategorySlider
+            key={category.key}
+            category={category.key}
+            name={category.name}
+            description={category.description}
+            value={evaluationData.categoryRatings[category.key] || 1}
+            onChange={(value) => onCategoryRatingChange(category.key, value)}
+          />
         ))}
       </div>
 

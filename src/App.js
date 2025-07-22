@@ -13,6 +13,7 @@ import RatingManagementPage from './pages/RatingManagementPage/RatingManagementP
 import RatingProjectPage from './pages/RatingProjectPage/RatingProjectPage';
 import RatingProjectStatusPage from './pages/RatingProjectStatusPage/RatingProjectStatusPage';
 import TeamMemberEvaluationPage from './pages/TeamMemberEvaluationPage/TeamMemberEvaluationPage';
+import CategorySliderDemo from './components/Common/CategorySliderDemo';
 
 const App = () => {
   return (
@@ -33,6 +34,7 @@ const App = () => {
         <Route path="/project/:projectId/rating-status/given" element={<RatingProjectStatusPage />} />
         <Route path="/project/:projectId/rating-status/received" element={<RatingProjectStatusPage />} />
         <Route path="/project/:projectId/rating-status" element={<RedirectToReceived />} />
+        <Route path="/demo/category-slider" element={<CategorySliderDemo />} />
       </Routes>
     </Router>
   );
