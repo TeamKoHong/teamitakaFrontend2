@@ -106,6 +106,12 @@ function RatingProjectPage(props) {
     }
   };
 
+          const handleMemberEvaluation = (memberId) => {
+          // 김재원(memberId: 101)을 기본 평가 대상으로 설정
+          const targetMemberId = memberId || 101;
+          navigate(`/project/${projectId}/evaluate/${targetMemberId}`);
+        };
+
   if (loading) {
     return <div className={styles.loading}>로딩 중...</div>;
   }
@@ -161,6 +167,20 @@ function RatingProjectPage(props) {
             {projectData.members.map(member => (
               <div key={member.id} className={styles.memberBox}>
                 <h4>{member.name} ({member.position})</h4>
+                <button 
+                  onClick={() => handleMemberEvaluation(member.id)}
+                  style={{ 
+                    marginBottom: '16px',
+                    padding: '8px 16px',
+                    backgroundColor: '#FF4D4F',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '8px',
+                    cursor: 'pointer'
+                  }}
+                >
+                  상세 평가하기
+                </button>
                 {member.categories.map(category => (
                   <div key={category.id} className={styles.categoryRow}>
                     <div className={styles.categoryTextWrap}>

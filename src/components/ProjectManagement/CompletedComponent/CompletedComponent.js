@@ -42,7 +42,7 @@ const CompletedComponent = () => {
           viewBox="0 0 8 13"
           fill="none"
         >
-          <path d="M1 12L6 6.5L1 1" stroke="#7B797A" stroke-width="1.625" />
+          <path d="M1 12L6 6.5L1 1" stroke="#7B797A" strokeWidth="1.625" />
         </svg>
 
         <h3>고려대 X 홍익대 프로젝트</h3>
