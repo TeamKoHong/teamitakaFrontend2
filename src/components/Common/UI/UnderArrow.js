@@ -11,7 +11,7 @@ export default function UnderArrow({ onClick }) {
         <path
           d="M0.90918 1L5.95733 5.58923C6.23936 5.84562 6.67006 5.84562 6.95209 5.58923L12.0002 1"
           stroke="#807C7C"
-          stroke-width="1.47881"
+          strokeWidth="1.47881"
           stroke-linecap="round"
         />
       </svg>

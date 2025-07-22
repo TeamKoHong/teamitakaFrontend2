@@ -12,11 +12,15 @@ import ProjectCalender from "./pages/ProjectCalendar/ProjectCalendar";
 import RatingManagementPage from './pages/RatingManagementPage/RatingManagementPage';
 import RatingProjectPage from './pages/RatingProjectPage/RatingProjectPage';
 import RatingProjectStatusPage from './pages/RatingProjectStatusPage/RatingProjectStatusPage';
+import TeamMemberEvaluationPage from './pages/TeamMemberEvaluationPage/TeamMemberEvaluationPage';
 
 const App = () => {
   return (
     <Router>
       <Routes>
+        <Route path="/" element={<Navigate to="/project-management" replace />} />
+        <Route path="/main" element={<Navigate to="/project-management" replace />} />
+        <Route path="/my" element={<Navigate to="/project-management" replace />} />
         <Route path="/project-management" element={<ProjectManagement />} />
         <Route path="/project/:id" element={<ProjectDetailPage />} />
         <Route path="/project/:id/member" element={<ProjectMemberPage />} />
@@ -25,6 +29,7 @@ const App = () => {
         <Route path="/project/:id/calender" element={<ProjectCalender />} />
         <Route path="/project/rating-management" element={<RatingManagementPage/>}/>
         <Route path="/project/:projectId/rating-project" element={<RatingProjectPage/>}/>
+        <Route path="/project/:projectId/evaluate/:memberId" element={<TeamMemberEvaluationPage />} />
         <Route path="/project/:projectId/rating-status/given" element={<RatingProjectStatusPage />} />
         <Route path="/project/:projectId/rating-status/received" element={<RatingProjectStatusPage />} />
         <Route path="/project/:projectId/rating-status" element={<RedirectToReceived />} />
