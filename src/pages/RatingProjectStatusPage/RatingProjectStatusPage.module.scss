@@ -1,12 +1,4 @@
-@import '../../styles/variables';
-
-// 임시 변수 (이 부분들이 정확히 들어가 있어야 합니다!)
-$primary-color: #007bff;
-$accent-color: #28a745;
-$text-dark: #333;
-$text-gray: #7B797A;
-$background-light: #f0f2f5;
-$border-light: #e0e0e0;
+@use '../../styles/variables' as *;
 
 .container {
   max-width: 420px;
@@ -30,7 +22,7 @@ $border-light: #e0e0e0;
 .pageTitle {
   font-size: 1.8em;
   font-weight: bold;
-  color: $text-dark;
+  color: $gray-dark;
   margin-bottom: 32px;
   text-align: center;
 }
@@ -52,7 +44,7 @@ $border-light: #e0e0e0;
 
 .averageRating, .completion {
   font-size: 1.1em;
-  color: $text-dark;
+  color: $gray-dark;
   span {
     font-weight: bold;
     color: $primary-color;
@@ -63,7 +55,7 @@ $border-light: #e0e0e0;
 .progressBarContainer {
   width: 90%;
   height: 10px;
-  background-color: $border-light;
+  background-color: $gray-light;
   border-radius: 5px;
   overflow: hidden;
   margin: 0 auto; // Center the progress bar
@@ -99,16 +91,16 @@ $border-light: #e0e0e0;
 
 .noReviews {
   text-align: center;
-  color: $text-gray;
+  color: $gray;
   padding: 20px;
-  border: 1px dashed $border-light;
+  border: 1px dashed $gray-light;
   border-radius: 8px;
 }
 
 .loading, .error, .noData {
   text-align: center;
   padding: 20px;
-  color: $text-gray;
+  color: $gray;
   font-size: 1.2em;
 }
 

@@ -85,7 +85,7 @@ const EvaluationStep1 = ({
       </div>
 
       {/* 진행 표시기 */}
-      <ProgressIndicator currentStep={1} totalSteps={2} />
+      <ProgressIndicator currentStep={1} totalSteps={5} />
 
       {/* 질문 */}
       <div className={styles.questionText}>

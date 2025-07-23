@@ -34,6 +34,8 @@ const App = () => {
         <Route path="/project/:projectId/rating-status/given" element={<RatingProjectStatusPage />} />
         <Route path="/project/:projectId/rating-status/received" element={<RatingProjectStatusPage />} />
         <Route path="/project/:projectId/rating-status" element={<RedirectToReceived />} />
+        <Route path="/team" element={<Navigate to="/project-management" replace />} />
+        <Route path="/my" element={<Navigate to="/project-management" replace />} />
         <Route path="/demo/category-slider" element={<CategorySliderDemo />} />
       </Routes>
     </Router>

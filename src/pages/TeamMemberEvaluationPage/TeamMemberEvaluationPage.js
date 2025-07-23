@@ -122,41 +122,17 @@ function TeamMemberEvaluationPage() {
     }));
   };
 
+  const handleKeywordsChange = (keywords) => {
+    setEvaluationData(prev => ({
+      ...prev,
+      extractedKeywords: keywords
+    }));
+  };
+
   const handleSubmitEvaluation = async () => {
     try {
       // 실제 API 호출로 대체 예정
       console.log('평가 데이터 제출:', evaluationData);
-      
-      // 키워드 추출 시뮬레이션 (역할 설명에서 키워드 추출)
-      const roleText = evaluationData.roleDescription.toLowerCase();
-      let keywords = [];
-      
-      if (roleText.includes('창의') || roleText.includes('아이디어') || roleText.includes('혁신')) {
-        keywords.push('창의성');
-      }
-      if (roleText.includes('배려') || roleText.includes('팀워크') || roleText.includes('협력')) {
-        keywords.push('배려심');
-      }
-      if (roleText.includes('책임') || roleText.includes('성실')) {
-        keywords.push('책임감');
-      }
-      if (roleText.includes('소통') || roleText.includes('의견')) {
-        keywords.push('소통능력');
-      }
-      if (roleText.includes('리더') || roleText.includes('주도')) {
-        keywords.push('리더십');
-      }
-      
-      // 기본 키워드 추가 (키워드가 없을 경우)
-      if (keywords.length === 0) {
-        keywords = ['창의성', '배려심'];
-      }
-      
-      setEvaluationData(prev => ({
-        ...prev,
-        extractedKeywords: keywords
-      }));
-      
       handleNextStep();
     } catch (err) {
       setError('평가 제출에 실패했습니다.');
@@ -169,9 +145,9 @@ function TeamMemberEvaluationPage() {
       console.log('평가 완료:', evaluationData);
       handleNextStep();
       
-      // 잠시 후 다음 팀원으로 이동하거나 평가 목록으로 이동
+      // 잠시 후 평가 관리 페이지로 이동
       setTimeout(() => {
-        navigate(`/project/${projectId}/rating-status`);
+        navigate(`/project/${projectId}/rating-project`);
       }, 2000);
     } catch (err) {
       setError('평가 완료 처리에 실패했습니다.');
@@ -201,6 +177,7 @@ function TeamMemberEvaluationPage() {
       onOverallRatingChange: handleOverallRatingChange,
       onRoleDescriptionChange: handleRoleDescriptionChange,
       onEncouragementMessageChange: handleEncouragementMessageChange,
+      onKeywordsChange: handleKeywordsChange,
       onSubmit: handleSubmitEvaluation,
       onComplete: handleComplete
     };
