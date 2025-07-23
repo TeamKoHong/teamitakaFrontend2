@@ -1,0 +1,43 @@
+/* 1) 백드롭 */
+.mts-overlay {
+  position: fixed;
+
+  background: rgba(0, 0, 0, 0.3);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease;
+  z-index: 2;
+
+  &.open {
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
+/* 2) 패널 컨테이너 */
+.mts-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%; /* 모바일 풀스크린 */
+
+  background: #f2f2f2;
+  transform: translateX(100%);
+  transition: transform 0.3s ease;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+
+  &.open {
+    transform: translateX(0);
+  }
+}
+
+/* 3) 내용 영역 (헤더 아래) */
+.mts-content {
+  flex: 1;
+  overflow-y: auto;
+  /* 패딩 필요시 추가 */
+  padding: 16px 24px;
+}
