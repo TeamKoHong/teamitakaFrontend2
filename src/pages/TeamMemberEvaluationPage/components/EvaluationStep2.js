@@ -11,12 +11,38 @@ const EvaluationStep2 = ({
   onPrev,
   onOverallRatingChange,
   onRoleDescriptionChange,
+  onKeywordsChange,
   onSubmit
 }) => {
   const [keywordInput, setKeywordInput] = useState('');
+  const [keywords, setKeywords] = useState(evaluationData.extractedKeywords.length > 0 ? evaluationData.extractedKeywords : ['창의성', '소통능력']);
   
   // 입력이 완료되었는지 확인
   const isInputComplete = evaluationData.overallRating > 0 && evaluationData.roleDescription.trim().length > 0;
+
+  // 키워드 추가 함수
+  const handleAddKeyword = () => {
+    if (keywordInput.trim() && !keywords.includes(keywordInput.trim())) {
+      const newKeywords = [...keywords, keywordInput.trim()];
+      setKeywords(newKeywords);
+      onKeywordsChange(newKeywords);
+      setKeywordInput('');
+    }
+  };
+
+  // 키워드 삭제 함수
+  const handleRemoveKeyword = (keywordToRemove) => {
+    const newKeywords = keywords.filter(keyword => keyword !== keywordToRemove);
+    setKeywords(newKeywords);
+    onKeywordsChange(newKeywords);
+  };
+
+  // Enter 키 처리
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      handleAddKeyword();
+    }
+  };
 
   return (
     <div className={styles.stepContainer}>
@@ -93,16 +119,42 @@ const EvaluationStep2 = ({
         
         {/* 키워드 입력 */}
         <div className={styles.keywordInput}>
-          <input
-            type="text"
-            className={styles.keywordInputField}
-            placeholder="키워드 입력"
-            value={keywordInput}
-            onChange={(e) => setKeywordInput(e.target.value)}
-          />
-          <button className={styles.keywordAddButton}>
-            키워드 입력
-          </button>
+          <div className={styles.keywordLabel}>
+            평가 키워드
+          </div>
+          <div className={styles.keywordDescription}>
+            해당 팀원을 평가할 수 있는 키워드를 입력해주세요. Enter 키나 추가 버튼을 눌러 키워드를 추가할 수 있습니다.
+          </div>
+          <div className={styles.keywordInputContainer}>
+            <input
+              type="text"
+              className={styles.keywordInputField}
+              placeholder="키워드를 입력하세요"
+              value={keywordInput}
+              onChange={(e) => setKeywordInput(e.target.value)}
+              onKeyPress={handleKeyPress}
+            />
+            <button 
+              className={styles.keywordAddButton}
+              onClick={handleAddKeyword}
+              disabled={!keywordInput.trim()}
+            >
+              추가
+            </button>
+          </div>
+          <div className={styles.keywordTags}>
+            {keywords.map((keyword, index) => (
+              <span key={index} className={styles.keywordTag}>
+                {keyword}
+                <span 
+                  className={styles.removeBtn}
+                  onClick={() => handleRemoveKeyword(keyword)}
+                >
+                  ×
+                </span>
+              </span>
+            ))}
+          </div>
         </div>
       </div>
 

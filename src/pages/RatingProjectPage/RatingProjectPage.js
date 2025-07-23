@@ -107,9 +107,21 @@ function RatingProjectPage(props) {
   };
 
           const handleMemberEvaluation = (memberId) => {
-          // 김재원(memberId: 101)을 기본 평가 대상으로 설정
+          // 선택된 팀원으로 평가 페이지 이동
           const targetMemberId = memberId || 101;
           navigate(`/project/${projectId}/evaluate/${targetMemberId}`);
+        };
+
+        // 평가 상태 확인 함수
+        const getEvaluationStatus = (memberId) => {
+          // 실제로는 API에서 평가 상태를 가져와야 함
+          // 임시로 하드코딩된 상태 반환
+          const statusMap = {
+            101: 'completed', // 김재원 - 완료
+            102: 'pending',   // 이영희 - 대기
+            103: 'pending'    // 박철수 - 대기
+          };
+          return statusMap[memberId] || 'pending';
         };
 
   if (loading) {
@@ -164,23 +176,39 @@ function RatingProjectPage(props) {
             </div>
           </div>
           <div className={styles.memberSection}>
-            {projectData.members.map(member => (
-              <div key={member.id} className={styles.memberBox}>
-                <h4>{member.name} ({member.position})</h4>
-                <button 
-                  onClick={() => handleMemberEvaluation(member.id)}
-                  style={{ 
-                    marginBottom: '16px',
-                    padding: '8px 16px',
-                    backgroundColor: '#FF4D4F',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '8px',
-                    cursor: 'pointer'
-                  }}
-                >
-                  상세 평가하기
-                </button>
+            {projectData.members.map(member => {
+              const evaluationStatus = getEvaluationStatus(member.id);
+              return (
+                <div key={member.id} className={styles.memberBox}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+                    <h4>{member.name} ({member.position})</h4>
+                    <span style={{
+                      padding: '4px 8px',
+                      borderRadius: '12px',
+                      fontSize: '11px',
+                      fontWeight: 'bold',
+                      backgroundColor: evaluationStatus === 'completed' ? '#52c41a' : '#faad14',
+                      color: 'white'
+                    }}>
+                      {evaluationStatus === 'completed' ? '평가 완료' : '평가 대기'}
+                    </span>
+                  </div>
+                  <button 
+                    onClick={() => handleMemberEvaluation(member.id)}
+                    style={{ 
+                      marginBottom: '16px',
+                      padding: '8px 16px',
+                      backgroundColor: evaluationStatus === 'completed' ? '#52c41a' : '#FF4D4F',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '8px',
+                      cursor: evaluationStatus === 'completed' ? 'default' : 'pointer',
+                      opacity: evaluationStatus === 'completed' ? 0.7 : 1
+                    }}
+                    disabled={evaluationStatus === 'completed'}
+                  >
+                    {evaluationStatus === 'completed' ? '평가 완료' : '상세 평가하기'}
+                  </button>
                 {member.categories.map(category => (
                   <div key={category.id} className={styles.categoryRow}>
                     <div className={styles.categoryTextWrap}>
@@ -211,7 +239,8 @@ function RatingProjectPage(props) {
                   </div>
                 ))}
               </div>
-            ))}
+            );
+            })}
           </div>
           <div className={styles.overallRatingSection}>
             <div className={styles.overallLabel} style={{ textAlign: 'center', width: '100%' }}>전체 총점은 몇 점인가요?</div>

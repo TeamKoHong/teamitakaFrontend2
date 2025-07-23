@@ -1,28 +1,6 @@
 /* src/components/RatingManagement/IndividualRatingReview/IndividualRatingReview.module.scss */
 
-// @import '../../../styles/variables'; // <-- 이 라인은 반드시 주석 처리하거나 삭제해야 합니다.
-
-// 임시 변수 정의 (이 부분들이 정확히 들어가 있어야 합니다!)
-$primary-color: #007bff;
-$accent-color: #28a745;
-$text-dark: #333;
-$text-medium: #555;
-$text-muted: #999;
-$border-light: #e0e0e0;
-$background-light: #f8f9fa; // Adjusted from $color-background-light
-$white-color: #ffffff;
-$star-gold-color: #ffc107; // For active stars or display stars
-
-$font-size-xs: 0.8rem;
-$font-size-sm: 0.9rem;
-$font-size-md: 1rem; // Default text size for elements like reviewer name
-$font-weight-bold: 700;
-$font-weight-semibold: 600;
-
-$border-radius-sm: 4px;
-$border-radius-md: 8px;
-
-$box-shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.05);
+@use '../../../styles/variables' as *;
 
 
 .reviewContainer {
@@ -44,9 +22,9 @@ $box-shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
 .reviewerName {
-  font-weight: $font-weight-bold; // Changed variable name
-  font-size: $font-size-md; // Changed variable name
-  color: $text-dark; // Changed variable name
+  font-weight: $font-weight-bold;
+  font-size: $font-size-md;
+  color: $gray-dark;
 }
 
 .ratingDate {
@@ -56,8 +34,8 @@ $box-shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.05);
 
 .averageScore {
   margin-bottom: 10px;
-  font-size: $font-size-sm; // Changed variable name
-  color: $text-medium; // Changed variable name
+  font-size: $font-size-sm;
+  color: $gray;
 }
 
 .scoreLabel {
@@ -84,8 +62,8 @@ $box-shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.05);
 
 .categoryName {
   min-width: 80px; // Align names
-  font-size: $font-size-xs; // Changed variable name
-  color: $text-medium; // Changed variable name
+  font-size: $font-size-xs;
+  color: $gray;
   margin-right: 10px;
 }
 

@@ -16,6 +16,12 @@ const EvaluationStep5 = () => {
         <div className={styles.successMessage}>
           전송 완료
         </div>
+        <div className={styles.successDescription}>
+          평가가 성공적으로 제출되었습니다!
+        </div>
+        <div className={styles.successDescription}>
+          잠시 후 평가 관리 페이지로 이동합니다.
+        </div>
       </div>
     </div>
   );
