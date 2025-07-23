@@ -177,7 +177,7 @@ const CategorySlider = ({
           <div 
             ref={thumbRef}
             className={`${styles.sliderThumb} ${isPressed ? styles.pressed : ''}`}
-            style={{ left: `calc(${percentage}% - 14px)` }}
+            style={{ left: `calc(${percentage}% - 20px)` }}
           />
         </div>
         
