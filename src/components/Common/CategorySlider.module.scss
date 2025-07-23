@@ -1,0 +1,291 @@
+@use '../../styles/variables' as *;
+@use 'sass:color';
+
+.categorySlider {
+  background: $white;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 16px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  
+  &:last-child {
+    margin-bottom: 0;
+  }
+  
+  &.disabled {
+    opacity: 0.6;
+    pointer-events: none;
+  }
+}
+
+.categoryHeader {
+  margin-bottom: 16px;
+  width: 100%;
+  
+  .categoryName {
+    font-size: 15px;
+    font-weight: $font-weight-bold;
+    color: $gray-dark;
+    margin-bottom: 8px;
+  }
+  
+  .categoryDescription {
+    font-size: 12px;
+    color: $gray;
+    line-height: 1.4;
+  }
+}
+
+.sliderContainer {
+  position: relative;
+  width: 100%;
+  margin-bottom: 12px;
+  
+  .sliderTrack {
+    position: relative;
+    width: 100%;
+    height: 3px;
+    background: $gray-light;
+    border-radius: 2px;
+    cursor: pointer;
+    touch-action: none;
+    outline: none;
+    transition: all 0.2s ease;
+    
+    // 터치 영역 확대를 위한 가상 영역
+    &::before {
+      content: '';
+      position: absolute;
+      top: -16px;
+      left: -8px;
+      right: -8px;
+      bottom: -16px;
+      z-index: 1;
+    }
+    
+    // 포커스 스타일
+    &:focus {
+      box-shadow: 0 0 0 2px rgba($primary-color, 0.3);
+    }
+    
+    &.pressed {
+      transform: scale(1.02);
+      
+      .sliderFill {
+        box-shadow: 0 0 8px rgba($primary-color, 0.4);
+      }
+    }
+    
+    .sliderFill {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      background: $primary-color;
+      border-radius: 2px;
+      transition: width 0.2s ease;
+    }
+    
+    .sliderThumb {
+      position: absolute;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 16px;
+      height: 16px;
+      background: $primary-color;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      z-index: 2;
+      border: 2px solid white;
+      
+      // 터치 영역 확대
+      &::before {
+        content: '';
+        position: absolute;
+        top: -8px;
+        left: -8px;
+        right: -8px;
+        bottom: -8px;
+        border-radius: 50%;
+      }
+      
+      // 호버 효과
+      &:hover {
+        transform: scale(1.05);
+      }
+      
+      // 터치/클릭 피드백
+      &.pressed {
+        transform: scale(1.1);
+      }
+      
+
+    }
+  }
+}
+
+.sliderLabels {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 12px;
+  width: 100%;
+  
+  .labelButton {
+    padding: 4px 2px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    user-select: none;
+    transition: all 0.2s ease;
+    font-size: 11px;
+    color: $gray;
+    font-weight: $font-weight-medium;
+    border-radius: 4px;
+    min-width: 16px;
+    min-height: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    &:hover:not(:disabled) {
+      color: $primary-color;
+      background: rgba($primary-color, 0.1);
+      transform: scale(1.1);
+    }
+    
+    &:active:not(:disabled) {
+      transform: scale(1.05);
+      background: rgba($primary-color, 0.2);
+    }
+    
+    &.active {
+      color: $primary-color;
+      font-weight: $font-weight-bold;
+      background: rgba($primary-color, 0.15);
+      transform: scale(1.1);
+    }
+    
+    &:disabled {
+      cursor: not-allowed;
+      opacity: 0.5;
+    }
+    
+    // 터치 피드백
+    @media (hover: none) {
+      &:active:not(:disabled) {
+        background: rgba($primary-color, 0.3);
+        transform: scale(1.2);
+      }
+    }
+  }
+}
+
+.valueDisplay {
+  margin-top: 8px;
+  text-align: center;
+  
+  .currentValue {
+    font-size: 16px;
+    font-weight: $font-weight-bold;
+    color: $primary-color;
+  }
+}
+
+
+
+// 모바일 최적화
+@media (max-width: 768px) {
+  .categorySlider {
+    padding: 20px 24px;
+    height: 130px;
+  }
+  
+  .sliderContainer {
+    .sliderTrack {
+      height: 6px;
+      border-radius: 3px;
+      
+      &::before {
+        top: -16px;
+        left: -10px;
+        right: -10px;
+        bottom: -16px;
+      }
+      
+      .sliderFill {
+        border-radius: 3px;
+      }
+      
+      .sliderThumb {
+        top: -8px;
+        width: 22px;
+        height: 22px;
+        border: 3px solid $white;
+        
+        &::before {
+          top: -8px;
+          left: -8px;
+          right: -8px;
+          bottom: -8px;
+        }
+      }
+    }
+  }
+  
+  .sliderLabels {
+    .labelButton {
+      padding: 4px 6px;
+      min-width: 20px;
+      min-height: 20px;
+      font-size: 10px;
+    }
+  }
+}
+
+// 접근성 개선
+@media (prefers-reduced-motion: reduce) {
+  .categorySlider,
+  .sliderTrack,
+  .sliderFill,
+  .sliderThumb,
+  .labelButton,
+  .currentValue {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+// 고대비 모드 지원
+@media (prefers-contrast: high) {
+  .categorySlider {
+    border: 2px solid $gray-dark;
+  }
+  
+  .sliderTrack {
+    background: $white;
+    border: 1px solid $gray-dark;
+    
+    .sliderFill {
+      background: $gray-dark;
+    }
+    
+    .sliderThumb {
+      background: $gray-dark;
+      border: 2px solid $white;
+    }
+  }
+  
+  .labelButton {
+    border: 1px solid transparent;
+    
+    &:focus {
+      border-color: $gray-dark;
+    }
+    
+    &.active {
+      background: $gray-dark;
+      color: $white;
+    }
+  }
+}

@@ -1,0 +1,646 @@
+@use '../../styles/variables' as *;
+@use 'sass:color';
+@use 'sass:math';
+
+// 카드 기본 스타일
+.card {
+  background: $white;
+  border-radius: 12px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  padding: 20px;
+  margin-bottom: 16px;
+}
+
+// 페이지 컨테이너
+.pageContainer {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #F0F2F5;
+}
+
+// 콘텐츠 영역
+.content {
+  flex: 1;
+  padding: 20px 16px 96px 16px;
+  overflow-y: auto;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+// 로딩, 에러, 데이터 없음 상태
+.loading, .error, .noData {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  font-size: $font-size-md;
+  color: $gray;
+}
+
+.error {
+  color: $error-color;
+}
+
+// 페이지 배경
+.pageBg {
+  min-height: 100vh;
+  background: #F0F2F5;
+  padding-bottom: 80px;
+}
+
+// 스크롤 영역
+.scrollArea {
+  padding: 16px;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+// 헤더
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  
+  .title {
+    font-size: $font-size-xl;
+    font-weight: $font-weight-bold;
+    color: $gray-dark;
+  }
+  
+  .backButton {
+    background: none;
+    border: none;
+    font-size: $font-size-lg;
+    color: $gray-dark;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 50%;
+    transition: background-color 0.2s ease;
+    
+    &:hover {
+      background: rgba(0, 0, 0, 0.05);
+    }
+  }
+}
+
+// 프로젝트 정보 카드
+.projectInfoCard {
+  @extend .card;
+  margin-bottom: 20px;
+  
+  .projectName {
+    font-size: 16px;
+    font-weight: $font-weight-bold;
+    color: $gray-dark;
+    margin-bottom: 4px;
+  }
+  
+  .projectDescription {
+    font-size: 12px;
+    color: $gray;
+    margin-bottom: 20px;
+  }
+  
+  .memberProfiles {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    
+    .currentMember {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      
+      .profileImage {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        border: 2px solid $gray-light;
+        object-fit: cover;
+      }
+      
+      .memberInfo {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        
+        .currentLabel {
+          font-size: 12px;
+          color: $gray;
+          margin-bottom: 2px;
+        }
+        
+        .memberName {
+          font-size: 16px;
+          font-weight: $font-weight-bold;
+          color: $primary-color;
+        }
+      }
+    }
+    
+    .otherMembers {
+      display: flex;
+      gap: 8px;
+      
+      .profileItem {
+        position: relative;
+        
+        .profileImage {
+          width: 35px;
+          height: 35px;
+          border-radius: 50%;
+          border: 2px solid $gray-light;
+          object-fit: cover;
+          
+          &.completed {
+            border-color: $primary-color;
+          }
+        }
+        
+        .statusIcon {
+          position: absolute;
+          top: -2px;
+          right: -2px;
+          width: 12px;
+          height: 12px;
+          border-radius: 50%;
+          background: $primary-color;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          
+          .checkmark {
+            color: $white;
+            font-size: 8px;
+          }
+        }
+      }
+    }
+  }
+}
+
+// 질문 텍스트
+.questionText {
+  font-size: 18px;
+  line-height: 140.98%;
+  font-weight: 600;
+  color: $gray-dark;
+  margin-bottom: 16px;
+  text-align: left;
+}
+
+// 카테고리 섹션
+.categorySection {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+// 슬라이더 컨테이너
+.sliderContainer {
+  margin-bottom: 24px;
+  
+  .sliderLabel {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    
+    .labelText {
+      font-size: $font-size-md;
+      font-weight: $font-weight-medium;
+      color: $gray-dark;
+    }
+    
+    .ratingValue {
+      font-size: $font-size-lg;
+      font-weight: $font-weight-bold;
+      color: $primary-color;
+      background: color.adjust($primary-color, $lightness: 90%);
+      padding: 4px 12px;
+      border-radius: 12px;
+      min-width: 40px;
+      text-align: center;
+    }
+  }
+  
+  .sliderTrack {
+    position: relative;
+    height: 6px;
+    background: $gray-light;
+    border-radius: 3px;
+    margin-bottom: 8px;
+    
+    .sliderFill {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      background: linear-gradient(90deg, $primary-color, color.adjust($primary-color, $lightness: 10%));
+      border-radius: 3px;
+      transition: width 0.2s ease;
+    }
+  }
+  
+  .sliderThumb {
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 24px;
+    height: 24px;
+    background: $white;
+    border: 3px solid $primary-color;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: $shadow-lg;
+    transition: all 0.2s ease;
+    
+    &:hover {
+      transform: translate(-50%, -50%) scale(1.1);
+      box-shadow: 0 6px 12px rgba($primary-color, 0.3);
+    }
+    
+    &:active {
+      transform: translate(-50%, -50%) scale(0.95);
+    }
+  }
+  
+  .sliderMarks {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    
+    .mark {
+      font-size: $font-size-xs;
+      color: $gray;
+      font-weight: $font-weight-medium;
+      text-align: center;
+      flex: 1;
+      
+      &.active {
+        color: $primary-color;
+        font-weight: $font-weight-bold;
+      }
+    }
+  }
+}
+
+// 전체 평가 섹션
+.overallRatingSection {
+  @extend .card;
+  
+  .overallLabel {
+    font-size: $font-size-lg;
+    font-weight: $font-weight-bold;
+    color: $gray-dark;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .starContainer {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 16px;
+    
+    .star {
+      font-size: 32px;
+      color: $gray-light;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      
+      &.filled {
+        color: #FFD700;
+      }
+      
+      &:hover {
+        transform: scale(1.1);
+      }
+    }
+  }
+  
+  .ratingText {
+    text-align: center;
+    font-size: $font-size-sm;
+    color: $gray;
+    margin-bottom: 16px;
+  }
+}
+
+// 역할 설명 섹션
+.roleSection {
+  @extend .card;
+  
+  .roleLabel {
+    font-size: $font-size-md;
+    font-weight: $font-weight-bold;
+    color: $gray-dark;
+    margin-bottom: 12px;
+  }
+  
+  .roleInput {
+    width: 100%;
+    min-height: 80px;
+    padding: 12px;
+    border: 1px solid $gray-light;
+    border-radius: $border-radius-base;
+    font-size: $font-size-sm;
+    resize: vertical;
+    font-family: inherit;
+    
+    &:focus {
+      outline: none;
+      border-color: $primary-color;
+      box-shadow: 0 0 0 2px color.adjust($primary-color, $alpha: -0.8);
+    }
+    
+    &::placeholder {
+      color: $gray;
+    }
+  }
+}
+
+// 키워드 섹션
+.keywordSection {
+  @extend .card;
+  
+  .keywordLabel {
+    font-size: $font-size-md;
+    font-weight: $font-weight-bold;
+    color: $gray-dark;
+    margin-bottom: 12px;
+  }
+  
+  .keywordInput {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid $gray-light;
+    border-radius: $border-radius-base;
+    font-size: $font-size-sm;
+    margin-bottom: 12px;
+    font-family: inherit;
+    
+    &:focus {
+      outline: none;
+      border-color: $primary-color;
+      box-shadow: 0 0 0 2px color.adjust($primary-color, $alpha: -0.8);
+    }
+    
+    &::placeholder {
+      color: $gray;
+    }
+  }
+  
+  .keywordTags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 12px;
+    
+    .keywordTag {
+      background: color.adjust($primary-color, $lightness: 90%);
+      color: $primary-color;
+      padding: 6px 12px;
+      border-radius: 16px;
+      font-size: $font-size-xs;
+      font-weight: $font-weight-medium;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      
+      .removeButton {
+        background: none;
+        border: none;
+        color: $primary-color;
+        font-size: 14px;
+        cursor: pointer;
+        padding: 0;
+        width: 16px;
+        height: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        
+        &:hover {
+          background: color.adjust($primary-color, $alpha: -0.8);
+        }
+      }
+    }
+  }
+  
+  .addKeywordButton {
+    background: $primary-color;
+    color: $white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: $border-radius-base;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    
+    &:hover {
+      background: color.adjust($primary-color, $lightness: -10%);
+    }
+    
+    &:disabled {
+      background: $gray-light;
+      color: $gray;
+      cursor: not-allowed;
+    }
+  }
+}
+
+// 응원 메시지 섹션
+.encouragementSection {
+  @extend .card;
+  
+  .encouragementLabel {
+    font-size: $font-size-md;
+    font-weight: $font-weight-bold;
+    color: $gray-dark;
+    margin-bottom: 8px;
+  }
+  
+  .encouragementWarning {
+    font-size: $font-size-xs;
+    color: $error-color;
+    margin-bottom: 12px;
+  }
+  
+  .encouragementInput {
+    width: 100%;
+    min-height: 60px;
+    padding: 12px;
+    border: 1px solid $gray-light;
+    border-radius: $border-radius-base;
+    font-size: $font-size-sm;
+    resize: vertical;
+    font-family: inherit;
+    
+    &:focus {
+      outline: none;
+      border-color: $primary-color;
+      box-shadow: 0 0 0 2px color.adjust($primary-color, $alpha: -0.8);
+    }
+  }
+}
+
+// 전송 완료 섹션
+.successSection {
+  @extend .card;
+  text-align: center;
+  padding: 40px 20px;
+  
+  .successIcon {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: $primary-color;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 24px;
+    
+    .checkmark {
+      color: $white;
+      font-size: 40px;
+      font-weight: $font-weight-bold;
+    }
+  }
+  
+  .successMessage {
+    font-size: 20px;
+    font-weight: $font-weight-bold;
+    color: $gray-dark;
+    margin-bottom: 16px;
+  }
+  
+  .successDescription {
+    font-size: 14px;
+    color: $gray;
+    line-height: 1.5;
+    margin-bottom: 8px;
+  }
+}
+
+
+
+// 버튼 스타일
+.button {
+  width: 100%;
+  padding: 16px;
+  border: none;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: $font-weight-bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  
+  &.primary {
+    background: $primary-color;
+    color: $white;
+    
+    &:hover {
+      background: color.adjust($primary-color, $lightness: -10%);
+    }
+    
+    &:disabled {
+      background: $gray-light;
+      color: $gray;
+      cursor: not-allowed;
+    }
+  }
+  
+  &.secondary {
+    background: $white;
+    color: $gray-dark;
+    border: 1px solid $gray-light;
+    
+    &:hover {
+      background: $gray-light;
+    }
+  }
+}
+
+// 입력 완료 상태 피드백
+.completionFeedback {
+  text-align: center;
+  color: $error-color;
+  font-size: $font-size-sm;
+  margin-bottom: 12px;
+  padding: 8px 12px;
+  background: color.adjust($error-color, $lightness: 95%);
+  border-radius: $border-radius-base;
+  border: 1px solid color.adjust($error-color, $lightness: 70%);
+}
+
+// 버튼 컨테이너
+.buttonContainer {
+  margin-top: 24px;
+  display: flex;
+  gap: 12px;
+  
+  .button {
+    flex: 1;
+  }
+}
+
+// 단계별 컨테이너
+.stepContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+// 진행 표시기
+.progressIndicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin: 16px 0;
+  
+  .progressStep {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: $font-weight-bold;
+    background: $gray-light;
+    color: $gray-dark;
+    transition: all 0.3s ease;
+    
+    &.completed {
+      background: $primary-color;
+      color: $white;
+    }
+    
+    &.current {
+      background: $primary-color;
+      color: $white;
+    }
+    
+    .stepNumber {
+      font-size: 12px;
+      font-weight: $font-weight-bold;
+    }
+  }
+  
+  .progressLine {
+    width: 24px;
+    height: 2px;
+    background: $gray-light;
+    transition: background 0.3s ease;
+    
+    &.completed {
+      background: $primary-color;
+    }
+  }
+} 
