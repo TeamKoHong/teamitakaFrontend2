@@ -1,0 +1,100 @@
+.member-detail-card {
+  position: relative;
+  background: #fff;
+  border-radius: 20px;
+  padding-top: 44px;
+  box-shadow: 0px 1px 1px 0px rgba(0, 0, 0, 0.15);
+
+  .edit-btn {
+    position: absolute;
+    top: 21px;
+    right: 22px;
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+
+  .avatar-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 16px;
+
+    .avatar-large {
+      width: 98px;
+      height: 98px;
+      border-radius: 50%;
+    }
+  }
+
+  .square {
+    width: 16px;
+    height: 16px;
+    background-color: #403e3e;
+    border-radius: 5px;
+    margin-right: 7px;
+  }
+
+  .member-name {
+    text-align: center;
+    line-height: normal;
+    font-size: 17px;
+    font-weight: 700;
+    color: #f76241;
+  }
+  .member-role {
+    text-align: center;
+
+    font-size: 12px;
+    color: #403e3e;
+    font-size: 10px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    margin-bottom: 26px;
+  }
+
+  .member-meta {
+    list-style: none;
+    padding-left: 16px;
+    margin-bottom: 52px;
+
+    li {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+
+      .meta-label {
+        color: #403e3e;
+        font-size: 14px;
+        line-height: normal;
+        text-transform: capitalize;
+        font-style: normal;
+        font-weight: 400;
+        margin-right: 21px;
+      }
+      .meta-value {
+        font-size: 14px;
+        font-weight: 600;
+        line-height: normal;
+        text-transform: capitalize;
+      }
+    }
+  }
+
+  .timeline-toggle {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    height: 100%;
+    padding: 23px 19px;
+    font-size: 13px;
+    line-height: 143.633%;
+    font-weight: 600;
+    text-transform: capitalize;
+    background: #f2f2f2;
+    border: none;
+    border-radius: 0 0 20px 20px;
+    cursor: pointer;
+    filter: drop-shadow(0px 1px 1px rgba(0, 0, 0, 0.15));
+  }
+}

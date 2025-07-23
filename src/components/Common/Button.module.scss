@@ -1,0 +1,67 @@
+@use '../../styles/variables' as *;
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: $border-radius-base;
+  font-family: $font-family-base;
+  font-weight: $font-weight-bold;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+  padding: $spacing-sm $spacing-lg;
+  font-size: $font-size-md;
+  background: $primary-color;
+  color: $white;
+  box-shadow: $shadow-base;
+
+  &:active {
+    box-shadow: $shadow-hover;
+  }
+}
+
+.primary {
+  background: $primary-color;
+  color: $white;
+}
+
+.secondary {
+  background: $white;
+  color: $primary-color;
+  border: 1.5px solid $primary-color;
+}
+
+.ghost {
+  background: transparent;
+  color: $primary-color;
+  border: none;
+  box-shadow: none;
+}
+
+.danger {
+  background: $error;
+  color: $white;
+}
+
+.disabled {
+  background: $gray-light;
+  color: $gray;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.sm {
+  font-size: $font-size-sm;
+  padding: $spacing-xs $spacing-md;
+}
+
+.md {
+  font-size: $font-size-md;
+  padding: $spacing-sm $spacing-lg;
+}
+
+.lg {
+  font-size: $font-size-lg;
+  padding: $spacing-md $spacing-xl;
+} 

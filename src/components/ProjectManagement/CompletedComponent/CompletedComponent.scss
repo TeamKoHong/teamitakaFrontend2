@@ -1,0 +1,183 @@
+.completed-container {
+  margin-top: 1rem;
+  height: 100%;
+  overflow-y: auto;
+
+  hr {
+    width: 100%;
+    border: 3px solid #ececec;
+    flex-shrink: 0;
+    margin-bottom: 17px;
+  }
+
+  .completed-top {
+    padding: 0 22px;
+    margin-bottom: 24px;
+  }
+
+  .pending-review-card {
+    position: relative;
+    margin: 0px 22px;
+    padding: 23px 9px 48px 26px;
+
+    border-radius: 16px;
+    border-radius: 20px;
+    background: #fff;
+    margin-bottom: 24px;
+
+    .review-badge {
+      top: -10px;
+      left: 12px;
+      position: absolute;
+      display: inline-block;
+      background: #ff5757;
+      font-size: 10px;
+      color: #fff;
+      font-family: Inter;
+      font-size: 10px;
+      font-style: normal;
+      font-weight: 600;
+      line-height: normal;
+      text-transform: capitalize;
+      font-weight: bold;
+      padding: 4px 9px;
+      border-radius: 10px;
+      margin-bottom: 8px;
+      border-radius: 2.857px;
+      background: linear-gradient(239deg, #f76241 3.02%, #ff390d 96.98%);
+    }
+
+    svg {
+      position: absolute;
+      top: 14px;
+      right: 16px;
+    }
+
+    h3 {
+      color: #000;
+      font-family: Inter;
+      font-size: 15px;
+      font-style: normal;
+      font-weight: 700;
+      line-height: normal;
+      text-transform: capitalize;
+      margin-bottom: 4px;
+    }
+
+    .description {
+      width: 232px;
+      color: #999899;
+      font-family: Pretendard;
+      font-size: 10px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: normal;
+      text-transform: capitalize;
+      margin-bottom: 17px;
+    }
+
+    .team-avatars {
+      display: flex;
+      position: relative;
+      left: 0px;
+      img {
+        position: absolute;
+        width: 35px;
+        height: 35px;
+      }
+    }
+  }
+
+  .completed-section {
+    padding: 0px 22px;
+    .completed-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      .completed-section-title {
+        font-size: 15px;
+        font-weight: bold;
+
+        font-style: normal;
+        list-style: normal;
+        text-transform: capitalize;
+      }
+      .my-star-button {
+        color: #f76241;
+        text-align: right;
+        font-family: Pretendard;
+        font-size: 11px;
+        font-style: normal;
+        font-weight: 600;
+        line-height: normal;
+        text-decoration-line: underline;
+        text-decoration-style: solid;
+        text-decoration-skip-ink: auto;
+        text-decoration-thickness: 8%; /* 0.88px */
+        text-underline-offset: 25%; /* 2.75px */
+        text-underline-position: from-font;
+        text-transform: capitalize;
+        cursor: pointer;
+
+        &:hover {
+          color: #000; // 호버 시 색상 변경 등 추가 효과
+        }
+      }
+    }
+
+    .completed-list {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      margin-top: 20px;
+
+      .completed-item {
+        background: #fff;
+        border-radius: 16px;
+        padding: 16px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-radius: 16px;
+        background: #fff;
+
+        .completed-item-left {
+          display: flex;
+          flex-direction: column;
+        }
+
+        h3 {
+          color: #000;
+          font-family: Pretendard;
+          font-size: 15px;
+          font-style: normal;
+          font-weight: 700;
+          line-height: 140.984%; /* 21.148px */
+          text-transform: capitalize;
+          font-size: 14px;
+          margin-bottom: 4px;
+        }
+
+        .description {
+          width: 250px;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          font-size: 12px;
+          color: #474747;
+          font-family: Pretendard;
+          font-size: 10px;
+          font-style: normal;
+          font-weight: 700;
+          line-height: 140.984%; /* 14.098px */
+          text-transform: capitalize;
+        }
+
+        .favorite-icon {
+          color: #ffcc00;
+          font-size: 18px;
+        }
+      }
+    }
+  }
+}
