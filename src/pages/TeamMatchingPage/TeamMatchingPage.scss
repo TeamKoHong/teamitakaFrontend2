@@ -1,0 +1,154 @@
+/* src/pages/TeamMatching/TeamMatchingPage.scss */
+.team-matching-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #f0f2f5; // 배경색
+}
+
+.page-content {
+  flex-grow: 1;
+  padding: 16px;
+  padding-bottom: 80px; // BottomNav 높이 고려
+}
+
+.section-title {
+  font-size: 1.3rem;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 15px;
+  margin-top: 20px;
+}
+
+.recommended-section {
+  background-color: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+  .recommend-card {
+    position: relative;
+    padding: 15px;
+    border-radius: 10px;
+    background-color: #e0f2f7; // 추천 카드 배경색 (예시)
+
+    .badge {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background-color: #ff9800; // Best 뱃지 색상
+      color: white;
+      padding: 4px 8px;
+      border-radius: 5px;
+      font-size: 0.8rem;
+      font-weight: bold;
+    }
+
+    h3 {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #333;
+      margin-top: 25px; // 뱃지 아래로
+      margin-bottom: 5px;
+    }
+
+    p {
+      font-size: 0.95rem;
+      color: #555;
+      margin-bottom: 15px;
+    }
+
+    .info-bar {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.85rem;
+      color: #777;
+    }
+  }
+}
+
+.filter-section {
+  margin-bottom: 20px;
+
+  .filter-tags {
+    display: flex;
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch; /* iOS momentum scrolling */
+    margin-bottom: 15px;
+    padding-bottom: 5px; /* 스크롤바 공간 */
+
+    .filter-tag {
+      display: inline-block;
+      padding: 8px 15px;
+      margin-right: 8px;
+      border: 1px solid #ddd;
+      border-radius: 20px;
+      background-color: #fff;
+      font-size: 0.9rem;
+      color: #555;
+      cursor: pointer;
+      transition: all 0.2s ease-in-out;
+
+      &.active {
+        background-color: #ff5722; // 활성화된 태그 색상 (주황색)
+        color: white;
+        border-color: #ff5722;
+      }
+    }
+    .filter-more {
+        padding: 8px 5px;
+        font-size: 0.9rem;
+        color: #888;
+        cursor: pointer;
+    }
+  }
+
+  .search-bar {
+    margin-bottom: 15px;
+
+    input {
+      width: 100%;
+      padding: 10px 15px;
+      border: 1px solid #ddd;
+      border-radius: 25px;
+      font-size: 1rem;
+      &:focus {
+        outline: none;
+        border-color: #ff5722;
+      }
+    }
+  }
+
+  .sort-options {
+    display: flex;
+    justify-content: flex-end; // 오른쪽 정렬
+    margin-bottom: 15px;
+
+    select {
+      padding: 8px 12px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      color: #555;
+      cursor: pointer;
+      &:focus {
+        outline: none;
+        border-color: #ff5722;
+      }
+    }
+  }
+}
+
+.matching-list {
+  display: grid;
+  gap: 15px; // 카드 사이 간격
+}
+
+.no-results {
+  text-align: center;
+  color: #777;
+  font-size: 1rem;
+  padding: 30px 0;
+}
