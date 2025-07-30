@@ -3,7 +3,8 @@ import './TeamMatchingPage.scss';
 import BottomNav from "../../components/Common/BottomNav/BottomNav";
 import Header from "../../components/TeamMatching/Header/Header";
 import { CiBookmark } from "react-icons/ci"; 
-
+import { IoEyeOutline } from "react-icons/io5";
+import { HiOutlineChatBubbleOvalLeft } from "react-icons/hi2";
 // --- 데이터 ---
 const recommendedProjectsData = [ // '오늘의 프로젝트 추천'을 위한 데이터
     {
@@ -93,7 +94,10 @@ const RecommendCard = ({ item }) => (
         <h3 className="recommend-card-title">{item.title}</h3>
         <p className="recommend-card-desc">{item.description}</p>
         <div className="recommend-card-info">
-            <span>👀 {item.views} 💬 {item.comments}</span>
+            <div className="info-group">
+            <span><IoEyeOutline /> {item.views}</span>
+            <span><HiOutlineChatBubbleOvalLeft /> {item.comments}</span>            
+            </div>
             <span>{item.current} / {item.total}</span>
         </div>
     </div>
@@ -111,8 +115,8 @@ const HotTopicCard = ({ item, onBookmarkToggle }) => (
         <div className="hot-topic-card-title">{item.title}</div>
         <div className="hot-topic-card-desc">{item.description}</div>
         <div className="hot-topic-card-info">
-            <span>👀 {item.views}</span>
-            <span>💬 {item.comments}</span>
+            <span><IoEyeOutline /> {item.views}</span>
+            <span><HiOutlineChatBubbleOvalLeft /> {item.comments}</span>
         </div>
     </div>
 );
@@ -127,8 +131,8 @@ const MatchingCard = ({ item }) => (
             <div className="matching-card-title">{item.title}</div>
             <div className="matching-card-author">{item.author}</div>
             <div className="matching-card-info">
-                <span>👀 {item.views}</span>
-                <span>💬 {item.comments}</span>
+                <span><IoEyeOutline /> {item.views}</span>
+            <span><HiOutlineChatBubbleOvalLeft /> {item.comments}</span>
                 <span>{item.date}</span>
             </div>
         </div>
