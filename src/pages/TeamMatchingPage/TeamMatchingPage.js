@@ -3,6 +3,9 @@ import './TeamMatchingPage.scss';
 import BottomNav from "../../components/Common/BottomNav/BottomNav";
 import Header from "../../components/TeamMatching/Header/Header";
 import { CiBookmark } from "react-icons/ci"; 
+import { IoEyeOutline } from "react-icons/io5";
+import { HiOutlineChatBubbleOvalLeft } from "react-icons/hi2";
+import { FaPencilAlt } from "react-icons/fa";
 
 // --- 데이터 ---
 const recommendedProjectsData = [ // '오늘의 프로젝트 추천'을 위한 데이터
@@ -55,6 +58,7 @@ const keywordMatchingData = [
         title: '김혜현 교수님] 비주얼 마케터 디자인팀 프로젝트 인원 구합니다!',
         author: '얼리버드',
         views: 302,
+        comments: 36,
         date: '25.03.24',
         tags: ['마케팅', '디자인'],
     },
@@ -65,6 +69,7 @@ const keywordMatchingData = [
         title: '김건상 교수님] 기초 디자인 테크닉 (2) 함께 스케치 디벨로퍼 구합니다. 스터디 작업..',
         author: '시라소니',
         views: 214,
+        comments: 3,
         date: '25.03.27',
         tags: ['디자인', 'IT'],
     },
@@ -91,7 +96,10 @@ const RecommendCard = ({ item }) => (
         <h3 className="recommend-card-title">{item.title}</h3>
         <p className="recommend-card-desc">{item.description}</p>
         <div className="recommend-card-info">
-            <span>👀 {item.views} 💬 {item.comments}</span>
+            <div className="info-group">
+            <span><IoEyeOutline /> {item.views}</span>
+            <span><HiOutlineChatBubbleOvalLeft /> {item.comments}</span>            
+            </div>
             <span>{item.current} / {item.total}</span>
         </div>
     </div>
@@ -109,8 +117,8 @@ const HotTopicCard = ({ item, onBookmarkToggle }) => (
         <div className="hot-topic-card-title">{item.title}</div>
         <div className="hot-topic-card-desc">{item.description}</div>
         <div className="hot-topic-card-info">
-            <span>👀 {item.views}</span>
-            <span>💬 {item.comments}</span>
+            <span><IoEyeOutline /> {item.views}</span>
+            <span><HiOutlineChatBubbleOvalLeft /> {item.comments}</span>
         </div>
     </div>
 );
@@ -125,7 +133,8 @@ const MatchingCard = ({ item }) => (
             <div className="matching-card-title">{item.title}</div>
             <div className="matching-card-author">{item.author}</div>
             <div className="matching-card-info">
-                <span>👀 {item.views}</span>
+                <span><IoEyeOutline /> {item.views}</span>
+            <span><HiOutlineChatBubbleOvalLeft /> {item.comments}</span>
                 <span>{item.date}</span>
             </div>
         </div>
@@ -135,6 +144,7 @@ const MatchingCard = ({ item }) => (
 export default function TeamMatchingPage() {
     const [activeFilter, setActiveFilter] = useState('디자인');
     const [hotTopics, setHotTopics] = useState(initialHotTopics);
+    const [isFabMenuOpen, setIsFabMenuOpen] = useState(false);
 
     const handleBookmarkToggle = (id) => {
         setHotTopics(prevTopics =>
@@ -199,6 +209,17 @@ export default function TeamMatchingPage() {
             </main>
             
             <BottomNav />
+            <div className="fab-container">
+                {isFabMenuOpen && (
+                    <div className="fab-menu">
+                        <div className="fab-menu-item">모집 글 작성하기</div>
+                        <div className="fab-menu-item">임시 저장 불러오기</div>
+                    </div>
+                )}
+                <button className="fab-button" onClick={() => setIsFabMenuOpen(!isFabMenuOpen)}>
+                    <FaPencilAlt />
+                </button>
+            </div>
         </div>
     );
 }
