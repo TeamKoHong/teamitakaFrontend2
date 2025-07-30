@@ -55,6 +55,7 @@ const keywordMatchingData = [
         title: '김혜현 교수님] 비주얼 마케터 디자인팀 프로젝트 인원 구합니다!',
         author: '얼리버드',
         views: 302,
+        comments: 36,
         date: '25.03.24',
         tags: ['마케팅', '디자인'],
     },
@@ -65,6 +66,7 @@ const keywordMatchingData = [
         title: '김건상 교수님] 기초 디자인 테크닉 (2) 함께 스케치 디벨로퍼 구합니다. 스터디 작업..',
         author: '시라소니',
         views: 214,
+        comments: 3,
         date: '25.03.27',
         tags: ['디자인', 'IT'],
     },
@@ -126,6 +128,7 @@ const MatchingCard = ({ item }) => (
             <div className="matching-card-author">{item.author}</div>
             <div className="matching-card-info">
                 <span>👀 {item.views}</span>
+                <span>💬 {item.comments}</span>
                 <span>{item.date}</span>
             </div>
         </div>

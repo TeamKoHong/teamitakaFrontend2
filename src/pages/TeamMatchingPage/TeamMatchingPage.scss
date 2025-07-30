@@ -60,7 +60,7 @@
 // 오늘의 추천 카드 (배너용)
 .recommend-card {
     flex: 0 0 300px; // 카드 너비 고정
-    background: #4A90E2;
+    background: #5D80E5;
     color: white;
     padding: 20px;
     border-radius: 12px;
@@ -68,7 +68,7 @@
     padding-bottom: 0;
 
     .recommend-card-title {
-        font-size: 18px;
+        font-size: 20px;
         font-weight: 700;
         margin: 0 0 8px 0;
     }
@@ -103,12 +103,14 @@
         margin-bottom: 10px;
     }
     .tag {
-        padding: 5px 12px;
-        border-radius: 16px;
-        font-size: 12px;
-        font-weight: 500;
-        &.marketing { background-color: #FFFBE5; color: #D4A000; }
-        &.branding { background-color: #F0EFFF; color: #6D28D9; }
+        padding: 9px;
+    padding-bottom: 1px;
+    padding-top: 1px;
+    border-radius: 20px;
+    background-color: #FF6B00;
+    font-size: 11px;
+    color: #ffffff;
+
     }
     
     .bookmark-icon {
@@ -131,7 +133,7 @@
         text-overflow: ellipsis;
     }
     .hot-topic-card-desc {
-        font-size: 14px;
+        font-size: 10px;
         color: #666;
         margin-bottom: 12px;
         white-space: nowrap;
@@ -139,7 +141,7 @@
         text-overflow: ellipsis;
     }
     .hot-topic-card-info {
-        font-size: 13px;
+        font-size: 8px;
         color: #999;
         display: flex;
         gap: 12px;
@@ -149,15 +151,16 @@
 // 필터 태그
 .filter-tags {
     gap: 8px;
-    margin-bottom: 16px;
 }
 .filter-tag {
-    padding: 8px;
+    padding: 9px;
+    padding-bottom: 1px;
+    padding-top: 1px;
     border-radius: 20px;
     background-color: #fff;
-    border: 1px solid #e0e0e0;
+    border: 1px solid #403E3F;
     font-size: 14px;
-    color: #555;
+    color: #403E3F;
     cursor: pointer;
     transition: all 0.2s;
 
@@ -187,14 +190,13 @@
     box-shadow: 0 2px 8px rgba(0,0,0,0.05);
 
     .matching-card-thumbnail {
-        width: 90px;
-        height: 90px;
+
         flex-shrink: 0;
         position: relative;
 
         img {
-            width: 100%;
-            height: 100%;
+            width: 60px;
+            height: 60px;
             object-fit: cover;
             border-radius: 8px;
         }
@@ -205,33 +207,52 @@
         left: 0;
         background-color: #3B82F6;
         color: white;
-        padding: 4px 10px;
-        font-size: 12px;
+        padding: 4px;
+        font-size: 10px;
         font-weight: 700;
         border-radius: 8px 0 8px 0;
     }
     .matching-card-content {
         flex-grow: 1;
         min-width: 0;
+        display: grid;
+        grid-template-columns: 1fr auto;
+        grid-template-rows: auto auto;
+        grid-template-areas: 
+            "title title"
+            "author info";
+        align-items: center;
+        gap: 4px 0;
     }
     .matching-card-title {
-        font-size: 15px;
-        font-weight: 500;
-        margin-bottom: 4px;
-        white-space: nowrap;
+        grid-area: title;
+        font-size: 12px;
+        font-weight: 600;
+        
         overflow: hidden;
         text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 2; // 2줄까지 표시
+        line-clamp: 2; // 표준 속성 추가
+        -webkit-box-orient: vertical;
+        word-wrap: break-word;
+        line-height: 1.4em; // 줄 간격
+        height: 2.8em; // line-height * 2
     }
     .matching-card-author {
-        font-size: 13px;
+        grid-area: author;
+        font-size: 10px;
         color: #777;
-        margin-bottom: 8px;
+        font-weight: 600;
+
     }
     .matching-card-info {
+        grid-area: info;
         display: flex;
-        justify-content: space-between;
+        gap: 8px;
         align-items: center;
-        font-size: 13px;
+        font-size: 8px;
         color: #aaa;
     }
+
 }
