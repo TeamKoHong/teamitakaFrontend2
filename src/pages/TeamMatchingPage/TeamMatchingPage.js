@@ -5,6 +5,8 @@ import Header from "../../components/TeamMatching/Header/Header";
 import { CiBookmark } from "react-icons/ci"; 
 import { IoEyeOutline } from "react-icons/io5";
 import { HiOutlineChatBubbleOvalLeft } from "react-icons/hi2";
+import { FaPencilAlt } from "react-icons/fa";
+
 // --- 데이터 ---
 const recommendedProjectsData = [ // '오늘의 프로젝트 추천'을 위한 데이터
     {
@@ -142,6 +144,7 @@ const MatchingCard = ({ item }) => (
 export default function TeamMatchingPage() {
     const [activeFilter, setActiveFilter] = useState('디자인');
     const [hotTopics, setHotTopics] = useState(initialHotTopics);
+    const [isFabMenuOpen, setIsFabMenuOpen] = useState(false);
 
     const handleBookmarkToggle = (id) => {
         setHotTopics(prevTopics =>
@@ -206,6 +209,17 @@ export default function TeamMatchingPage() {
             </main>
             
             <BottomNav />
+            <div className="fab-container">
+                {isFabMenuOpen && (
+                    <div className="fab-menu">
+                        <div className="fab-menu-item">모집 글 작성하기</div>
+                        <div className="fab-menu-item">임시 저장 불러오기</div>
+                    </div>
+                )}
+                <button className="fab-button" onClick={() => setIsFabMenuOpen(!isFabMenuOpen)}>
+                    <FaPencilAlt />
+                </button>
+            </div>
         </div>
     );
 }
