@@ -1,5 +1,5 @@
 // src/pages/SearchPage/SearchPage.js
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CiSearch } from 'react-icons/ci';
 import './SearchPage.scss';
@@ -11,6 +11,7 @@ export default function SearchPage() {
   const [searchText, setSearchText] = useState('');
   const [tags, setTags] = useState(initialTags);
   const navigate = useNavigate();
+const inputRef = useRef(null);
 
   const handleTagRemove = (tagToRemove) => {
     setTags(prev => prev.filter(tag => tag !== tagToRemove));
@@ -32,8 +33,13 @@ export default function SearchPage() {
         <h1 className="header-title">검색</h1>
       </header>
 
-      <div className="search-box">
+      <div
+        className="search-box"
+        onClick={() => inputRef.current?.focus()}
+        style={{ cursor: 'text' }}
+      >
         <input
+         ref={inputRef}
           type="text"
           className="search-input"
           placeholder="검색어를 입력하세요"
@@ -41,7 +47,7 @@ export default function SearchPage() {
           onChange={(e) => setSearchText(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
         />
-        <button className="search-btn" onClick={handleSearch}>
+        <button className="search-btn">
           <CiSearch />
         </button>
       </div>
@@ -65,4 +71,4 @@ export default function SearchPage() {
         </div>
       </div>
     </div>
-)};
+)}

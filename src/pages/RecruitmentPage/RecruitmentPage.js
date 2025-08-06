@@ -1,15 +1,15 @@
 // src/pages/RecruitmentPage/RecruitmentPage.js
 import React, { useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { IoEyeOutline } from 'react-icons/io5';
 import { HiOutlineChatBubbleOvalLeft } from 'react-icons/hi2';
 import { AiOutlineArrowLeft } from 'react-icons/ai';
 import './RecruitmentPage.scss';
 import BottomNav from "../../components/Common/BottomNav/BottomNav";
-import { useNavigate } from 'react-router-dom';
 
 // --- 데이터 예시 ---
-const filterOptions = ['전체', '마케팅', '디자인', '브랜딩', 'IT', '서비스'];
-const recruitmentData = [
+export const filterOptions = ['전체', '마케팅', '디자인', '브랜딩', 'IT', '서비스'];
+export const recruitmentData = [
   {
     id: 'r1',
     category: '디자인',
@@ -20,6 +20,7 @@ const recruitmentData = [
     views: 302,
     comments: 79,
     date: '25.03.24',
+    tags: ['마케팅', '디자인'],
   },
   {
     id: 'r2',
@@ -31,6 +32,7 @@ const recruitmentData = [
     views: 214,
     comments: 93,
     date: '25.03.27',
+    tags: ['디자인', 'IT'],
   },
   {
     id: 'r3',
@@ -42,13 +44,16 @@ const recruitmentData = [
     views: 182,
     comments: 19,
     date: '25.03.12',
+    tags: ['기획', '서비스'],
   },
   // ... 기타 항목들
 ];
 
 export default function RecruitmentPage() {
-  const [activeFilter, setActiveFilter] = useState('전체');
   const navigate = useNavigate();
+  const location = useLocation();
+  const initialFilter = location.state?.filter || '전체';
+  const [activeFilter, setActiveFilter] = useState(initialFilter);
 
   const filtered = recruitmentData.filter(item =>
     activeFilter === '전체' ? true : item.category === activeFilter
@@ -58,10 +63,9 @@ export default function RecruitmentPage() {
     <div className="recruitment-page">
       <header className="recruitment-header">
         <button className="back-button" onClick={() => navigate(-1)}>
-          &lt;
+          <AiOutlineArrowLeft />
         </button>
         <h1 className="header-title">모집글</h1>
-        
       </header>
 
       <div className="filter-tags horizontal-scroll">
@@ -100,8 +104,7 @@ export default function RecruitmentPage() {
           </li>
         ))}
       </ul>
+
       <BottomNav />
-        
     </div>
-    
 )}
