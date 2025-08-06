@@ -4,6 +4,8 @@ import { IoEyeOutline } from 'react-icons/io5';
 import { HiOutlineChatBubbleOvalLeft } from 'react-icons/hi2';
 import { AiOutlineArrowLeft } from 'react-icons/ai';
 import './RecruitmentPage.scss';
+import BottomNav from "../../components/Common/BottomNav/BottomNav";
+import { useNavigate } from 'react-router-dom';
 
 // --- 데이터 예시 ---
 const filterOptions = ['전체', '마케팅', '디자인', '브랜딩', 'IT', '서비스'];
@@ -46,6 +48,7 @@ const recruitmentData = [
 
 export default function RecruitmentPage() {
   const [activeFilter, setActiveFilter] = useState('전체');
+  const navigate = useNavigate();
 
   const filtered = recruitmentData.filter(item =>
     activeFilter === '전체' ? true : item.category === activeFilter
@@ -54,10 +57,11 @@ export default function RecruitmentPage() {
   return (
     <div className="recruitment-page">
       <header className="recruitment-header">
-        <button className="back-button">
-          <AiOutlineArrowLeft />
+        <button className="back-button" onClick={() => navigate(-1)}>
+          &lt;
         </button>
         <h1 className="header-title">모집글</h1>
+        
       </header>
 
       <div className="filter-tags horizontal-scroll">
@@ -96,5 +100,8 @@ export default function RecruitmentPage() {
           </li>
         ))}
       </ul>
+      <BottomNav />
+        
     </div>
+    
 )}
