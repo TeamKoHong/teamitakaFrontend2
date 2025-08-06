@@ -6,6 +6,7 @@ import { CiBookmark } from "react-icons/ci";
 import { IoEyeOutline } from "react-icons/io5";
 import { HiOutlineChatBubbleOvalLeft } from "react-icons/hi2";
 import { FaPencilAlt } from "react-icons/fa";
+import { Link } from 'react-router-dom';
 
 // --- 데이터 ---
 const recommendedProjectsData = [ // '오늘의 프로젝트 추천'을 위한 데이터
@@ -187,7 +188,9 @@ export default function TeamMatchingPage() {
                 <section className="section">
                     <div className="section-header">
                         <h2 className="section-title">키워드 별 모집</h2>
-                        <span className="section-more">자세히보기 &gt;</span>
+                        <Link to="/recruitment" className="section-more">
+                        자세히보기 &gt;
+                        </Link>
                     </div>
                     <div className="horizontal-scroll-list filter-tags">
                         {filterOptions.map(filter => (

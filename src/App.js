@@ -18,6 +18,7 @@ import CategorySliderDemo from './components/Common/CategorySliderDemo';
 
 // 새로 추가된 팀 매칭 페이지 임포트
 import TeamMatchingPage from './pages/TeamMatchingPage/TeamMatchingPage'; // TeamMatchingPage 경로에 맞게 수정
+import RecruitmentPage from './pages/RecruitmentPage/RecruitmentPage';
 
 const App = () => {
   return (
@@ -46,6 +47,8 @@ const App = () => {
 
         {/* 새로 추가된 팀 매칭 페이지 라우트 */}
         <Route path="/team-matching" element={<TeamMatchingPage />} />
+        <Route path="/recruitment" element={<RecruitmentPage />} />
+
         {/* 기존 /team 경로를 팀 매칭 페이지로 리다이렉트 */}
         <Route path="/team" element={<Navigate to="/team-matching" replace />} />
 
