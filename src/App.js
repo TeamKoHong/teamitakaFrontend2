@@ -21,13 +21,24 @@ import TeamMatchingPage from './pages/TeamMatchingPage/TeamMatchingPage'; // Tea
 import RecruitmentPage from './pages/RecruitmentPage/RecruitmentPage';
 import SearchPage from './pages/SearchPage/SearchPage';
 
+// 메인 페이지 임포트
+import MainPage from './components/Home/MainPage';
+
+
 const App = () => {
   return (
     <Router>
       <Routes>
-        {/* 기본 경로를 프로젝트 관리 페이지로 설정 */}
+        {/* 기본 경로를 프로젝트 관리 페이지로 설정 
         <Route path="/" element={<Navigate to="/project-management" replace />} />
         <Route path="/main" element={<Navigate to="/project-management" replace />} />
+        <Route path="/my" element={<Navigate to="/project-management" replace />} />*/}
+
+        {/*메인 홈 페이지 라우트*/}
+        <Route path="/" element={<MainPage />} />
+        <Route path="/main" element={<MainPage />} />
+
+        {/* 기본 경로를 프로젝트 관리 페이지로 설정 */}
         <Route path="/my" element={<Navigate to="/project-management" replace />} />
 
         {/* 기존 프로젝트 관리 및 상세 페이지 라우트 */}
