@@ -19,6 +19,9 @@
     "react-router-dom": "^7.6.1",
     "react-scripts": "5.0.1",
     "react-spring-bottom-sheet": "^3.4.1",
+
+    "sass": "^1.90.0"
+
     "swiper": "^11.2.6"
   },
   "eslintConfig": {
