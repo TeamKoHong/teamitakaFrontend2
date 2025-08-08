@@ -1,0 +1,101 @@
+// src/pages/SearchPage/SearchPage.scss
+.search-page {
+  display: flex;
+  flex-direction: column;
+  padding: 0 16px;
+  background: #fff;
+}
+
+.search-header {
+  display: flex;
+  align-items: center;
+  height: 56px;
+  border-bottom: 1px solid #e6e6e6;
+
+  .back-button {
+    background: none;
+    border: none;
+    font-size: 24px;
+    margin-right: 12px;
+    cursor: pointer;
+  }
+  .header-title {
+    font-size: 18px;
+    font-weight: 500;
+  }
+}
+
+.search-box {
+  display: flex;
+  align-items: center;
+  margin: 16px 0;
+
+  .search-input {
+    flex: 1;
+    height: 40px;
+    padding: 0 12px;
+    border: 1px solid #ccc;
+    border-radius: 20px 0 0 20px;
+    font-size: 14px;
+    outline: none;
+  }
+  .search-btn {
+    width: 40px;
+    height: 40px;
+    border: 1px solid #ccc;
+    border-left: none;
+    border-radius: 0 20px 20px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    background: #f8f8f8;
+  }
+}
+
+.tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 24px;
+
+  .tag-item {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 12px;
+    background: #f0f0f0;
+    border-radius: 16px;
+    font-size: 14px;
+
+    button {
+      background: none;
+      border: none;
+      margin-left: 4px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+  }
+}
+
+.popular-section {
+  .section-title {
+    font-size: 16px;
+    font-weight: 500;
+    margin-bottom: 12px;
+  }
+
+  .popular-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+
+    .popular-tag {
+      padding: 8px 16px;
+      background: #f8f8f8;
+      border: none;
+      border-radius: 16px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+  }
+}
