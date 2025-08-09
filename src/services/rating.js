@@ -82,12 +82,26 @@ export async function fetchProjectStatus(projectId) {
     myRatingStatus: "PENDING",
     status: "평가 완료",
     averageRating: 4.2,
+    period: "2024-03-01 ~ 2024-06-30",
+    meetingTime: "매주 수 19:00",
+    avatars: [],
+    dday: { value: 47, percent: 75 },
+    resultLink: "any_link.com",
     totalMembers: 5,
     completedRatings: 3,
     categories: [
       { name: "협업 능력", average: 4.5 },
       { name: "문제 해결 능력", average: 4.0 },
       { name: "소통 능력", average: 4.1 },
+    ],
+    summary: {
+      good: ["업무 능력이 뛰어나요.", "열정이 넘치는 팀원이에요."],
+      improve: ["의사 소통이 원활하면 좋겠어요.", "열심히 성장하는 모습이 필요해요."],
+    },
+    roles: [
+      "구체적인 역할은 어쩌구어쩌구 입니다.",
+      "구체적인 역할은 어쩌구어쩌구 입니다.",
+      "추가 역할 설명 예시입니다.",
     ],
     individualReviews: [
       {

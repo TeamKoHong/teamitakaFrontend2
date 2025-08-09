@@ -18,12 +18,22 @@ const CompletedComponent = () => {
       name: "연합동아리 부스전 기획 프로젝트",
       description: "서울 디자인 전시 부스를 위한 기획 프로젝트",
       myRatingStatus: "COMPLETED",
+      period: "2024-03-01 ~ 2024-06-30",
+      meetingTime: "매주 수 19:00",
+      avatars: [avatar1, avatar2],
+      dday: { value: 47, percent: 75 },
+      resultLink: "any_link.com",
     },
     {
       id: 6,
       name: "예비 졸업전시 부스 준비 위원 프로젝트",
       description: "졸업 전시를 위한 예비 프로젝트로서 전시를 기획하고 운영하는 ...",
       myRatingStatus: "PENDING",
+      period: "2024-05-01 ~ 2024-11-15",
+      meetingTime: "매주 토 14:00",
+      avatars: [avatar3, avatar4],
+      dday: { value: 30, percent: 50 },
+      resultLink: "",
     },
   ];
 
@@ -35,13 +45,19 @@ const CompletedComponent = () => {
   */
 
   // 완료 프로젝트 아이템 클릭 시 상태에 따라 라우팅
-  const handleCompletedItemClick = (projectId, myRatingStatus) => {
+  const handleCompletedItemClick = (project, myRatingStatus) => {
     if (myRatingStatus === 'PENDING') {
-      navigate(`/project/${projectId}/rating-project`);
+      navigate(`/project/${project.id}/rating-project`, {
+        state: { projectSummary: project },
+      });
     } else if (myRatingStatus === 'COMPLETED' || myRatingStatus === 'VIEW_ONLY') {
-      navigate(`/project/${projectId}/rating-status/received`);
+      navigate(`/project/${project.id}/rating-status/received`, {
+        state: { projectSummary: project },
+      });
     } else {
-      navigate(`/project/${projectId}/rating-project`);
+      navigate(`/project/${project.id}/rating-project`, {
+        state: { projectSummary: project },
+      });
     }
   };
 
@@ -122,11 +138,11 @@ const CompletedComponent = () => {
               role="button"
               tabIndex={0}
               className="completed-item"
-              onClick={() => handleCompletedItemClick(proj.id, proj.myRatingStatus)}
+              onClick={() => handleCompletedItemClick(proj, proj.myRatingStatus)}
               onKeyDown={(e) => {
                 if (e.key === 'Enter' || e.key === ' ') {
                   e.preventDefault();
-                  handleCompletedItemClick(proj.id, proj.myRatingStatus);
+                  handleCompletedItemClick(proj, proj.myRatingStatus);
                 }
               }}
             >
