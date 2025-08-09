@@ -6,7 +6,7 @@ import Tab from "../Tab/Tab";
 
 function Header({ onTabChange }) {
   return (
-    <header className="header">
+    <header className="pm-header">
       <div className="header-first">
         <div className="header-left">
           <h1 className="title">내 프로젝트 관리</h1>
