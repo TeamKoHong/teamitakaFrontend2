@@ -11,10 +11,37 @@ import { useNavigate } from 'react-router-dom';
 const CompletedComponent = () => {
   const navigate = useNavigate();
 
+  // 완료된 프로젝트 더미 데이터 (추후 서비스 연동으로 대체)
+  const completedProjects = [
+    {
+      id: 2,
+      name: "연합동아리 부스전 기획 프로젝트",
+      description: "서울 디자인 전시 부스를 위한 기획 프로젝트",
+      myRatingStatus: "COMPLETED",
+    },
+    {
+      id: 6,
+      name: "예비 졸업전시 부스 준비 위원 프로젝트",
+      description: "졸업 전시를 위한 예비 프로젝트로서 전시를 기획하고 운영하는 ...",
+      myRatingStatus: "PENDING",
+    },
+  ];
+
   // '내 별점 관리' 클릭 시 호출될 함수
   const handleNavigateToRatingManagement = () => {
     navigate('/project/rating-management'); // RatingManagementPage 경로로 이동
   }
+
+  // 완료 프로젝트 아이템 클릭 시 상태에 따라 라우팅
+  const handleCompletedItemClick = (projectId, myRatingStatus) => {
+    if (myRatingStatus === 'PENDING') {
+      navigate(`/project/${projectId}/rating-project`);
+    } else if (myRatingStatus === 'COMPLETED' || myRatingStatus === 'VIEW_ONLY') {
+      navigate(`/project/${projectId}/rating-status/received`);
+    } else {
+      navigate(`/project/${projectId}/rating-project`);
+    }
+  };
 
   return (
     <div className="completed-container">
@@ -87,24 +114,27 @@ const CompletedComponent = () => {
         </div>
 
         <div className="completed-list">
-          <div className="completed-item">
-            <div className="completed-item-left">
-              <h3>연합동아리 부스전 기획 프로젝트</h3>
-              <p className="description">
-                서울 디자인 전시 부스를 위한 기획 프로젝트
-              </p>
+          {completedProjects.map((proj) => (
+            <div
+              key={proj.id}
+              role="button"
+              tabIndex={0}
+              className="completed-item"
+              onClick={() => handleCompletedItemClick(proj.id, proj.myRatingStatus)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  handleCompletedItemClick(proj.id, proj.myRatingStatus);
+                }
+              }}
+            >
+              <div className="completed-item-left">
+                <h3>{proj.name}</h3>
+                <p className="description">{proj.description}</p>
+              </div>
+              <FaStar className="favorite-icon" />
             </div>
-            <FaStar className="favorite-icon" />
-          </div>
-          <div className="completed-item">
-            <div className="completed-item-left">
-              <h3>예비 졸업전시 부스 준비 위원 프로젝트 </h3>
-              <p className="description">
-                졸업 전시를 위한 예비 프로젝트로서 전시를 기획하고 운영하는 ...
-              </p>
-            </div>
-            <FaStar className="favorite-icon" />
-          </div>
+          ))}
         </div>
       </div>
     </div>
