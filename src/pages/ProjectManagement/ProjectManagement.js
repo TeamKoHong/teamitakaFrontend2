@@ -5,7 +5,6 @@ import BottomNav from "../../components/Common/BottomNav/BottomNav";
 import ProgressComponent from "../../components/ProjectManagement/ProgressComponent/ProgressComponent";
 import RecruitingComponent from "../../components/ProjectManagement/RecruitingComponent/RecruitingComponent";
 import CompletedComponent from "../../components/ProjectManagement/CompletedComponent/CompletedComponent";
-import NoRecruitingComponent from "../../components/ProjectManagement/RecruitingComponent/NoRecruitingComponent";
 function ProjectManagement() {
   const [tabIndex, setTabIndex] = useState(0); // 0: 진행 중, 1: 모집중, 2: 완료된
 
