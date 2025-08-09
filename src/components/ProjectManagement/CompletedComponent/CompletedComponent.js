@@ -27,10 +27,12 @@ const CompletedComponent = () => {
     },
   ];
 
+  /*
   // '내 별점 관리' 클릭 시 호출될 함수
   const handleNavigateToRatingManagement = () => {
     navigate('/project/rating-management'); // RatingManagementPage 경로로 이동
   }
+  */
 
   // 완료 프로젝트 아이템 클릭 시 상태에 따라 라우팅
   const handleCompletedItemClick = (projectId, myRatingStatus) => {
@@ -107,10 +109,10 @@ const CompletedComponent = () => {
       <div className="completed-section">
         <div className="completed-header">
           <h4 className="completed-section-title">완료 프로젝트</h4>
-          <p
+          {/*<p
             className="my-star-button"
             onClick={handleNavigateToRatingManagement} // 클릭 이벤트 추가
-          >내 별점 관리</p>
+          >내 별점 관리</p>*/}
         </div>
 
         <div className="completed-list">
