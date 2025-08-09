@@ -7,6 +7,8 @@ import ProjectInfoCard from '../../components/RatingProjectPage/ProjectInfoCard'
 import CategoryRatingRow from '../../components/RatingProjectPage/CategoryRatingRow';
 import RatingSummaryCard from '../../components/RatingManagement/RatingSummaryCard/RatingSummaryCard';
 import ProjectSummaryCard from '../../components/RatingProjectPage/ProjectSummaryCard';
+import ProjectResultCard from '../../components/RatingProjectPage/ProjectResultCard';
+import RatingInputStars from '../../components/RatingManagement/RatingInputStars/RatingInputStars';
 
 function RatingProjectStatusPage() {
   const { projectId } = useParams();
@@ -47,6 +49,16 @@ function RatingProjectStatusPage() {
     return <div className={styles.noData}>평가 현황 데이터를 찾을 수 없습니다.</div>;
   }
 
+  const projectSummary = location.state && location.state.projectSummary ? location.state.projectSummary : null;
+  const meta = {
+    name: projectSummary?.name ?? projectStatus.name,
+    period: projectSummary?.period ?? projectStatus.period ?? '기간 정보 없음',
+    meetingTime: projectSummary?.meetingTime ?? projectStatus.meetingTime ?? '미팅 정보 없음',
+    avatars: projectSummary?.avatars ?? projectStatus.avatars ?? [],
+    dday: projectSummary?.dday ?? projectStatus.dday ?? { value: 0, percent: 0 },
+    resultLink: projectSummary?.resultLink ?? projectStatus.resultLink ?? '',
+  };
+
   return (
     <div className={styles.container}>
       <DefaultHeader title="평가 현황" />
@@ -75,13 +87,31 @@ function RatingProjectStatusPage() {
             {/* 프로젝트 정보 카드 (상단) */}
             <div style={{ marginBottom: 24 }}>
               <ProjectInfoCard
-                name={projectStatus.name}
-                period={projectStatus.period || '기간 정보 없음'}
-                meetingTime={projectStatus.meetingTime || '미팅 정보 없음'}
-                avatars={projectStatus.avatars || []}
-                dday={projectStatus.dday || { value: 0, percent: 0 }}
+                name={meta.name}
+                period={meta.period}
+                meetingTime={meta.meetingTime}
+                avatars={meta.avatars}
+                dday={meta.dday}
                 id={projectStatus.id}
               />
+            </div>
+
+            {/* 프로젝트 결과물 */}
+            {meta.resultLink && (
+              <div className={styles.sectionCard + ' ' + styles.card}>
+                <ProjectResultCard resultLink={meta.resultLink} />
+              </div>
+            )}
+
+            {/* 내가 받은 별점 */}
+            <div className={styles.sectionCard + ' ' + styles.card}>
+              <h2 className={styles.sectionTitle}>내가 받은 별점</h2>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                <RatingInputStars initialRating={projectStatus.averageRating ?? 0} maxStars={5} readOnly />
+                <span style={{ color: '#f76241', fontWeight: 700 }}>
+                  {(projectStatus.averageRating ?? 0).toFixed(1)}
+                </span>
+              </div>
             </div>
             {/* 카테고리별 평균/총점 카드: 재사용 컴포넌트로 대체 */}
             <div className={styles.sectionCard + ' ' + styles.card + ' ' + styles.categorySummaryCard}>
@@ -128,6 +158,33 @@ function RatingProjectStatusPage() {
                 ))}
               </div>
             </div>
+
+            {/* 한 줄 요약 */}
+            {(projectStatus.summary?.good?.length || projectStatus.summary?.improve?.length) && (
+              <div className={styles.sectionCard + ' ' + styles.card}>
+                <h2 className={styles.sectionTitle}>한 줄 요약</h2>
+                <ProjectSummaryCard
+                  good={projectStatus.summary?.good ?? []}
+                  improve={projectStatus.summary?.improve ?? []}
+                />
+              </div>
+            )}
+
+            {/* 팀원 평가지 - 역할 */}
+            {(projectStatus.roles?.length) && (
+              <div className={styles.sectionCard + ' ' + styles.card}>
+                <h2 className={styles.sectionTitle}>팀원 평가지</h2>
+                <div className={styles.sectionSubTitle}>업무 분담 및 구체적인 역할은 무엇이었나요?</div>
+                {(projectStatus.roles ?? []).slice(0, showAllRoles ? undefined : 2).map((role, idx) => (
+                  <div className={styles.roleCard} key={idx}>{role}</div>
+                ))}
+                {(projectStatus.roles?.length ?? 0) > 2 && (
+                  <button className={styles.showMoreBtn} onClick={() => setShowAllRoles(v => !v)}>
+                    {showAllRoles ? '상세 내용 접기 ▲' : '상세 내용 더보기 ▼'}
+                  </button>
+                )}
+              </div>
+            )}
           </div>
         )}
         {/* 내가 한 평가 탭 분기 */}
