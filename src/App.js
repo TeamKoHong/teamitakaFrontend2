@@ -15,7 +15,9 @@ import RatingProjectPage from './pages/RatingProjectPage/RatingProjectPage';
 import RatingProjectStatusPage from './pages/RatingProjectStatusPage/RatingProjectStatusPage';
 import TeamMemberEvaluationPage from './pages/TeamMemberEvaluationPage/TeamMemberEvaluationPage';
 import CategorySliderDemo from './components/Common/CategorySliderDemo';
-
+import OnboardingPage from './pages/OnboardingPage/OnboardingPage';
+import LoginPage from './pages/LoginPage/LoginPage';
+import RegisterPage from './pages/RegisterPage/RegisterPage';
 // 새로 추가된 팀 매칭 페이지 임포트
 import TeamMatchingPage from './pages/TeamMatchingPage/TeamMatchingPage'; // TeamMatchingPage 경로에 맞게 수정
 import RecruitmentPage from './pages/RecruitmentPage/RecruitmentPage';
@@ -35,9 +37,10 @@ const App = () => {
         <Route path="/my" element={<Navigate to="/project-management" replace />} />*/}
 
         {/*메인 홈 페이지 라우트*/}
-        <Route path="/" element={<MainPage />} />
+        <Route path="/" element={<OnboardingPage />} />
         <Route path="/main" element={<MainPage />} />
-
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
         {/* 기본 경로를 프로젝트 관리 페이지로 설정 */}
         <Route path="/my" element={<Navigate to="/project-management" replace />} />
 
