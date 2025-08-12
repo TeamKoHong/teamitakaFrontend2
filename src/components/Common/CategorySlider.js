@@ -17,6 +17,10 @@ const CategorySlider = ({
   const startXRef = useRef(0);
   const startYRef = useRef(0);
   const thresholdExceededRef = useRef(false);
+  const downOnThumbRef = useRef(false);
+
+  const DRAG_THRESHOLD_PX = 12;
+  const DIRECTION_RATIO = 1.2; // horizontal must be 20% larger than vertical
   const sliderRef = useRef(null);
   const thumbRef = useRef(null);
 
@@ -48,6 +52,7 @@ const CategorySlider = ({
     document.removeEventListener('pointerup', handlePointerUp);
     pointerIdRef.current = null;
     thresholdExceededRef.current = false;
+    downOnThumbRef.current = false;
     setIsDragging(false);
     setIsPressed(false);
   }, []);
@@ -57,14 +62,20 @@ const CategorySlider = ({
     if (pointerIdRef.current == null || e.pointerId !== pointerIdRef.current) return;
 
     // Threshold 판단 전에는 스크롤을 우선시
+    if (!downOnThumbRef.current) return; // 트랙에서 드래그 금지
+
     if (!thresholdExceededRef.current) {
       const dx = Math.abs(e.clientX - startXRef.current);
       const dy = Math.abs(e.clientY - startYRef.current);
-      if (dx > 8 && dx > dy) {
+      const horizontalLock = dx >= DRAG_THRESHOLD_PX && dx > dy * DIRECTION_RATIO;
+      const verticalLock = dy >= DRAG_THRESHOLD_PX && dy > dx * DIRECTION_RATIO;
+      if (horizontalLock) {
         thresholdExceededRef.current = true;
         setIsDragging(true);
+      } else if (verticalLock) {
+        // 스크롤 우선: 아무것도 하지 않음
+        return;
       } else {
-        // 수직 스크롤이거나 임계 미만이면 값 업데이트 금지
         return;
       }
     }
@@ -75,12 +86,20 @@ const CategorySlider = ({
 
   const handlePointerUp = useCallback((e) => {
     if (pointerIdRef.current == null || e.pointerId !== pointerIdRef.current) return;
+    // 트랙 탭: 드래그 확정되지 않았고, 시작이 썸이 아니면 탭으로 간주하여 점프
+    if (!thresholdExceededRef.current && !downOnThumbRef.current) {
+      const newValue = getValueFromPosition(e.clientX);
+      onChange(newValue);
+    }
     cleanupPointer();
-  }, [cleanupPointer]);
+  }, [cleanupPointer, getValueFromPosition, onChange]);
 
   const handlePointerDown = useCallback((e) => {
     if (disabled) return;
-    setIsPressed(true);
+    // 썸에서 시작했는지 판별
+    const path = e.composedPath ? e.composedPath() : [];
+    downOnThumbRef.current = path.includes(thumbRef.current) || e.target === thumbRef.current;
+    setIsPressed(downOnThumbRef.current);
     pointerIdRef.current = e.pointerId;
     startXRef.current = e.clientX;
     startYRef.current = e.clientY;
