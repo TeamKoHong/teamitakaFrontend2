@@ -1,17 +1,12 @@
 .tab-container {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  width: 100%;
-  min-width: 100%;
+  grid-template-columns: repeat(3, 130px);
+  width: 390px; // fixed device width requirement
   box-sizing: border-box;
   background-color: #fff;
   position: relative;
   padding-bottom: 0; // ensure indicator sits on bottom edge
-  // full-bleed to counter parent horizontal padding (1rem ≈ 16px)
-  margin-left: -22px;
-  margin-right: -22px;
-  width: calc(100% + 44px);
-  grid-auto-columns: 1fr;
+  margin: 0 auto; // center within parent
 }
 
 // full-width base track
@@ -49,7 +44,7 @@
 .indicator {
   position: absolute;
   bottom: 0;
-  width: calc(100% / 3);
+  width: 130px; // one column width
   height: 2px;
   background: #140805;
   transition: left 200ms ease;
