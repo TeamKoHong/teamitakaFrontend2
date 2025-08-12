@@ -6,9 +6,9 @@
   position: relative;
   padding-bottom: 0; // ensure indicator sits on bottom edge
   // full-bleed to counter parent horizontal padding (1rem ≈ 16px)
-  margin-left: -1rem;
-  margin-right: -1rem;
-  width: calc(100% + 2rem);
+  margin-left: -22px;
+  margin-right: -22px;
+  width: calc(100% + 44px);
 }
 
 // full-width base track
