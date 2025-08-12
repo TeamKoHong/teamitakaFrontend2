@@ -1,28 +1,26 @@
-.pm-header {
+.teamheader {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  align-items: stretch; // ensure children stretch full width
-  height: 160px;
+  height: 80px;
   width: 100%;
   box-sizing: border-box;
 
-  background-color: #fff;
 
   .header-first {
-    padding: 31px 22px;
+    padding: 31px 1rem;
     display: flex;
     justify-content: space-between;
 
     .header-right {
       display: flex;
 
-      .icon-mark {
+      .icon-search {
         width: 1.5rem;
         height: 1.5rem;
       }
 
-      .icon-day {
+      .icon-bell {
         width: 1.5rem;
         height: 1.5rem;
         cursor: pointer;
@@ -35,14 +33,5 @@
     font-size: 1.75rem; // 16px -> 1rem
     font-weight: 600;
     color: #f76241;
-  }
-
-  // allow full-bleed tab in second row
-  .header-second {
-    display: block;
-    width: 100%;
-    flex: 0 0 auto;
-    padding-left: 0;
-    padding-right: 0;
   }
 }
