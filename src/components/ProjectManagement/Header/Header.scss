@@ -2,6 +2,7 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  align-items: stretch; // ensure children stretch full width
   height: 160px;
   width: 100%;
   box-sizing: border-box;
@@ -38,6 +39,9 @@
 
   // allow full-bleed tab in second row
   .header-second {
+    display: block;
+    width: 100%;
+    flex: 0 0 auto;
     padding-left: 0;
     padding-right: 0;
   }
