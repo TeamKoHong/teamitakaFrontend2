@@ -7,8 +7,8 @@ const EvaluationStep1 = ({
   projectData,
   memberData,
   evaluationData,
-  onNext,
-  onCategoryRatingChange
+  onCategoryRatingChange,
+  onSubmit
 }) => {
   const categories = [
     {
