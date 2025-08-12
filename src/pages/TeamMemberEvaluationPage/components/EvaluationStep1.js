@@ -29,12 +29,12 @@ const EvaluationStep1 = ({
     {
       key: 'collaboration',
       name: '협력',
-      description: '해당 팀원의 팀워크와 협력 능력을 점수로 평가해주세요'
+      description: '해당 팀원의 프로젝트 내에서 보인 협동심을 점수로 평가해주세요'
     },
     {
       key: 'individualAbility',
       name: '개인능력',
-      description: '해당 팀원의 개인적인 업무 능력을 점수로 평가해주세요'
+      description: '해당 팀원의 프로젝트 수행 능력을 점수로 평가해주세요'
     }
   ];
 
@@ -89,7 +89,7 @@ const EvaluationStep1 = ({
 
       {/* 질문 */}
       <div className={styles.questionText}>
-        해당 팀원의 능력 별 점수는 몇 점인가요?
+        해당 팀원의 능력별 점수는 몇 점인가요?
       </div>
 
       {/* 카테고리별 평가 섹션 */}
