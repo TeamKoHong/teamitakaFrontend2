@@ -215,7 +215,7 @@ function TeamMemberEvaluationPage() {
       <div className={styles.content}>
         {renderCurrentStep()}
       </div>
-      {null}
+      <BottomNav />
     </div>
   );
 }
