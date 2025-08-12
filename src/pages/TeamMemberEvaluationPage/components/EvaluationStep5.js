@@ -6,7 +6,7 @@ const EvaluationStep5 = () => {
   return (
     <div className={styles.stepContainer}>
       {/* 진행 표시기 */}
-      <ProgressIndicator currentStep={5} totalSteps={5} />
+  <ProgressIndicator currentStep={3} totalSteps={3} />
       
       {/* 전송 완료 섹션 */}
       <div className={styles.successSection}>
