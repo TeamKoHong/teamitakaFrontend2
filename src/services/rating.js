@@ -146,3 +146,26 @@ export async function fetchProjectStatus(projectId) {
   await new Promise(res => setTimeout(res, 300));
   return dummyStatus;
 } 
+
+// Step A: Provide mock evaluation targets and helper to pick next pending member
+/**
+ * Returns evaluation targets for a project with completion status.
+ * In production, replace with API call: GET /projects/:id/evaluation-targets
+ */
+export async function fetchEvaluationTargets(projectId) {
+  const pid = Number(projectId);
+  // Mock targets: two members, first pending, second completed (adjust per pid)
+  const targets = [
+    { id: 101, name: '김재원', status: 'pending' },
+    { id: 102, name: '이영희', status: 'completed' },
+  ];
+  return { projectId: pid, targets };
+}
+
+/**
+ * Compute next pending memberId from targets list
+ */
+export function getNextPendingMemberId(targets) {
+  const next = (targets || []).find(t => t.status !== 'completed');
+  return next ? next.id : null;
+}
