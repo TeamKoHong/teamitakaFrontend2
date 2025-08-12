@@ -4,13 +4,12 @@ import styles from './TeamMemberEvaluationPage.module.scss';
 import DefaultHeader from '../../components/Common/DefaultHeader';
 import BottomNav from '../../components/Common/BottomNav/BottomNav';
 import EvaluationStep1 from './components/EvaluationStep1';
-import EvaluationStep2 from './components/EvaluationStep2';
 import EvaluationStep5 from './components/EvaluationStep5';
 
 function TeamMemberEvaluationPage() {
   const { projectId, memberId } = useParams();
   const navigate = useNavigate();
-  const [currentStep, setCurrentStep] = useState(1); // 1: 전체총점/서술형, 2: 카테고리 점수, 3: 완료
+  const [currentStep, setCurrentStep] = useState(1); // 1: 카테고리 점수, 2: 완료
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [projectData, setProjectData] = useState(null);
@@ -78,7 +77,7 @@ function TeamMemberEvaluationPage() {
   }, [projectId, memberId]);
 
   const handleNextStep = () => {
-    if (currentStep < 3) {
+    if (currentStep < 2) {
       setCurrentStep(currentStep + 1);
     }
   };
@@ -131,7 +130,7 @@ function TeamMemberEvaluationPage() {
     try {
       // 실제 API 호출로 대체 예정
       console.log('평가 데이터 제출:', evaluationData);
-      handleNextStep();
+      setCurrentStep(2);
     } catch (err) {
       setError('평가 제출에 실패했습니다.');
     }
@@ -141,8 +140,7 @@ function TeamMemberEvaluationPage() {
     try {
       // 실제 API 호출로 대체 예정
       console.log('평가 완료:', evaluationData);
-      // 완료 화면으로 전환
-      setCurrentStep(3);
+      // 완료 화면(2단계)이므로 그대로 유지
       // 잠시 후 평가 관리 페이지로 이동
       setTimeout(() => {
         navigate(`/project/${projectId}/rating-project`);
@@ -182,29 +180,20 @@ function TeamMemberEvaluationPage() {
 
     switch (currentStep) {
       case 1:
-        // Step 1: 전체 총점 + 서술형/키워드 입력 화면
-        return (
-          <EvaluationStep2
-            {...commonProps}
-            // 첫 단계에서는 실제 전송이 아닌 다음 단계로 이동만 수행
-            onSubmit={() => setCurrentStep(2)}
-          />
-        );
-      case 2:
-        // Step 2: 카테고리 점수 입력 → 제출 후 완료로 이동
+        // Step 1: 카테고리 점수 입력 → 제출 시 완료로 이동
         return (
           <EvaluationStep1
             {...commonProps}
-            onNext={handleSubmitEvaluation}
+            onSubmit={handleSubmitEvaluation}
           />
         );
-      case 3:
+      case 2:
         return <EvaluationStep5 />;
       default:
         return (
-          <EvaluationStep2
+          <EvaluationStep1
             {...commonProps}
-            onSubmit={() => setCurrentStep(2)}
+            onSubmit={handleSubmitEvaluation}
           />
         );
     }
