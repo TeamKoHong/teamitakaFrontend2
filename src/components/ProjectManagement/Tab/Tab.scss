@@ -3,7 +3,17 @@
   grid-template-columns: repeat(3, 1fr);
   width: 100%;
   background-color: #fff;
-  border-bottom: 1px solid #e0e0e0;
+  position: relative;
+  padding-bottom: 0; // ensure indicator sits on bottom edge
+}
+
+// full-width base track
+.tab-container::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: 1px;
+  background: #e0e0e0;
 }
 
 .tab-item {
@@ -22,5 +32,14 @@
 .tab-item.active {
   color: #140805;
   font-weight: 700;
-  border-bottom: 3px solid #140805;
+}
+
+// moving indicator
+.indicator {
+  position: absolute;
+  bottom: 0;
+  width: calc(100% / 3);
+  height: 3px;
+  background: #140805;
+  transition: left 200ms ease;
 }

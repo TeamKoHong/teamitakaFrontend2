@@ -13,16 +13,24 @@ function Tab({ onTabChange, activeTabIndex = 0 }) {
   };
 
   return (
-    <div className="tab-container">
+    <div className="tab-container" role="tablist" aria-label="프로젝트 상태 탭">
       {tabsName.map((tab, index) => (
         <button
           key={tab}
+          role="tab"
+          aria-selected={activeTab === index}
           className={`tab-item ${activeTab === index ? "active" : ""}`}
           onClick={() => handleTabClick(index)}
         >
           {tab}
         </button>
       ))}
+      {/* 3분할 인디케이터 바 */}
+      <span
+        className="indicator"
+        aria-hidden="true"
+        style={{ left: `calc((100% / 3) * ${activeTab})` }}
+      />
     </div>
   );
 }
