@@ -23,7 +23,7 @@
 // 콘텐츠 영역
 .content {
   flex: 1;
-  padding: 20px 16px 96px 16px;
+  padding: 20px 16px 120px 16px; // 하단 CTA 여유
   overflow-y: auto;
   max-width: 480px;
   margin: 0 auto;
@@ -589,6 +589,9 @@
   margin-top: 24px;
   display: flex;
   gap: 12px;
+  position: sticky;
+  bottom: 24px;
+  z-index: 10;
   
   .button {
     flex: 1;
