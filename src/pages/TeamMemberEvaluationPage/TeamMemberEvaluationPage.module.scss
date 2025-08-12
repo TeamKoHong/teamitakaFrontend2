@@ -295,6 +295,7 @@
 // 전체 평가 섹션
 .overallRatingSection {
   @extend .card;
+  border-radius: 20px;
   
   .overallLabel {
     font-size: $font-size-lg;
