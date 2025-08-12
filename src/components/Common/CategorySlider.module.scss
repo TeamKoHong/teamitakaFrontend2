@@ -19,7 +19,7 @@
 }
 
 .categoryHeader {
-  margin-bottom: 16px;
+  margin-bottom: 12px; // 시안 간격에 맞춤
   width: 100%;
   
   .categoryName {
@@ -33,6 +33,7 @@
     font-size: 12px;
     color: $gray;
     line-height: 1.4;
+    letter-spacing: -0.2px;
   }
 }
 

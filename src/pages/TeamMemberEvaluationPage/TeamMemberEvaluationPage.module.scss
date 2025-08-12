@@ -200,7 +200,7 @@
 .categorySection {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 12px; // 카드 간격 소폭 축소
 }
 
 // 슬라이더 컨테이너
@@ -609,18 +609,18 @@
 .progressIndicator {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 12px;
-  margin: 16px 0;
+  justify-content: flex-start; // 좌측 정렬로 시안에 맞춤
+  gap: 10px;
+  margin: 8px 0 12px;
   
   .progressStep {
-    width: 24px;
-    height: 24px;
+    width: 20px;
+    height: 20px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 12px;
+    font-size: 11px;
     font-weight: $font-weight-bold;
     background: $gray-light;
     color: $gray-dark;
@@ -643,7 +643,7 @@
   }
   
   .progressLine {
-    width: 24px;
+    width: 16px;
     height: 2px;
     background: $gray-light;
     transition: background 0.3s ease;
