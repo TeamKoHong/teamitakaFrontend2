@@ -15,14 +15,15 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  background: #f5f5f5;
-  color: #444;
+  background: #f3f4f6;
+  color: #222;
   box-shadow: 0 1px 4px rgba(0,0,0,0.04);
   margin: 0 !important;
 }
+.goodCard { background: #ECECEC; }
 .improveCard {
   background: #f76241;
-  color: #fff;
+  color: #ffffff;
 }
 .title {
   font-family: 'Pretendard', 'SF Pro Text', 'Inter', sans-serif;
@@ -30,8 +31,27 @@
   font-weight: 700;
   margin-bottom: 8px;
 }
-ul { margin: 0 !important; padding-left: 18px !important; }
-li { margin-bottom: 0 !important; font-size: 14px; line-height: 1.7; }
+/* Reset list and apply middle-dot bullets */
+ul { margin: 0 !important; padding: 0 !important; list-style: none !important; }
+li {
+  margin-bottom: 0 !important;
+  font-size: 14px;
+  line-height: 1.7;
+  position: relative;
+  padding-left: 18px;
+}
+.goodCard li::before {
+  content: '·';
+  position: absolute; left: 4px; top: 0.05em;
+  font-size: 18px; line-height: 1;
+  color: #888;
+}
+.improveCard li::before {
+  content: '·';
+  position: absolute; left: 4px; top: 0.05em;
+  font-size: 18px; line-height: 1;
+  color: rgba(255,255,255,0.9);
+}
 .summaryROW {
   background: #fff;
   border-radius: 18px;

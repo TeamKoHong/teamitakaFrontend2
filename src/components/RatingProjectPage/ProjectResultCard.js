@@ -3,11 +3,13 @@ import styles from './ProjectResultCard.module.scss';
 export default function ProjectResultCard({ resultLink }) {
   if (!resultLink) return null;
   return (
-    <div className={styles.card}>
-      <div className={styles.title}>프로젝트 결과물</div>
-      <a href={resultLink} className={styles.link} target="_blank" rel="noopener noreferrer">
-        {resultLink}
+    <section className={styles.section} aria-labelledby="result-title">
+      <h2 id="result-title" className={styles.sectionTitle}>프로젝트 결과물</h2>
+      <a href={resultLink} className={styles.resultRow} target="_blank" rel="noopener noreferrer" aria-label="프로젝트 결과물 링크">
+        <span className={styles.linkIcon} aria-hidden="true" />
+        <span className={styles.urlText}>{resultLink}</span>
       </a>
-    </div>
+      <hr className={styles.dividerStrong} />
+    </section>
   );
-} 
+}

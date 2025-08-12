@@ -1,5 +1,9 @@
 node_modules/
 dist/
 .env
+.kiro/
+.history/
 .DS_Store
 .cursor
+worklogs/
+.history/worklogs/
