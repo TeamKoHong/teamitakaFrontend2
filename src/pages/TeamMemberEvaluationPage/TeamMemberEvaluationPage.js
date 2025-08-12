@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import styles from './TeamMemberEvaluationPage.module.scss';
 import DefaultHeader from '../../components/Common/DefaultHeader';
+import BottomNav from '../../components/Common/BottomNav/BottomNav';
 import EvaluationStep1 from './components/EvaluationStep1';
 import EvaluationStep2 from './components/EvaluationStep2';
 import EvaluationStep5 from './components/EvaluationStep5';
