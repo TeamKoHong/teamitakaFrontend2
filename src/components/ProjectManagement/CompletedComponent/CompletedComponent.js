@@ -24,6 +24,7 @@ const CompletedComponent = () => {
       avatars: [avatar1, avatar2],
       dday: { value: 47, percent: 75 },
       resultLink: "any_link.com",
+      isMutualReviewCompleted: false,
     },
     {
       id: 6,
@@ -35,6 +36,7 @@ const CompletedComponent = () => {
       avatars: [avatar3, avatar4],
       dday: { value: 30, percent: 50 },
       resultLink: "",
+      isMutualReviewCompleted: true,
     },
   ];
 
