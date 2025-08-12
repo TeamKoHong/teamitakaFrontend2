@@ -50,7 +50,8 @@
     background: #e6e6e6; // 명확한 비활성 트랙
     border-radius: 3px;
     cursor: pointer;
-    touch-action: none;
+    // 세로 스크롤은 허용하고, 가로 제스처는 컴포넌트가 처리
+    touch-action: pan-y;
     outline: none;
     transition: all 0.2s ease;
     
@@ -58,10 +59,10 @@
     &::before {
       content: '';
       position: absolute;
-      top: -8px;
+      top: -6px;
       left: -8px;
       right: -8px;
-      bottom: -8px;
+      bottom: -6px;
       z-index: 1;
     }
     
