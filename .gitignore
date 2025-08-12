@@ -3,3 +3,5 @@ dist/
 .env
 .kiro/
 .history/
+.DS_Store
+.cursor

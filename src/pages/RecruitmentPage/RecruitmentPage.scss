@@ -1,0 +1,111 @@
+
+/* src/pages/RecruitmentPage/RecruitmentPage.scss */
+.recruitment-page {
+  display: flex;
+  flex-direction: column;
+  padding: 0 16px;
+  background: #fff;
+}
+
+.recruitment-header {
+  display: flex;
+  align-items: center;
+  height: 56px;
+  border-bottom: 1px solid #e6e6e6;
+  .back-button {
+    background: none;
+    border: none;
+    font-size: 20px;
+    margin-right: 12px;
+    cursor: pointer;
+  }
+  .header-title {
+    font-size: 18px;
+    font-weight: 500;
+  }
+}
+
+.filter-tags.horizontal-scroll {
+  display: flex;
+  overflow-x: auto;
+  padding: 12px 0;
+  .filter-tag {
+    flex: 0 0 auto;
+    padding: 6px 12px;
+    margin-right: 8px;
+    border: 1px solid #ccc;
+    border-radius: 16px;
+    font-size: 14px;
+    cursor: pointer;
+    &.active {
+      background-color: #ff6b3c;
+      color: #fff;
+      border-color: #ff6b3c;
+    }
+  }
+}
+
+.recruitment-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  .recruit-item {
+    display: flex;
+    padding: 12px 0;
+    border-bottom: 1px solid #f2f2f2;
+    .thumbnail-wrapper {
+      position: relative;
+      width: 72px;
+      height: 72px;
+      margin-right: 12px;
+      .thumbnail-image,
+      .thumbnail-placeholder {
+        width: 100%;
+        height: 100%;
+        border-radius: 4px;
+        background: #f0f0f0;
+        object-fit: cover;
+      }
+      .best-badge {
+        position: absolute;
+        top: 4px;
+        left: 4px;
+        padding: 2px 6px;
+        background: #3466f2;
+        color: #fff;
+        font-size: 10px;
+        border-radius: 2px;
+      }
+    }
+    .item-content {
+      flex: 1;
+      .item-title {
+        font-size: 16px;
+        font-weight: 500;
+        margin: 0 0 4px;
+      }
+      .item-author {
+        font-size: 14px;
+        color: #666;
+        margin: 0 0 8px;
+      }
+      .item-info {
+        display: flex;
+        align-items: center;
+        font-size: 12px;
+        color: #999;
+        span {
+          display: flex;
+          align-items: center;
+          margin-right: 12px;
+          svg {
+            margin-right: 4px;
+          }
+        }
+        .item-date {
+          margin-left: auto;
+        }
+      }
+    }
+  }
+}
