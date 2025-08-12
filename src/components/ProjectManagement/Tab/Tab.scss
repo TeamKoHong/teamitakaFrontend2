@@ -30,6 +30,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  line-height: 1; // prevent font metrics from shifting vertical centering
   font-size: 18px;
   font-weight: 600;
   color: #bfbdbd;
