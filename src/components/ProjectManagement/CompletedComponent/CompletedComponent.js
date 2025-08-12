@@ -7,7 +7,7 @@ import avatar2 from "../../../assets/icons/avatar2.png";
 import avatar3 from "../../../assets/icons/avatar3.png";
 import avatar4 from "../../../assets/icons/avatar4.png";
 import { useNavigate } from 'react-router-dom';
-import { navigateToRatingProject } from '../../../utils/navigation';
+import AlertModal from '../../Common/AlertModal';
 
 const CompletedComponent = () => {
   const navigate = useNavigate();
@@ -47,13 +47,17 @@ const CompletedComponent = () => {
   }
   */
 
-  // 완료 프로젝트 아이템 클릭 시 항상 평가 작성 페이지로 이동
+  const [isModalOpen, setModalOpen] = React.useState(false);
+  const [modalProject, setModalProject] = React.useState(null);
+
   const handleCompletedItemClick = (project) => {
+    if (!project.isMutualReviewCompleted) {
+      setModalProject(project);
+      setModalOpen(true);
+      return;
+    }
     navigate(`/project/${project.id}/rating-project`, {
-      state: {
-        projectSummary: project,
-        from: { path: '/project-management', tab: 'completed' },
-      },
+      state: { projectSummary: project, from: { path: '/project-management', tab: 'completed' } },
     });
   };
 
@@ -151,6 +155,23 @@ const CompletedComponent = () => {
           ))}
         </div>
       </div>
+
+      <AlertModal
+        isOpen={isModalOpen}
+        title="상호평가 완료 후 열람 가능해요"
+        description="지금 상호 평가를 작성하시겠어요?"
+        primaryLabel="작성하기"
+        secondaryLabel="나중에 하기"
+        onPrimary={() => {
+          if (!modalProject) return;
+          navigate(`/project/${modalProject.id}/rating-project`, {
+            state: { projectSummary: modalProject, from: { path: '/project-management', tab: 'completed' } },
+          });
+          setModalOpen(false);
+        }}
+        onSecondary={() => setModalOpen(false)}
+        onClose={() => setModalOpen(false)}
+      />
     </div>
   );
 };
