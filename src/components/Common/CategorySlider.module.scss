@@ -45,6 +45,7 @@
   
   .sliderTrack {
     position: relative;
+    z-index: 2; // 트랙을 라벨보다 위로
     width: 100%;
     height: 6px; // 더 두꺼운 트랙
     background: #e6e6e6; // 명확한 비활성 트랙
@@ -99,7 +100,7 @@
       border-radius: 50%;
       cursor: pointer;
       transition: all 0.2s ease;
-      z-index: 2;
+      z-index: 3; // 최상단
       border: 3px solid $primary-color;
       box-shadow: 0 2px 6px rgba($primary-color, 0.25);
       
@@ -133,8 +134,10 @@
 .sliderLabels {
   display: flex;
   justify-content: space-between;
-  margin-top: 12px;
+  margin-top: 16px; // 간격 확장으로 겹침 방지
   width: 100%;
+  position: relative;
+  z-index: 1; // 트랙/썸 아래
   
   .labelButton {
     padding: 4px 2px;
@@ -155,8 +158,8 @@
     
     &:hover:not(:disabled) {
       color: $primary-color;
-      background: rgba($primary-color, 0.1);
-      transform: scale(1.1);
+      background: rgba($primary-color, 0.08);
+      transform: scale(1.04);
     }
     
     &:active:not(:disabled) {
@@ -168,7 +171,7 @@
       color: $primary-color;
       font-weight: $font-weight-bold;
       background: rgba($primary-color, 0.15);
-      transform: scale(1.1);
+      transform: scale(1.04);
     }
     
     &:disabled {
