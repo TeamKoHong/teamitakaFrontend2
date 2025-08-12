@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useSearchParams } from 'react-router-dom';
 import "./ProjectManagement.scss";
 import Header from "../../components/ProjectManagement/Header/Header";
 import BottomNav from "../../components/Common/BottomNav/BottomNav";
@@ -6,7 +7,14 @@ import ProgressComponent from "../../components/ProjectManagement/ProgressCompon
 import RecruitingComponent from "../../components/ProjectManagement/RecruitingComponent/RecruitingComponent";
 import CompletedComponent from "../../components/ProjectManagement/CompletedComponent/CompletedComponent";
 function ProjectManagement() {
-  const [tabIndex, setTabIndex] = useState(0); // 0: 진행 중, 1: 모집중, 2: 완료된
+  const [searchParams] = useSearchParams();
+  const initialTab = (() => {
+    const tab = searchParams.get('tab');
+    if (tab === 'completed') return 2;
+    if (tab === 'recruiting') return 1;
+    return 0; // default: progress
+  })();
+  const [tabIndex, setTabIndex] = useState(initialTab); // 0: 진행 중, 1: 모집중, 2: 완료된
 
   return (
     <div className="project-management-container">
