@@ -7,6 +7,7 @@ import avatar2 from "../../../assets/icons/avatar2.png";
 import avatar3 from "../../../assets/icons/avatar3.png";
 import avatar4 from "../../../assets/icons/avatar4.png";
 import { useNavigate } from 'react-router-dom';
+import { navigateToRatingProject } from '../../../utils/navigation';
 
 const CompletedComponent = () => {
   const navigate = useNavigate();
@@ -46,9 +47,7 @@ const CompletedComponent = () => {
 
   // 완료 프로젝트 아이템 클릭 시 항상 평가 작성 페이지로 이동
   const handleCompletedItemClick = (project) => {
-    navigate(`/project/${project.id}/rating-project`, {
-      state: { projectSummary: project },
-    });
+    navigateToRatingProject(navigate, project);
   };
 
   return (

@@ -44,15 +44,8 @@ function RatingManagementPage() {
     getProjects();
   }, [activeTab, sortBy, sortOrder]);
 
-  const handleCardClick = (projectId, myRatingStatus) => {
-    if (myRatingStatus === 'PENDING') {
-      navigate(`/project/${projectId}/rating-project`); // 평가 입력
-    } else if (myRatingStatus === 'COMPLETED') {
-      navigate(`/project/${projectId}/rating-status`); // 평가 결과
-    } else {
-      // fallback: 무조건 평가 입력 폼으로 이동
-      navigate(`/project/${projectId}/rating-project`);
-    }
+  const handleCardClick = (projectId) => {
+    navigate(`/project/${projectId}/rating-project`);
   };
 
   if (loading) {
