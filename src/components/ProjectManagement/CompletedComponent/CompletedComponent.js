@@ -44,21 +44,11 @@ const CompletedComponent = () => {
   }
   */
 
-  // 완료 프로젝트 아이템 클릭 시 상태에 따라 라우팅
-  const handleCompletedItemClick = (project, myRatingStatus) => {
-    if (myRatingStatus === 'PENDING') {
-      navigate(`/project/${project.id}/rating-project`, {
-        state: { projectSummary: project },
-      });
-    } else if (myRatingStatus === 'COMPLETED' || myRatingStatus === 'VIEW_ONLY') {
-      navigate(`/project/${project.id}/rating-status/received`, {
-        state: { projectSummary: project },
-      });
-    } else {
-      navigate(`/project/${project.id}/rating-project`, {
-        state: { projectSummary: project },
-      });
-    }
+  // 완료 프로젝트 아이템 클릭 시 항상 평가 작성 페이지로 이동
+  const handleCompletedItemClick = (project) => {
+    navigate(`/project/${project.id}/rating-project`, {
+      state: { projectSummary: project },
+    });
   };
 
   return (
@@ -138,11 +128,11 @@ const CompletedComponent = () => {
               role="button"
               tabIndex={0}
               className="completed-item"
-              onClick={() => handleCompletedItemClick(proj, proj.myRatingStatus)}
+              onClick={() => handleCompletedItemClick(proj)}
               onKeyDown={(e) => {
                 if (e.key === 'Enter' || e.key === ' ') {
                   e.preventDefault();
-                  handleCompletedItemClick(proj, proj.myRatingStatus);
+                  handleCompletedItemClick(proj);
                 }
               }}
             >
