@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import "./Tab.scss";
 
-function Tab({ onTabChange }) {
+function Tab({ onTabChange, activeTabIndex = 0 }) {
   // 0: 진행 중, 1: 모집중, 2: 완료된
-  const [activeTab, setActiveTab] = useState(0);
+  const [activeTab, setActiveTab] = useState(activeTabIndex);
 
   const tabsName = ["진행 중", "모집중", "완료된"];
 

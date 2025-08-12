@@ -18,7 +18,7 @@ function ProjectManagement() {
 
   return (
     <div className="project-management-container">
-      <Header onTabChange={setTabIndex} /> {/* Tab 변경 시 setTabIndex 실행 */}
+      <Header onTabChange={setTabIndex} activeTabIndex={tabIndex} /> {/* Tab 변경 시 setTabIndex 실행 */}
       <main>
         {tabIndex === 0 && <ProgressComponent />}
         {tabIndex === 1 && <RecruitingComponent />}

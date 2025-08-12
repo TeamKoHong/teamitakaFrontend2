@@ -4,7 +4,7 @@ import { CiBookmark } from "react-icons/ci";
 import { MdToday } from "react-icons/md";
 import Tab from "../Tab/Tab";
 
-function Header({ onTabChange }) {
+function Header({ onTabChange, activeTabIndex }) {
   return (
     <header className="header">
       <div className="header-first">
@@ -21,7 +21,7 @@ function Header({ onTabChange }) {
         </div>
       </div>
       <div className="header-second">
-        <Tab onTabChange={onTabChange} />
+        <Tab onTabChange={onTabChange} activeTabIndex={activeTabIndex} />
       </div>
     </header>
   );
