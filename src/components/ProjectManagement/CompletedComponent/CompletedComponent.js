@@ -47,7 +47,12 @@ const CompletedComponent = () => {
 
   // 완료 프로젝트 아이템 클릭 시 항상 평가 작성 페이지로 이동
   const handleCompletedItemClick = (project) => {
-    navigateToRatingProject(navigate, project);
+    navigate(`/project/${project.id}/rating-project`, {
+      state: {
+        projectSummary: project,
+        from: { path: '/project-management', tab: 'completed' },
+      },
+    });
   };
 
   return (

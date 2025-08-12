@@ -152,7 +152,19 @@ function RatingProjectPage(props) {
 
   return (
     <div className={styles.pageBg}>
-      <DefaultHeader title="프로젝트 별점" />
+      <DefaultHeader
+        title="프로젝트 별점"
+        onBack={() => {
+          const from = location.state && location.state.from;
+          const searchParams = new URLSearchParams(location.search);
+          const tab = from?.tab || searchParams.get('tab');
+          if (from?.path === '/project-management' || tab === 'completed') {
+            navigate('/project-management?tab=completed', { replace: true });
+          } else {
+            navigate(-1);
+          }
+        }}
+      />
       <div className={styles.scrollArea}>
         <ProjectInfoCard {...project} id={project.id} />
         <ProjectResultCard resultLink={project.resultLink} />
