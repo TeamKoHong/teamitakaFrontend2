@@ -18,7 +18,7 @@ const EvaluationStep2 = ({
   const [keywords, setKeywords] = useState(evaluationData.extractedKeywords.length > 0 ? evaluationData.extractedKeywords : ['창의성', '소통능력']);
   
   // 입력이 완료되었는지 확인
-  const isInputComplete = evaluationData.overallRating > 0 && evaluationData.roleDescription.trim().length > 0;
+  const isInputComplete = (evaluationData.overallRating || 0) > 0 && evaluationData.roleDescription.trim().length > 0;
 
   // 키워드 추가 함수
   const handleAddKeyword = () => {
@@ -86,7 +86,7 @@ const EvaluationStep2 = ({
       </div>
 
       {/* 진행 표시기 */}
-      <ProgressIndicator currentStep={2} totalSteps={5} />
+      <ProgressIndicator currentStep={1} totalSteps={3} />
 
       {/* 전체 별점 섹션 */}
       <div className={styles.overallRatingSection}>
@@ -167,18 +167,20 @@ const EvaluationStep2 = ({
       
       {/* 버튼 컨테이너 */}
       <div className={styles.buttonContainer}>
-        <button
-          className={`${styles.button} ${styles.secondary}`}
-          onClick={onPrev}
-        >
-          이전
-        </button>
+        {onPrev && (
+          <button
+            className={`${styles.button} ${styles.secondary}`}
+            onClick={onPrev}
+          >
+            이전
+          </button>
+        )}
         <button
           className={`${styles.button} ${styles.primary}`}
           onClick={onSubmit}
           disabled={!isInputComplete}
         >
-          평가 보내기
+          다음으로 넘어가기
         </button>
       </div>
     </div>

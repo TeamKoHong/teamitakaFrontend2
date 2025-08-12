@@ -40,7 +40,7 @@ const EvaluationStep1 = ({
 
   // 모든 카테고리가 평가되었는지 확인
   const isAllCategoriesRated = categories.every(
-    category => evaluationData.categoryRatings[category.key] > 0
+    (category) => (evaluationData.categoryRatings[category.key] || 0) > 0
   );
 
   return (
@@ -85,7 +85,7 @@ const EvaluationStep1 = ({
       </div>
 
       {/* 진행 표시기 */}
-      <ProgressIndicator currentStep={1} totalSteps={5} />
+      <ProgressIndicator currentStep={2} totalSteps={3} />
 
       {/* 질문 */}
       <div className={styles.questionText}>
@@ -120,7 +120,7 @@ const EvaluationStep1 = ({
           onClick={onNext}
           disabled={!isAllCategoriesRated}
         >
-          다음으로 넘어가기
+          평가 보내기
         </button>
       </div>
     </div>
