@@ -16,14 +16,18 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background: #F0F2F5;
+  // 시안에 맞춘 더 중성의 회색 배경
+  background: #F3F3F3;
 }
 
 // 콘텐츠 영역
 .content {
   flex: 1;
-  padding: 20px 16px 96px 16px;
+  // 하단 CTA + BottomNav(6rem)까지 고려한 여유 공간 확보
+  padding: 20px 16px calc(6rem + 56px) 16px;
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: contain;
   max-width: 480px;
   margin: 0 auto;
 }
@@ -89,6 +93,10 @@
 .projectInfoCard {
   @extend .card;
   margin-bottom: 20px;
+  // 카드 라운드/패딩/섀도우 보정
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
   
   .projectName {
     font-size: 16px;
@@ -185,9 +193,9 @@
 .questionText {
   font-size: 18px;
   line-height: 140.98%;
-  font-weight: 600;
+  font-weight: $font-weight-bold; // 700
   color: $gray-dark;
-  margin-bottom: 16px;
+  margin: 12px 0 12px;
   text-align: left;
 }
 
@@ -195,7 +203,7 @@
 .categorySection {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 12px; // 카드 간격 소폭 축소
 }
 
 // 슬라이더 컨테이너
@@ -290,6 +298,7 @@
 // 전체 평가 섹션
 .overallRatingSection {
   @extend .card;
+  border-radius: 20px;
   
   .overallLabel {
     font-size: $font-size-lg;
@@ -583,6 +592,9 @@
   margin-top: 24px;
   display: flex;
   gap: 12px;
+  position: sticky;
+  bottom: 24px;
+  z-index: 10;
   
   .button {
     flex: 1;
@@ -600,18 +612,18 @@
 .progressIndicator {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 12px;
-  margin: 16px 0;
+  justify-content: flex-start; // 좌측 정렬로 시안에 맞춤
+  gap: 10px;
+  margin: 8px 0 12px;
   
   .progressStep {
-    width: 24px;
-    height: 24px;
+    width: 20px;
+    height: 20px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 12px;
+    font-size: 11px;
     font-weight: $font-weight-bold;
     background: $gray-light;
     color: $gray-dark;
@@ -634,7 +646,7 @@
   }
   
   .progressLine {
-    width: 24px;
+    width: 16px;
     height: 2px;
     background: $gray-light;
     transition: background 0.3s ease;
