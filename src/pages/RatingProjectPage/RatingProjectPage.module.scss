@@ -181,6 +181,31 @@ $border-light: #e0e0e0;
   border: none;
 }
 
+// Step A: 내가 받은 별점 섹션
+.sectionCard {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  padding: 16px;
+  width: 100%;
+  box-sizing: border-box;
+}
+.sectionTitle {
+  font-size: 15px;
+  font-weight: 700;
+  color: #222;
+  margin-bottom: 12px;
+}
+.starsRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.scoreText {
+  font-weight: 700;
+  color: #f76241;
+}
+
 // 헤더 높이 예시 (sticky 적용 시)
 .header {
   height: 64px;

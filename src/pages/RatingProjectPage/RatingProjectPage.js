@@ -148,6 +148,7 @@ function RatingProjectPage(props) {
     resultLink: stateProject?.resultLink ?? mock.resultLink,
   };
   const summary = stateProject?.summary ?? mock.summary;
+  const ratingSummary = stateProject?.ratingSummary ?? mock.ratingSummary;
 
   return (
     <div className={styles.pageBg}>
@@ -155,6 +156,17 @@ function RatingProjectPage(props) {
       <div className={styles.scrollArea}>
         <ProjectInfoCard {...project} id={project.id} />
         <ProjectResultCard resultLink={project.resultLink} />
+        <hr className={styles.divider} />
+        {/* Step A: 내가 받은 별점 */}
+        {typeof ratingSummary?.average === 'number' && (
+          <div className={styles.sectionCard}>
+            <h2 className={styles.sectionTitle}>내가 받은 별점</h2>
+            <div className={styles.starsRow}>
+              <RatingInputStars initialRating={ratingSummary.average} readOnly maxStars={5} />
+              <span className={styles.scoreText}>{ratingSummary.average.toFixed(1)}</span>
+            </div>
+          </div>
+        )}
         <ProjectSummaryCard {...summary} />
         {/* 평가 입력 UI */}
         <div className={styles.ratingForm}>
