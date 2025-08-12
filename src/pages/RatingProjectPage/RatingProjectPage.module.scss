@@ -190,6 +190,10 @@ $border-light: #e0e0e0;
   width: 100%;
   box-sizing: border-box;
 }
+.starsSection {
+  padding: 0 12px; // plain section without card look
+  background: transparent;
+}
 .sectionTitle {
   font-size: 15px;
   font-weight: 700;
