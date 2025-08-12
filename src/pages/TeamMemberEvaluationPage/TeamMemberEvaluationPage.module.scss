@@ -23,8 +23,11 @@
 // 콘텐츠 영역
 .content {
   flex: 1;
-  padding: 20px 16px 120px 16px; // 하단 CTA 여유
+  // 하단 CTA + BottomNav(6rem)까지 고려한 여유 공간 확보
+  padding: 20px 16px calc(6rem + 56px) 16px;
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: contain;
   max-width: 480px;
   margin: 0 auto;
 }
