@@ -4,15 +4,12 @@ import styles from './TeamMemberEvaluationPage.module.scss';
 import DefaultHeader from '../../components/Common/DefaultHeader';
 import BottomNav from '../../components/Common/BottomNav/BottomNav';
 import EvaluationStep1 from './components/EvaluationStep1';
-import EvaluationStep2 from './components/EvaluationStep2';
-import EvaluationStep3 from './components/EvaluationStep3';
-import EvaluationStep4 from './components/EvaluationStep4';
 import EvaluationStep5 from './components/EvaluationStep5';
 
 function TeamMemberEvaluationPage() {
   const { projectId, memberId } = useParams();
   const navigate = useNavigate();
-  const [currentStep, setCurrentStep] = useState(1);
+  const [currentStep, setCurrentStep] = useState(1); // 1: 카테고리 점수, 2: 완료
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [projectData, setProjectData] = useState(null);
@@ -80,7 +77,7 @@ function TeamMemberEvaluationPage() {
   }, [projectId, memberId]);
 
   const handleNextStep = () => {
-    if (currentStep < 5) {
+    if (currentStep < 2) {
       setCurrentStep(currentStep + 1);
     }
   };
@@ -133,7 +130,7 @@ function TeamMemberEvaluationPage() {
     try {
       // 실제 API 호출로 대체 예정
       console.log('평가 데이터 제출:', evaluationData);
-      handleNextStep();
+      setCurrentStep(2);
     } catch (err) {
       setError('평가 제출에 실패했습니다.');
     }
@@ -143,8 +140,7 @@ function TeamMemberEvaluationPage() {
     try {
       // 실제 API 호출로 대체 예정
       console.log('평가 완료:', evaluationData);
-      handleNextStep();
-      
+      // 완료 화면(2단계)이므로 그대로 유지
       // 잠시 후 평가 관리 페이지로 이동
       setTimeout(() => {
         navigate(`/project/${projectId}/rating-project`);
@@ -184,17 +180,22 @@ function TeamMemberEvaluationPage() {
 
     switch (currentStep) {
       case 1:
-        return <EvaluationStep1 {...commonProps} />;
+        // Step 1: 카테고리 점수 입력 → 제출 시 완료로 이동
+        return (
+          <EvaluationStep1
+            {...commonProps}
+            onSubmit={handleSubmitEvaluation}
+          />
+        );
       case 2:
-        return <EvaluationStep2 {...commonProps} />;
-      case 3:
-        return <EvaluationStep3 {...commonProps} />;
-      case 4:
-        return <EvaluationStep4 {...commonProps} />;
-      case 5:
-        return <EvaluationStep5 {...commonProps} />;
+        return <EvaluationStep5 />;
       default:
-        return <EvaluationStep1 {...commonProps} />;
+        return (
+          <EvaluationStep1
+            {...commonProps}
+            onSubmit={handleSubmitEvaluation}
+          />
+        );
     }
   };
 
