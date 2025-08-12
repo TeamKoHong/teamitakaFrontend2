@@ -5,20 +5,20 @@ import avatar2 from "../../../assets/icons/avatar2.png";
 import avatar3 from "../../../assets/icons/avatar3.png";
 import avatar4 from "../../../assets/icons/avatar4.png";
 import { useNavigate } from "react-router-dom";
+import { navigateToRatingProjectById } from "../../../utils/navigation";
 import { IoCalendarOutline, IoTimeOutline } from "react-icons/io5";
 import CircularProgress from "../../Common/CircularProgress";
 const ProjectCard = () => {
   const navigate = useNavigate();
 
   const handleGoToProjectDetail = (projectId) => {
-    navigate(`/project/${projectId}`);
+    // In project-management context, clicking a project should take user to rating-project
+    navigateToRatingProjectById(navigate, projectId);
   };
   return (
     <div
       className="project-card"
-      onClick={
-        () => handleGoToProjectDetail(1) // 클릭 시 프로젝트 상세 페이지로 이동
-      }
+      onClick={() => handleGoToProjectDetail(1)}
     >
       <div className="card-content">
         {/* 프로젝트 정보 */}
