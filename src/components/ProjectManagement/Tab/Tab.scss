@@ -1,21 +1,51 @@
 .tab-container {
-  display: flex;
-  padding: 0 1rem;
+  display: grid;
+  grid-template-columns: repeat(3, 130px);
+  width: 390px; // fixed device width requirement
+  box-sizing: border-box;
   background-color: #fff;
-  border-bottom: 0.0625rem solid #eaeaea;
+  position: relative;
+  padding-bottom: 0; // ensure indicator sits on bottom edge
+  margin: 0 auto; // center within parent
+}
 
-  .tab-item {
-    flex: 1;
-    padding: 10px 0;
-    font-size: 17px;
-    color: #bfbdbd;
-    background: none;
-    border: none;
-    cursor: pointer;
+// full-width base track
+.tab-container::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: 1px;
+  background: #e0e0e0;
+}
 
-    &.active {
-      color: #140805;
-      border-bottom: 2.9px solid #140805;
-    }
-  }
+.tab-item {
+  width: 100%;
+  min-width: 0;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1; // prevent font metrics from shifting vertical centering
+  font-size: 16px;
+  font-weight: 600;
+  color: #bfbdbd;
+  background: none;
+  border: none;
+  cursor: pointer;
+  letter-spacing: -0.2px;
+}
+
+.tab-item.active {
+  color: #140805;
+  font-weight: 700;
+}
+
+// moving indicator
+.indicator {
+  position: absolute;
+  bottom: 0;
+  width: 130px; // one column width
+  height: 2px;
+  background: #140805;
+  transition: left 200ms ease;
 }

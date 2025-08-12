@@ -7,14 +7,60 @@ import avatar2 from "../../../assets/icons/avatar2.png";
 import avatar3 from "../../../assets/icons/avatar3.png";
 import avatar4 from "../../../assets/icons/avatar4.png";
 import { useNavigate } from 'react-router-dom';
+import AlertModal from '../../Common/AlertModal';
+import { fetchEvaluationTargets, getNextPendingMemberId } from '../../../services/rating';
 
 const CompletedComponent = () => {
   const navigate = useNavigate();
 
+  // 완료된 프로젝트 더미 데이터 (추후 서비스 연동으로 대체)
+  const completedProjects = [
+    {
+      id: 2,
+      name: "연합동아리 부스전 기획 프로젝트",
+      description: "서울 디자인 전시 부스를 위한 기획 프로젝트",
+      myRatingStatus: "COMPLETED",
+      period: "2024-03-01 ~ 2024-06-30",
+      meetingTime: "매주 수 19:00",
+      avatars: [avatar1, avatar2],
+      dday: { value: 47, percent: 75 },
+      resultLink: "any_link.com",
+      isMutualReviewCompleted: false,
+    },
+    {
+      id: 6,
+      name: "예비 졸업전시 부스 준비 위원 프로젝트",
+      description: "졸업 전시를 위한 예비 프로젝트로서 전시를 기획하고 운영하는 ...",
+      myRatingStatus: "PENDING",
+      period: "2024-05-01 ~ 2024-11-15",
+      meetingTime: "매주 토 14:00",
+      avatars: [avatar3, avatar4],
+      dday: { value: 30, percent: 50 },
+      resultLink: "",
+      isMutualReviewCompleted: true,
+    },
+  ];
+
+  /*
   // '내 별점 관리' 클릭 시 호출될 함수
   const handleNavigateToRatingManagement = () => {
     navigate('/project/rating-management'); // RatingManagementPage 경로로 이동
   }
+  */
+
+  const [isModalOpen, setModalOpen] = React.useState(false);
+  const [modalProject, setModalProject] = React.useState(null);
+
+  const handleCompletedItemClick = (project) => {
+    if (!project.isMutualReviewCompleted) {
+      setModalProject(project);
+      setModalOpen(true);
+      return;
+    }
+    navigate(`/project/${project.id}/rating-project`, {
+      state: { projectSummary: project, from: { path: '/project-management', tab: 'completed' } },
+    });
+  };
 
   return (
     <div className="completed-container">
@@ -80,33 +126,65 @@ const CompletedComponent = () => {
       <div className="completed-section">
         <div className="completed-header">
           <h4 className="completed-section-title">완료 프로젝트</h4>
-          <p
+          {/*<p
             className="my-star-button"
             onClick={handleNavigateToRatingManagement} // 클릭 이벤트 추가
-          >내 별점 관리</p>
+          >내 별점 관리</p>*/}
         </div>
 
         <div className="completed-list">
-          <div className="completed-item">
-            <div className="completed-item-left">
-              <h3>연합동아리 부스전 기획 프로젝트</h3>
-              <p className="description">
-                서울 디자인 전시 부스를 위한 기획 프로젝트
-              </p>
+          {completedProjects.map((proj) => (
+            <div
+              key={proj.id}
+              role="button"
+              tabIndex={0}
+              className="completed-item"
+              onClick={() => handleCompletedItemClick(proj)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  handleCompletedItemClick(proj);
+                }
+              }}
+            >
+              <div className="completed-item-left">
+                <h3>{proj.name}</h3>
+                <p className="description">{proj.description}</p>
+              </div>
+              <FaStar className="favorite-icon" />
             </div>
-            <FaStar className="favorite-icon" />
-          </div>
-          <div className="completed-item">
-            <div className="completed-item-left">
-              <h3>예비 졸업전시 부스 준비 위원 프로젝트 </h3>
-              <p className="description">
-                졸업 전시를 위한 예비 프로젝트로서 전시를 기획하고 운영하는 ...
-              </p>
-            </div>
-            <FaStar className="favorite-icon" />
-          </div>
+          ))}
         </div>
       </div>
+
+      <AlertModal
+        isOpen={isModalOpen}
+        title="상호평가 완료 후 열람 가능해요"
+        description="지금 상호 평가를 작성하시겠어요?"
+        primaryLabel="작성하기"
+        secondaryLabel="나중에 하기"
+        onPrimary={async () => {
+          if (!modalProject) return;
+          try {
+            const { targets } = await fetchEvaluationTargets(modalProject.id);
+            const nextId = getNextPendingMemberId(targets);
+            if (nextId) {
+              navigate(`/project/${modalProject.id}/evaluate/${nextId}`, {
+                state: { projectSummary: modalProject, from: { path: '/project-management', tab: 'completed' } },
+              });
+            } else {
+              // fallback: 허브로 이동
+              navigate(`/project/${modalProject.id}/rating-project`, {
+                state: { projectSummary: modalProject, from: { path: '/project-management', tab: 'completed' } },
+              });
+            }
+          } finally {
+            setModalOpen(false);
+          }
+        }}
+        onSecondary={() => setModalOpen(false)}
+        onClose={() => setModalOpen(false)}
+      />
     </div>
   );
 };

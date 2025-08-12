@@ -82,12 +82,26 @@ export async function fetchProjectStatus(projectId) {
     myRatingStatus: "PENDING",
     status: "평가 완료",
     averageRating: 4.2,
+    period: "2024-03-01 ~ 2024-06-30",
+    meetingTime: "매주 수 19:00",
+    avatars: [],
+    dday: { value: 47, percent: 75 },
+    resultLink: "any_link.com",
     totalMembers: 5,
     completedRatings: 3,
     categories: [
       { name: "협업 능력", average: 4.5 },
       { name: "문제 해결 능력", average: 4.0 },
       { name: "소통 능력", average: 4.1 },
+    ],
+    summary: {
+      good: ["업무 능력이 뛰어나요.", "열정이 넘치는 팀원이에요."],
+      improve: ["의사 소통이 원활하면 좋겠어요.", "열심히 성장하는 모습이 필요해요."],
+    },
+    roles: [
+      "구체적인 역할은 어쩌구어쩌구 입니다.",
+      "구체적인 역할은 어쩌구어쩌구 입니다.",
+      "추가 역할 설명 예시입니다.",
     ],
     individualReviews: [
       {
@@ -132,3 +146,26 @@ export async function fetchProjectStatus(projectId) {
   await new Promise(res => setTimeout(res, 300));
   return dummyStatus;
 } 
+
+// Step A: Provide mock evaluation targets and helper to pick next pending member
+/**
+ * Returns evaluation targets for a project with completion status.
+ * In production, replace with API call: GET /projects/:id/evaluation-targets
+ */
+export async function fetchEvaluationTargets(projectId) {
+  const pid = Number(projectId);
+  // Mock targets: two members, first pending, second completed (adjust per pid)
+  const targets = [
+    { id: 101, name: '김재원', status: 'pending' },
+    { id: 102, name: '이영희', status: 'completed' },
+  ];
+  return { projectId: pid, targets };
+}
+
+/**
+ * Compute next pending memberId from targets list
+ */
+export function getNextPendingMemberId(targets) {
+  const next = (targets || []).find(t => t.status !== 'completed');
+  return next ? next.id : null;
+}

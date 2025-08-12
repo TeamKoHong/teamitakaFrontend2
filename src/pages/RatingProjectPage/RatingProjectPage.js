@@ -1,19 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import styles from './RatingProjectPage.module.scss';
 import DefaultHeader from '../../components/Common/DefaultHeader';
 import RatingInputStars from '../../components/RatingManagement/RatingInputStars/RatingInputStars';
-import RatingCategoryItem from '../../components/RatingManagement/RatingCategoryItem/RatingCategoryItem';
 import ProjectInfoCard from '../../components/RatingProjectPage/ProjectInfoCard';
 import ProjectSummaryCard from '../../components/RatingProjectPage/ProjectSummaryCard';
 import TeamMemberEvaluation from '../../components/RatingProjectPage/TeamMemberEvaluation';
 import BottomNav from '../../components/Common/BottomNav/BottomNav';
 import ProjectResultCard from '../../components/RatingProjectPage/ProjectResultCard';
+import { getMockProjectSummary } from '../../fixtures/projectSummary';
 
 function RatingProjectPage(props) {
   const { projectId: propProjectId } = props;
   const { projectId: paramProjectId } = useParams();
   const projectId = propProjectId || paramProjectId;
+  const location = useLocation();
   const navigate = useNavigate();
   const [projectData, setProjectData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -134,26 +135,50 @@ function RatingProjectPage(props) {
     return <div className={styles.noData}>프로젝트 데이터를 찾을 수 없습니다.</div>;
   }
 
+  // Step B: Use location.state first (if provided), then fall back to fixtures
+  const stateProject = location.state && location.state.projectSummary ? location.state.projectSummary : null;
+  const mock = getMockProjectSummary(projectId);
   const project = {
-    id: 47,
-    name: '프로젝트명',
-    period: '2024.01.01 ~ 2024.02.01',
-    meetingTime: '매주 수요일 19:00',
-    avatars: ['/assets/icons/avatar1.png', '/assets/icons/avatar2.png'],
-    dday: { value: 47, percent: 80 },
-    resultLink: 'https://any_link.com'
+    id: mock.id,
+    name: stateProject?.name ?? mock.name,
+    period: stateProject?.period ?? mock.period,
+    meetingTime: stateProject?.meetingTime ?? mock.meetingTime,
+    avatars: stateProject?.avatars ?? mock.avatars,
+    dday: stateProject?.dday ?? mock.dday,
+    resultLink: stateProject?.resultLink ?? mock.resultLink,
   };
-  const summary = {
-    good: ['업무 능력이 뛰어나요.', '열정이 넘치는 팀원이에요.'],
-    improve: ['의사 소통이 원활하면 좋겠어요.', '열심히 성장하는 모습이 필요해요.']
-  };
+  const summary = stateProject?.summary ?? mock.summary;
+  const ratingSummary = stateProject?.ratingSummary ?? mock.ratingSummary;
 
   return (
     <div className={styles.pageBg}>
-      <DefaultHeader title="프로젝트 별점" />
+      <DefaultHeader
+        title="프로젝트 별점"
+        onBack={() => {
+          const from = location.state && location.state.from;
+          const searchParams = new URLSearchParams(location.search);
+          const tab = from?.tab || searchParams.get('tab');
+          if (from?.path === '/project-management' || tab === 'completed') {
+            navigate('/project-management?tab=completed', { replace: true });
+          } else {
+            navigate(-1);
+          }
+        }}
+      />
       <div className={styles.scrollArea}>
         <ProjectInfoCard {...project} id={project.id} />
         <ProjectResultCard resultLink={project.resultLink} />
+        <hr className={styles.divider} />
+        {/* style(rating): plain section (no card) */}
+        {typeof ratingSummary?.average === 'number' && (
+          <section className={styles.starsSection} aria-label="내가 받은 별점">
+            <h2 className={styles.sectionTitle}>내가 받은 별점</h2>
+            <div className={styles.starsRow}>
+              <RatingInputStars initialRating={ratingSummary.average} readOnly maxStars={5} />
+              <span className={styles.scoreText}>{ratingSummary.average.toFixed(1)}</span>
+            </div>
+          </section>
+        )}
         <ProjectSummaryCard {...summary} />
         {/* 평가 입력 UI */}
         <div className={styles.ratingForm}>
