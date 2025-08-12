@@ -35,4 +35,10 @@
     font-weight: 600;
     color: #f76241;
   }
+
+  // allow full-bleed tab in second row
+  .header-second {
+    padding-left: 0;
+    padding-right: 0;
+  }
 }
