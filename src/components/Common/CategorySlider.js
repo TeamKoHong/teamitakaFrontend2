@@ -66,8 +66,7 @@ const CategorySlider = ({
   // 터치 이벤트 핸들러
   const handleTouchStart = useCallback((e) => {
     if (disabled) return;
-    
-    e.preventDefault();
+
     setIsDragging(true);
     setIsPressed(true);
     
