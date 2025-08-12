@@ -77,8 +77,7 @@ const CategorySlider = ({
 
   const handleTouchMove = useCallback((e) => {
     if (!isDragging || disabled) return;
-    
-    e.preventDefault();
+
     const touch = e.touches[0];
     const newValue = getValueFromPosition(touch.clientX);
     onChange(newValue);
