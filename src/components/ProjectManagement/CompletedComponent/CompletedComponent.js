@@ -8,6 +8,7 @@ import avatar3 from "../../../assets/icons/avatar3.png";
 import avatar4 from "../../../assets/icons/avatar4.png";
 import { useNavigate } from 'react-router-dom';
 import AlertModal from '../../Common/AlertModal';
+import { fetchEvaluationTargets, getNextPendingMemberId } from '../../../services/rating';
 
 const CompletedComponent = () => {
   const navigate = useNavigate();
@@ -162,12 +163,24 @@ const CompletedComponent = () => {
         description="지금 상호 평가를 작성하시겠어요?"
         primaryLabel="작성하기"
         secondaryLabel="나중에 하기"
-        onPrimary={() => {
+        onPrimary={async () => {
           if (!modalProject) return;
-          navigate(`/project/${modalProject.id}/rating-project`, {
-            state: { projectSummary: modalProject, from: { path: '/project-management', tab: 'completed' } },
-          });
-          setModalOpen(false);
+          try {
+            const { targets } = await fetchEvaluationTargets(modalProject.id);
+            const nextId = getNextPendingMemberId(targets);
+            if (nextId) {
+              navigate(`/project/${modalProject.id}/evaluate/${nextId}`, {
+                state: { projectSummary: modalProject, from: { path: '/project-management', tab: 'completed' } },
+              });
+            } else {
+              // fallback: 허브로 이동
+              navigate(`/project/${modalProject.id}/rating-project`, {
+                state: { projectSummary: modalProject, from: { path: '/project-management', tab: 'completed' } },
+              });
+            }
+          } finally {
+            setModalOpen(false);
+          }
         }}
         onSecondary={() => setModalOpen(false)}
         onClose={() => setModalOpen(false)}
