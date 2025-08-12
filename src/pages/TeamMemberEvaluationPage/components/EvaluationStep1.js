@@ -84,8 +84,8 @@ const EvaluationStep1 = ({
         </div>
       </div>
 
-      {/* 진행 표시기 */}
-      <ProgressIndicator currentStep={2} totalSteps={3} />
+      {/* 진행 표시기 (2단계로 축소) */}
+      <ProgressIndicator currentStep={1} totalSteps={2} />
 
       {/* 질문 */}
       <div className={styles.questionText}>
@@ -113,11 +113,11 @@ const EvaluationStep1 = ({
         </div>
       )}
       
-      {/* 다음 단계 버튼 */}
+      {/* 제출 버튼 */}
       <div className={styles.buttonContainer}>
         <button
           className={`${styles.button} ${styles.primary}`}
-          onClick={onNext}
+          onClick={onSubmit}
           disabled={!isAllCategoriesRated}
         >
           평가 보내기
