@@ -13,6 +13,10 @@ const CategorySlider = ({
 }) => {
   const [isDragging, setIsDragging] = useState(false);
   const [isPressed, setIsPressed] = useState(false);
+  const pointerIdRef = useRef(null);
+  const startXRef = useRef(0);
+  const startYRef = useRef(0);
+  const thresholdExceededRef = useRef(false);
   const sliderRef = useRef(null);
   const thumbRef = useRef(null);
 
@@ -38,55 +42,53 @@ const CategorySlider = ({
     return Math.max(min, Math.min(max, newValue));
   }, [value, min, max, getValueFromPercentage]);
 
-  // 마우스 이벤트 핸들러
-  const handleMouseDown = useCallback((e) => {
-    if (disabled) return;
-    
-    e.preventDefault();
-    setIsDragging(true);
-    setIsPressed(true);
-    
-    const newValue = getValueFromPosition(e.clientX);
-    onChange(newValue);
-  }, [disabled, getValueFromPosition, onChange]);
-
-  const handleMouseMove = useCallback((e) => {
-    if (!isDragging || disabled) return;
-    
-    e.preventDefault();
-    const newValue = getValueFromPosition(e.clientX);
-    onChange(newValue);
-  }, [isDragging, disabled, getValueFromPosition, onChange]);
-
-  const handleMouseUp = useCallback(() => {
+  // 포인터 이벤트 핸들러로 통합
+  const cleanupPointer = useCallback(() => {
+    document.removeEventListener('pointermove', handlePointerMove);
+    document.removeEventListener('pointerup', handlePointerUp);
+    pointerIdRef.current = null;
+    thresholdExceededRef.current = false;
     setIsDragging(false);
     setIsPressed(false);
   }, []);
 
-  // 터치 이벤트 핸들러
-  const handleTouchStart = useCallback((e) => {
+  const handlePointerMove = useCallback((e) => {
     if (disabled) return;
+    if (pointerIdRef.current == null || e.pointerId !== pointerIdRef.current) return;
 
-    setIsDragging(true);
-    setIsPressed(true);
-    
-    const touch = e.touches[0];
-    const newValue = getValueFromPosition(touch.clientX);
+    // Threshold 판단 전에는 스크롤을 우선시
+    if (!thresholdExceededRef.current) {
+      const dx = Math.abs(e.clientX - startXRef.current);
+      const dy = Math.abs(e.clientY - startYRef.current);
+      if (dx > 8 && dx > dy) {
+        thresholdExceededRef.current = true;
+        setIsDragging(true);
+      } else {
+        // 수직 스크롤이거나 임계 미만이면 값 업데이트 금지
+        return;
+      }
+    }
+
+    const newValue = getValueFromPosition(e.clientX);
     onChange(newValue);
   }, [disabled, getValueFromPosition, onChange]);
 
-  const handleTouchMove = useCallback((e) => {
-    if (!isDragging || disabled) return;
+  const handlePointerUp = useCallback((e) => {
+    if (pointerIdRef.current == null || e.pointerId !== pointerIdRef.current) return;
+    cleanupPointer();
+  }, [cleanupPointer]);
 
-    const touch = e.touches[0];
-    const newValue = getValueFromPosition(touch.clientX);
-    onChange(newValue);
-  }, [isDragging, disabled, getValueFromPosition, onChange]);
-
-  const handleTouchEnd = useCallback(() => {
-    setIsDragging(false);
-    setIsPressed(false);
-  }, []);
+  const handlePointerDown = useCallback((e) => {
+    if (disabled) return;
+    setIsPressed(true);
+    pointerIdRef.current = e.pointerId;
+    startXRef.current = e.clientX;
+    startYRef.current = e.clientY;
+    thresholdExceededRef.current = false;
+    // 전역 리스너 등록
+    document.addEventListener('pointermove', handlePointerMove);
+    document.addEventListener('pointerup', handlePointerUp);
+  }, [disabled, handlePointerMove, handlePointerUp]);
 
   // 키보드 이벤트 핸들러
   const handleKeyDown = useCallback((e) => {
@@ -126,22 +128,8 @@ const CategorySlider = ({
     onChange(labelValue);
   }, [disabled, onChange]);
 
-  // 전역 이벤트 리스너 등록
-  useEffect(() => {
-    if (isDragging) {
-      document.addEventListener('mousemove', handleMouseMove);
-      document.addEventListener('mouseup', handleMouseUp);
-      document.addEventListener('touchmove', handleTouchMove, { passive: false });
-      document.addEventListener('touchend', handleTouchEnd);
-      
-      return () => {
-        document.removeEventListener('mousemove', handleMouseMove);
-        document.removeEventListener('mouseup', handleMouseUp);
-        document.removeEventListener('touchmove', handleTouchMove);
-        document.removeEventListener('touchend', handleTouchEnd);
-      };
-    }
-  }, [isDragging, handleMouseMove, handleMouseUp, handleTouchMove, handleTouchEnd]);
+  // 언마운트/라우트 변경 시 클린업
+  useEffect(() => cleanupPointer, [cleanupPointer]);
 
   const percentage = getPercentage(value);
   const labels = Array.from({ length: max - min + 1 }, (_, i) => min + i);
@@ -157,8 +145,7 @@ const CategorySlider = ({
         <div 
           ref={sliderRef}
           className={`${styles.sliderTrack} ${isPressed ? styles.pressed : ''}`}
-          onMouseDown={handleMouseDown}
-          onTouchStart={handleTouchStart}
+          onPointerDown={handlePointerDown}
           role="slider"
           aria-label={`${name} 평가`}
           aria-valuemin={min}
