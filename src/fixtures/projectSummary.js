@@ -20,6 +20,8 @@ const byId = {
       '문서 정리와 QA를 병행했습니다.'
     ],
     summary: {
+      keywords: ['책임감있는','성실함','배려심'],
+      highlighted: '책임감있는',
       good: ['업무 능력이 뛰어나요.', '열정이 넘치는 팀원이에요.'],
       improve: ['의사 소통이 원활하면 좋겠어요.', '열심히 성장하는 모습이 필요해요.']
     }
@@ -39,6 +41,8 @@ const byId = {
       '협업 툴 세팅과 일정 조율을 담당했습니다.'
     ],
     summary: {
+      keywords: ['책임감있는','성실함','배려심'],
+      highlighted: '책임감있는',
       good: ['성실하게 참여했어요.', '빠른 실행력이 돋보여요.'],
       improve: ['문서화가 조금 더 필요해요.', '회의 안건 정리가 있으면 더 좋아요.']
     }
@@ -58,7 +62,7 @@ export function getMockProjectSummary(projectId) {
     resultLink: '',
     ratingSummary: { average: 0 },
     roles: [],
-    summary: { good: [], improve: [] }
+    summary: { keywords: [], highlighted: '', good: [], improve: [] }
   };
 }
 

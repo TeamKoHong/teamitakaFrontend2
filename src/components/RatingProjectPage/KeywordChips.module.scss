@@ -1,0 +1,13 @@
+.chipsWrap { display: flex; gap: 8px; flex-wrap: wrap; margin: 8px 0 12px; }
+.chip {
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: #f0f0f0;
+  color: #222;
+  font-size: 12px;
+}
+.active {
+  background: #F76241;
+  color: #fff;
+}
+
