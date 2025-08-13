@@ -113,6 +113,9 @@ function RatingProjectPage(props) {
         {/* 1) 섹션 재배치: 프로젝트 카드 → 결과물 → 한 줄 요약 → 키워드 */}
         <ProjectInfoCard {...project} id={project.id} />
         <ProjectResultCard resultLink={project.resultLink} />
+        <div className={styles.sectionLabel}>한 줄 요약</div>
+        {/* 3) 하단: 팀원 평가지 / 종합적 키워드 (아코디언으로 유지) */}
+        <ProsConsCards good={summary?.good || []} improve={summary?.improve || []} />
         <div className={styles.sectionLabel}>팀원 평가지</div>
         <div className={styles.sectionLabel}>종합적 키워드</div>
         <KeywordChips
@@ -123,8 +126,6 @@ function RatingProjectPage(props) {
         <KeywordBubble
           items={(summary?.keywordComments && (summary.keywordComments[chipsActive || summary.highlighted] || []))}
         />
-        {/* 3) 하단: 팀원 평가지 / 종합적 키워드 (아코디언으로 유지) */}
-        <ProsConsCards good={summary?.good || []} improve={summary?.improve || []} />
         {/* 5) 슬라이더 카드: 설명 문구 활성화 */}
         <div className={styles.sectionLabel} style={{ marginTop: 6 }}>해당 팀원의 능력별 점수는 몇 점인가요?</div>
         <CategorySlidersGroup items={mock.sliders || []} onChange={() => {}} hideDescription={false} />
