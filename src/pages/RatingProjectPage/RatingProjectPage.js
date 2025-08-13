@@ -3,6 +3,8 @@ import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import styles from './RatingProjectPage.module.scss';
 import DefaultHeader from '../../components/Common/DefaultHeader';
 import RatingInputStars from '../../components/RatingManagement/RatingInputStars/RatingInputStars';
+import KeywordChips from '../../components/RatingProjectPage/KeywordChips';
+import MyRatingSection from '../../components/RatingProjectPage/MyRatingSection';
 import ProjectInfoCard from '../../components/RatingProjectPage/ProjectInfoCard';
 import ProjectSummaryCard from '../../components/RatingProjectPage/ProjectSummaryCard';
 import TeamMemberEvaluation from '../../components/RatingProjectPage/TeamMemberEvaluation';
@@ -168,16 +170,9 @@ function RatingProjectPage(props) {
       <div className={styles.scrollArea}>
         <ProjectInfoCard {...project} id={project.id} />
         <ProjectResultCard resultLink={project.resultLink} />
-        <hr className={styles.divider} />
-        {/* style(rating): plain section (no card) */}
+        <KeywordChips items={summary?.keywords || []} active={summary?.highlighted} />
         {typeof ratingSummary?.average === 'number' && (
-          <section className={styles.starsSection} aria-label="내가 받은 별점">
-            <h2 className={styles.sectionTitle}>내가 받은 별점</h2>
-            <div className={styles.starsRow}>
-              <RatingInputStars initialRating={ratingSummary.average} readOnly maxStars={5} />
-              <span className={styles.scoreText}>{ratingSummary.average.toFixed(1)}</span>
-            </div>
-          </section>
+          <MyRatingSection score={ratingSummary.average} />
         )}
         <ProjectSummaryCard {...summary} />
         {/* 평가 입력 UI */}
