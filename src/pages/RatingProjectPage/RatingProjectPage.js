@@ -10,6 +10,7 @@ import ProjectSummaryCard from '../../components/RatingProjectPage/ProjectSummar
 import ProsConsCards from '../../components/RatingProjectPage/ProsConsCards';
 import CategorySlidersGroup from '../../components/RatingProjectPage/CategorySlidersGroup';
 import CommentPills from '../../components/RatingProjectPage/CommentPills';
+import StickyCTA from '../../components/RatingProjectPage/StickyCTA';
 import TeamMemberEvaluation from '../../components/RatingProjectPage/TeamMemberEvaluation';
 import BottomNav from '../../components/Common/BottomNav/BottomNav';
 import ProjectResultCard from '../../components/RatingProjectPage/ProjectResultCard';
@@ -29,6 +30,8 @@ function RatingProjectPage(props) {
   const [comment, setComment] = useState(''); // 추가 코멘트
   const [tagInput, setTagInput] = useState('');
   const [tags, setTags] = useState([]);
+  const [chipsActive, setChipsActive] = useState('');
+  const [detailOpen, setDetailOpen] = useState(false);
 
   useEffect(() => {
     const fetchProjectData = async () => {
@@ -173,13 +176,22 @@ function RatingProjectPage(props) {
       <div className={styles.scrollArea}>
         <ProjectInfoCard {...project} id={project.id} />
         <ProjectResultCard resultLink={project.resultLink} />
-        <KeywordChips items={summary?.keywords || []} active={summary?.highlighted} />
+        <KeywordChips items={summary?.keywords || []} active={chipsActive || summary?.highlighted} />
         {typeof ratingSummary?.average === 'number' && (
           <MyRatingSection score={ratingSummary.average} />
         )}
         <ProsConsCards good={summary?.good || []} improve={summary?.improve || []} />
         <CategorySlidersGroup items={mock.sliders || []} onChange={() => {}} />
         <CommentPills items={mock.comments || []} />
+        <div id="detail-accordion" hidden={!detailOpen}>
+          <ProsConsCards good={summary?.good || []} improve={summary?.improve || []} />
+        </div>
+        <StickyCTA
+          label={detailOpen ? '접기' : '상세 내용 더보기'}
+          expanded={detailOpen}
+          controlsId="detail-accordion"
+          onClick={() => setDetailOpen(v => !v)}
+        />
         {/* 평가 입력 UI */}
         <div className={styles.ratingForm}>
           <div className={styles.tagSection}>
