@@ -109,7 +109,7 @@ const EvaluationStep2 = ({
       <div className={styles.buttonContainer}>
         <button
           className={`${styles.button} ${styles.primary}`}
-          onClick={onSubmit}
+          onClick={hasRating && hasDescription ? onSubmit : onNext}
           disabled={isDisabled}
         >
           {ctaLabel}
