@@ -17,6 +17,7 @@ export default function CategorySlidersGroup({ items = [], values = {}, onChange
               onChange={(v) => onChange && onChange(it.key, v)}
               compact
               showDescription={!hideDescription}
+              showThumb={false}
             />
             {idx < items.length - 1 && <div className={styles.divider} />}
           </div>

@@ -12,6 +12,7 @@ const CategorySlider = ({
   disabled = false,
   compact = false,
   showDescription = true,
+  showThumb = true,
 }) => {
   const [isDragging, setIsDragging] = useState(false);
   const [isPressed, setIsPressed] = useState(false);
@@ -100,7 +101,9 @@ const CategorySlider = ({
     if (disabled) return;
     // 썸에서 시작했는지 판별
     const path = e.composedPath ? e.composedPath() : [];
-    downOnThumbRef.current = path.includes(thumbRef.current) || e.target === thumbRef.current;
+    downOnThumbRef.current = showThumb
+      ? (path.includes(thumbRef.current) || e.target === thumbRef.current)
+      : true; // 썸이 없으면 트랙에서 바로 드래그 허용
     setIsPressed(downOnThumbRef.current);
     pointerIdRef.current = e.pointerId;
     startXRef.current = e.clientX;
@@ -109,7 +112,7 @@ const CategorySlider = ({
     // 전역 리스너 등록
     document.addEventListener('pointermove', handlePointerMove);
     document.addEventListener('pointerup', handlePointerUp);
-  }, [disabled, handlePointerMove, handlePointerUp]);
+  }, [disabled, handlePointerMove, handlePointerUp, showThumb]);
 
   // 키보드 이벤트 핸들러
   const handleKeyDown = useCallback((e) => {
@@ -156,7 +159,7 @@ const CategorySlider = ({
   const labels = Array.from({ length: max - min + 1 }, (_, i) => min + i);
 
   return (
-    <div className={`${styles.categorySlider} ${disabled ? styles.disabled : ''} ${compact ? styles.compact : ''}`}>
+    <div className={`${styles.categorySlider} ${disabled ? styles.disabled : ''} ${compact ? styles.compact : ''} ${!showThumb ? styles.noThumb : ''}`}>
       <div className={styles.categoryHeader}>
         <div className={styles.categoryName}>{name}</div>
         {showDescription && description && (
@@ -182,11 +185,13 @@ const CategorySlider = ({
             className={styles.sliderFill} 
             style={{ width: `${percentage}%` }}
           />
-          <div 
-            ref={thumbRef}
-            className={`${styles.sliderThumb} ${isPressed ? styles.pressed : ''}`}
-            style={{ left: `${percentage}%` }}
-          />
+          {showThumb && (
+            <div 
+              ref={thumbRef}
+              className={`${styles.sliderThumb} ${isPressed ? styles.pressed : ''}`}
+              style={{ left: `${percentage}%` }}
+            />
+          )}
         </div>
         
         <div className={styles.sliderLabels}>
