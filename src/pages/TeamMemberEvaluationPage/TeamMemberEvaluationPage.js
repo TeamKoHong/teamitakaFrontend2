@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import styles from './TeamMemberEvaluationPage.module.scss';
+import avatar1 from '../../assets/icons/avatar1.png';
+import avatar2 from '../../assets/icons/avatar2.png';
+import avatar3 from '../../assets/icons/avatar3.png';
+// import avatar4 from '../../assets/icons/avatar4.png'; // 필요 시 교체용으로 대기
 import DefaultHeader from '../../components/Common/DefaultHeader';
 import BottomNav from '../../components/Common/BottomNav/BottomNav';
 import EvaluationStep1 from './components/EvaluationStep1';
@@ -43,19 +47,19 @@ function TeamMemberEvaluationPage() {
               id: 101,
               name: '김재원',
               position: '프론트엔드 개발자',
-              avatar: '/assets/icons/avatar1.png'
+              avatar: avatar1
             },
             {
               id: 102,
               name: '이영희',
               position: '백엔드 개발자',
-              avatar: '/assets/icons/avatar2.png'
+              avatar: avatar2
             },
             {
               id: 103,
               name: '박철수',
               position: '디자이너',
-              avatar: '/assets/icons/avatar3.png'
+              avatar: avatar3
             }
           ]
         };
