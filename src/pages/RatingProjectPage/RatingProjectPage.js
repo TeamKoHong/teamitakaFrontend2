@@ -120,7 +120,9 @@ function RatingProjectPage(props) {
           active={chipsActive || summary?.highlighted}
           onSelect={(kw) => setChipsActive((prev) => (prev === kw ? '' : kw))}
         />
-        <KeywordBubble items={summary?.good?.slice(0,2) || []} />
+        <KeywordBubble
+          items={(summary?.keywordComments && (summary.keywordComments[chipsActive || summary.highlighted] || []))}
+        />
         {/* 3) 하단: 팀원 평가지 / 종합적 키워드 (아코디언으로 유지) */}
         <ProsConsCards good={summary?.good || []} improve={summary?.improve || []} />
         {/* 5) 슬라이더 카드: 설명 문구 활성화 */}
