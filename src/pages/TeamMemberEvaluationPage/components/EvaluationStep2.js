@@ -16,6 +16,7 @@ const EvaluationStep2 = ({
 }) => {
   const [keywordInput, setKeywordInput] = useState('');
   const [keywords, setKeywords] = useState(evaluationData.extractedKeywords.length > 0 ? evaluationData.extractedKeywords : ['창의성', '소통능력']);
+  const [showKeywordEditor, setShowKeywordEditor] = useState(false);
   
   // 입력이 완료되었는지 확인
   const isInputComplete = (evaluationData.overallRating || 0) > 0 && evaluationData.roleDescription.trim().length > 0;
@@ -86,7 +87,7 @@ const EvaluationStep2 = ({
       </div>
 
       {/* 진행 표시기 */}
-      <ProgressIndicator currentStep={1} totalSteps={3} />
+      <ProgressIndicator currentStep={2} totalSteps={2} />
 
       {/* 전체 별점 섹션 */}
       <div className={styles.overallRatingSection}>
@@ -116,46 +117,52 @@ const EvaluationStep2 = ({
           value={evaluationData.roleDescription}
           onChange={(e) => onRoleDescriptionChange(e.target.value)}
         />
-        
-        {/* 키워드 입력 */}
-        <div className={styles.keywordInput}>
-          <div className={styles.keywordLabel}>
-            평가 키워드
-          </div>
-          <div className={styles.keywordDescription}>
-            해당 팀원을 평가할 수 있는 키워드를 입력해주세요. Enter 키나 추가 버튼을 눌러 키워드를 추가할 수 있습니다.
-          </div>
-          <div className={styles.keywordInputContainer}>
-            <input
-              type="text"
-              className={styles.keywordInputField}
-              placeholder="키워드를 입력하세요"
-              value={keywordInput}
-              onChange={(e) => setKeywordInput(e.target.value)}
-              onKeyPress={handleKeyPress}
-            />
-            <button 
-              className={styles.keywordAddButton}
-              onClick={handleAddKeyword}
-              disabled={!keywordInput.trim()}
-            >
-              추가
-            </button>
-          </div>
-          <div className={styles.keywordTags}>
-            {keywords.map((keyword, index) => (
-              <span key={index} className={styles.keywordTag}>
-                {keyword}
-                <span 
-                  className={styles.removeBtn}
-                  onClick={() => handleRemoveKeyword(keyword)}
-                >
-                  ×
+        {/* 키워드 입력 - 캡슐 버튼 토글 */}
+        {!showKeywordEditor ? (
+          <button
+            type="button"
+            className={styles.keywordPillButton}
+            onClick={() => setShowKeywordEditor(true)}
+          >
+            키워드 입력
+          </button>
+        ) : (
+          <div className={styles.keywordInput}>
+            <div className={styles.keywordDescription}>
+              해당 팀원을 평가할 수 있는 키워드를 입력해주세요. Enter 키나 추가 버튼을 눌러 키워드를 추가할 수 있습니다.
+            </div>
+            <div className={styles.keywordInputContainer}>
+              <input
+                type="text"
+                className={styles.keywordInputField}
+                placeholder="키워드를 입력하세요"
+                value={keywordInput}
+                onChange={(e) => setKeywordInput(e.target.value)}
+                onKeyPress={handleKeyPress}
+              />
+              <button 
+                className={styles.keywordAddButton}
+                onClick={handleAddKeyword}
+                disabled={!keywordInput.trim()}
+              >
+                추가
+              </button>
+            </div>
+            <div className={styles.keywordTags}>
+              {keywords.map((keyword, index) => (
+                <span key={index} className={styles.keywordTag}>
+                  {keyword}
+                  <span 
+                    className={styles.removeBtn}
+                    onClick={() => handleRemoveKeyword(keyword)}
+                  >
+                    ×
+                  </span>
                 </span>
-              </span>
-            ))}
+              ))}
+            </div>
           </div>
-        </div>
+        )}
       </div>
 
       {/* 입력 완료 상태 피드백 */}
@@ -180,7 +187,7 @@ const EvaluationStep2 = ({
           onClick={onSubmit}
           disabled={!isInputComplete}
         >
-          다음으로 넘어가기
+          평가 보내기
         </button>
       </div>
     </div>
