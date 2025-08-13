@@ -14,6 +14,17 @@ const byId = {
     dday: { value: 47, percent: 75 },
     resultLink: 'https://any_link.com',
     ratingSummary: { average: 4.0 },
+    sliders: [
+      { key:'participation', name:'참여도', desc:'해당 팀원의 프로젝트 내에서 참여도를 점수로 평가해주세요', value:4 },
+      { key:'communication', name:'소통', desc:'해당 팀원과의 의사소통 태도를 점수로 평가해주세요', value:2 },
+      { key:'responsibility', name:'책임감', desc:'해당 팀원의 프로젝트 책임감을 점수로 평가해주세요', value:4 },
+      { key:'collaboration', name:'협력', desc:'해당 팀원의 프로젝트 내에서 보인 협동심을 점수로 평가해주세요', value:3 },
+      { key:'individualAbility', name:'개인 능력', desc:'해당 팀원의 프로젝트 수행 능력을 점수로 평가해주세요', value:4 }
+    ],
+    comments: [
+      { text:'마감 기한을 잘 지켜주며 흐름이 효율적으로 마무리 되었습니다.', tone:'light' },
+      { text:'소소한 문서화 습관이 좀 더 많이 보였으면 좋겠습니다.', tone:'dark' }
+    ],
     roles: [
       '구체적인 역할은 어쩌구어쩌구 입니다.',
       '구체적인 역할은 어쩌구어쩌구 입니다.',
@@ -35,6 +46,17 @@ const byId = {
     dday: { value: 30, percent: 50 },
     resultLink: 'https://any_link.com',
     ratingSummary: { average: 4.0 },
+    sliders: [
+      { key:'participation', name:'참여도', desc:'해당 팀원의 프로젝트 내에서 참여도를 점수로 평가해주세요', value:4 },
+      { key:'communication', name:'소통', desc:'해당 팀원과의 의사소통 태도를 점수로 평가해주세요', value:3 },
+      { key:'responsibility', name:'책임감', desc:'해당 팀원의 프로젝트 책임감을 점수로 평가해주세요', value:4 },
+      { key:'collaboration', name:'협력', desc:'해당 팀원의 프로젝트 내에서 보인 협동심을 점수로 평가해주세요', value:3 },
+      { key:'individualAbility', name:'개인 능력', desc:'해당 팀원의 프로젝트 수행 능력을 점수로 평가해주세요', value:4 }
+    ],
+    comments: [
+      { text:'마감 기한을 잘 지켜서 팀워크에 큰 도움이 되었습니다.', tone:'light' },
+      { text:'소통 트랙이 조금 더 많아지면 좋겠습니다.', tone:'dark' }
+    ],
     roles: [
       '구체적인 역할은 어쩌구어쩌구 입니다.',
       '구체적인 역할은 어쩌구어쩌구 입니다.',
@@ -62,6 +84,8 @@ export function getMockProjectSummary(projectId) {
     resultLink: '',
     ratingSummary: { average: 0 },
     roles: [],
+    sliders: [],
+    comments: [],
     summary: { keywords: [], highlighted: '', good: [], improve: [] }
   };
 }

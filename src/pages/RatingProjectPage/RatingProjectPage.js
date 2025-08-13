@@ -7,6 +7,9 @@ import KeywordChips from '../../components/RatingProjectPage/KeywordChips';
 import MyRatingSection from '../../components/RatingProjectPage/MyRatingSection';
 import ProjectInfoCard from '../../components/RatingProjectPage/ProjectInfoCard';
 import ProjectSummaryCard from '../../components/RatingProjectPage/ProjectSummaryCard';
+import ProsConsCards from '../../components/RatingProjectPage/ProsConsCards';
+import CategorySlidersGroup from '../../components/RatingProjectPage/CategorySlidersGroup';
+import CommentPills from '../../components/RatingProjectPage/CommentPills';
 import TeamMemberEvaluation from '../../components/RatingProjectPage/TeamMemberEvaluation';
 import BottomNav from '../../components/Common/BottomNav/BottomNav';
 import ProjectResultCard from '../../components/RatingProjectPage/ProjectResultCard';
@@ -174,7 +177,9 @@ function RatingProjectPage(props) {
         {typeof ratingSummary?.average === 'number' && (
           <MyRatingSection score={ratingSummary.average} />
         )}
-        <ProjectSummaryCard {...summary} />
+        <ProsConsCards good={summary?.good || []} improve={summary?.improve || []} />
+        <CategorySlidersGroup items={mock.sliders || []} onChange={() => {}} />
+        <CommentPills items={mock.comments || []} />
         {/* 평가 입력 UI */}
         <div className={styles.ratingForm}>
           <div className={styles.tagSection}>
