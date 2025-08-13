@@ -346,7 +346,7 @@
     text-align: center;
     font-size: $font-size-sm;
     color: $gray;
-    margin-bottom: 16px;
+    margin-bottom: 10px;
   }
 }
 
@@ -530,7 +530,7 @@
 .successSection {
   @extend .card;
   text-align: center;
-  padding: 40px 20px;
+  padding: 32px 20px;
   
   .successIcon {
     width: 80px;
@@ -550,7 +550,7 @@
   }
   
   .successMessage {
-    font-size: 20px;
+    font-size: 18px;
     font-weight: $font-weight-bold;
     color: $gray-dark;
     margin-bottom: 16px;
@@ -632,6 +632,14 @@
   .button {
     flex: 1;
   }
+}
+
+.centerLink {
+  text-align: center;
+  margin-top: 12px;
+  color: $gray-dark;
+  text-decoration: underline;
+  cursor: pointer;
 }
 
 // 단계별 컨테이너

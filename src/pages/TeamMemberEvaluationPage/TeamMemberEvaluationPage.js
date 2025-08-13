@@ -9,11 +9,12 @@ import DefaultHeader from '../../components/Common/DefaultHeader';
 import BottomNav from '../../components/Common/BottomNav/BottomNav';
 import EvaluationStep1 from './components/EvaluationStep1';
 import EvaluationStep2 from './components/EvaluationStep2';
+import EvaluationStep3 from './components/EvaluationStep3';
 
 function TeamMemberEvaluationPage() {
   const { projectId, memberId } = useParams();
   const navigate = useNavigate();
-  const [currentStep, setCurrentStep] = useState(1); // 1: 카테고리, 2: 전체/역할/키워드
+  const [currentStep, setCurrentStep] = useState(1); // 1: 카테고리, 2: 전체/역할, 3: 완료
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [projectData, setProjectData] = useState(null);
@@ -81,8 +82,8 @@ function TeamMemberEvaluationPage() {
   }, [projectId, memberId]);
 
   const handleNextStep = () => {
-    if (currentStep < 2) {
-      setCurrentStep(currentStep + 1); // 1 -> 2
+    if (currentStep < 3) {
+      setCurrentStep(currentStep + 1); // 1 -> 2 -> 3
     }
   };
 
@@ -134,8 +135,8 @@ function TeamMemberEvaluationPage() {
     try {
       // 실제 API 호출로 대체 예정
       console.log('평가 데이터 제출:', evaluationData);
-      // 제출 완료 후 이동 처리(옵션: 완료 뷰 없이 바로 이동)
-      navigate(`/project/${projectId}/rating-project`);
+      // Step3 완료 페이지로 이동
+      setCurrentStep(3);
     } catch (err) {
       setError('평가 제출에 실패했습니다.');
     }
@@ -196,6 +197,15 @@ function TeamMemberEvaluationPage() {
         return (
           <EvaluationStep2
             {...commonProps}
+          />
+        );
+      case 3:
+        return (
+          <EvaluationStep3
+            memberData={memberData}
+            evaluationData={evaluationData}
+            onGoProject={() => navigate(`/project/${projectId}/rating-project`)}
+            onGoHome={() => navigate('/project-management?tab=completed')}
           />
         );
       default:
