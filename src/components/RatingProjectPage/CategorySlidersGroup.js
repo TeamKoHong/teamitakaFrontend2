@@ -8,10 +8,6 @@ export default function CategorySlidersGroup({ items = [], values = {}, onChange
     <section className={styles.group} aria-label="카테고리 슬라이더">
       {items.map((it) => (
         <div key={it.key} className={styles.itemCard}>
-          <div className={styles.header}>
-            <div className={styles.name}>{it.name}</div>
-            {it.desc && <div className={styles.desc}>{it.desc}</div>}
-          </div>
           <CategorySlider
             category={it.key}
             name={it.name}
