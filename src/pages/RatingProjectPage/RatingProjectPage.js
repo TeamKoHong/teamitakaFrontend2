@@ -4,6 +4,7 @@ import styles from './RatingProjectPage.module.scss';
 import DefaultHeader from '../../components/Common/DefaultHeader';
 // import RatingInputStars from '../../components/RatingManagement/RatingInputStars/RatingInputStars';
 import KeywordChips from '../../components/RatingProjectPage/KeywordChips';
+import KeywordBubble from '../../components/RatingProjectPage/KeywordBubble';
 import OneLinerSummary from '../../components/RatingProjectPage/OneLinerSummary';
 import ProjectInfoCard from '../../components/RatingProjectPage/ProjectInfoCard';
 // import ProjectSummaryCard from '../../components/RatingProjectPage/ProjectSummaryCard';
@@ -121,6 +122,7 @@ function RatingProjectPage(props) {
           active={chipsActive || summary?.highlighted}
           onSelect={(kw) => setChipsActive((prev) => (prev === kw ? '' : kw))}
         />
+        <KeywordBubble items={summary?.good?.slice(0,2) || []} />
         {/* 3) 하단: 팀원 평가지 / 종합적 키워드 (아코디언으로 유지) */}
         <ProsConsCards good={summary?.good || []} improve={summary?.improve || []} />
         {/* 5) 슬라이더 카드: 설명 문구 활성화 */}
