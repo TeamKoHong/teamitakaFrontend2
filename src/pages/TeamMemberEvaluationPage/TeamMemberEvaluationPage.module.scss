@@ -318,10 +318,11 @@
   .starsContainer, .starContainer {
     display: flex;
     justify-content: center;
+    align-items: center; // 컨테이너 기준 중앙 정렬
+    height: 28px; // 별 폰트 크기와 동일하게 고정
     gap: 12px;
-    margin: 0 0 12px; // 섹션 하단 여백 제거에 따라 별 바로 아래 간격만 12px로 미세 조정
+    margin: 0 0 18px; // 요구사항: 별 아래 18px
     line-height: 1; // 줄간격으로 생기는 상하 여백 제거
-    transform: translateY(-1px); // 시각적으로 정확한 중앙 정렬을 위한 미세 보정
     
     .star {
       font-size: 28px;
