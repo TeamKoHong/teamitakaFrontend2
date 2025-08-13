@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from '../TeamMemberEvaluationPage.module.scss';
 
-const ProgressIndicator = ({ currentStep, totalSteps = 5 }) => {
+const ProgressIndicator = ({ currentStep, totalSteps = 5, currentVariant = 'orange' }) => {
   return (
     <div className={styles.progressIndicator}>
       {Array.from({ length: totalSteps }, (_, index) => {
@@ -11,7 +11,7 @@ const ProgressIndicator = ({ currentStep, totalSteps = 5 }) => {
         
         return (
           <React.Fragment key={stepNumber}>
-            <div className={`${styles.progressStep} ${isCompleted ? styles.completed : ''} ${isCurrent ? styles.current : ''}`}>
+            <div className={`${styles.progressStep} ${isCompleted ? styles.completed : ''} ${isCurrent ? styles.current : ''} ${isCurrent && currentVariant === 'gray' ? styles.currentGray : ''}`}>
               {isCompleted ? (
                 <span className={styles.checkIcon} aria-hidden="true">
                   <svg viewBox="0 0 24 24" width="22" height="22">

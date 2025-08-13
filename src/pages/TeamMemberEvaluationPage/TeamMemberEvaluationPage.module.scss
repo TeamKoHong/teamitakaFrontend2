@@ -653,6 +653,11 @@
       background: $primary-color;
       color: $white;
     }
+    &.currentGray {
+      background: #CFCFD3; // 회색 fill
+      color: $white; // 흰색 텍스트
+      border-color: transparent; // stroke 없음
+    }
     
     .stepNumber {
       font-size: 12px;
