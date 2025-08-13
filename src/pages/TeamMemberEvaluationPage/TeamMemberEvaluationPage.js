@@ -220,7 +220,7 @@ function TeamMemberEvaluationPage() {
 
   return (
     <div className={styles.pageContainer}>
-      <DefaultHeader title="팀원 평가" />
+      {currentStep !== 3 && <DefaultHeader title="팀원 평가" />}
       <div className={styles.content}>
         {renderCurrentStep()}
       </div>
