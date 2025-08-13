@@ -649,18 +649,15 @@
       color: $primary-color; // checkmark color
     }
     
-    &.current {
+    // Step별 스타일: 1은 오렌지 솔리드, 2는 회색 솔리드
+    &.current { // step1 현재
       background: $primary-color;
       color: $white;
+      border-color: transparent;
     }
-    &.currentGray {
-      background: #CFCFD3; // 회색 fill
-      color: $white; // 흰색 텍스트
-      border-color: transparent; // stroke 없음
-    }
-    &.upcoming {
-      background: #CFCFD3; // 회색 채움 (미래 단계)
-      color: $white; // 숫자는 흰색
+    &.upcoming { // step2 예정
+      background: #CFCFD3;
+      color: $white;
       border-color: transparent;
     }
     
