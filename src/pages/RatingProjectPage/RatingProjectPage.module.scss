@@ -259,6 +259,11 @@ $border-light: #e0e0e0;
   gap: 18px;
 }
 
+// 전체 총점 안내 블록 (이미지 문구 스타일)
+.overallIntro { padding: 8px 16px 0 16px; }
+.overallTitle { margin: 0 0 6px 0; font-size: 20px; font-weight: 700; color: #111; }
+.overallCaption { margin: 0; font-size: 14px; color: #C7C7CB; }
+
 .tagSection {
   margin-bottom: 8px;
 }
