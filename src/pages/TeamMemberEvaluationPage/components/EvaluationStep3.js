@@ -1,13 +1,10 @@
 import React from 'react';
 import styles from '../TeamMemberEvaluationPage.module.scss';
-import ProgressIndicator from './ProgressIndicator';
 import RatingInputStars from '../../../components/RatingManagement/RatingInputStars/RatingInputStars';
 
 const EvaluationStep3 = ({ memberData, evaluationData, onGoProject, onGoHome }) => {
   return (
     <div className={styles.stepContainer}>
-      {/* 진행 표시기 */}
-      <ProgressIndicator currentStep={2} totalSteps={2} />
 
       {/* 상단 완료 표시 */}
       <div className={styles.successTop}>
