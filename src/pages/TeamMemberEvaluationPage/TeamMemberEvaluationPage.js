@@ -1,15 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import styles from './TeamMemberEvaluationPage.module.scss';
+import avatar1 from '../../assets/icons/avatar1.png';
+import avatar2 from '../../assets/icons/avatar2.png';
+import avatar3 from '../../assets/icons/avatar3.png';
+// import avatar4 from '../../assets/icons/avatar4.png'; // 필요 시 교체용으로 대기
 import DefaultHeader from '../../components/Common/DefaultHeader';
 import BottomNav from '../../components/Common/BottomNav/BottomNav';
 import EvaluationStep1 from './components/EvaluationStep1';
-import EvaluationStep5 from './components/EvaluationStep5';
+import EvaluationStep2 from './components/EvaluationStep2';
+import EvaluationStep3 from './components/EvaluationStep3';
 
 function TeamMemberEvaluationPage() {
   const { projectId, memberId } = useParams();
   const navigate = useNavigate();
-  const [currentStep, setCurrentStep] = useState(1); // 1: 카테고리 점수, 2: 완료
+  const [currentStep, setCurrentStep] = useState(1); // 1: 카테고리, 2: 전체/역할, 3: 완료
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [projectData, setProjectData] = useState(null);
@@ -43,19 +48,19 @@ function TeamMemberEvaluationPage() {
               id: 101,
               name: '김재원',
               position: '프론트엔드 개발자',
-              avatar: '/assets/icons/avatar1.png'
+              avatar: avatar1
             },
             {
               id: 102,
               name: '이영희',
               position: '백엔드 개발자',
-              avatar: '/assets/icons/avatar2.png'
+              avatar: avatar2
             },
             {
               id: 103,
               name: '박철수',
               position: '디자이너',
-              avatar: '/assets/icons/avatar3.png'
+              avatar: avatar3
             }
           ]
         };
@@ -77,8 +82,8 @@ function TeamMemberEvaluationPage() {
   }, [projectId, memberId]);
 
   const handleNextStep = () => {
-    if (currentStep < 2) {
-      setCurrentStep(currentStep + 1);
+    if (currentStep < 3) {
+      setCurrentStep(currentStep + 1); // 1 -> 2 -> 3
     }
   };
 
@@ -130,7 +135,8 @@ function TeamMemberEvaluationPage() {
     try {
       // 실제 API 호출로 대체 예정
       console.log('평가 데이터 제출:', evaluationData);
-      setCurrentStep(2);
+      // Step3 완료 페이지로 이동
+      setCurrentStep(3);
     } catch (err) {
       setError('평가 제출에 실패했습니다.');
     }
@@ -180,20 +186,33 @@ function TeamMemberEvaluationPage() {
 
     switch (currentStep) {
       case 1:
-        // Step 1: 카테고리 점수 입력 → 제출 시 완료로 이동
+        // Step 1: 카테고리 점수 입력 → Next 시 Step 2 이동
         return (
           <EvaluationStep1
             {...commonProps}
-            onSubmit={handleSubmitEvaluation}
+            onNext={handleNextStep}
           />
         );
       case 2:
-        return <EvaluationStep5 />;
+        return (
+          <EvaluationStep2
+            {...commonProps}
+          />
+        );
+      case 3:
+        return (
+          <EvaluationStep3
+            memberData={memberData}
+            evaluationData={evaluationData}
+            onGoProject={() => navigate('/project-management?tab=completed')}
+            onGoHome={() => navigate('/project-management?tab=completed')}
+          />
+        );
       default:
         return (
           <EvaluationStep1
             {...commonProps}
-            onSubmit={handleSubmitEvaluation}
+            onNext={handleNextStep}
           />
         );
     }
@@ -201,7 +220,7 @@ function TeamMemberEvaluationPage() {
 
   return (
     <div className={styles.pageContainer}>
-      <DefaultHeader title="팀원 평가" />
+      {currentStep !== 3 && <DefaultHeader title="팀원 평가" />}
       <div className={styles.content}>
         {renderCurrentStep()}
       </div>

@@ -237,7 +237,7 @@
   .sliderTrack {
     position: relative;
     height: 6px;
-    background: $gray-light;
+    background: $white;
     border-radius: 3px;
     margin-bottom: 8px;
     
@@ -298,30 +298,42 @@
 // 전체 평가 섹션
 .overallRatingSection {
   @extend .card;
-  border-radius: 20px;
+  // remove card box appearance
+  background: transparent;
+  box-shadow: none;
+  padding: 0;
+  border-radius: 0;
+  margin-bottom: 0; // 섹션 자체 하단 여백 제거 (다른 방식)
+  display: grid; // 내부 간격은 row-gap으로 관리
+  row-gap: 18px;
   
   .overallLabel {
-    font-size: $font-size-lg;
+    font-size: 18px;
     font-weight: $font-weight-bold;
     color: $gray-dark;
-    text-align: center;
-    margin-bottom: 20px;
+    text-align: left;
+    margin: 0 0 18px; // 제목과 별 사이 18px
   }
   
-  .starContainer {
+  .starsContainer, .starContainer {
     display: flex;
     justify-content: center;
-    gap: 8px;
-    margin-bottom: 16px;
+    align-items: center; // 컨테이너 기준 중앙 정렬
+    height: 28px; // 별 폰트 크기와 동일하게 고정
+    gap: 12px;
+    margin: 0 0 18px; // 요구사항: 별 아래 18px
+    line-height: 1; // 줄간격으로 생기는 상하 여백 제거
     
     .star {
-      font-size: 32px;
+      font-size: 28px;
       color: $gray-light;
       cursor: pointer;
       transition: all 0.2s ease;
+      display: inline-block;
+      line-height: 1;
       
       &.filled {
-        color: #FFD700;
+        color: #FFC531;
       }
       
       &:hover {
@@ -334,18 +346,30 @@
     text-align: center;
     font-size: $font-size-sm;
     color: $gray;
-    margin-bottom: 16px;
+    margin-bottom: 10px;
   }
 }
 
 // 역할 설명 섹션
 .roleSection {
   @extend .card;
+  // remove card box appearance
+  background: transparent;
+  box-shadow: none;
+  padding: 0;
+  border-radius: 0;
   
   .roleLabel {
-    font-size: $font-size-md;
+    font-size: 18px;
     font-weight: $font-weight-bold;
     color: $gray-dark;
+    margin: 0 0 12px; // 위 여백 제거하여 별 아래 바로 제목
+  }
+
+  .subDescription {
+    font-size: 12px;
+    color: $gray; // 회색
+    line-height: 1.5;
     margin-bottom: 12px;
   }
   
@@ -369,6 +393,10 @@
       color: $gray;
     }
   }
+
+  // keywordPillButton는 제거됨
+
+  // 추천 키워드 칩은 제거되었습니다.
 }
 
 // 키워드 섹션
@@ -502,7 +530,7 @@
 .successSection {
   @extend .card;
   text-align: center;
-  padding: 40px 20px;
+  padding: 32px 20px;
   
   .successIcon {
     width: 80px;
@@ -522,7 +550,7 @@
   }
   
   .successMessage {
-    font-size: 20px;
+    font-size: 18px;
     font-weight: $font-weight-bold;
     color: $gray-dark;
     margin-bottom: 16px;
@@ -535,6 +563,43 @@
     margin-bottom: 8px;
   }
 }
+
+// Step3 상단 요약 스타일
+.successTop {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 24px 0 12px;
+}
+.checkIconCircle {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: $primary-color;
+  color: $white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: $font-weight-bold;
+}
+.title {
+  font-size: 18px;
+  font-weight: $font-weight-bold;
+  color: $gray-dark;
+}
+.memberRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+}
+.plainAvatar { width: 44px; height: 44px; border-radius: 50%; display: block; }
+.memberMeta { display: flex; flex-direction: column; gap: 6px; }
+.memberName { font-weight: $font-weight-bold; color: $gray-dark; }
+.starRow { transform: translateY(-2px); }
+.caption { font-size: 12px; color: $gray; margin: 4px 0 12px; }
+.buttonBlock { margin-top: 8px; }
 
 
 
@@ -589,16 +654,29 @@
 
 // 버튼 컨테이너
 .buttonContainer {
-  margin-top: 24px;
+  margin-top: 22px; // 약 2px 줄여 간격 미세 조정
   display: flex;
   gap: 12px;
   position: sticky;
   bottom: 24px;
   z-index: 10;
+  // iOS/안드로이드 각 브라우저의 textarea 외곽선 렌더링 차이에 따른 오차 보정
+  // 마지막 입력 요소가 textarea일 경우 추가 마진을 제거하여 시각적 24px 유지
+  &:has(textarea:focus), &:has(textarea) {
+    margin-top: 22px;
+  }
   
   .button {
     flex: 1;
   }
+}
+
+.centerLink {
+  text-align: center;
+  margin-top: 12px;
+  color: $gray-dark;
+  text-decoration: underline;
+  cursor: pointer;
 }
 
 // 단계별 컨테이너
@@ -606,6 +684,13 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
+  min-height: calc(100vh - 56px); // 헤더 없는 상태에서도 전체 높이 확보
+}
+.successWrap {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center; // y축 중앙 정렬
 }
 
 // 진행 표시기
@@ -613,46 +698,66 @@
   display: flex;
   align-items: center;
   justify-content: flex-start; // 좌측 정렬로 시안에 맞춤
-  gap: 10px;
-  margin: 8px 0 12px;
+  gap: 8px;
+  margin: 6px 0 12px;
   
   .progressStep {
-    width: 20px;
-    height: 20px;
+    width: 22px;
+    height: 22px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 11px;
+    font-size: 12px;
     font-weight: $font-weight-bold;
-    background: $gray-light;
+    background: $white;
     color: $gray-dark;
+    border: 2px solid $primary-color;
     transition: all 0.3s ease;
     
     &.completed {
-      background: $primary-color;
-      color: $white;
+      background: $white; // fill white
+      color: $primary-color; // checkmark color
     }
     
-    &.current {
+    // Step별 스타일: 1은 오렌지 솔리드, 2는 회색 솔리드
+    &.current { // step1 현재
       background: $primary-color;
       color: $white;
+      border-color: transparent;
+    }
+    &.upcoming { // step2 예정
+      background: #CFCFD3;
+      color: $white;
+      border-color: transparent;
     }
     
     .stepNumber {
       font-size: 12px;
       font-weight: $font-weight-bold;
     }
+    .checkIcon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: $primary-color; // SVG stroke uses currentColor
+      
+      // slightly smaller check mark (about 80% of circle)
+      svg {
+        width: 80%;
+        height: 80%;
+      }
+    }
   }
   
   .progressLine {
-    width: 16px;
-    height: 2px;
-    background: $gray-light;
-    transition: background 0.3s ease;
+    width: 40px;
+    height: 0;
+    border-top: 3px dotted $gray;
+    transition: border-color 0.3s ease;
     
     &.completed {
-      background: $primary-color;
+      border-top-color: $primary-color;
     }
   }
 } 

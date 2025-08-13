@@ -14,14 +14,34 @@ const byId = {
     dday: { value: 47, percent: 75 },
     resultLink: 'https://any_link.com',
     ratingSummary: { average: 4.0 },
+    sliders: [
+      { key:'participation', name:'참여도', desc:'해당 팀원의 프로젝트 내에서 참여도를 점수로 평가해주세요', value:4 },
+      { key:'communication', name:'소통', desc:'해당 팀원과의 의사소통 태도를 점수로 평가해주세요', value:2 },
+      { key:'responsibility', name:'책임감', desc:'해당 팀원의 프로젝트 책임감을 점수로 평가해주세요', value:4 },
+      { key:'collaboration', name:'협력', desc:'해당 팀원의 프로젝트 내에서 보인 협동심을 점수로 평가해주세요', value:3 },
+      { key:'individualAbility', name:'개인 능력', desc:'해당 팀원의 프로젝트 수행 능력을 점수로 평가해주세요', value:4 }
+    ],
+    comments: [
+      { text:'마감 기한을 잘 지켜주며 흐름이 효율적으로 마무리 되었습니다.', tone:'light' },
+      { text:'소소한 문서화 습관이 좀 더 많이 보였으면 좋겠습니다.', tone:'dark' }
+    ],
     roles: [
       '구체적인 역할은 어쩌구어쩌구 입니다.',
       '구체적인 역할은 어쩌구어쩌구 입니다.',
       '문서 정리와 QA를 병행했습니다.'
     ],
     summary: {
+      oneLiner: '일정 준수와 실행력이 돋보인 프로젝트였습니다.',
+      keywords: ['책임감있는','성실함','배려심'],
+      highlighted: '책임감있는',
       good: ['업무 능력이 뛰어나요.', '열정이 넘치는 팀원이에요.'],
-      improve: ['의사 소통이 원활하면 좋겠어요.', '열심히 성장하는 모습이 필요해요.']
+      improve: ['의사 소통이 원활하면 좋겠어요.', '열심히 성장하는 모습이 필요해요.'],
+      keywordComments: {
+        '책임감있는': ['항상 마감 기한을 잘 지켜주셔서 좋았어요!', '책임감 있는 태도로 프로젝트에 임한 점이 인상적이었어요.'],
+        '성실함': ['성실하게 참여했어요.', '빠른 실행력이 돋보였어요.'],
+        '배려심': ['소통이 원활하고 배려심이 있어요.', '팀워크에 큰 도움이 되었어요.']
+      },
+      aggregateKeywords: ['리더십','소통','정확성']
     }
   },
   6: {
@@ -33,14 +53,34 @@ const byId = {
     dday: { value: 30, percent: 50 },
     resultLink: 'https://any_link.com',
     ratingSummary: { average: 4.0 },
+    sliders: [
+      { key:'participation', name:'참여도', desc:'해당 팀원의 프로젝트 내에서 참여도를 점수로 평가해주세요', value:4 },
+      { key:'communication', name:'소통', desc:'해당 팀원과의 의사소통 태도를 점수로 평가해주세요', value:3 },
+      { key:'responsibility', name:'책임감', desc:'해당 팀원의 프로젝트 책임감을 점수로 평가해주세요', value:4 },
+      { key:'collaboration', name:'협력', desc:'해당 팀원의 프로젝트 내에서 보인 협동심을 점수로 평가해주세요', value:3 },
+      { key:'individualAbility', name:'개인 능력', desc:'해당 팀원의 프로젝트 수행 능력을 점수로 평가해주세요', value:4 }
+    ],
+    comments: [
+      { text:'마감 기한을 잘 지켜준 덕분에 효율적으로 마무리 되었습니다.', tone:'light' },
+      { text:'스스로 노력하는 모습이 좀 더 많이 보였으면 좋겠다는 아쉬움이 남습니다.', tone:'dark' }
+    ],
     roles: [
       '구체적인 역할은 어쩌구어쩌구 입니다.',
       '구체적인 역할은 어쩌구어쩌구 입니다.',
       '협업 툴 세팅과 일정 조율을 담당했습니다.'
     ],
     summary: {
-      good: ['성실하게 참여했어요.', '빠른 실행력이 돋보여요.'],
-      improve: ['문서화가 조금 더 필요해요.', '회의 안건 정리가 있으면 더 좋아요.']
+      oneLiner: '',
+      keywords: ['책임감있는','성실함','배려심'],
+      highlighted: '책임감있는',
+      good: ['업무 능력이 뛰어나요', '열정이 넘치는 팀원이에요.'],
+      improve: ['의사 소통이 원활하면 좋겠어요.', '열심히 성장하는 모습이 필요해요.'],
+      keywordComments: {
+        '책임감있는': ['항상 마감 기한을 잘 지켜주셔서 좋았어요!', '책임감 있는 태도로 프로젝트에 임한 점이 인상적이었어요.'],
+        '성실함': ['성실하게 참여했어요.', '꾸준히 참여해 신뢰를 줬어요.'],
+        '배려심': ['팀원 의견을 잘 경청해요.', '협업 과정에서 배려가 느껴졌어요.']
+      },
+      aggregateKeywords: ['주도성','협업','문서화']
     }
   }
 };
@@ -58,7 +98,9 @@ export function getMockProjectSummary(projectId) {
     resultLink: '',
     ratingSummary: { average: 0 },
     roles: [],
-    summary: { good: [], improve: [] }
+    sliders: [],
+    comments: [],
+    summary: { keywords: [], highlighted: '', good: [], improve: [] }
   };
 }
 

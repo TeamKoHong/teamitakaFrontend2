@@ -11,38 +11,20 @@ const EvaluationStep2 = ({
   onPrev,
   onOverallRatingChange,
   onRoleDescriptionChange,
-  onKeywordsChange,
   onSubmit
 }) => {
-  const [keywordInput, setKeywordInput] = useState('');
-  const [keywords, setKeywords] = useState(evaluationData.extractedKeywords.length > 0 ? evaluationData.extractedKeywords : ['창의성', '소통능력']);
   
-  // 입력이 완료되었는지 확인
-  const isInputComplete = (evaluationData.overallRating || 0) > 0 && evaluationData.roleDescription.trim().length > 0;
+  
+  // CTA 라벨/활성 상태 결정
+  const hasRating = (evaluationData.overallRating || 0) > 0;
+  const hasDescription = evaluationData.roleDescription.trim().length > 0;
+  const bothEmpty = !hasRating && !hasDescription;
+  const isDisabled = bothEmpty || (!hasRating && hasDescription);
+  const ctaLabel = bothEmpty
+    ? '평가 보내기'
+    : (!hasDescription && hasRating ? '나중에 할게요' : '평가 보내기');
 
-  // 키워드 추가 함수
-  const handleAddKeyword = () => {
-    if (keywordInput.trim() && !keywords.includes(keywordInput.trim())) {
-      const newKeywords = [...keywords, keywordInput.trim()];
-      setKeywords(newKeywords);
-      onKeywordsChange(newKeywords);
-      setKeywordInput('');
-    }
-  };
-
-  // 키워드 삭제 함수
-  const handleRemoveKeyword = (keywordToRemove) => {
-    const newKeywords = keywords.filter(keyword => keyword !== keywordToRemove);
-    setKeywords(newKeywords);
-    onKeywordsChange(newKeywords);
-  };
-
-  // Enter 키 처리
-  const handleKeyPress = (e) => {
-    if (e.key === 'Enter') {
-      handleAddKeyword();
-    }
-  };
+  // 키워드 입력 기능 제거
 
   return (
     <div className={styles.stepContainer}>
@@ -86,7 +68,7 @@ const EvaluationStep2 = ({
       </div>
 
       {/* 진행 표시기 */}
-      <ProgressIndicator currentStep={1} totalSteps={3} />
+      <ProgressIndicator currentStep={2} totalSteps={2} />
 
       {/* 전체 별점 섹션 */}
       <div className={styles.overallRatingSection}>
@@ -105,9 +87,11 @@ const EvaluationStep2 = ({
       {/* 역할 입력 섹션 */}
       <div className={styles.roleSection}>
         <div className={styles.roleLabel}>
-          해당 팀원의 업무 분담 및 구체적인 역할은 무엇이었나요?
+          해당 팀원의 업무 분담 및
+          <br />
+          구체적인 역할은 무엇이었나요?
         </div>
-        <div className={styles.roleDescription}>
+        <div className={styles.subDescription}>
           현재 작성되는 평가는 AI 키워드 추출 되어 해당 팀원의 평가키워드에 반영됩니다. 익명이니 자유롭게 작성해주세요.
         </div>
         <textarea
@@ -116,71 +100,19 @@ const EvaluationStep2 = ({
           value={evaluationData.roleDescription}
           onChange={(e) => onRoleDescriptionChange(e.target.value)}
         />
-        
-        {/* 키워드 입력 */}
-        <div className={styles.keywordInput}>
-          <div className={styles.keywordLabel}>
-            평가 키워드
-          </div>
-          <div className={styles.keywordDescription}>
-            해당 팀원을 평가할 수 있는 키워드를 입력해주세요. Enter 키나 추가 버튼을 눌러 키워드를 추가할 수 있습니다.
-          </div>
-          <div className={styles.keywordInputContainer}>
-            <input
-              type="text"
-              className={styles.keywordInputField}
-              placeholder="키워드를 입력하세요"
-              value={keywordInput}
-              onChange={(e) => setKeywordInput(e.target.value)}
-              onKeyPress={handleKeyPress}
-            />
-            <button 
-              className={styles.keywordAddButton}
-              onClick={handleAddKeyword}
-              disabled={!keywordInput.trim()}
-            >
-              추가
-            </button>
-          </div>
-          <div className={styles.keywordTags}>
-            {keywords.map((keyword, index) => (
-              <span key={index} className={styles.keywordTag}>
-                {keyword}
-                <span 
-                  className={styles.removeBtn}
-                  onClick={() => handleRemoveKeyword(keyword)}
-                >
-                  ×
-                </span>
-              </span>
-            ))}
-          </div>
-        </div>
+        {/* 목업 키워드 칩 표시 제거 */}
       </div>
 
-      {/* 입력 완료 상태 피드백 */}
-      {!isInputComplete && (
-        <div className={styles.completionFeedback}>
-          전체 별점과 역할 설명을 입력해주세요
-        </div>
-      )}
+      {/* 입력 완료 상태 피드백 제거 */}
       
       {/* 버튼 컨테이너 */}
       <div className={styles.buttonContainer}>
-        {onPrev && (
-          <button
-            className={`${styles.button} ${styles.secondary}`}
-            onClick={onPrev}
-          >
-            이전
-          </button>
-        )}
         <button
           className={`${styles.button} ${styles.primary}`}
-          onClick={onSubmit}
-          disabled={!isInputComplete}
+          onClick={hasRating && hasDescription ? onSubmit : onNext}
+          disabled={isDisabled}
         >
-          다음으로 넘어가기
+          {ctaLabel}
         </button>
       </div>
     </div>
