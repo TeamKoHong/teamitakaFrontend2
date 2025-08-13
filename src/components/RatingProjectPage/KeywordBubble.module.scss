@@ -2,10 +2,10 @@
 .bubble {
   position: relative;
   background: $white;
-  border-radius: 12px;
+  border-radius: 14px;
   box-shadow: 0 2px 12px rgba(0,0,0,0.06);
-  padding: 14px 16px;
-  margin-top: 6px;
+  padding: 12px 14px;
+  margin-top: 4px;
 }
 .bubble::before {
   content: '';
@@ -19,5 +19,5 @@
   filter: drop-shadow(0 -1px 0 rgba(0,0,0,0.06));
 }
 .list { margin: 0; padding-left: 18px; }
-.list li { margin: 8px 0; font-size: 15px; color: $gray-dark; line-height: 1.8; }
+.list li { margin: 6px 0; font-size: 14px; color: $gray-dark; line-height: 1.6; }
 
