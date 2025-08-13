@@ -55,14 +55,6 @@ function RatingProjectPage(props) {
           ],
         };
         setProjectData(dummyProject);
-        // Initialize ratings state
-        const initialRatings = {};
-        dummyProject.members.forEach(member => {
-          member.categories.forEach(category => {
-            initialRatings[`${member.id}-${category.id}`] = 0;
-          });
-        });
-        setRatings(initialRatings);
       } catch (err) {
         setError("프로젝트 정보를 불러오는데 실패했습니다.");
         console.error("Failed to fetch project data:", err);
