@@ -269,6 +269,11 @@ $border-light: #e0e0e0;
 .sectionLabel { padding: 0 12px; font-size: 16px; font-weight: 700; color: #222; margin: 6px 0; }
 .sectionLabelTight { padding: 0 12px; font-size: 16px; font-weight: 700; color: #222; margin: 0; line-height: 1.25; }
 
+// Hide title inside MyRatingSection without editing its code
+.myRatingNoTitle {
+	section[aria-label="내가 받은 별점"] > h2 { display: none !important; }
+}
+
 .tagSection {
   margin-bottom: 8px;
 }
