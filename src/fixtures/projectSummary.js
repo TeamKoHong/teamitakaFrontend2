@@ -61,8 +61,8 @@ const byId = {
       { key:'individualAbility', name:'개인 능력', desc:'해당 팀원의 프로젝트 수행 능력을 점수로 평가해주세요', value:4 }
     ],
     comments: [
-      { text:'마감 기한을 잘 지켜서 팀워크에 큰 도움이 되었습니다.', tone:'light' },
-      { text:'소통 트랙이 조금 더 많아지면 좋겠습니다.', tone:'dark' }
+      { text:'마감 기한을 잘 지켜준 덕분에 효율적으로 마무리 되었습니다.', tone:'light' },
+      { text:'스스로 노력하는 모습이 좀 더 많이 보였으면 좋겠다는 아쉬움이 남습니다.', tone:'dark' }
     ],
     roles: [
       '구체적인 역할은 어쩌구어쩌구 입니다.',
