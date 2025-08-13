@@ -139,6 +139,13 @@
   }
 }
 
+// 썸 제거 모드: 트랙과 필만 표시
+.noThumb {
+  .sliderContainer .sliderTrack {
+    height: 6px;
+  }
+}
+
 .sliderLabels {
   display: flex;
   justify-content: space-between;
