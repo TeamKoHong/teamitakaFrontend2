@@ -658,6 +658,11 @@
       color: $white; // 흰색 텍스트
       border-color: transparent; // stroke 없음
     }
+    &.upcoming {
+      background: #CFCFD3; // 회색 채움 (미래 단계)
+      color: $white; // 숫자는 흰색
+      border-color: transparent;
+    }
     
     .stepNumber {
       font-size: 12px;
