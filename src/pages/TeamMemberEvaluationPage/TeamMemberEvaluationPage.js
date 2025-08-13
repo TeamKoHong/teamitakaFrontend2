@@ -204,7 +204,7 @@ function TeamMemberEvaluationPage() {
           <EvaluationStep3
             memberData={memberData}
             evaluationData={evaluationData}
-            onGoProject={() => navigate(`/project/${projectId}/rating-project`)}
+            onGoProject={() => navigate('/project-management?tab=completed')}
             onGoHome={() => navigate('/project-management?tab=completed')}
           />
         );
