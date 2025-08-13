@@ -689,6 +689,13 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
+  min-height: calc(100vh - 56px); // 헤더 없는 상태에서도 전체 높이 확보
+}
+.successWrap {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center; // y축 중앙 정렬
 }
 
 // 진행 표시기
