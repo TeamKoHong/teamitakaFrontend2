@@ -17,13 +17,7 @@ const EvaluationStep3 = ({ memberData, evaluationData, onGoProject, onGoHome }) 
         {memberData && (
           <>
             <div className={styles.memberRow}>
-              <div className={styles.avatarWrap}>
-                <div
-                  className={styles.avatarImage}
-                  style={{ backgroundImage: `url(${memberData.avatar})` }}
-                  aria-label={memberData.name}
-                />
-              </div>
+              <img src={memberData.avatar} alt={memberData.name} className={styles.plainAvatar} />
               <div className={styles.memberMeta}>
                 <div className={styles.memberName}>{memberData.name}</div>
                 <div className={styles.starRow}>
