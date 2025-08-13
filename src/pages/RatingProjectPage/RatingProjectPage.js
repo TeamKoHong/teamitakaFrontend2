@@ -4,6 +4,7 @@ import styles from './RatingProjectPage.module.scss';
 import DefaultHeader from '../../components/Common/DefaultHeader';
 import RatingInputStars from '../../components/RatingManagement/RatingInputStars/RatingInputStars';
 import KeywordChips from '../../components/RatingProjectPage/KeywordChips';
+import OneLinerSummary from '../../components/RatingProjectPage/OneLinerSummary';
 import MyRatingSection from '../../components/RatingProjectPage/MyRatingSection';
 import ProjectInfoCard from '../../components/RatingProjectPage/ProjectInfoCard';
 import ProjectSummaryCard from '../../components/RatingProjectPage/ProjectSummaryCard';
@@ -176,6 +177,7 @@ function RatingProjectPage(props) {
       <div className={styles.scrollArea}>
         <ProjectInfoCard {...project} id={project.id} />
         <ProjectResultCard resultLink={project.resultLink} />
+        <OneLinerSummary text={summary?.oneLiner} />
         <KeywordChips items={summary?.keywords || []} active={chipsActive || summary?.highlighted} />
         {typeof ratingSummary?.average === 'number' && (
           <MyRatingSection score={ratingSummary.average} />
@@ -184,7 +186,14 @@ function RatingProjectPage(props) {
         <CategorySlidersGroup items={mock.sliders || []} onChange={() => {}} />
         <CommentPills items={mock.comments || []} />
         <div id="detail-accordion" hidden={!detailOpen}>
-          <ProsConsCards good={summary?.good || []} improve={summary?.improve || []} />
+          <TeamMemberEvaluation
+            question="구체적인 역할은 무엇이었나요?"
+            answers={mock.roles || []}
+          />
+          <div style={{ marginTop: 12 }}>
+            <h3 style={{ fontSize: 14, margin: '0 0 8px 0', color: '#222' }}>종합적 키워드</h3>
+            <KeywordChips items={summary?.aggregateKeywords || summary?.keywords || []} active={chipsActive || summary?.highlighted} />
+          </div>
         </div>
         <StickyCTA
           label={detailOpen ? '접기' : '상세 내용 더보기'}
