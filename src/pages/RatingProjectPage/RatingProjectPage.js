@@ -10,6 +10,7 @@ import ProjectInfoCard from '../../components/RatingProjectPage/ProjectInfoCard'
 import ProsConsCards from '../../components/RatingProjectPage/ProsConsCards';
 import CategorySlidersGroup from '../../components/RatingProjectPage/CategorySlidersGroup';
 import CommentPills from '../../components/RatingProjectPage/CommentPills';
+import CommentsBubble from '../../components/RatingProjectPage/CommentsBubble';
 // import StickyCTA from '../../components/RatingProjectPage/StickyCTA';
 import TeamMemberEvaluation from '../../components/RatingProjectPage/TeamMemberEvaluation';
 import BottomNav from '../../components/Common/BottomNav/BottomNav';
@@ -119,6 +120,8 @@ function RatingProjectPage(props) {
         />
         {/* 4) 좋아요/개선 2열 배치 */}
         <ProsConsCards good={summary?.good || []} improve={summary?.improve || []} />
+        {/* 요약 코멘트 버블 박스 */}
+        <CommentsBubble items={mock.comments || []} />
         {/* 5) 슬라이더 카드: 설명 문구 활성화 */}
         <CategorySlidersGroup items={mock.sliders || []} onChange={() => {}} hideDescription={false} />
         {/* 2) 전체 총점 블록 + 3) MyRatingSection (별만 표시) */}
@@ -127,7 +130,7 @@ function RatingProjectPage(props) {
           <p className={styles.overallCaption}>받은 전체 총점의 평균치입니다.</p>
         </div>
         <MyRatingSection score={ratingSummary?.average ?? 0} />
-        <CommentPills items={mock.comments || []} />
+        {/* 하단 코멘트 캡슐은 유지 필요 시만 노출 */}
         <div id="detail-accordion" hidden={!detailOpen}>
           <TeamMemberEvaluation
             question="구체적인 역할은 무엇이었나요?"
