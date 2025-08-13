@@ -89,7 +89,7 @@ function RatingProjectPage(props) {
     meetingTime: stateProject?.meetingTime ?? mock.meetingTime,
     avatars: stateProject?.avatars ?? mock.avatars,
     dday: stateProject?.dday ?? mock.dday,
-    resultLink: stateProject?.resultLink ?? mock.resultLink,
+    resultLink: (stateProject?.resultLink && stateProject.resultLink.trim()) || mock.resultLink,
   };
   const summary = stateProject?.summary ?? mock.summary;
   const ratingSummary = stateProject?.ratingSummary ?? mock.ratingSummary;
