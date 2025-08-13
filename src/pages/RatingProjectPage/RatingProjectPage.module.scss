@@ -174,6 +174,11 @@ $border-light: #e0e0e0;
   text-align: center;
 }
 
+// 카드 간 일관된 간격(모바일 스크롤 시 부자연스러움 개선)
+.contentWrap > *:not(:last-child) { margin-bottom: 12px; }
+// 슬라이더 그룹과 하단 네비 사이 공백 확보
+.scrollArea { padding-bottom: 120px; }
+
 .divider {
   height: 1px;
   background: #d9d9d9;
