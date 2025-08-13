@@ -11,7 +11,7 @@ function displayText(url) {
 }
 
 export default function ProjectResultCard({ resultLink }) {
-  if (!resultLink) return null;
+  if (!resultLink || !String(resultLink).trim()) return null;
   return (
     <section className={styles.section} aria-labelledby="result-title">
       <h2 id="result-title" className={styles.sectionTitle}>프로젝트 결과물</h2>
