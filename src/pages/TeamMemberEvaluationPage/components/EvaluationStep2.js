@@ -107,12 +107,7 @@ const EvaluationStep2 = ({
         )}
       </div>
 
-      {/* 입력 완료 상태 피드백 */}
-      {!isInputComplete && (
-        <div className={styles.completionFeedback}>
-          전체 별점과 역할 설명을 입력해주세요
-        </div>
-      )}
+      {/* 입력 완료 상태 피드백 제거 */}
       
       {/* 버튼 컨테이너 */}
       <div className={styles.buttonContainer}>
