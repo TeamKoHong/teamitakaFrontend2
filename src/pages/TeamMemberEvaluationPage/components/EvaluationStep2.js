@@ -94,17 +94,7 @@ const EvaluationStep2 = ({
           value={evaluationData.roleDescription}
           onChange={(e) => onRoleDescriptionChange(e.target.value)}
         />
-        {/* 텍스트 입력이 있으면 추천 키워드 칩을 표시 (읽기전용) */}
-        {evaluationData.roleDescription.trim().length > 0 && (
-          <div className={styles.suggestedKeywords} aria-label="추천 키워드">
-            {(evaluationData.extractedKeywords && evaluationData.extractedKeywords.length > 0
-              ? evaluationData.extractedKeywords
-              : ['창의성', '배려심']
-            ).map((kw, idx) => (
-              <span key={`${kw}-${idx}`} className={styles.keywordChip}>{kw}</span>
-            ))}
-          </div>
-        )}
+        {/* 목업 키워드 칩 표시 제거 */}
       </div>
 
       {/* 입력 완료 상태 피드백 제거 */}

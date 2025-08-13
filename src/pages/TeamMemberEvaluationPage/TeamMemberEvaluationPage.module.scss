@@ -396,23 +396,7 @@
 
   // keywordPillButton는 제거됨
 
-  .suggestedKeywords {
-    margin-top: 12px;
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-  }
-  .keywordChip {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 6px 12px;
-    border-radius: 999px;
-    background: color.adjust($primary-color, $lightness: 90%);
-    color: $primary-color;
-    font-size: 12px;
-    font-weight: $font-weight-medium;
-  }
+  // 추천 키워드 칩은 제거되었습니다.
 }
 
 // 키워드 섹션
