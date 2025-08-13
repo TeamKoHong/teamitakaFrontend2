@@ -5,7 +5,6 @@ import DefaultHeader from '../../components/Common/DefaultHeader';
 import RatingInputStars from '../../components/RatingManagement/RatingInputStars/RatingInputStars';
 import KeywordChips from '../../components/RatingProjectPage/KeywordChips';
 import OneLinerSummary from '../../components/RatingProjectPage/OneLinerSummary';
-import MyRatingSection from '../../components/RatingProjectPage/MyRatingSection';
 import ProjectInfoCard from '../../components/RatingProjectPage/ProjectInfoCard';
 import ProjectSummaryCard from '../../components/RatingProjectPage/ProjectSummaryCard';
 import ProsConsCards from '../../components/RatingProjectPage/ProsConsCards';
@@ -183,9 +182,10 @@ function RatingProjectPage(props) {
           active={chipsActive || summary?.highlighted}
           onSelect={(kw) => setChipsActive((prev) => (prev === kw ? '' : kw))}
         />
-        {typeof ratingSummary?.average === 'number' && (
-          <MyRatingSection score={ratingSummary.average} />
-        )}
+        <div className={styles.overallIntro}>
+          <h2 className={styles.overallTitle}>전체 총점은 몇 점인가요?</h2>
+          <p className={styles.overallCaption}>받은 전체 총점의 평균치입니다.</p>
+        </div>
         <ProsConsCards good={summary?.good || []} improve={summary?.improve || []} />
         <CategorySlidersGroup items={mock.sliders || []} onChange={() => {}} hideDescription />
         <CommentPills items={mock.comments || []} />
