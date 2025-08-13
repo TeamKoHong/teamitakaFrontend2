@@ -318,12 +318,15 @@
     justify-content: center;
     gap: 12px;
     margin: 0 0 16px;
+    line-height: 1; // 줄간격으로 생기는 상하 여백 제거
     
     .star {
       font-size: 28px;
       color: $gray-light;
       cursor: pointer;
       transition: all 0.2s ease;
+      display: inline-block;
+      line-height: 1;
       
       &.filled {
         color: #FFC531;

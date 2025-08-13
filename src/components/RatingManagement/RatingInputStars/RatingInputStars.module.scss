@@ -7,6 +7,7 @@ $star-color-inactive: #D7D1CF; // 비활성 별 윤곽에 가까운 연한 회�
 .starRating {
   display: flex;
   align-items: center; // 별들을 중앙 정렬
+  line-height: 1; // 컨테이너 줄간격 제거
   // margin-right는 ProjectRatingCard.module.scss에서 관리
 }
 
@@ -15,6 +16,8 @@ $star-color-inactive: #D7D1CF; // 비활성 별 윤곽에 가까운 연한 회�
   color: $star-color-inactive; // 기본 비활성 색상
   cursor: pointer;
   transition: color 0.2s ease-in-out;
+  display: inline-block;
+  line-height: 1;
 
   &.filled {
     color: $star-color-active; // 활성 색상
