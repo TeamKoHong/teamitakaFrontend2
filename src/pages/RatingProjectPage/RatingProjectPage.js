@@ -113,10 +113,8 @@ function RatingProjectPage(props) {
         {/* 1) 섹션 재배치: 프로젝트 카드 → 결과물 → 한 줄 요약 → 키워드 */}
         <ProjectInfoCard {...project} id={project.id} />
         <ProjectResultCard resultLink={project.resultLink} />
-        <hr className={styles.topDivider} />
-        {/* 4) 상단에 '한 줄 요약' 텍스트 (배지 제거 요청 시 표시) */}
-        <div className={styles.sectionLabel}>한 줄 요약</div>
-        <OneLinerSummary text={summary?.oneLiner} />
+        <div className={styles.sectionLabel}>팀원 평가지</div>
+        <div className={styles.sectionLabel}>종합적 키워드</div>
         <KeywordChips
           items={summary?.keywords || []}
           active={chipsActive || summary?.highlighted}
