@@ -111,14 +111,6 @@ const EvaluationStep2 = ({
       
       {/* 버튼 컨테이너 */}
       <div className={styles.buttonContainer}>
-        {onPrev && (
-          <button
-            className={`${styles.button} ${styles.secondary}`}
-            onClick={onPrev}
-          >
-            이전
-          </button>
-        )}
         <button
           className={`${styles.button} ${styles.primary}`}
           onClick={onSubmit}
