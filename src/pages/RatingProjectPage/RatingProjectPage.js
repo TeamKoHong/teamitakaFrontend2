@@ -112,7 +112,9 @@ function RatingProjectPage(props) {
         {/* 1) 섹션 재배치: 프로젝트 카드 → 결과물 → 한 줄 요약 → 키워드 */}
         <ProjectInfoCard {...project} id={project.id} />
         <ProjectResultCard resultLink={project.resultLink} />
-        {/* 2) 한 줄 요약 타이틀을 카드 상단에 */}
+        <hr className={styles.topDivider} />
+        {/* 4) 상단에 '한 줄 요약' 텍스트 (배지 제거 요청 시 표시) */}
+        <div className={styles.sectionLabel}>한 줄 요약</div>
         <OneLinerSummary text={summary?.oneLiner} />
         <KeywordChips
           items={summary?.keywords || []}
@@ -122,6 +124,7 @@ function RatingProjectPage(props) {
         {/* 3) 하단: 팀원 평가지 / 종합적 키워드 (아코디언으로 유지) */}
         <ProsConsCards good={summary?.good || []} improve={summary?.improve || []} />
         {/* 5) 슬라이더 카드: 설명 문구 활성화 */}
+        <div className={styles.sectionLabel} style={{ marginTop: 6 }}>해당 팀원의 능력별 점수는 몇 점인가요?</div>
         <CategorySlidersGroup items={mock.sliders || []} onChange={() => {}} hideDescription={false} />
         {/* 전체 총점 블록 + MyRatingSection (별만 표시) */}
         <div className={styles.overallIntro}>
@@ -132,17 +135,19 @@ function RatingProjectPage(props) {
         {/* 4) 개별 코멘트 두 개를 하단에 개별 박스로 */}
         <CommentsBubble items={mock.comments || []} />
         <div id="detail-accordion" hidden={!detailOpen}>
+          <div className={styles.sectionLabel}>팀원 평가지</div>
+          <div className={styles.sectionLabel} style={{ marginTop: 6 }}>종합적 키워드</div>
+          <KeywordChips
+            items={summary?.aggregateKeywords || summary?.keywords || []}
+            active={chipsActive || summary?.highlighted}
+            onSelect={(kw) => setChipsActive((prev) => (prev === kw ? '' : kw))}
+          />
           <TeamMemberEvaluation
             question="구체적인 역할은 무엇이었나요?"
             answers={mock.roles || []}
           />
           <div style={{ marginTop: 12 }}>
-            <h3 style={{ fontSize: 14, margin: '0 0 8px 0', color: '#222' }}>종합적 키워드</h3>
-            <KeywordChips
-              items={summary?.aggregateKeywords || summary?.keywords || []}
-              active={chipsActive || summary?.highlighted}
-              onSelect={(kw) => setChipsActive((prev) => (prev === kw ? '' : kw))}
-            />
+            
           </div>
         </div>
       </div>
