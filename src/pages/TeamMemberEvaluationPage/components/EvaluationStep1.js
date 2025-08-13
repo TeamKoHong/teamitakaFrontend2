@@ -8,7 +8,7 @@ const EvaluationStep1 = ({
   memberData,
   evaluationData,
   onCategoryRatingChange,
-  onSubmit
+  onNext
 }) => {
   const categories = [
     {
@@ -113,14 +113,14 @@ const EvaluationStep1 = ({
         </div>
       )}
       
-      {/* 제출 버튼 */}
+      {/* 다음 단계로 이동 버튼 */}
       <div className={styles.buttonContainer}>
         <button
           className={`${styles.button} ${styles.primary}`}
-          onClick={onSubmit}
+          onClick={onNext}
           disabled={!isAllCategoriesRated}
         >
-          평가 보내기
+          다음으로 넘어가기
         </button>
       </div>
     </div>

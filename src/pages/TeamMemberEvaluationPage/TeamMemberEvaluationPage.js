@@ -8,12 +8,12 @@ import avatar3 from '../../assets/icons/avatar3.png';
 import DefaultHeader from '../../components/Common/DefaultHeader';
 import BottomNav from '../../components/Common/BottomNav/BottomNav';
 import EvaluationStep1 from './components/EvaluationStep1';
-import EvaluationStep5 from './components/EvaluationStep5';
+import EvaluationStep2 from './components/EvaluationStep2';
 
 function TeamMemberEvaluationPage() {
   const { projectId, memberId } = useParams();
   const navigate = useNavigate();
-  const [currentStep, setCurrentStep] = useState(1); // 1: 카테고리 점수, 2: 완료
+  const [currentStep, setCurrentStep] = useState(1); // 1: 카테고리, 2: 전체/역할/키워드
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [projectData, setProjectData] = useState(null);
@@ -82,7 +82,7 @@ function TeamMemberEvaluationPage() {
 
   const handleNextStep = () => {
     if (currentStep < 2) {
-      setCurrentStep(currentStep + 1);
+      setCurrentStep(currentStep + 1); // 1 -> 2
     }
   };
 
@@ -134,7 +134,8 @@ function TeamMemberEvaluationPage() {
     try {
       // 실제 API 호출로 대체 예정
       console.log('평가 데이터 제출:', evaluationData);
-      setCurrentStep(2);
+      // 제출 완료 후 이동 처리(옵션: 완료 뷰 없이 바로 이동)
+      navigate(`/project/${projectId}/rating-project`);
     } catch (err) {
       setError('평가 제출에 실패했습니다.');
     }
@@ -184,20 +185,24 @@ function TeamMemberEvaluationPage() {
 
     switch (currentStep) {
       case 1:
-        // Step 1: 카테고리 점수 입력 → 제출 시 완료로 이동
+        // Step 1: 카테고리 점수 입력 → Next 시 Step 2 이동
         return (
           <EvaluationStep1
             {...commonProps}
-            onSubmit={handleSubmitEvaluation}
+            onNext={handleNextStep}
           />
         );
       case 2:
-        return <EvaluationStep5 />;
+        return (
+          <EvaluationStep2
+            {...commonProps}
+          />
+        );
       default:
         return (
           <EvaluationStep1
             {...commonProps}
-            onSubmit={handleSubmitEvaluation}
+            onNext={handleNextStep}
           />
         );
     }
