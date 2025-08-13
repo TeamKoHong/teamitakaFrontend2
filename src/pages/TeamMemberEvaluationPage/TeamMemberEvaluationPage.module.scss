@@ -641,7 +641,7 @@
     font-weight: $font-weight-bold;
     background: $gray-light;
     color: $gray-dark;
-    border: 3px solid $primary-color; // 시안: 테두리 강조
+    border: 3.5px solid $primary-color; // 시안: 두꺼운 주황 스트로크
     transition: all 0.3s ease;
     
     &.completed {
@@ -657,6 +657,12 @@
     .stepNumber {
       font-size: 12px;
       font-weight: $font-weight-bold;
+    }
+    .checkIcon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: $primary-color; // SVG stroke uses currentColor
     }
   }
   
