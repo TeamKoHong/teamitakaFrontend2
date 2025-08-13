@@ -15,8 +15,14 @@ const EvaluationStep2 = ({
 }) => {
   
   
-  // 입력이 완료되었는지 확인
-  const isInputComplete = (evaluationData.overallRating || 0) > 0 && evaluationData.roleDescription.trim().length > 0;
+  // CTA 라벨/활성 상태 결정
+  const hasRating = (evaluationData.overallRating || 0) > 0;
+  const hasDescription = evaluationData.roleDescription.trim().length > 0;
+  const bothEmpty = !hasRating && !hasDescription;
+  const isDisabled = bothEmpty || (!hasRating && hasDescription);
+  const ctaLabel = bothEmpty
+    ? '평가 보내기'
+    : (!hasDescription && hasRating ? '나중에 할게요' : '평가 보내기');
 
   // 키워드 입력 기능 제거
 
@@ -104,9 +110,9 @@ const EvaluationStep2 = ({
         <button
           className={`${styles.button} ${styles.primary}`}
           onClick={onSubmit}
-          disabled={!isInputComplete}
+          disabled={isDisabled}
         >
-          평가 보내기
+          {ctaLabel}
         </button>
       </div>
     </div>
