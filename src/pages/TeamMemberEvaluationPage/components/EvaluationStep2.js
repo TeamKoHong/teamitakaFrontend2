@@ -81,9 +81,11 @@ const EvaluationStep2 = ({
       {/* 역할 입력 섹션 */}
       <div className={styles.roleSection}>
         <div className={styles.roleLabel}>
-          해당 팀원의 업무 분담 및 구체적인 역할은 무엇이었나요?
+          해당 팀원의 업무 분담 및
+          <br />
+          구체적인 역할은 무엇이었나요?
         </div>
-        <div className={styles.roleDescription}>
+        <div className={styles.subDescription}>
           현재 작성되는 평가는 AI 키워드 추출 되어 해당 팀원의 평가키워드에 반영됩니다. 익명이니 자유롭게 작성해주세요.
         </div>
         <textarea
