@@ -308,7 +308,7 @@
     margin-bottom: 20px;
   }
   
-  .starContainer {
+  .starsContainer, .starContainer {
     display: flex;
     justify-content: center;
     gap: 8px;
@@ -321,7 +321,7 @@
       transition: all 0.2s ease;
       
       &.filled {
-        color: #FFD700;
+        color: #FFC531;
       }
       
       &:hover {
@@ -368,6 +368,20 @@
     &::placeholder {
       color: $gray;
     }
+  }
+
+  .keywordPillButton {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 14px;
+    border-radius: 999px;
+    border: 1.5px dashed $primary-color;
+    background: $white;
+    color: $primary-color;
+    font-size: 13px;
+    font-weight: $font-weight-bold;
+    margin-top: 12px;
   }
 }
 
