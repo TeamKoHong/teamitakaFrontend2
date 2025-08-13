@@ -181,7 +181,7 @@ const CategorySlider = ({
           <div 
             ref={thumbRef}
             className={`${styles.sliderThumb} ${isPressed ? styles.pressed : ''}`}
-            style={{ left: `calc(${percentage}% - 20px)` }}
+            style={{ left: `${percentage}%` }}
           />
         </div>
         
@@ -201,9 +201,6 @@ const CategorySlider = ({
         </div>
       </div>
       
-      <div className={styles.valueDisplay}>
-        <span className={styles.currentValue}>{value}점</span>
-      </div>
     </div>
   );
 };
