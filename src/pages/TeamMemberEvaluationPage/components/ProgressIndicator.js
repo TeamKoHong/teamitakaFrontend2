@@ -11,7 +11,7 @@ const ProgressIndicator = ({ currentStep, totalSteps = 5, currentVariant = 'oran
         
         return (
           <React.Fragment key={stepNumber}>
-            <div className={`${styles.progressStep} ${isCompleted ? styles.completed : ''} ${isCurrent ? styles.current : ''} ${isCurrent && currentVariant === 'gray' ? styles.currentGray : ''}`}>
+            <div className={`${styles.progressStep} ${isCompleted ? styles.completed : ''} ${isCurrent ? styles.current : ''} ${isCurrent && currentVariant === 'gray' ? styles.currentGray : ''} ${!isCompleted && !isCurrent ? styles.upcoming : ''}`}>
               {isCompleted ? (
                 <span className={styles.checkIcon} aria-hidden="true">
                   <svg viewBox="0 0 24 24" width="22" height="22">
