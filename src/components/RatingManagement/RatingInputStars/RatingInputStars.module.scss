@@ -1,20 +1,23 @@
 // src/components/RatingManagement/RatingInputStars/RatingInputStars.module.scss
 
 // RatingInputStars를 위한 변수 (필요시 RatingInputStars.module.scss 파일 자체에 정의)
-$star-color-active: #FFC700; // 목업의 활성 별 색상 (황금색)
-$star-color-inactive: #e0e0e0; // 비활성 별 색상 (연한 회색)
+$star-color-active: #FFC531; // 활성 별 색상 (황금색)
+$star-color-inactive: #D7D1CF; // 비활성 별 윤곽에 가까운 연한 회색
 
 .starRating {
   display: flex;
   align-items: center; // 별들을 중앙 정렬
+  line-height: 1; // 컨테이너 줄간격 제거
   // margin-right는 ProjectRatingCard.module.scss에서 관리
 }
 
 .star {
-  font-size: 1.15rem; // 18.4px (별 아이콘 크기 - 목업과 일치시킴)
+  font-size: 2rem; // 더 크고 명확한 별 크기
   color: $star-color-inactive; // 기본 비활성 색상
   cursor: pointer;
   transition: color 0.2s ease-in-out;
+  display: inline-block;
+  line-height: 1;
 
   &.filled {
     color: $star-color-active; // 활성 색상
@@ -22,7 +25,7 @@ $star-color-inactive: #e0e0e0; // 비활성 별 색상 (연한 회색)
 
   // 별들 사이의 간격 (미세 조정)
   &:not(:last-child) {
-    margin-right: 0.15rem; // 2~3px 정도로 별 사이 간격 조정
+    margin-right: 0.5rem; // 별 사이 간격
   }
 }
 

@@ -174,12 +174,23 @@ $border-light: #e0e0e0;
   text-align: center;
 }
 
+// 카드 간 일관된 간격(모바일 스크롤 시 부자연스러움 개선)
+.contentWrap > *:not(:last-child) { margin-bottom: 12px; }
+// 슬라이더 그룹과 하단 네비 사이 공백 확보
+.scrollArea { padding-bottom: 120px; }
+
 .divider {
   height: 1px;
   background: #d9d9d9;
   margin: 16px 0;
   border: none;
 }
+
+// 상단 섹션들 사이의 굵은 구분선
+.topDivider { height: 8px; background: #efefef; border: none; margin: 16px 0; }
+
+// 한 줄 요약 타이틀 주변 간격/서체
+.oneLinerTitle { padding: 0 12px; margin: 12px 0 8px; font-size: 16px; font-weight: 700; color: #222; }
 
 // Step A: 내가 받은 별점 섹션
 .sectionCard {
@@ -252,6 +263,18 @@ $border-light: #e0e0e0;
   display: flex;
   flex-direction: column;
   gap: 18px;
+}
+
+// 전체 총점 안내 블록 (이미지 문구 스타일)
+.overallIntro { padding: 8px 16px 0 16px; }
+.overallTitle { margin: 0 0 6px 0; font-size: 20px; font-weight: 700; color: #111; }
+.overallCaption { margin: 0; font-size: 14px; color: #C7C7CB; }
+.sectionLabel { padding: 0 12px; font-size: 16px; font-weight: 700; color: #222; margin: 6px 0; }
+.sectionLabelTight { padding: 0 12px; font-size: 16px; font-weight: 700; color: #222; margin: 0; line-height: 1.25; }
+
+// Hide title inside MyRatingSection without editing its code
+.myRatingNoTitle {
+	section[aria-label="내가 받은 별점"] > h2 { display: none !important; }
 }
 
 .tagSection {
