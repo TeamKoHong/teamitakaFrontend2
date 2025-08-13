@@ -134,7 +134,9 @@ function RatingProjectPage(props) {
           <h2 className={styles.overallTitle}>전체 총점은 몇 점인가요?</h2>
           <p className={styles.overallCaption}>받은 전체 총점의 평균치입니다.</p>
         </div>
-        <MyRatingSection score={ratingSummary?.average ?? 0} />
+        <div className={styles.myRatingNoTitle}>
+          <MyRatingSection score={ratingSummary?.average ?? 0} />
+        </div>
         {/* 4) 개별 코멘트 두 개를 하단에 개별 박스로 */}
         <CommentsBubble items={mock.comments || []} />
         <div id="detail-accordion" hidden={!detailOpen}>
