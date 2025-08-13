@@ -12,7 +12,15 @@ const ProgressIndicator = ({ currentStep, totalSteps = 5 }) => {
         return (
           <React.Fragment key={stepNumber}>
             <div className={`${styles.progressStep} ${isCompleted ? styles.completed : ''} ${isCurrent ? styles.current : ''}`}>
-              <span className={styles.stepNumber}>{isCompleted ? '✓' : stepNumber}</span>
+              {isCompleted ? (
+                <span className={styles.checkIcon} aria-hidden="true">
+                  <svg viewBox="0 0 24 24" width="22" height="22">
+                    <path d="M6 12l4 4 8-9" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </span>
+              ) : (
+                <span className={styles.stepNumber}>{stepNumber}</span>
+              )}
             </div>
             {stepNumber < totalSteps && (
               <div className={`${styles.progressLine} ${isCompleted ? styles.completed : ''}`} />
