@@ -670,6 +670,12 @@
       align-items: center;
       justify-content: center;
       color: $primary-color; // SVG stroke uses currentColor
+      
+      // slightly smaller check mark (about 80% of circle)
+      svg {
+        width: 80%;
+        height: 80%;
+      }
     }
   }
   
