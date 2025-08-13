@@ -1,11 +1,11 @@
 @use '../../styles/variables' as *;
 
 .section {
-	background: $white;
-	border-radius: 16px;
-	box-shadow: 0 2px 12px rgba(0,0,0,0.06);
-	padding: 16px;
-	margin: $spacing-sm 0 $spacing-md;
+	background: transparent;
+	border-radius: 0;
+	box-shadow: none;
+	padding: 0;
+	margin: 6px 0 8px;
 }
 .title {
 	margin: 0 0 $spacing-sm;
@@ -16,10 +16,10 @@
 .row {
 	display: flex;
 	align-items: center;
+	justify-content: center;
 	gap: $spacing-sm;
 }
 .score {
-	color: $primary-color;
-	font-weight: $font-weight-bold;
+	display: none;
 }
 
