@@ -178,7 +178,11 @@ function RatingProjectPage(props) {
         <ProjectInfoCard {...project} id={project.id} />
         <ProjectResultCard resultLink={project.resultLink} />
         <OneLinerSummary text={summary?.oneLiner} />
-        <KeywordChips items={summary?.keywords || []} active={chipsActive || summary?.highlighted} />
+        <KeywordChips
+          items={summary?.keywords || []}
+          active={chipsActive || summary?.highlighted}
+          onSelect={(kw) => setChipsActive((prev) => (prev === kw ? '' : kw))}
+        />
         {typeof ratingSummary?.average === 'number' && (
           <MyRatingSection score={ratingSummary.average} />
         )}
@@ -192,7 +196,11 @@ function RatingProjectPage(props) {
           />
           <div style={{ marginTop: 12 }}>
             <h3 style={{ fontSize: 14, margin: '0 0 8px 0', color: '#222' }}>종합적 키워드</h3>
-            <KeywordChips items={summary?.aggregateKeywords || summary?.keywords || []} active={chipsActive || summary?.highlighted} />
+            <KeywordChips
+              items={summary?.aggregateKeywords || summary?.keywords || []}
+              active={chipsActive || summary?.highlighted}
+              onSelect={(kw) => setChipsActive((prev) => (prev === kw ? '' : kw))}
+            />
           </div>
         </div>
       </div>
