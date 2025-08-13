@@ -564,6 +564,48 @@
   }
 }
 
+// Step3 상단 요약 스타일
+.successTop {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 24px 0 12px;
+}
+.checkIconCircle {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: $primary-color;
+  color: $white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: $font-weight-bold;
+}
+.title {
+  font-size: 18px;
+  font-weight: $font-weight-bold;
+  color: $gray-dark;
+}
+.memberRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+}
+.memberAvatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid $gray-light;
+  object-fit: cover;
+}
+.memberMeta { display: flex; flex-direction: column; gap: 6px; }
+.starRow { transform: translateY(-2px); }
+.caption { font-size: 12px; color: $gray; margin: 4px 0 12px; }
+.buttonBlock { margin-top: 8px; }
+
 
 
 // 버튼 스타일

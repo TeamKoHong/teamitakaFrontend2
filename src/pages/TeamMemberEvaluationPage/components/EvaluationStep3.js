@@ -9,33 +9,29 @@ const EvaluationStep3 = ({ memberData, evaluationData, onGoProject, onGoHome }) 
       {/* 진행 표시기 */}
       <ProgressIndicator currentStep={2} totalSteps={2} />
 
-      {/* 완료 섹션 */}
-      <div className={styles.successSection}>
-        <div className={styles.successIcon}>
-          <span className={styles.checkmark}>✓</span>
-        </div>
-        <div className={styles.successMessage}>저장 완료</div>
-        <div className={styles.successDescription}></div>
+      {/* 상단 완료 표시 */}
+      <div className={styles.successTop}>
+        <div className={styles.checkIconCircle}>✓</div>
+        <div className={styles.title}>저장 완료</div>
       </div>
 
       {/* 간단 정보 */}
       {memberData && (
-        <div className={styles.projectInfoCard}>
-          <div className={styles.memberProfiles}>
-            <div className={styles.currentMember}>
-              <img src={memberData.avatar} alt={memberData.name} className={styles.profileImage} />
-              <div className={styles.memberInfo}>
-                <div className={styles.memberName}>{memberData.name}</div>
+        <>
+          <div className={styles.memberRow}>
+            <img src={memberData.avatar} alt={memberData.name} className={styles.memberAvatar} />
+            <div className={styles.memberMeta}>
+              <div className={styles.memberName}>{memberData.name}</div>
+              <div className={styles.starRow}>
+                <RatingInputStars initialRating={evaluationData?.overallRating || 0} readOnly={true} />
               </div>
             </div>
           </div>
-          <div className={styles.starsContainer}>
-            <RatingInputStars initialRating={evaluationData?.overallRating || 0} readOnly={true} />
-          </div>
-        </div>
+          <div className={styles.caption}>본인이 맡은 임무는 착실하게 해내는 팀원입니다.</div>
+        </>
       )}
 
-      <div className={styles.buttonContainer}>
+      <div className={styles.buttonBlock}>
         <button className={`${styles.button} ${styles.primary}`} onClick={onGoProject}>완료</button>
       </div>
 
