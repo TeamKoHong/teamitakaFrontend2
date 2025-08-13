@@ -617,12 +617,17 @@
 
 // 버튼 컨테이너
 .buttonContainer {
-  margin-top: 24px;
+  margin-top: 24px; // 텍스트 영역과 버튼 사이 기본 24px
   display: flex;
   gap: 12px;
   position: sticky;
   bottom: 24px;
   z-index: 10;
+  // iOS/안드로이드 각 브라우저의 textarea 외곽선 렌더링 차이에 따른 오차 보정
+  // 마지막 입력 요소가 textarea일 경우 추가 마진을 제거하여 시각적 24px 유지
+  &:has(textarea:focus), &:has(textarea) {
+    margin-top: 24px;
+  }
   
   .button {
     flex: 1;
