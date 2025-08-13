@@ -1,10 +1,10 @@
 @use '../../styles/variables' as *;
-.wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 12px 0; }
+.wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 8px 12px 12px; }
 .card { border-radius: 18px; padding: $spacing-md; }
 .good { background: #ECECEC; color: $gray-dark; }
 .improve { background: $primary-color; color: $white; }
 .badge { font-size: $font-size-xs; font-weight: $font-weight-bold; margin-bottom: $spacing-sm; }
 .list { list-style: none; padding: 0; margin: 0; }
-.list li { position: relative; padding-left: 14px; line-height: 1.6; font-size: $font-size-sm; }
+.list li { position: relative; padding-left: 14px; line-height: 1.6; font-size: 14px; margin: 6px 0; }
 .list li::before { content: '·'; position: absolute; left: 2px; top: 0; }
 
