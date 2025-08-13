@@ -112,25 +112,25 @@ function RatingProjectPage(props) {
         {/* 1) 섹션 재배치: 프로젝트 카드 → 결과물 → 한 줄 요약 → 키워드 */}
         <ProjectInfoCard {...project} id={project.id} />
         <ProjectResultCard resultLink={project.resultLink} />
+        {/* 2) 한 줄 요약 타이틀을 카드 상단에 */}
         <OneLinerSummary text={summary?.oneLiner} />
         <KeywordChips
           items={summary?.keywords || []}
           active={chipsActive || summary?.highlighted}
           onSelect={(kw) => setChipsActive((prev) => (prev === kw ? '' : kw))}
         />
-        {/* 4) 좋아요/개선 2열 배치 */}
+        {/* 3) 하단: 팀원 평가지 / 종합적 키워드 (아코디언으로 유지) */}
         <ProsConsCards good={summary?.good || []} improve={summary?.improve || []} />
-        {/* 요약 코멘트 버블 박스 */}
-        <CommentsBubble items={mock.comments || []} />
         {/* 5) 슬라이더 카드: 설명 문구 활성화 */}
         <CategorySlidersGroup items={mock.sliders || []} onChange={() => {}} hideDescription={false} />
-        {/* 2) 전체 총점 블록 + 3) MyRatingSection (별만 표시) */}
+        {/* 전체 총점 블록 + MyRatingSection (별만 표시) */}
         <div className={styles.overallIntro}>
           <h2 className={styles.overallTitle}>전체 총점은 몇 점인가요?</h2>
           <p className={styles.overallCaption}>받은 전체 총점의 평균치입니다.</p>
         </div>
         <MyRatingSection score={ratingSummary?.average ?? 0} />
-        {/* 하단 코멘트 캡슐은 유지 필요 시만 노출 */}
+        {/* 4) 개별 코멘트 두 개를 하단에 개별 박스로 */}
+        <CommentsBubble items={mock.comments || []} />
         <div id="detail-accordion" hidden={!detailOpen}>
           <TeamMemberEvaluation
             question="구체적인 역할은 무엇이었나요?"
