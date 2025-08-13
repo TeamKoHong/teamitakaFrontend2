@@ -12,7 +12,7 @@ const ProgressIndicator = ({ currentStep, totalSteps = 5 }) => {
         return (
           <React.Fragment key={stepNumber}>
             <div className={`${styles.progressStep} ${isCompleted ? styles.completed : ''} ${isCurrent ? styles.current : ''}`}>
-              <span className={styles.stepNumber}>{stepNumber}</span>
+              <span className={styles.stepNumber}>{isCompleted ? '✓' : stepNumber}</span>
             </div>
             {stepNumber < totalSteps && (
               <div className={`${styles.progressLine} ${isCompleted ? styles.completed : ''}`} />
