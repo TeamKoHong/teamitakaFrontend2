@@ -1,0 +1,14 @@
+@use '../../styles/variables' as *;
+.card {
+  background: $white;
+  border-radius: 16px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  padding: 16px;
+}
+.text {
+  margin: 0;
+  font-size: 14px;
+  color: $gray-dark;
+  line-height: 1.6;
+}
+
