@@ -183,7 +183,7 @@ function RatingProjectPage(props) {
           <MyRatingSection score={ratingSummary.average} />
         )}
         <ProsConsCards good={summary?.good || []} improve={summary?.improve || []} />
-        <CategorySlidersGroup items={mock.sliders || []} onChange={() => {}} />
+        <CategorySlidersGroup items={mock.sliders || []} onChange={() => {}} hideDescription />
         <CommentPills items={mock.comments || []} />
         <div id="detail-accordion" hidden={!detailOpen}>
           <TeamMemberEvaluation

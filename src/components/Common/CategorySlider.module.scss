@@ -16,6 +16,13 @@
     opacity: 0.6;
     pointer-events: none;
   }
+
+  &.compact {
+    background: transparent;
+    box-shadow: none;
+    padding: 8px 0 10px;
+    border-radius: 0;
+  }
 }
 
 .categoryHeader {

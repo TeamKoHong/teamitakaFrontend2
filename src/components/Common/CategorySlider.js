@@ -9,7 +9,9 @@ const CategorySlider = ({
   onChange,
   min = 1,
   max = 5,
-  disabled = false
+  disabled = false,
+  compact = false,
+  showDescription = true,
 }) => {
   const [isDragging, setIsDragging] = useState(false);
   const [isPressed, setIsPressed] = useState(false);
@@ -154,10 +156,12 @@ const CategorySlider = ({
   const labels = Array.from({ length: max - min + 1 }, (_, i) => min + i);
 
   return (
-    <div className={`${styles.categorySlider} ${disabled ? styles.disabled : ''}`}>
+    <div className={`${styles.categorySlider} ${disabled ? styles.disabled : ''} ${compact ? styles.compact : ''}`}>
       <div className={styles.categoryHeader}>
         <div className={styles.categoryName}>{name}</div>
-        <div className={styles.categoryDescription}>{description}</div>
+        {showDescription && description && (
+          <div className={styles.categoryDescription}>{description}</div>
+        )}
       </div>
       
       <div className={styles.sliderContainer}>
