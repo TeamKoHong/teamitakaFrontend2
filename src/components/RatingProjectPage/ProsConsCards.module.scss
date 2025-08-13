@@ -1,5 +1,5 @@
 @use '../../styles/variables' as *;
-.wrap { display: grid; grid-template-columns: 1fr 1fr; gap: $spacing-md; margin: $spacing-md 0; }
+.wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 12px 0; }
 .card { border-radius: 18px; padding: $spacing-md; }
 .good { background: #ECECEC; color: $gray-dark; }
 .improve { background: $primary-color; color: $white; }
