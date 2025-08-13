@@ -137,8 +137,8 @@ function RatingProjectPage(props) {
         {/* 4) 개별 코멘트 두 개를 하단에 개별 박스로 */}
         <CommentsBubble items={mock.comments || []} />
         <div id="detail-accordion" hidden={!detailOpen}>
-          <div className={styles.sectionLabel}>팀원 평가지</div>
-          <div className={styles.sectionLabel} style={{ marginTop: 6 }}>종합적 키워드</div>
+        <div className={styles.sectionLabelTight}>팀원 평가지</div>
+        <div className={styles.sectionLabelTight}>종합적 키워드</div>
           <KeywordChips
             items={summary?.aggregateKeywords || summary?.keywords || []}
             active={chipsActive || summary?.highlighted}
