@@ -189,6 +189,9 @@ $border-light: #e0e0e0;
 // 상단 섹션들 사이의 굵은 구분선
 .topDivider { height: 8px; background: #efefef; border: none; margin: 16px 0; }
 
+// 한 줄 요약 타이틀 주변 간격/서체
+.oneLinerTitle { padding: 0 12px; margin: 12px 0 8px; font-size: 16px; font-weight: 700; color: #222; }
+
 // Step A: 내가 받은 별점 섹션
 .sectionCard {
   background: #fff;

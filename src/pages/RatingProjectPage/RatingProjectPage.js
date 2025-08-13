@@ -113,8 +113,7 @@ function RatingProjectPage(props) {
         {/* 1) 섹션 재배치: 프로젝트 카드 → 결과물 → 한 줄 요약 → 키워드 */}
         <ProjectInfoCard {...project} id={project.id} />
         <ProjectResultCard resultLink={project.resultLink} />
-        <hr className={styles.divider} />
-        <div className={styles.sectionLabel}>한 줄 요약</div>
+        <div className={styles.oneLinerTitle}>한 줄 요약</div>
         {/* 3) 하단: 팀원 평가지 / 종합적 키워드 (아코디언으로 유지) */}
         <ProsConsCards good={summary?.good || []} improve={summary?.improve || []} />
         <div className={styles.sectionLabel}>팀원 평가지</div>
