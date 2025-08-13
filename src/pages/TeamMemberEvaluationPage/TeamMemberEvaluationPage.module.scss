@@ -310,7 +310,7 @@
     font-weight: $font-weight-bold;
     color: $gray-dark;
     text-align: left;
-    margin: 8px 0 8px;
+    margin: 8px 0 4px; // 제목-별 간격 더 축소
   }
   
   .starsContainer, .starContainer {
