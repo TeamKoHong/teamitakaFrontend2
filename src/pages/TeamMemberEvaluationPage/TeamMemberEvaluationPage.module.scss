@@ -237,7 +237,7 @@
   .sliderTrack {
     position: relative;
     height: 6px;
-    background: $gray-light;
+    background: $white;
     border-radius: 3px;
     margin-bottom: 8px;
     
@@ -645,8 +645,8 @@
     transition: all 0.3s ease;
     
     &.completed {
-      background: $white;
-      color: $primary-color;
+      background: $white; // fill white
+      color: $primary-color; // checkmark color
     }
     
     &.current {
