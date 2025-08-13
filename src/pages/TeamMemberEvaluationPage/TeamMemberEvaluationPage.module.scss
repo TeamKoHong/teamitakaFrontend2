@@ -298,7 +298,12 @@
 // 전체 평가 섹션
 .overallRatingSection {
   @extend .card;
-  border-radius: 20px;
+  // remove card box appearance
+  background: transparent;
+  box-shadow: none;
+  padding: 0;
+  border-radius: 0;
+  margin-bottom: 16px;
   
   .overallLabel {
     font-size: 18px;
@@ -341,6 +346,11 @@
 // 역할 설명 섹션
 .roleSection {
   @extend .card;
+  // remove card box appearance
+  background: transparent;
+  box-shadow: none;
+  padding: 0;
+  border-radius: 0;
   
   .roleLabel {
     font-size: 18px;
