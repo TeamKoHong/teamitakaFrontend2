@@ -310,14 +310,14 @@
     font-weight: $font-weight-bold;
     color: $gray-dark;
     text-align: left;
-    margin: 8px 0 0; // 제목-별 간격 0
+    margin: 0 0 18px; // 제목과 별 사이 18px
   }
   
   .starsContainer, .starContainer {
     display: flex;
     justify-content: center;
     gap: 12px;
-    margin: 0 0 16px;
+    margin: 0 0 18px; // 별 아래 여백 18px
     line-height: 1; // 줄간격으로 생기는 상하 여백 제거
     
     .star {
@@ -359,7 +359,7 @@
     font-size: 18px;
     font-weight: $font-weight-bold;
     color: $gray-dark;
-    margin: 24px 0 12px;
+    margin: 0 0 12px; // 위 여백 제거하여 별 아래 바로 제목
   }
 
   .subDescription {
