@@ -11,6 +11,7 @@ function RegisterPage() {
     const [verificationCode, setVerificationCode] = useState('');
     const [password, setPassword] = useState('');
     const [passwordConfirm, setPasswordConfirm] = useState('');
+    const [department, setDepartment] = useState('');
     const [consents, setConsents] = useState({
         personalInfo: false,
         personalInfoProvision: false,
@@ -20,12 +21,25 @@ function RegisterPage() {
     });
 
     const handleNext = () => {
-        if (currentStep < 3) {
-            setCurrentStep(currentStep + 1);
+        if (currentStep < 8) {
+            if (currentStep === 3) {
+                // case3에서 다음 버튼을 누르면 case4로 이동
+                setCurrentStep(4);
+                // 5초 후 case5로 자동 이동
+                setTimeout(() => {
+                    setCurrentStep(5);
+                }, 5000);
+            } else if (currentStep === 6) {
+                // case6에서 완료 버튼을 누르면 case7로 이동
+                setCurrentStep(7);
+            } else {
+                setCurrentStep(currentStep + 1);
+            }
         } else {
-            // 회원가입 완료 처리
-            console.log('회원가입 완료');
-            navigate('/login');
+            // 로그인 처리
+            console.log('로그인 시도');
+            // main 페이지로 이동
+            navigate('/main');
         }
     };
 
@@ -49,8 +63,8 @@ function RegisterPage() {
                        consents.terms && 
                        consents.rights;
             case 3:
-                // 이메일 입력: 이메일 + 인증번호
-                return email.trim() && verificationCode.trim();
+                // 이메일 입력: 학부 + 이메일 + 인증번호
+                return department.trim() && email.trim() && verificationCode.trim();
             case 4:
                 return password.trim() && passwordConfirm.trim();
             default:
@@ -204,6 +218,8 @@ function RegisterPage() {
                             <input
                                 type="text"
                                 placeholder="학부를 입력해주세요"
+                                value={department}
+                                onChange={(e) => setDepartment(e.target.value)}
                             />
                         </div>
                         <div className="step3-input-with-verify-button">
@@ -221,13 +237,143 @@ function RegisterPage() {
                             <input
                                 type="text"
                                 placeholder="인증번호를 입력해주세요"
+                                value={verificationCode}
+                                onChange={(e) => setVerificationCode(e.target.value)}
                             />
                         </div>
                     </div>
                 );
             case 4:
                 return (
+                    <div>
+                        <div>
+                            <p style={{
+                                color: 'var(--main, #F76241)',
+                                textAlign: 'center',
+                                fontFamily: 'Pretendard',
+                                fontSize: '23px',
+                                fontStyle: 'normal',
+                                fontWeight: '700',
+                                lineHeight: 'normal',
+                                textTransform: 'capitalize',
+                                marginTop: '330px'
+                            }}>
+                                대학인증을 진행중<span style={{ color: '#140805' }}>입니다!</span>
+                            </p>
+                            <p style={{
+                                color: 'rgba(0, 0, 0, 0.69)',
+                                textAlign: 'center',
+                                fontFamily: 'Pretendard',
+                                fontSize: '18px',
+                                fontStyle: 'normal',
+                                fontWeight: '500',
+                                lineHeight: 'normal',
+                                textTransform: 'capitalize',
+                                margin: '8px 0'
+                            }}>
+                                잠시만 기다려주세요!
+                            </p>
+                            <div style={{ textAlign: 'center', marginTop: '40px' }}>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="56" height="16" viewBox="0 0 56 16" fill="none">
+                                    <circle opacity="0.4" cx="4" cy="12" r="4" fill="#F76241"/>
+                                    <circle opacity="0.6" cx="20" cy="4" r="4" fill="#F76241"/>
+                                    <circle opacity="0.8" cx="36" cy="9" r="4" fill="#F76241"/>
+                                    <circle cx="52" cy="12" r="4" fill="#F76241"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                );
+            case 5:
+                return (
+                    <div>
+                        <div>
+                            <div style={{
+                                borderRadius: '30px',
+                                background: '#F76241',
+                                display: 'flex',
+                                width: '60px',
+                                height: '60px',
+                                padding: '16px 9px',
+                                flexDirection: 'column',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                gap: '10px',
+                                flexShrink: '0',
+                                margin: '330px auto 25px'
+                            }}>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="21" viewBox="0 0 30 21" fill="none">
+                                    <path d="M2 8.54545L11.6571 18L28 2" stroke="white" strokeWidth="4" strokeLinecap="round"/>
+                                </svg>
+                            </div>
+                            <p style={{
+                                color: '#000',
+                                textAlign: 'center',
+                                fontFamily: 'Pretendard',
+                                fontSize: '25px',
+                                fontStyle: 'normal',
+                                fontWeight: '700',
+                                lineHeight: 'normal',
+                                textTransform: 'capitalize',
+                                margin: '0 0 8px'
+                            }}>
+                                대학교 인증이 완료되었어요
+                            </p>
+                            <p style={{
+                                color: 'var(--grey-3, #807C7C)',
+                                textAlign: 'center',
+                                fontFamily: 'Pretendard',
+                                fontSize: '16px',
+                                fontStyle: 'normal',
+                                fontWeight: '400',
+                                lineHeight: 'normal',
+                                textTransform: 'capitalize',
+                                margin: '0'
+                            }}>
+                                인증 내역은{' '}
+                                <span style={{
+                                    color: 'var(--grey-3, #807C7C)',
+                                    fontFamily: 'Pretendard',
+                                    fontSize: '16px',
+                                    fontStyle: 'normal',
+                                    fontWeight: '400',
+                                    lineHeight: 'normal',
+                                    textDecorationLine: 'underline',
+                                    textDecorationStyle: 'solid',
+                                    textDecorationSkipInk: 'auto',
+                                    textDecorationThickness: '4.5%',
+                                    textUnderlineOffset: '25%',
+                                    textUnderlinePosition: 'from-font',
+                                    textTransform: 'capitalize'
+                                }}>
+                                    마이페이지
+                                </span>
+                                에서 볼 수 있어요.
+                            </p>
+                        </div>
+                    </div>
+                );
+            case 6:
+                return (
                     <div className="step-content">
+                        <button
+                                onClick={() => setCurrentStep(5)}
+                                style={{
+                                    background: 'none',
+                                    border: 'none',
+                                    padding: '4px',
+                                    cursor: 'pointer',
+                                    marginBottom: '24px',
+                                    marginTop: '30px',
+                                    display: 'flex',
+                                    justifyContent: 'flex-start',
+                                    alignItems: 'flex-start'
+                                }}
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" width="10" height="17" viewBox="0 0 10 17" fill="none">
+                                    <path d="M8.81641 1L1.99822 8.5L8.81641 16" stroke="#140805" strokeWidth="2"/>
+                                </svg>
+                        </button>
                         <div className="progress-indicator">
                             <div className="progress-step"></div>
                             <div className="progress-step"></div>
@@ -239,19 +385,165 @@ function RegisterPage() {
                         </div>
                         <div className="step4-input-field">
                             <input
-                                type="password"
+                                type="text"
                                 placeholder="비밀번호 입력"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
+                                style={{
+                                    marginBottom: '8px'
+                                }}
                             />
                         </div>
                         <div className="step4-input-field">
                             <input
-                                type="password"
+                                type="text"
                                 placeholder="비밀번호 확인"
                                 value={passwordConfirm}
                                 onChange={(e) => setPasswordConfirm(e.target.value)}
+                                style={{
+                                    marginBottom: '8px'
+                                }}
                             />
+                        </div>
+                        <div style={{ marginTop: '9px' }}>
+                            <button 
+                                className={`next-button ${password === passwordConfirm && password.trim() && passwordConfirm.trim() ? 'active' : ''}`}
+                                onClick={handleNext}
+                                disabled={password !== passwordConfirm || !password.trim() || !passwordConfirm.trim()}
+                                style={{
+                                    width: '100%',
+                                    padding: '16px',
+                                    borderRadius: '8px',
+                                    border: 'none',
+                                    fontSize: '16px',
+                                    fontWeight: '600',
+                                    cursor: password === passwordConfirm && password.trim() && passwordConfirm.trim() ? 'pointer' : 'not-allowed',
+                                    backgroundColor: password === passwordConfirm && password.trim() && passwordConfirm.trim() ? 'var(--main, #F76241)' : '#E0E0E0',
+                                    color: password === passwordConfirm && password.trim() && passwordConfirm.trim() ? 'white' : '#999'
+                                }}
+                            >
+                                완료
+                            </button>
+                        </div>
+                    </div>
+                );
+            case 7:
+                return (
+                    <div>
+                        <div>
+                            <div style={{
+                                borderRadius: '30px',
+                                background: '#F76241',
+                                display: 'flex',
+                                width: '60px',
+                                height: '60px',
+                                padding: '16px 9px',
+                                flexDirection: 'column',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                gap: '10px',
+                                flexShrink: '0',
+                                margin: '330px auto 24px'
+                            }}>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="21" viewBox="0 0 30 21" fill="none">
+                                    <path d="M2 8.54545L11.6571 18L28 2" stroke="white" strokeWidth="4" strokeLinecap="round"/>
+                                </svg>
+                            </div>
+                            <p style={{
+                                color: '#000',
+                                textAlign: 'center',
+                                fontFamily: 'Pretendard',
+                                fontSize: '25px',
+                                fontStyle: 'normal',
+                                fontWeight: '700',
+                                lineHeight: 'normal',
+                                textTransform: 'capitalize',
+                                margin: '0 0 8px'
+                            }}>
+                                회원가입 완료!
+                            </p>
+                        </div>
+                    </div>
+                );
+            case 8:
+                return (
+                    <div className="step-content">
+                        <div>
+                            <button 
+                                onClick={() => setCurrentStep(7)}
+                                style={{
+                                    background: 'none',
+                                    border: 'none',
+                                    padding: '4px',
+                                    cursor: 'pointer',
+                                    marginBottom: '24px',
+                                    marginTop: '30px'
+                                }}
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" width="10" height="17" viewBox="0 0 10 17" fill="none">
+                                    <path d="M8.81641 1L1.99822 8.5L8.81641 16" stroke="#140805" strokeWidth="2"/>
+                                </svg>
+                            </button>
+                        </div>
+                        <div style={{
+                            color: '#000',
+                            fontFamily: 'Pretendard',
+                            fontSize: '24px',
+                            fontStyle: 'normal',
+                            fontWeight: '600',
+                            lineHeight: '36px',
+                            marginBottom: '24px'
+                        }}>
+                            로그인
+                        </div>
+                        <div className="step4-input-field">
+                            <input
+                                type="email"
+                                placeholder="학교 이메일"
+                                onChange={(e) => setEmail(e.target.value)}
+                                style={{
+                                    marginBottom: '8px'
+                                }}
+                            />
+                        </div>
+                        <div className="step4-input-field">
+                            <input
+                                type="text"
+                                placeholder="비밀번호"
+                                onChange={(e) => setPassword(e.target.value)}
+                            />
+                        </div>
+                        <div className="find-links">
+                            <span style={{
+                                color: '#807C7C',
+                                fontFamily: 'Pretendard',
+                                fontSize: '12px',
+                                fontStyle: 'normal',
+                                fontWeight: '400',
+                                lineHeight: 'normal',
+                            }}>
+                                비밀번호를 잊어버리셨나요?
+                            </span>
+                        </div>
+                        <div style={{ marginTop: '24px' }}>
+                            <button 
+                                className={`next-button ${email.trim() && password.trim() ? 'active' : ''}`}
+                                onClick={handleNext}
+                                disabled={!email.trim() || !password.trim()}
+                                style={{
+                                    width: '100%',
+                                    padding: '16px',
+                                    borderRadius: '8px',
+                                    border: 'none',
+                                    fontSize: '16px',
+                                    fontWeight: '600',
+                                    cursor: email.trim() && password.trim() ? 'pointer' : 'not-allowed',
+                                    backgroundColor: email.trim() && password.trim() ? 'var(--main, #F76241)' : '#E0E0E0',
+                                    color: email.trim() && password.trim() ? 'white' : '#999'
+                                }}
+                            >
+                                로그인
+                            </button>
                         </div>
                     </div>
                 );
@@ -261,26 +553,46 @@ function RegisterPage() {
     };
 
     return (
-        <div className="register-page-container">
-            <div className="header">
-                <button className="close-button" onClick={() => navigate('/login')}>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 17 17" fill="none">
-                        <path d="M16.4141 1.41406L9.62109 8.20703L16.4141 15L15 16.4141L8.20703 9.62109L1.41406 16.4141L0 15L6.79297 8.20703L0 1.41406L1.41406 0L8.20703 6.79297L15 0L16.4141 1.41406Z" fill="#140805"/>
-                    </svg>
-                </button>
-            </div>
+        <div className={`register-page-container ${currentStep === 4 || currentStep === 5 || currentStep === 7 ? 'bg-gray' : ''}`}>
+                {currentStep !== 4 && currentStep !== 5 && currentStep !== 6 && currentStep !== 7 && currentStep !== 8 && (
+                 <div className="header">
+                     <button className="close-button" onClick={() => navigate('/login')}>
+                         <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 17 17" fill="none">
+                             <path d="M16.4141 1.41406L9.62109 8.20703L16.4141 15L15 16.4141L8.20703 9.62109L1.41406 16.4141L0 15L6.79297 8.20703L0 1.41406L1.41406 0L8.20703 6.79297L15 0L16.4141 1.41406Z" fill="#140805"/>
+                         </svg>
+                     </button>
+                 </div>
+             )}
             <div className="main-content">
                 {renderStep()}
             </div>
-            <div className="bottom-button">
-                <button 
-                    className={`next-button ${isNextButtonActive() ? 'active' : ''}`}
-                    onClick={handleNext}
-                    disabled={!isNextButtonActive()}
-                >
-                    {currentStep === 4 ? '회원가입 완료' : '다음'}
-                </button>
-            </div>
+                         {currentStep !== 4 && currentStep !== 6 && currentStep !== 8 && (
+                 <div className="bottom-button">
+                     {currentStep === 5 ? (
+                         <button 
+                             className="next-button active"
+                             onClick={() => setCurrentStep(6)}
+                         >
+                             닫기
+                         </button>
+                     ) : currentStep === 7 ? (
+                         <button 
+                             className="next-button active"
+                             onClick={() => setCurrentStep(8)}
+                         >
+                             로그인 하기
+                         </button>
+                     ) : (
+                         <button 
+                             className={`next-button ${isNextButtonActive() ? 'active' : ''}`}
+                             onClick={handleNext}
+                             disabled={!isNextButtonActive()}
+                         >
+                             다음
+                         </button>
+                     )}
+                 </div>
+             )}
         </div>
     );
 }
