@@ -70,22 +70,24 @@ const EvaluationStep2 = ({
       {/* 진행 표시기 */}
       <ProgressIndicator currentStep={2} totalSteps={2} />
 
-      {/* 전체 별점 섹션 */}
-      <div className={styles.overallRatingSection}>
-        <div className={styles.overallLabel}>
-          해당 팀원의 전체 총점은 몇 점인가요?
+      {/* Step2 섹션들 - Step1의 categorySection과 동일한 간격 관리 */}
+      <div className={styles.categorySection}>
+        {/* 전체 별점 섹션 */}
+        <div className={styles.overallRatingSection}>
+          <div className={styles.overallLabel}>
+            해당 팀원의 전체 총점은 몇 점인가요?
+          </div>
+          <div className={styles.starsContainer}>
+            <RatingInputStars
+              initialRating={evaluationData.overallRating}
+              onRatingChange={onOverallRatingChange}
+              readOnly={false}
+            />
+          </div>
         </div>
-        <div className={styles.starsContainer}>
-          <RatingInputStars
-            initialRating={evaluationData.overallRating}
-            onRatingChange={onOverallRatingChange}
-            readOnly={false}
-          />
-        </div>
-      </div>
 
-      {/* 역할 입력 섹션 */}
-      <div className={styles.roleSection}>
+        {/* 역할 입력 섹션 */}
+        <div className={styles.roleSection}>
         <div className={styles.roleLabel}>
           해당 팀원의 업무 분담 및
           <br />
@@ -101,6 +103,7 @@ const EvaluationStep2 = ({
           onChange={(e) => onRoleDescriptionChange(e.target.value)}
         />
         {/* 목업 키워드 칩 표시 제거 */}
+        </div>
       </div>
 
       {/* 입력 완료 상태 피드백 제거 */}

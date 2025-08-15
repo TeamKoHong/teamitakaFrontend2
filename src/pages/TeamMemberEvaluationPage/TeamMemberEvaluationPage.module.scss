@@ -298,30 +298,30 @@
 // 전체 평가 섹션
 .overallRatingSection {
   @extend .card;
-  // remove card box appearance
-  background: transparent;
-  box-shadow: none;
-  padding: 0;
-  border-radius: 0;
-  margin-bottom: 0; // 섹션 자체 하단 여백 제거 (다른 방식)
+  // CategorySlider와 동일한 카드 스타일 적용
+  background: $white;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  padding: 14px 16px 12px; // CategorySlider와 동일한 패딩
+  border-radius: 12px; // CategorySlider와 동일한 라운드
+  margin: 0; // CategorySlider와 동일하게 상위에서 간격 관리
   display: grid; // 내부 간격은 row-gap으로 관리
-  row-gap: 18px;
+  row-gap: clamp(14px, 3.5vw, 18px); // 반응형 간격
   
   .overallLabel {
-    font-size: 18px;
+    font-size: clamp(16px, 4vw, 18px); // Step1 질문과 동일
     font-weight: $font-weight-bold;
     color: $gray-dark;
     text-align: left;
-    margin: 0 0 18px; // 제목과 별 사이 18px
+    margin: 0 0 clamp(14px, 3.5vw, 18px); // 반응형 여백
   }
   
   .starsContainer, .starContainer {
     display: flex;
     justify-content: center;
     align-items: center; // 컨테이너 기준 중앙 정렬
-    height: 28px; // 별 폰트 크기와 동일하게 고정
-    gap: 12px;
-    margin: 0 0 18px; // 요구사항: 별 아래 18px
+    height: auto; // 자동 높이로 변경
+    gap: 0; // RatingInputStars 자체 간격 사용
+    margin: 0 0 clamp(14px, 3.5vw, 18px); // 반응형 여백
     line-height: 1; // 줄간격으로 생기는 상하 여백 제거
     
     .star {
@@ -353,17 +353,18 @@
 // 역할 설명 섹션
 .roleSection {
   @extend .card;
-  // remove card box appearance
-  background: transparent;
-  box-shadow: none;
-  padding: 0;
-  border-radius: 0;
+  // CategorySlider와 동일한 카드 스타일 적용
+  background: $white;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  padding: 14px 16px 12px; // CategorySlider와 동일한 패딩
+  border-radius: 12px; // CategorySlider와 동일한 라운드
+  margin: 0; // CategorySlider와 동일하게 상위에서 간격 관리
   
   .roleLabel {
-    font-size: 18px;
+    font-size: clamp(16px, 4vw, 18px); // Step1과 동일한 크기
     font-weight: $font-weight-bold;
     color: $gray-dark;
-    margin: 0 0 12px; // 위 여백 제거하여 별 아래 바로 제목
+    margin: 0 0 clamp(10px, 2.5vw, 12px); // 반응형 여백
   }
 
   .subDescription {
@@ -759,5 +760,201 @@
     &.completed {
       border-top-color: $primary-color;
     }
+  }
+}
+
+// 반응형 미디어 쿼리 - Step1 & Step2 일관성 확보
+@media (max-width: 767px) {
+  // 모바일 최적화
+  .content {
+    padding: 16px 12px calc(6rem + 56px) 12px;
+  }
+  
+  .projectInfoCard {
+    padding: 16px;
+    border-radius: 16px;
+    margin-bottom: 16px;
+  }
+  
+  .memberProfiles {
+    flex-direction: column;
+    gap: 16px;
+    align-items: flex-start;
+    
+    .currentMember {
+      align-self: stretch;
+      gap: 16px;
+    }
+    
+    .otherMembers {
+      justify-content: flex-start;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+  }
+  
+  .categorySection {
+    gap: 16px; // 모바일에서 카테고리 간격 증가
+  }
+  
+  .questionText {
+    font-size: 16px;
+    margin: 16px 0 20px;
+    text-align: center; // 모바일에서 중앙 정렬
+  }
+  
+  // Step2 전체 평가 섹션 모바일 최적화
+  .overallRatingSection {
+    padding: 20px 24px; // CategorySlider 모바일 패딩과 동일
+    
+    .overallLabel {
+      font-size: 16px;
+      text-align: center; // 모바일에서 중앙 정렬
+      margin-bottom: 20px;
+    }
+  }
+  
+  // Step2 역할 섹션 모바일 최적화
+  .roleSection {
+    padding: 20px 24px; // CategorySlider 모바일 패딩과 동일
+    
+    .roleLabel {
+      font-size: 16px;
+      text-align: center; // 모바일에서 중앙 정렬
+      margin-bottom: 16px;
+    }
+    
+    .subDescription {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+  }
+  
+  .buttonContainer {
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 32px;
+    position: sticky;
+    bottom: 16px;
+    
+    .button {
+      min-height: 52px; // 터치 최적화
+      font-size: 16px; // iOS 줌 방지
+      border-radius: 16px;
+    }
+  }
+  
+  .roleInput, .encouragementInput, .keywordInput {
+    font-size: 16px; // iOS 줌 방지
+    border-radius: 12px;
+    padding: 16px;
+  }
+  
+  .roleInput {
+    min-height: 120px; // 모바일에서 더 큰 텍스트 영역
+  }
+  
+  .encouragementInput {
+    min-height: 100px;
+  }
+  
+  // 진행 표시기 모바일 최적화
+  .progressIndicator {
+    justify-content: center;
+    margin: 12px 0 20px;
+    
+    .progressStep {
+      width: 24px;
+      height: 24px;
+      font-size: 12px;
+    }
+    
+    .progressLine {
+      width: 48px;
+    }
+  }
+  
+  // 별점 영역 모바일 최적화 (Step1용)
+  .starsContainer, .starContainer {
+    gap: 16px;
+    margin: 0 0 24px;
+    
+    .star {
+      font-size: 32px; // 모바일에서 더 큰 별
+    }
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  // 태블릿 최적화
+  .content {
+    max-width: 600px;
+    padding: 24px 20px calc(6rem + 56px) 20px;
+  }
+  
+  .memberProfiles {
+    .otherMembers {
+      gap: 12px;
+    }
+  }
+}
+
+@media (min-width: 1024px) {
+  // 데스크톱 최적화
+  .content {
+    max-width: 720px;
+    padding: 32px 24px calc(6rem + 56px) 24px;
+  }
+  
+  .buttonContainer {
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+// 터치 기기 최적화
+@media (hover: none) {
+  .star {
+    font-size: clamp(28px, 7vw, 32px); // 터치 기기에서 더 큰 별
+    padding: 4px; // 터치 영역 확대
+  }
+  
+  .sliderTrack {
+    height: 8px; // 터치 기기에서 더 두꺼운 트랙
+  }
+  
+  .sliderThumb {
+    width: clamp(24px, 6vw, 28px);
+    height: clamp(24px, 6vw, 28px);
+  }
+  
+  .button:active {
+    transform: scale(0.98); // 터치 피드백
+  }
+}
+
+// 접근성 개선
+@media (prefers-reduced-motion: reduce) {
+  .sliderThumb,
+  .star,
+  .progressStep,
+  .button {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+@media (prefers-contrast: high) {
+  .sliderTrack {
+    border: 2px solid currentColor;
+  }
+  
+  .star {
+    text-shadow: 0 0 2px currentColor;
+  }
+  
+  .button {
+    border: 2px solid currentColor !important;
   }
 } 
