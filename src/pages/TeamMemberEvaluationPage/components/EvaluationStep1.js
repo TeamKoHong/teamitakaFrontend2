@@ -10,6 +10,15 @@ const EvaluationStep1 = ({
   onCategoryRatingChange,
   onNext
 }) => {
+  // 데이터 유효성 검사
+  if (!projectData || !memberData) {
+    return (
+      <div className={styles.errorContainer}>
+        <div className={styles.errorText}>데이터를 불러올 수 없습니다.</div>
+      </div>
+    );
+  }
+
   const categories = [
     {
       key: 'participation',
@@ -101,22 +110,21 @@ const EvaluationStep1 = ({
             name={category.name}
             description={category.description}
             value={evaluationData.categoryRatings[category.key] || 1}
-            onChange={(value) => onCategoryRatingChange(category.key, value)}
+            onChange={(rating) => onCategoryRatingChange(category.key, rating)}
+            min={1}
+            max={5}
+            disabled={false}
+            compact={false}
+            showDescription={true}
+            showThumb={true}
           />
         ))}
       </div>
 
-      {/* 입력 완료 상태 피드백 */}
-      {!isAllCategoriesRated && (
-        <div className={styles.completionFeedback}>
-          모든 카테고리를 평가해주세요
-        </div>
-      )}
-      
-      {/* 다음 단계로 이동 버튼 */}
+      {/* 다음 단계 버튼 */}
       <div className={styles.buttonContainer}>
         <button
-          className={`${styles.button} ${styles.primary}`}
+          className={`${styles.nextButton} ${!isAllCategoriesRated ? styles.disabled : ''}`}
           onClick={onNext}
           disabled={!isAllCategoriesRated}
         >

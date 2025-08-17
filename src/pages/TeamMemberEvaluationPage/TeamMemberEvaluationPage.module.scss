@@ -709,23 +709,55 @@
   border: 1px solid color.adjust($error-color, $lightness: 70%);
 }
 
-// 버튼 컨테이너
-.buttonContainer {
-  margin-top: 22px; // 약 2px 줄여 간격 미세 조정
+// 에러 컨테이너 스타일
+.errorContainer {
   display: flex;
-  gap: 12px;
-  position: sticky;
-  bottom: 24px;
-  z-index: 10;
-  // iOS/안드로이드 각 브라우저의 textarea 외곽선 렌더링 차이에 따른 오차 보정
-  // 마지막 입력 요소가 textarea일 경우 추가 마진을 제거하여 시각적 24px 유지
-  &:has(textarea:focus), &:has(textarea) {
-    margin-top: 22px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-xxl);
+  text-align: center;
+}
+
+.errorText {
+  font-size: var(--font-size-md);
+  color: #666;
+  margin-bottom: var(--spacing-md);
+}
+
+// 다음 버튼 스타일
+.nextButton {
+  width: 100%;
+  padding: var(--spacing-lg) var(--spacing-xl);
+  background-color: #f76241;
+  color: white;
+  border: none;
+  border-radius: var(--border-radius-lg);
+  font-size: var(--font-size-md);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover:not(:disabled) {
+    background-color: #e55a3a;
+    transform: translateY(-1px);
   }
-  
-  .button {
-    flex: 1;
+
+  &:active:not(:disabled) {
+    transform: translateY(0);
   }
+
+  &.disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+    transform: none;
+  }
+}
+
+// 버튼 컨테이너 스타일
+.buttonContainer {
+  margin-top: var(--spacing-xxl);
+  padding: 0 var(--spacing-md);
 }
 
 .centerLink {
