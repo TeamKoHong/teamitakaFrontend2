@@ -19,29 +19,43 @@ import OnboardingPage from './pages/OnboardingPage/OnboardingPage';
 import LoginPage from './pages/LoginPage/LoginPage';
 import RegisterPage from './pages/RegisterPage/RegisterPage';
 // 새로 추가된 팀 매칭 페이지 임포트
-import TeamMatchingPage from './pages/TeamMatchingPage/TeamMatchingPage'; // TeamMatchingPage 경로에 맞게 수정
+import TeamMatchingPage from './pages/TeamMatchingPage/TeamMatchingPage';
 import RecruitmentPage from './pages/RecruitmentPage/RecruitmentPage';
 import SearchPage from './pages/SearchPage/SearchPage';
 
 // 메인 페이지 임포트
 import MainPage from './components/Home/MainPage';
 
-// 네비게이션 가드 컴포넌트
+// 라우팅 상수 임포트
+import { 
+  MAIN_ROUTES, 
+  PROJECT_ROUTES, 
+  EVALUATION_ROUTES, 
+  LEGACY_EVALUATION_ROUTES, 
+  OTHER_ROUTES, 
+  DEMO_ROUTES,
+  isEvaluationRoute 
+} from './constants/routes';
+
+// ===== 네비게이션 가드 컴포넌트 =====
+
+// 평가 플로우 가드
 const EvaluationGuard = ({ children, projectId, memberId }) => {
   const location = useLocation();
   
-  // 평가 플로우에서 뒤로가기 시 경고
   React.useEffect(() => {
+    // 평가 플로우에서 뒤로가기 시 경고
     const handleBeforeUnload = (e) => {
-      if (location.pathname.includes('/evaluation/')) {
+      if (isEvaluationRoute(location.pathname)) {
         e.preventDefault();
         e.returnValue = '평가 작성 중입니다. 페이지를 나가시겠습니까?';
         return e.returnValue;
       }
     };
 
+    // 브라우저 뒤로가기 버튼 처리
     const handlePopState = (e) => {
-      if (location.pathname.includes('/evaluation/')) {
+      if (isEvaluationRoute(location.pathname)) {
         const confirmLeave = window.confirm('평가 작성 중입니다. 페이지를 나가시겠습니까?');
         if (!confirmLeave) {
           window.history.pushState(null, '', location.pathname);
@@ -61,7 +75,7 @@ const EvaluationGuard = ({ children, projectId, memberId }) => {
   return children;
 };
 
-// 프로젝트 권한 검증 컴포넌트
+// 프로젝트 권한 검증 가드
 const ProjectPermissionGuard = ({ children, projectId }) => {
   const [isLoading, setIsLoading] = React.useState(true);
   const [hasPermission, setHasPermission] = React.useState(false);
@@ -117,7 +131,7 @@ const ProjectPermissionGuard = ({ children, projectId }) => {
       }}>
         <div style={{ fontSize: '16px', color: '#666' }}>{error}</div>
         <button 
-          onClick={() => window.location.href = '/project-management'}
+          onClick={() => window.location.href = PROJECT_ROUTES.MANAGEMENT}
           style={{
             padding: '12px 24px',
             backgroundColor: '#f76241',
@@ -134,14 +148,16 @@ const ProjectPermissionGuard = ({ children, projectId }) => {
   }
 
   if (!hasPermission) {
-    return <Navigate to="/project-management" replace />;
+    return <Navigate to={PROJECT_ROUTES.MANAGEMENT} replace />;
   }
 
   return children;
 };
 
-// 가드 래퍼 컴포넌트들
-const ProjectPermissionGuardWrapper = () => {
+// ===== 가드 래퍼 컴포넌트들 =====
+
+// 프로젝트 평가 페이지 가드
+const ProjectEvaluationGuard = () => {
   const { projectId } = useParams();
   return (
     <ProjectPermissionGuard projectId={projectId}>
@@ -150,7 +166,8 @@ const ProjectPermissionGuardWrapper = () => {
   );
 };
 
-const TeamMemberEvaluationGuardWrapper = () => {
+// 팀원 평가 페이지 가드
+const TeamMemberEvaluationGuard = () => {
   const { projectId, memberId } = useParams();
   return (
     <ProjectPermissionGuard projectId={projectId}>
@@ -161,7 +178,8 @@ const TeamMemberEvaluationGuardWrapper = () => {
   );
 };
 
-const StatusPageGuardWrapper = () => {
+// 평가 상태 페이지 가드
+const EvaluationStatusGuard = () => {
   const { projectId } = useParams();
   const location = useLocation();
   
@@ -186,80 +204,60 @@ const StatusPageGuardWrapper = () => {
   }
 };
 
+// ===== 리다이렉트 함수 =====
+
+function RedirectToReceived() {
+  const { projectId } = useParams();
+  return <Navigate to={`${EVALUATION_ROUTES.STATUS_RECEIVED.replace(':projectId', projectId)}`} replace />;
+}
+
+// ===== 메인 앱 컴포넌트 =====
+
 const App = () => {
   return (
     <Router>
       <Routes>
-        {/* 기본 경로를 프로젝트 관리 페이지로 설정 
-        <Route path="/" element={<Navigate to="/project-management" replace />} />
-        <Route path="/main" element={<Navigate to="/project-management" replace />} />
-        <Route path="/my" element={<Navigate to="/project-management" replace />} />*/}
+        {/* ===== 메인 페이지 라우트 ===== */}
+        <Route path={MAIN_ROUTES.HOME} element={<OnboardingPage />} />
+        <Route path={MAIN_ROUTES.MAIN} element={<MainPage />} />
+        <Route path={MAIN_ROUTES.LOGIN} element={<LoginPage />} />
+        <Route path={MAIN_ROUTES.REGISTER} element={<RegisterPage />} />
+        <Route path={MAIN_ROUTES.MY} element={<Navigate to={PROJECT_ROUTES.MANAGEMENT} replace />} />
 
-        {/*메인 홈 페이지 라우트*/}
-        <Route path="/" element={<OnboardingPage />} />
-        <Route path="/main" element={<MainPage />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<RegisterPage />} />
-        {/* 기본 경로를 프로젝트 관리 페이지로 설정 */}
-        <Route path="/my" element={<Navigate to="/project-management" replace />} />
+        {/* ===== 프로젝트 관리 라우트 ===== */}
+        <Route path={PROJECT_ROUTES.MANAGEMENT} element={<ProjectManagement />} />
+        <Route path={PROJECT_ROUTES.DETAIL} element={<ProjectDetailPage />} />
+        <Route path={PROJECT_ROUTES.MEMBER} element={<ProjectMemberPage />} />
+        <Route path={PROJECT_ROUTES.PROCEEDINGS} element={<ProceedingsPage />} />
+        <Route path={PROJECT_ROUTES.CALENDAR} element={<ProjectCalender />} />
 
-        {/* 기존 프로젝트 관리 및 상세 페이지 라우트 */}
-        <Route path="/project-management" element={<ProjectManagement />} />
-        <Route path="/project/:id" element={<ProjectDetailPage />} />
-        <Route path="/project/:id/member" element={<ProjectMemberPage />} />
-        <Route path="/project/:id/proceedings" element={<ProceedingsPage />} />
-        {/*<Route path="/project/:id/vote" element={<ProjectVotePage />} />*/}
-        <Route path="/project/:id/calender" element={<ProjectCalender />} />
-
-        {/* 평가 관련 페이지 라우트 - URL 구조 개선 및 가드 추가 */}
-        <Route path="/evaluation/management" element={<RatingManagementPage/>}/>
-        <Route 
-          path="/evaluation/project/:projectId" 
-          element={<ProjectPermissionGuardWrapper />}
-        />
-        <Route 
-          path="/evaluation/team-member/:projectId/:memberId" 
-          element={<TeamMemberEvaluationGuardWrapper />}
-        />
-        <Route 
-          path="/evaluation/status/:projectId/given" 
-          element={<StatusPageGuardWrapper />}
-        />
-        <Route 
-          path="/evaluation/status/:projectId/received" 
-          element={<StatusPageGuardWrapper />}
-        />
-        <Route 
-          path="/evaluation/status/:projectId" 
-          element={<StatusPageGuardWrapper />}
-        />
+        {/* ===== 평가 시스템 라우트 (새로운 구조) ===== */}
+        <Route path={EVALUATION_ROUTES.MANAGEMENT} element={<RatingManagementPage/>}/>
+        <Route path={EVALUATION_ROUTES.PROJECT} element={<ProjectEvaluationGuard />} />
+        <Route path={EVALUATION_ROUTES.TEAM_MEMBER} element={<TeamMemberEvaluationGuard />} />
+        <Route path={EVALUATION_ROUTES.STATUS_GIVEN} element={<EvaluationStatusGuard />} />
+        <Route path={EVALUATION_ROUTES.STATUS_RECEIVED} element={<EvaluationStatusGuard />} />
+        <Route path={EVALUATION_ROUTES.STATUS} element={<EvaluationStatusGuard />} />
         
-        {/* 기존 URL 호환성을 위한 리다이렉트 */}
-        <Route path="/project/rating-management" element={<Navigate to="/evaluation/management" replace />} />
-        <Route path="/project/:projectId/rating-project" element={<Navigate to="/evaluation/project/:projectId" replace />} />
-        <Route path="/project/:projectId/evaluate/:memberId" element={<Navigate to="/evaluation/team-member/:projectId/:memberId" replace />} />
-        <Route path="/project/:projectId/rating-status/given" element={<Navigate to="/evaluation/status/:projectId/given" replace />} />
-        <Route path="/project/:projectId/rating-status/received" element={<Navigate to="/evaluation/status/:projectId/received" replace />} />
-        <Route path="/project/:projectId/rating-status" element={<Navigate to="/evaluation/status/:projectId" replace />} />
+        {/* ===== 기존 URL 호환성 리다이렉트 ===== */}
+        <Route path={LEGACY_EVALUATION_ROUTES.RATING_MANAGEMENT} element={<Navigate to={EVALUATION_ROUTES.MANAGEMENT} replace />} />
+        <Route path={LEGACY_EVALUATION_ROUTES.RATING_PROJECT} element={<Navigate to={EVALUATION_ROUTES.PROJECT} replace />} />
+        <Route path={LEGACY_EVALUATION_ROUTES.EVALUATE_MEMBER} element={<Navigate to={EVALUATION_ROUTES.TEAM_MEMBER} replace />} />
+        <Route path={LEGACY_EVALUATION_ROUTES.RATING_STATUS_GIVEN} element={<Navigate to={EVALUATION_ROUTES.STATUS_GIVEN} replace />} />
+        <Route path={LEGACY_EVALUATION_ROUTES.RATING_STATUS_RECEIVED} element={<Navigate to={EVALUATION_ROUTES.STATUS_RECEIVED} replace />} />
+        <Route path={LEGACY_EVALUATION_ROUTES.RATING_STATUS} element={<Navigate to={EVALUATION_ROUTES.STATUS} replace />} />
 
-        {/* 새로 추가된 팀 매칭 페이지 라우트 */}
-        <Route path="/team-matching" element={<TeamMatchingPage />} />
-        <Route path="/recruitment" element={<RecruitmentPage />} />
-        <Route path="/search" element={<SearchPage />} />
+        {/* ===== 팀 매칭 및 기타 라우트 ===== */}
+        <Route path={OTHER_ROUTES.TEAM_MATCHING} element={<TeamMatchingPage />} />
+        <Route path={OTHER_ROUTES.RECRUITMENT} element={<RecruitmentPage />} />
+        <Route path={OTHER_ROUTES.SEARCH} element={<SearchPage />} />
+        <Route path={OTHER_ROUTES.TEAM} element={<Navigate to={OTHER_ROUTES.TEAM_MATCHING} replace />} />
 
-        {/* 기존 /team 경로를 팀 매칭 페이지로 리다이렉트 */}
-        <Route path="/team" element={<Navigate to="/team-matching" replace />} />
-
-        {/* 데모 컴포넌트 라우트 */}
-        <Route path="/demo/category-slider" element={<CategorySliderDemo />} />
+        {/* ===== 데모 및 개발 도구 라우트 ===== */}
+        <Route path={DEMO_ROUTES.CATEGORY_SLIDER} element={<CategorySliderDemo />} />
       </Routes>
     </Router>
   );
 };
-
-function RedirectToReceived() {
-  const { projectId } = useParams();
-  return <Navigate to={`/evaluation/status/${projectId}/received`} replace />;
-}
 
 export default App;
