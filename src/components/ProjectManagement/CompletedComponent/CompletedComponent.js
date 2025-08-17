@@ -169,12 +169,12 @@ const CompletedComponent = () => {
             const { targets } = await fetchEvaluationTargets(modalProject.id);
             const nextId = getNextPendingMemberId(targets);
             if (nextId) {
-              navigate(`/project/${modalProject.id}/evaluate/${nextId}`, {
+              navigate(`/evaluation/team-member/${modalProject.id}/${nextId}`, {
                 state: { projectSummary: modalProject, from: { path: '/project-management', tab: 'completed' } },
               });
             } else {
               // fallback: 허브로 이동
-              navigate(`/project/${modalProject.id}/rating-project`, {
+              navigate(`/evaluation/project/${modalProject.id}`, {
                 state: { projectSummary: modalProject, from: { path: '/project-management', tab: 'completed' } },
               });
             }

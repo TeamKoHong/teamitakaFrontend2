@@ -52,13 +52,21 @@ const App = () => {
         {/*<Route path="/project/:id/vote" element={<ProjectVotePage />} />*/}
         <Route path="/project/:id/calender" element={<ProjectCalender />} />
 
-        {/* 평가 관련 페이지 라우트 */}
-        <Route path="/project/rating-management" element={<RatingManagementPage/>}/>
-        <Route path="/project/:projectId/rating-project" element={<RatingProjectPage/>}/>
-        <Route path="/project/:projectId/evaluate/:memberId" element={<TeamMemberEvaluationPage />} />
-        <Route path="/project/:projectId/rating-status/given" element={<RatingProjectStatusPage />} />
-        <Route path="/project/:projectId/rating-status/received" element={<RatingProjectStatusPage />} />
-        <Route path="/project/:projectId/rating-status" element={<RedirectToReceived />} />
+        {/* 평가 관련 페이지 라우트 - URL 구조 개선 */}
+        <Route path="/evaluation/management" element={<RatingManagementPage/>}/>
+        <Route path="/evaluation/project/:projectId" element={<RatingProjectPage/>}/>
+        <Route path="/evaluation/team-member/:projectId/:memberId" element={<TeamMemberEvaluationPage />} />
+        <Route path="/evaluation/status/:projectId/given" element={<RatingProjectStatusPage />} />
+        <Route path="/evaluation/status/:projectId/received" element={<RatingProjectStatusPage />} />
+        <Route path="/evaluation/status/:projectId" element={<RedirectToReceived />} />
+        
+        {/* 기존 URL 호환성을 위한 리다이렉트 */}
+        <Route path="/project/rating-management" element={<Navigate to="/evaluation/management" replace />} />
+        <Route path="/project/:projectId/rating-project" element={<Navigate to="/evaluation/project/:projectId" replace />} />
+        <Route path="/project/:projectId/evaluate/:memberId" element={<Navigate to="/evaluation/team-member/:projectId/:memberId" replace />} />
+        <Route path="/project/:projectId/rating-status/given" element={<Navigate to="/evaluation/status/:projectId/given" replace />} />
+        <Route path="/project/:projectId/rating-status/received" element={<Navigate to="/evaluation/status/:projectId/received" replace />} />
+        <Route path="/project/:projectId/rating-status" element={<Navigate to="/evaluation/status/:projectId" replace />} />
 
         {/* 새로 추가된 팀 매칭 페이지 라우트 */}
         <Route path="/team-matching" element={<TeamMatchingPage />} />
@@ -77,7 +85,7 @@ const App = () => {
 
 function RedirectToReceived() {
   const { projectId } = useParams();
-  return <Navigate to={`/project/${projectId}/rating-status/received`} replace />;
+  return <Navigate to={`/evaluation/status/${projectId}/received`} replace />;
 }
 
 export default App;
