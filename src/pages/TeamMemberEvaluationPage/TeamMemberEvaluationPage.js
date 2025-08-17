@@ -149,7 +149,7 @@ function TeamMemberEvaluationPage() {
       // 완료 화면(2단계)이므로 그대로 유지
       // 잠시 후 평가 관리 페이지로 이동
       setTimeout(() => {
-        navigate(`/project/${projectId}/rating-project`);
+        navigate(`/evaluation/project/${projectId}`);
       }, 2000);
     } catch (err) {
       setError('평가 완료 처리에 실패했습니다.');
