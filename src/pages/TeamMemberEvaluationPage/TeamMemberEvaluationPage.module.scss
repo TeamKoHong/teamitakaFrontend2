@@ -65,6 +65,8 @@
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
   padding: 20px;
   margin-bottom: 16px;
+  width: 100%; // 명시적 너비 설정
+  box-sizing: border-box; // 패딩과 보더를 너비에 포함
 }
 
 // 페이지 컨테이너
@@ -84,8 +86,9 @@
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   overscroll-behavior-y: contain;
-  max-width: 480px;
+  max-width: 100%; // 480px에서 100%로 변경하여 전체 너비 활용
   margin: 0 auto;
+  width: 100%; // 명시적 너비 설정
 }
 
 // 로딩, 에러, 데이터 없음 상태
@@ -112,8 +115,9 @@
 // 스크롤 영역
 .scrollArea {
   padding: var(--padding-lg);
-  max-width: 480px;
+  max-width: 100%; // 480px에서 100%로 변경
   margin: 0 auto;
+  width: 100%; // 명시적 너비 설정
 }
 
 // 헤더
@@ -153,29 +157,37 @@
   border-radius: var(--border-radius-xxl);
   padding: var(--padding-xl);
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  width: 100%; // 명시적 너비 설정
+  box-sizing: border-box; // 패딩과 보더를 너비에 포함
   
   .projectName {
     font-size: 16px;
     font-weight: $font-weight-bold;
     color: $gray-dark;
     margin-bottom: 4px;
+    word-break: break-word; // 긴 텍스트 줄바꿈
   }
   
   .projectDescription {
     font-size: 12px;
     color: $gray;
     margin-bottom: 20px;
+    word-break: break-word; // 긴 텍스트 줄바꿈
   }
   
   .memberProfiles {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    flex-wrap: wrap; // 모바일에서 줄바꿈 허용
+    gap: 12px; // 간격 추가
     
     .currentMember {
       display: flex;
       align-items: center;
       gap: 12px;
+      flex: 1; // 유연한 너비
+      min-width: 0; // flex 아이템 축소 허용
       
       .profileImage {
         width: 48px;
@@ -183,12 +195,14 @@
         border-radius: 50%;
         border: 2px solid $gray-light;
         object-fit: cover;
+        flex-shrink: 0; // 이미지 크기 고정
       }
       
       .memberInfo {
         display: flex;
         flex-direction: column;
         gap: 4px;
+        min-width: 0; // flex 아이템 축소 허용
         
         .currentLabel {
           font-size: 12px;
@@ -200,6 +214,7 @@
           font-size: 16px;
           font-weight: $font-weight-bold;
           color: $primary-color;
+          word-break: break-word; // 긴 이름 줄바꿈
         }
       }
     }
@@ -207,9 +222,12 @@
     .otherMembers {
       display: flex;
       gap: 8px;
+      flex-wrap: wrap; // 모바일에서 줄바꿈 허용
+      justify-content: flex-end; // 우측 정렬
       
       .profileItem {
         position: relative;
+        flex-shrink: 0; // 크기 고정
         
         .profileImage {
           width: 35px;
@@ -1044,65 +1062,93 @@
   // 모바일 최적화
   .content {
     padding: var(--padding-lg) var(--padding-md) calc(6rem + 56px) var(--padding-md);
+    width: 100%;
+    max-width: 100%;
+  }
+  
+  .scrollArea {
+    padding: var(--padding-md);
+    width: 100%;
+    max-width: 100%;
   }
   
   .projectInfoCard {
     padding: var(--padding-lg);
     border-radius: var(--border-radius-xl);
     margin-bottom: var(--spacing-lg);
+    width: 100%;
+    box-sizing: border-box;
   }
   
   .memberProfiles {
     flex-direction: column;
     gap: var(--spacing-lg);
     align-items: flex-start;
+    width: 100%;
     
     .currentMember {
       align-self: stretch;
       gap: var(--spacing-lg);
+      width: 100%;
+      
+      .memberInfo {
+        flex: 1;
+        min-width: 0;
+      }
     }
     
     .otherMembers {
       justify-content: flex-start;
       flex-wrap: wrap;
       gap: var(--gap-md);
+      width: 100%;
     }
   }
   
   .categorySection {
     gap: var(--spacing-lg); // 모바일에서 카테고리 간격 증가
+    width: 100%;
   }
   
   .questionText {
     font-size: var(--font-size-lg);
     margin: var(--spacing-lg) 0 var(--spacing-xl);
     text-align: center; // 모바일에서 중앙 정렬
+    width: 100%;
+    word-break: keep-all; // 한글 단어 단위 줄바꿈
   }
   
   // Step2 전체 평가 섹션 모바일 최적화
   .overallRatingSection {
     padding: var(--padding-xl) var(--spacing-xxl); // CategorySlider 모바일 패딩과 동일
+    width: 100%;
+    box-sizing: border-box;
     
     .overallLabel {
       font-size: var(--font-size-lg);
       text-align: center; // 모바일에서 중앙 정렬
       margin-bottom: var(--spacing-xl);
+      word-break: keep-all; // 한글 단어 단위 줄바꿈
     }
   }
   
   // Step2 역할 섹션 모바일 최적화
   .roleSection {
     padding: var(--padding-xl) var(--spacing-xxl); // CategorySlider 모바일 패딩과 동일
+    width: 100%;
+    box-sizing: border-box;
     
     .roleLabel {
       font-size: var(--font-size-lg);
       text-align: center; // 모바일에서 중앙 정렬
       margin-bottom: var(--spacing-lg);
+      word-break: keep-all; // 한글 단어 단위 줄바꿈
     }
     
     .subDescription {
       text-align: center;
       margin-bottom: var(--spacing-xl);
+      word-break: keep-all; // 한글 단어 단위 줄바꿈
     }
   }
   
@@ -1112,11 +1158,15 @@
     margin-top: var(--spacing-xxxl);
     position: sticky;
     bottom: var(--spacing-lg);
+    width: 100%;
+    padding: 0 var(--padding-md);
+    box-sizing: border-box;
     
     .button {
       min-height: var(--button-height-md); // 터치 최적화
       font-size: var(--font-size-lg); // iOS 줌 방지
       border-radius: var(--border-radius-xl);
+      width: 100%;
     }
   }
   
@@ -1124,6 +1174,8 @@
     font-size: var(--font-size-lg); // iOS 줌 방지
     border-radius: var(--border-radius-xl);
     padding: var(--padding-lg);
+    width: 100%;
+    box-sizing: border-box;
   }
   
   .roleInput {
@@ -1138,6 +1190,7 @@
   .progressIndicator {
     justify-content: center;
     margin: var(--gap-md) 0 var(--spacing-xl);
+    width: 100%;
     
     .progressStep {
       width: var(--icon-size-md);
@@ -1154,6 +1207,7 @@
   .starsContainer, .starContainer {
     gap: var(--spacing-lg);
     margin: 0 0 var(--spacing-xxl);
+    width: 100%;
     
     .star {
       font-size: var(--icon-size-xl); // 모바일에서 더 큰 별
@@ -1164,8 +1218,13 @@
 @media (min-width: 768px) and (max-width: 1023px) {
   // 태블릿 최적화
   .content {
-    max-width: 600px;
+    max-width: 100%; // 600px에서 100%로 변경하여 더 유연하게
     padding: 24px 20px calc(6rem + 56px) 20px;
+  }
+  
+  .scrollArea {
+    max-width: 100%;
+    padding: 20px;
   }
   
   .memberProfiles {
@@ -1178,8 +1237,13 @@
 @media (min-width: 1024px) {
   // 데스크톱 최적화
   .content {
-    max-width: 720px;
+    max-width: 100%; // 720px에서 100%로 변경하여 더 유연하게
     padding: 32px 24px calc(6rem + 56px) 24px;
+  }
+  
+  .scrollArea {
+    max-width: 100%;
+    padding: 24px;
   }
   
   .buttonContainer {
