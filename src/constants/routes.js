@@ -7,7 +7,7 @@ export const MAIN_ROUTES = {
   LOGIN: '/login',
   REGISTER: '/register',
   MY: '/my',
-} as const;
+};
 
 // ===== 프로젝트 관리 라우트 =====
 export const PROJECT_ROUTES = {
@@ -16,7 +16,7 @@ export const PROJECT_ROUTES = {
   MEMBER: '/project/:id/member',
   PROCEEDINGS: '/project/:id/proceedings',
   CALENDAR: '/project/:id/calender',
-} as const;
+};
 
 // ===== 평가 시스템 라우트 (새로운 구조) =====
 export const EVALUATION_ROUTES = {
@@ -26,7 +26,7 @@ export const EVALUATION_ROUTES = {
   STATUS_GIVEN: '/evaluation/status/:projectId/given',
   STATUS_RECEIVED: '/evaluation/status/:projectId/received',
   STATUS: '/evaluation/status/:projectId',
-} as const;
+};
 
 // ===== 기존 URL 호환성 리다이렉트 =====
 export const LEGACY_EVALUATION_ROUTES = {
@@ -36,7 +36,7 @@ export const LEGACY_EVALUATION_ROUTES = {
   RATING_STATUS_GIVEN: '/project/:projectId/rating-status/given',
   RATING_STATUS_RECEIVED: '/project/:projectId/rating-status/received',
   RATING_STATUS: '/project/:projectId/rating-status',
-} as const;
+};
 
 // ===== 팀 매칭 및 기타 라우트 =====
 export const OTHER_ROUTES = {
@@ -44,12 +44,12 @@ export const OTHER_ROUTES = {
   RECRUITMENT: '/recruitment',
   SEARCH: '/search',
   TEAM: '/team',
-} as const;
+};
 
 // ===== 데모 및 개발 도구 라우트 =====
 export const DEMO_ROUTES = {
   CATEGORY_SLIDER: '/demo/category-slider',
-} as const;
+};
 
 // ===== 라우트 그룹별 분류 =====
 export const ROUTE_GROUPS = {
@@ -59,7 +59,7 @@ export const ROUTE_GROUPS = {
   LEGACY_EVALUATION: Object.values(LEGACY_EVALUATION_ROUTES),
   OTHER: Object.values(OTHER_ROUTES),
   DEMO: Object.values(DEMO_ROUTES),
-} as const;
+};
 
 // ===== 라우트 메타데이터 =====
 export const ROUTE_METADATA = {
@@ -118,7 +118,7 @@ export const ROUTE_METADATA = {
     requiresAuth: true,
     showBottomNav: true,
   },
-} as const;
+};
 
 // ===== 라우트 헬퍼 함수 =====
 
