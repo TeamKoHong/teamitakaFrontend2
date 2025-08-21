@@ -65,20 +65,27 @@ function TeamMemberEvaluationPage() {
           ]
         };
 
-        // 김재원(memberId: 101)을 기본 평가 대상으로 설정
-        const dummyMember = dummyProject.members.find(m => m.id === parseInt(memberId)) || dummyProject.members[0];
+        // memberId가 없거나 유효하지 않은 경우 기본값 사용
+        const targetMemberId = memberId ? parseInt(memberId) : 101;
+        const dummyMember = dummyProject.members.find(m => m.id === targetMemberId) || dummyProject.members[0];
+        
+        console.log('Project Data:', dummyProject);
+        console.log('Member Data:', dummyMember);
+        console.log('Target Member ID:', targetMemberId);
         
         setProjectData(dummyProject);
         setMemberData(dummyMember);
       } catch (err) {
-        setError('데이터를 불러오는데 실패했습니다.');
         console.error('Failed to fetch data:', err);
+        setError('데이터를 불러오는데 실패했습니다.');
       } finally {
         setLoading(false);
       }
     };
 
-    fetchData();
+    if (projectId) {
+      fetchData();
+    }
   }, [projectId, memberId]);
 
   const handleNextStep = () => {
@@ -149,7 +156,7 @@ function TeamMemberEvaluationPage() {
       // 완료 화면(2단계)이므로 그대로 유지
       // 잠시 후 평가 관리 페이지로 이동
       setTimeout(() => {
-        navigate(`/project/${projectId}/rating-project`);
+        navigate(`/evaluation/project/${projectId}`);
       }, 2000);
     } catch (err) {
       setError('평가 완료 처리에 실패했습니다.');

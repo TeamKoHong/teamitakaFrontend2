@@ -12,7 +12,7 @@ $star-color-inactive: #D7D1CF; // 비활성 별 윤곽에 가까운 연한 회�
 }
 
 .star {
-  font-size: 2rem; // 더 크고 명확한 별 크기
+  font-size: clamp(24px, 6vw, 28px); // Step1과 동일한 반응형 크기
   color: $star-color-inactive; // 기본 비활성 색상
   cursor: pointer;
   transition: color 0.2s ease-in-out;
@@ -23,9 +23,9 @@ $star-color-inactive: #D7D1CF; // 비활성 별 윤곽에 가까운 연한 회�
     color: $star-color-active; // 활성 색상
   }
 
-  // 별들 사이의 간격 (미세 조정)
+  // 별들 사이의 간격 (반응형)
   &:not(:last-child) {
-    margin-right: 0.5rem; // 별 사이 간격
+    margin-right: clamp(8px, 2vw, 12px); // 반응형 간격
   }
 }
 
@@ -33,5 +33,40 @@ $star-color-inactive: #D7D1CF; // 비활성 별 윤곽에 가까운 연한 회�
 .readOnly {
   .star {
     cursor: default;
+  }
+}
+
+// 반응형 미디어 쿼리 (평가 페이지와 일관성 확보)
+@media (max-width: 767px) {
+  .star {
+    font-size: 32px; // 모바일에서 터치 최적화 (Step1과 동일)
+    
+    &:not(:last-child) {
+      margin-right: 16px; // 모바일에서 더 큰 간격
+    }
+  }
+  
+  .starRating {
+    justify-content: center;
+    gap: 0; // margin-right로 간격 제어
+  }
+}
+
+// 터치 기기 최적화
+@media (hover: none) {
+  .star {
+    font-size: clamp(28px, 7vw, 32px); // 터치 기기에서 더 큰 별
+    padding: 4px; // 터치 영역 확대
+    
+    &:not(:last-child) {
+      margin-right: clamp(12px, 3vw, 16px);
+    }
+  }
+}
+
+// 접근성 개선
+@media (prefers-reduced-motion: reduce) {
+  .star {
+    transition: none !important;
   }
 }
