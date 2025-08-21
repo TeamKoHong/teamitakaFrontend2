@@ -1,3 +1,51 @@
+// CSS Custom Properties 시스템 - 반응형 디자인을 위한 동적 변수
+:root {
+  // 반응형 간격 시스템
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 12px;
+  --spacing-lg: 16px;
+  --spacing-xl: 20px;
+  --spacing-xxl: 24px;
+  --spacing-xxxl: 32px;
+  
+  // 반응형 패딩 시스템
+  --padding-xs: 8px;
+  --padding-sm: 12px;
+  --padding-md: 16px;
+  --padding-lg: 20px;
+  --padding-xl: 24px;
+  
+  // 반응형 폰트 크기 시스템
+  --font-size-xs: 11px;
+  --font-size-sm: 13px;
+  --font-size-md: 15px;
+  --font-size-lg: 16px;
+  --font-size-xl: 18px;
+  --font-size-xxl: 20px;
+  
+  // 반응형 테두리 반경 시스템
+  --border-radius-sm: 8px;
+  --border-radius-md: 10px;
+  --border-radius-lg: 12px;
+  --border-radius-xl: 16px;
+  --border-radius-xxl: 20px;
+  
+  // 반응형 간격 시스템
+  --gap-xs: 8px;
+  --gap-sm: 12px;
+  --gap-md: 16px;
+  --gap-lg: 20px;
+  --gap-xl: 24px;
+  --gap-xxl: 32px;
+  
+  // 반응형 아이콘 크기 시스템
+  --icon-size-sm: 20px;
+  --icon-size-md: 24px;
+  --icon-size-lg: 28px;
+  --icon-size-xl: 32px;
+}
+
 .completed-container {
   margin-top: 1rem;
   height: 100%;
@@ -7,27 +55,26 @@
     width: 100%;
     border: 3px solid #ececec;
     flex-shrink: 0;
-    margin-bottom: 17px;
+    margin-bottom: var(--spacing-lg);
   }
 
   .completed-top {
-    padding: 0 22px;
-    margin-bottom: 24px;
+    padding: 0 var(--spacing-xxl);
+    margin-bottom: var(--spacing-xxl);
   }
 
   .pending-review-card {
     position: relative;
-    margin: 0px 22px;
-    padding: 23px 9px 48px 26px;
+    margin: 0px var(--spacing-xxl);
+    padding: var(--spacing-xxl) var(--spacing-sm) 48px var(--spacing-xxl);
 
-    border-radius: 16px;
-    border-radius: 20px;
+    border-radius: var(--border-radius-xl);
     background: #fff;
-    margin-bottom: 24px;
+    margin-bottom: var(--spacing-xxl);
 
     .review-badge {
       top: -10px;
-      left: 12px;
+      left: var(--padding-sm);
       position: absolute;
       display: inline-block;
       background: #ff5757;
@@ -42,21 +89,21 @@
       font-weight: bold;
       padding: 4px 9px;
       border-radius: 10px;
-      margin-bottom: 8px;
+      margin-bottom: var(--spacing-sm);
       border-radius: 2.857px;
       background: linear-gradient(239deg, #f76241 3.02%, #ff390d 96.98%);
     }
 
     svg {
       position: absolute;
-      top: 14px;
-      right: 16px;
+      top: var(--spacing-lg);
+      right: var(--spacing-lg);
     }
 
     h3 {
       color: #000;
       font-family: Inter;
-      font-size: 15px;
+      font-size: var(--font-size-md);
       font-style: normal;
       font-weight: 700;
       line-height: normal;
@@ -73,7 +120,7 @@
       font-weight: 400;
       line-height: normal;
       text-transform: capitalize;
-      margin-bottom: 17px;
+      margin-bottom: var(--spacing-lg);
     }
 
     .team-avatars {
@@ -89,13 +136,13 @@
   }
 
   .completed-section {
-    padding: 0px 22px;
+    padding: 0px var(--spacing-xxl);
     .completed-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
       .completed-section-title {
-        font-size: 15px;
+        font-size: var(--font-size-md);
         font-weight: bold;
 
         font-style: normal;
@@ -128,17 +175,16 @@
     .completed-list {
       display: flex;
       flex-direction: column;
-      gap: 7px;
-      margin-top: 20px;
+      gap: var(--spacing-sm);
+      margin-top: var(--spacing-xl);
 
       .completed-item {
         background: #fff;
-        border-radius: 16px;
-        padding: 16px;
+        border-radius: var(--border-radius-xl);
+        padding: var(--spacing-lg);
         display: flex;
         justify-content: space-between;
         align-items: center;
-        border-radius: 16px;
         background: #fff;
 
         .completed-item-left {
@@ -149,7 +195,7 @@
         h3 {
           color: #000;
           font-family: Pretendard;
-          font-size: 15px;
+          font-size: var(--font-size-md);
           font-style: normal;
           font-weight: 700;
           line-height: 140.984%; /* 21.148px */
@@ -175,9 +221,479 @@
 
         .favorite-icon {
           color: #ffcc00;
-          font-size: 18px;
+          font-size: var(--icon-size-lg);
         }
       }
+    }
+  }
+}
+
+// ===== 반응형 미디어 쿼리 =====
+
+// 극소형 모바일 (320px) 대응
+@media (max-width: 359px) {
+  :root {
+    --spacing-xs: 3px;
+    --spacing-sm: 6px;
+    --spacing-md: 8px;
+    --spacing-lg: 12px;
+    --spacing-xl: 16px;
+    --spacing-xxl: 20px;
+    --spacing-xxxl: 24px;
+    
+    --padding-xs: 6px;
+    --padding-sm: 8px;
+    --padding-md: 12px;
+    --padding-lg: 16px;
+    --padding-xl: 20px;
+    
+    --font-size-xs: 10px;
+    --font-size-sm: 12px;
+    --font-size-md: 13px;
+    --font-size-lg: 15px;
+    --font-size-xl: 16px;
+    --font-size-xxl: 18px;
+    
+    --border-radius-sm: 6px;
+    --border-radius-md: 8px;
+    --border-radius-lg: 10px;
+    --border-radius-xl: 12px;
+    --border-radius-xxl: 16px;
+    
+    --gap-xs: 6px;
+    --gap-sm: 8px;
+    --gap-md: 12px;
+    --gap-lg: 16px;
+    --gap-xl: 20px;
+    --gap-xxl: 24px;
+    
+    --icon-size-sm: 18px;
+    --icon-size-md: 20px;
+    --icon-size-lg: 24px;
+    --icon-size-xl: 28px;
+  }
+  
+  .completed-container {
+    .completed-top {
+      padding: 0 var(--spacing-lg);
+      margin-bottom: var(--spacing-lg);
+    }
+    
+    .pending-review-card {
+      margin: 0px var(--spacing-lg);
+      padding: var(--spacing-lg) var(--padding-xs) 48px var(--spacing-lg);
+      border-radius: var(--border-radius-lg);
+      margin-bottom: var(--spacing-lg);
+      
+      .review-badge {
+        left: var(--padding-xs);
+        margin-bottom: var(--spacing-xs);
+      }
+      
+      svg {
+        top: var(--spacing-md);
+        right: var(--spacing-md);
+      }
+      
+      h3 {
+        font-size: var(--font-size-md);
+      }
+      
+      .description {
+        margin-bottom: var(--spacing-md);
+      }
+    }
+    
+    .completed-section {
+      padding: 0px var(--spacing-lg);
+      
+      .completed-header {
+        .completed-section-title {
+          font-size: var(--font-size-md);
+        }
+      }
+      
+      .completed-list {
+        gap: var(--gap-xs);
+        margin-top: var(--spacing-lg);
+        
+        .completed-item {
+          border-radius: var(--border-radius-lg);
+          padding: var(--spacing-md);
+          
+          h3 {
+            font-size: var(--font-size-md);
+          }
+          
+          .favorite-icon {
+            font-size: var(--icon-size-md);
+          }
+        }
+      }
+    }
+  }
+}
+
+// 모바일 (360px - 767px) 최적화
+@media (min-width: 360px) and (max-width: 767px) {
+  :root {
+    --spacing-xs: 4px;
+    --spacing-sm: 8px;
+    --spacing-md: 12px;
+    --spacing-lg: 16px;
+    --spacing-xl: 20px;
+    --spacing-xxl: 24px;
+    --spacing-xxxl: 32px;
+    
+    --padding-xs: 8px;
+    --padding-sm: 12px;
+    --padding-md: 16px;
+    --padding-lg: 20px;
+    --padding-xl: 24px;
+    
+    --font-size-xs: 11px;
+    --font-size-sm: 13px;
+    --font-size-md: 15px;
+    --font-size-lg: 16px;
+    --font-size-xl: 18px;
+    --font-size-xxl: 20px;
+    
+    --border-radius-sm: 8px;
+    --border-radius-md: 10px;
+    --border-radius-lg: 12px;
+    --border-radius-xl: 16px;
+    --border-radius-xxl: 20px;
+    
+    --gap-xs: 8px;
+    --gap-sm: 12px;
+    --gap-md: 16px;
+    --gap-lg: 20px;
+    --gap-xl: 24px;
+    --gap-xxl: 32px;
+    
+    --icon-size-sm: 20px;
+    --icon-size-md: 24px;
+    --icon-size-lg: 28px;
+    --icon-size-xl: 32px;
+  }
+  
+  .completed-container {
+    .completed-top {
+      padding: 0 var(--spacing-xxl);
+      margin-bottom: var(--spacing-xxl);
+    }
+    
+    .pending-review-card {
+      margin: 0px var(--spacing-xxl);
+      padding: var(--spacing-xxl) var(--spacing-sm) 48px var(--spacing-xxl);
+      border-radius: var(--border-radius-xl);
+      margin-bottom: var(--spacing-xxl);
+      
+      .review-badge {
+        left: var(--padding-sm);
+        margin-bottom: var(--spacing-sm);
+      }
+      
+      svg {
+        top: var(--spacing-lg);
+        right: var(--spacing-lg);
+      }
+      
+      h3 {
+        font-size: var(--font-size-md);
+      }
+      
+      .description {
+        margin-bottom: var(--spacing-lg);
+      }
+    }
+    
+    .completed-section {
+      padding: 0px var(--spacing-xxl);
+      
+      .completed-header {
+        .completed-section-title {
+          font-size: var(--font-size-md);
+        }
+      }
+      
+      .completed-list {
+        gap: var(--spacing-sm);
+        margin-top: var(--spacing-xl);
+        
+        .completed-item {
+          border-radius: var(--border-radius-xl);
+          padding: var(--spacing-lg);
+          
+          h3 {
+            font-size: var(--font-size-md);
+          }
+          
+          .favorite-icon {
+            font-size: var(--icon-size-lg);
+          }
+        }
+      }
+    }
+  }
+}
+
+// 태블릿 (768px - 1023px) 최적화
+@media (min-width: 768px) and (max-width: 1023px) {
+  :root {
+    --spacing-xs: 6px;
+    --spacing-sm: 10px;
+    --spacing-md: 14px;
+    --spacing-lg: 18px;
+    --spacing-xl: 22px;
+    --spacing-xxl: 26px;
+    --spacing-xxxl: 36px;
+    
+    --padding-xs: 10px;
+    --padding-sm: 14px;
+    --padding-md: 18px;
+    --padding-lg: 22px;
+    --padding-xl: 28px;
+    
+    --font-size-xs: 12px;
+    --font-size-sm: 14px;
+    --font-size-md: 16px;
+    --font-size-lg: 18px;
+    --font-size-xl: 20px;
+    --font-size-xxl: 22px;
+    
+    --border-radius-sm: 10px;
+    --border-radius-md: 12px;
+    --border-radius-lg: 14px;
+    --border-radius-xl: 18px;
+    --border-radius-xxl: 22px;
+    
+    --gap-xs: 10px;
+    --gap-sm: 14px;
+    --gap-md: 18px;
+    --gap-lg: 22px;
+    --gap-xl: 26px;
+    --gap-xxl: 36px;
+    
+    --icon-size-sm: 22px;
+    --icon-size-md: 26px;
+    --icon-size-lg: 30px;
+    --icon-size-xl: 34px;
+  }
+  
+  .completed-container {
+    .completed-top {
+      padding: 0 var(--spacing-xxxl);
+      margin-bottom: var(--spacing-xxxl);
+    }
+    
+    .pending-review-card {
+      margin: 0px var(--spacing-xxxl);
+      padding: var(--spacing-xxxl) var(--spacing-md) 48px var(--spacing-xxxl);
+      border-radius: var(--border-radius-xxl);
+      margin-bottom: var(--spacing-xxxl);
+      
+      .review-badge {
+        left: var(--padding-md);
+        margin-bottom: var(--spacing-md);
+      }
+      
+      svg {
+        top: var(--spacing-xl);
+        right: var(--spacing-xl);
+      }
+      
+      h3 {
+        font-size: var(--font-size-md);
+      }
+      
+      .description {
+        margin-bottom: var(--spacing-xl);
+      }
+    }
+    
+    .completed-section {
+      padding: 0px var(--spacing-xxxl);
+      
+      .completed-header {
+        .completed-section-title {
+          font-size: var(--font-size-md);
+        }
+      }
+      
+      .completed-list {
+        gap: var(--spacing-md);
+        margin-top: var(--spacing-xxl);
+        
+        .completed-item {
+          border-radius: var(--border-radius-xxl);
+          padding: var(--spacing-xl);
+          
+          h3 {
+            font-size: var(--font-size-md);
+          }
+          
+          .favorite-icon {
+            font-size: var(--icon-size-lg);
+          }
+        }
+      }
+    }
+  }
+}
+
+// 데스크톱 (1024px+) 최적화
+@media (min-width: 1024px) {
+  :root {
+    --spacing-xs: 8px;
+    --spacing-sm: 12px;
+    --spacing-md: 16px;
+    --spacing-lg: 20px;
+    --spacing-xl: 24px;
+    --spacing-xxl: 28px;
+    --spacing-xxxl: 40px;
+    
+    --padding-xs: 12px;
+    --padding-sm: 16px;
+    --padding-md: 20px;
+    --padding-lg: 24px;
+    --padding-xl: 32px;
+    
+    --font-size-xs: 13px;
+    --font-size-sm: 15px;
+    --font-size-md: 17px;
+    --font-size-lg: 18px;
+    --font-size-xl: 20px;
+    --font-size-xxl: 22px;
+    
+    --border-radius-sm: 12px;
+    --border-radius-md: 14px;
+    --border-radius-lg: 16px;
+    --border-radius-xl: 20px;
+    --border-radius-xxl: 24px;
+    
+    --gap-xs: 12px;
+    --gap-sm: 16px;
+    --gap-md: 20px;
+    --gap-lg: 24px;
+    --gap-xl: 28px;
+    --gap-xxl: 40px;
+    
+    --icon-size-sm: 24px;
+    --icon-size-md: 28px;
+    --icon-size-lg: 32px;
+    --icon-size-xl: 36px;
+  }
+  
+  .completed-container {
+    .completed-top {
+      padding: 0 var(--spacing-xxxl);
+      margin-bottom: var(--spacing-xxxl);
+    }
+    
+    .pending-review-card {
+      margin: 0px var(--spacing-xxxl);
+      padding: var(--spacing-xxxl) var(--spacing-lg) 48px var(--spacing-xxxl);
+      border-radius: var(--border-radius-xxl);
+      margin-bottom: var(--spacing-xxxl);
+      
+      .review-badge {
+        left: var(--padding-lg);
+        margin-bottom: var(--spacing-lg);
+      }
+      
+      svg {
+        top: var(--spacing-xxl);
+        right: var(--spacing-xxl);
+      }
+      
+      h3 {
+        font-size: var(--font-size-md);
+      }
+      
+      .description {
+        margin-bottom: var(--spacing-xxl);
+      }
+    }
+    
+    .completed-section {
+      padding: 0px var(--spacing-xxxl);
+      
+      .completed-header {
+        .completed-section-title {
+          font-size: var(--font-size-md);
+        }
+      }
+      
+      .completed-list {
+        gap: var(--spacing-lg);
+        margin-top: var(--spacing-xxl);
+        
+        .completed-item {
+          border-radius: var(--border-radius-xxl);
+          padding: var(--spacing-xxl);
+          
+          h3 {
+            font-size: var(--font-size-md);
+          }
+          
+          .favorite-icon {
+            font-size: var(--icon-size-lg);
+          }
+        }
+      }
+    }
+  }
+}
+
+// 터치 기기 최적화
+@media (hover: none) {
+  .completed-container {
+    .pending-review-card {
+      .review-badge {
+        min-height: 32px; // 터치 영역 확대
+        min-width: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+    }
+    
+    .completed-list {
+      .completed-item {
+        min-height: 48px; // 터치 영역 확대
+      }
+    }
+    
+    .my-star-button {
+      min-height: 44px; // 터치 영역 확대
+      display: flex;
+      align-items: center;
+      font-size: 16px; // iOS 줌 방지
+    }
+  }
+}
+
+// 접근성 개선
+@media (prefers-reduced-motion: reduce) {
+  .completed-container {
+    .pending-review-card,
+    .completed-item {
+      transition: none !important;
+      animation: none !important;
+    }
+  }
+}
+
+@media (prefers-contrast: high) {
+  .completed-container {
+    .pending-review-card,
+    .completed-item {
+      border: 2px solid currentColor;
+    }
+    
+    .review-badge {
+      border: 2px solid currentColor !important;
     }
   }
 }
