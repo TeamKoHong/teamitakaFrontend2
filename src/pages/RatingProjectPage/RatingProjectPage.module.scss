@@ -6,6 +6,54 @@ $text-gray: #7B797A;
 $background-light: #f0f2f5;
 $border-light: #e0e0e0;
 
+// CSS Custom Properties 시스템 - 반응형 디자인을 위한 동적 변수
+:root {
+  // 반응형 간격 시스템
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 12px;
+  --spacing-lg: 16px;
+  --spacing-xl: 20px;
+  --spacing-xxl: 24px;
+  --spacing-xxxl: 32px;
+  
+  // 반응형 패딩 시스템
+  --padding-xs: 8px;
+  --padding-sm: 12px;
+  --padding-md: 16px;
+  --padding-lg: 20px;
+  --padding-xl: 24px;
+  
+  // 반응형 폰트 크기 시스템
+  --font-size-xs: 11px;
+  --font-size-sm: 13px;
+  --font-size-md: 15px;
+  --font-size-lg: 16px;
+  --font-size-xl: 18px;
+  --font-size-xxl: 20px;
+  
+  // 반응형 테두리 반경 시스템
+  --border-radius-sm: 8px;
+  --border-radius-md: 10px;
+  --border-radius-lg: 12px;
+  --border-radius-xl: 16px;
+  --border-radius-xxl: 20px;
+  
+  // 반응형 간격 시스템
+  --gap-xs: 8px;
+  --gap-sm: 12px;
+  --gap-md: 16px;
+  --gap-lg: 20px;
+  --gap-xl: 24px;
+  --gap-xxl: 32px;
+  
+  // 반응형 아이콘 크기 시스템
+  --icon-size-sm: 20px;
+  --icon-size-md: 24px;
+  --icon-size-lg: 28px;
+  --icon-size-xl: 32px;
+}
+
 .container {
   display: flex;
   flex-direction: column;
@@ -97,7 +145,7 @@ $border-light: #e0e0e0;
   display: flex;
   flex-direction: column;
   background: #f2f2f2;
-  padding-top: 18px;
+  padding-top: var(--spacing-lg);
 }
 
 .scrollArea {
@@ -106,29 +154,29 @@ $border-light: #e0e0e0;
   min-height: 0;
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  padding: 16px 12px 0 12px;
+  gap: var(--gap-md);
+  padding: var(--spacing-lg) var(--padding-sm) 0 var(--padding-sm);
   box-sizing: border-box;
   padding-bottom: 96px;
 }
 
 .card, .summaryROW {
   background: #fff;
-  border-radius: 16px;
+  border-radius: var(--border-radius-xl);
   box-shadow: 0 2px 12px rgba(0,0,0,0.06);
-  padding: 16px;
+  padding: var(--spacing-lg);
   margin: 0;
   width: 100%;
   box-sizing: border-box;
 }
 
 .contentWrap {
-  padding: 0 24px 44px 24px;
+  padding: 0 var(--spacing-xxl) 44px var(--spacing-xxl);
   max-width: 390px;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  gap: 32px;
+  gap: var(--gap-xxl);
 }
 
 .card, .projectSummaryCard, .teamMemberEvaluation {
@@ -145,27 +193,27 @@ $border-light: #e0e0e0;
 
 // 좋아요/개선 ~ 팀원 평가지
 .좋아요개선_wrapper {
-  margin-bottom: 24px;
+  margin-bottom: var(--spacing-xxl);
 }
 
 // 팀원 평가지 ~ 업무 분담
 .TeamMemberEvaluation_card__LZ1_o {
-  margin-top: 8px;
+  margin-top: var(--spacing-sm);
 }
 
 // 업무 분담 ~ 구체적 역할
 .업무분담 {
-  margin-bottom: 16px;
+  margin-bottom: var(--spacing-lg);
 }
 
 // 구체적 역할 리스트 사이
 .구체적역할 {
-  margin-bottom: 8px;
+  margin-bottom: var(--spacing-sm);
 }
 
 // 상세 내용 더보기
 .상세더보기 {
-  margin-top: 8px;
+  margin-top: var(--spacing-sm);
   margin-bottom: 31px;
   display: block;
   width: fit-content;
@@ -175,29 +223,35 @@ $border-light: #e0e0e0;
 }
 
 // 카드 간 일관된 간격(모바일 스크롤 시 부자연스러움 개선)
-.contentWrap > *:not(:last-child) { margin-bottom: 12px; }
+.contentWrap > *:not(:last-child) { margin-bottom: var(--gap-md); }
 // 슬라이더 그룹과 하단 네비 사이 공백 확보
 .scrollArea { padding-bottom: 120px; }
 
 .divider {
   height: 1px;
   background: #d9d9d9;
-  margin: 16px 0;
+  margin: var(--spacing-lg) 0;
   border: none;
 }
 
 // 상단 섹션들 사이의 굵은 구분선
-.topDivider { height: 8px; background: #efefef; border: none; margin: 16px 0; }
+.topDivider { height: 8px; background: #efefef; border: none; margin: var(--spacing-lg) 0; }
 
 // 한 줄 요약 타이틀 주변 간격/서체
-.oneLinerTitle { padding: 0 12px; margin: 12px 0 8px; font-size: 16px; font-weight: 700; color: #222; }
+.oneLinerTitle { 
+  padding: 0 var(--padding-sm); 
+  margin: var(--gap-md) 0 var(--spacing-sm); 
+  font-size: var(--font-size-lg); 
+  font-weight: 700; 
+  color: #222; 
+}
 
 // Step A: 내가 받은 별점 섹션
 .sectionCard {
   background: #fff;
-  border-radius: 16px;
+  border-radius: var(--border-radius-xl);
   box-shadow: 0 2px 12px rgba(0,0,0,0.06);
-  padding: 16px;
+  padding: var(--spacing-lg);
   width: 100%;
   box-sizing: border-box;
 }
@@ -530,4 +584,324 @@ $border-light: #e0e0e0;
 }
 .ratingForm input[type="range"]::-ms-tooltip {
   display: none;
+}
+
+// ===== 반응형 미디어 쿼리 =====
+
+// 극소형 모바일 (320px) 대응
+@media (max-width: 359px) {
+  :root {
+    --spacing-xs: 3px;
+    --spacing-sm: 6px;
+    --spacing-md: 8px;
+    --spacing-lg: 12px;
+    --spacing-xl: 16px;
+    --spacing-xxl: 20px;
+    --spacing-xxxl: 24px;
+    
+    --padding-xs: 6px;
+    --padding-sm: 8px;
+    --padding-md: 12px;
+    --padding-lg: 16px;
+    --padding-xl: 20px;
+    
+    --font-size-xs: 10px;
+    --font-size-sm: 12px;
+    --font-size-md: 13px;
+    --font-size-lg: 15px;
+    --font-size-xl: 16px;
+    --font-size-xxl: 18px;
+    
+    --border-radius-sm: 6px;
+    --border-radius-md: 8px;
+    --border-radius-lg: 10px;
+    --border-radius-xl: 12px;
+    --border-radius-xxl: 16px;
+    
+    --gap-xs: 6px;
+    --gap-sm: 8px;
+    --gap-md: 12px;
+    --gap-lg: 16px;
+    --gap-xl: 20px;
+    --gap-xxl: 24px;
+    
+    --icon-size-sm: 18px;
+    --icon-size-md: 20px;
+    --icon-size-lg: 24px;
+    --icon-size-xl: 28px;
+  }
+  
+  .scrollArea {
+    padding: var(--spacing-md) var(--padding-xs) 0 var(--padding-xs);
+    gap: var(--gap-sm);
+  }
+  
+  .contentWrap {
+    padding: 0 var(--spacing-lg) 44px var(--spacing-lg);
+    gap: var(--gap-lg);
+  }
+  
+  .card, .summaryROW {
+    padding: var(--spacing-md);
+    border-radius: var(--border-radius-lg);
+  }
+  
+  .oneLinerTitle {
+    font-size: var(--font-size-lg);
+    padding: 0 var(--padding-xs);
+    margin: var(--gap-sm) 0 var(--spacing-xs);
+  }
+  
+  .좋아요개선_wrapper {
+    margin-bottom: var(--spacing-lg);
+  }
+  
+  .업무분담 {
+    margin-bottom: var(--spacing-md);
+  }
+  
+  .구체적역할 {
+    margin-bottom: var(--spacing-xs);
+  }
+  
+  .상세더보기 {
+    margin-top: var(--spacing-xs);
+  }
+  
+  .contentWrap > *:not(:last-child) {
+    margin-bottom: var(--gap-sm);
+  }
+}
+
+// 모바일 (360px - 767px) 최적화
+@media (min-width: 360px) and (max-width: 767px) {
+  :root {
+    --spacing-xs: 4px;
+    --spacing-sm: 8px;
+    --spacing-md: 12px;
+    --spacing-lg: 16px;
+    --spacing-xl: 20px;
+    --spacing-xxl: 24px;
+    --spacing-xxxl: 32px;
+    
+    --padding-xs: 8px;
+    --padding-sm: 12px;
+    --padding-md: 16px;
+    --padding-lg: 20px;
+    --padding-xl: 24px;
+    
+    --font-size-xs: 11px;
+    --font-size-sm: 13px;
+    --font-size-md: 15px;
+    --font-size-lg: 16px;
+    --font-size-xl: 18px;
+    --font-size-xxl: 20px;
+    
+    --border-radius-sm: 8px;
+    --border-radius-md: 10px;
+    --border-radius-lg: 12px;
+    --border-radius-xl: 16px;
+    --border-radius-xxl: 20px;
+    
+    --gap-xs: 8px;
+    --gap-sm: 12px;
+    --gap-md: 16px;
+    --gap-lg: 20px;
+    --gap-xl: 24px;
+    --gap-xxl: 32px;
+    
+    --icon-size-sm: 20px;
+    --icon-size-md: 24px;
+    --icon-size-lg: 28px;
+    --icon-size-xl: 32px;
+  }
+  
+  .scrollArea {
+    padding: var(--spacing-lg) var(--padding-sm) 0 var(--padding-sm);
+    gap: var(--gap-md);
+  }
+  
+  .contentWrap {
+    padding: 0 var(--spacing-xxl) 44px var(--spacing-xxl);
+    gap: var(--gap-xxl);
+  }
+  
+  .card, .summaryROW {
+    padding: var(--spacing-lg);
+    border-radius: var(--border-radius-xl);
+  }
+  
+  .oneLinerTitle {
+    font-size: var(--font-size-lg);
+    padding: 0 var(--padding-sm);
+    margin: var(--gap-md) 0 var(--spacing-sm);
+  }
+  
+  .좋아요개선_wrapper {
+    margin-bottom: var(--spacing-xxl);
+  }
+  
+  .업무분담 {
+    margin-bottom: var(--spacing-lg);
+  }
+  
+  .구체적역할 {
+    margin-bottom: var(--spacing-sm);
+  }
+  
+  .상세더보기 {
+    margin-top: var(--spacing-sm);
+  }
+  
+  .contentWrap > *:not(:last-child) {
+    margin-bottom: var(--gap-md);
+  }
+}
+
+// 태블릿 (768px - 1023px) 최적화
+@media (min-width: 768px) and (max-width: 1023px) {
+  :root {
+    --spacing-xs: 6px;
+    --spacing-sm: 10px;
+    --spacing-md: 14px;
+    --spacing-lg: 18px;
+    --spacing-xl: 22px;
+    --spacing-xxl: 26px;
+    --spacing-xxxl: 36px;
+    
+    --padding-xs: 10px;
+    --padding-sm: 14px;
+    --padding-md: 18px;
+    --padding-lg: 22px;
+    --padding-xl: 28px;
+    
+    --font-size-xs: 12px;
+    --font-size-sm: 14px;
+    --font-size-md: 16px;
+    --font-size-lg: 18px;
+    --font-size-xl: 20px;
+    --font-size-xxl: 22px;
+    
+    --border-radius-sm: 10px;
+    --border-radius-md: 12px;
+    --border-radius-lg: 14px;
+    --border-radius-xl: 18px;
+    --border-radius-xxl: 22px;
+    
+    --gap-xs: 10px;
+    --gap-sm: 14px;
+    --gap-md: 18px;
+    --gap-lg: 22px;
+    --gap-xl: 26px;
+    --gap-xxl: 36px;
+    
+    --icon-size-sm: 22px;
+    --icon-size-md: 26px;
+    --icon-size-lg: 30px;
+    --icon-size-xl: 34px;
+  }
+  
+  .contentWrap {
+    max-width: 600px;
+    padding: 0 var(--spacing-xxxl) 44px var(--spacing-xxxl);
+  }
+  
+  .scrollArea {
+    padding: var(--spacing-xl) var(--padding-md) 0 var(--padding-md);
+  }
+}
+
+// 데스크톱 (1024px+) 최적화
+@media (min-width: 1024px) {
+  :root {
+    --spacing-xs: 8px;
+    --spacing-sm: 12px;
+    --spacing-md: 16px;
+    --spacing-lg: 20px;
+    --spacing-xl: 24px;
+    --spacing-xxl: 28px;
+    --spacing-xxxl: 40px;
+    
+    --padding-xs: 12px;
+    --padding-sm: 16px;
+    --padding-md: 20px;
+    --padding-lg: 24px;
+    --padding-xl: 32px;
+    
+    --font-size-xs: 13px;
+    --font-size-sm: 15px;
+    --font-size-md: 17px;
+    --font-size-lg: 18px;
+    --font-size-xl: 20px;
+    --font-size-xxl: 22px;
+    
+    --border-radius-sm: 12px;
+    --border-radius-md: 14px;
+    --border-radius-lg: 16px;
+    --border-radius-xl: 20px;
+    --border-radius-xxl: 24px;
+    
+    --gap-xs: 12px;
+    --gap-sm: 16px;
+    --gap-md: 20px;
+    --gap-lg: 24px;
+    --gap-xl: 28px;
+    --gap-xxl: 40px;
+    
+    --icon-size-sm: 24px;
+    --icon-size-md: 28px;
+    --icon-size-lg: 32px;
+    --icon-size-xl: 36px;
+  }
+  
+  .contentWrap {
+    max-width: 700px;
+    padding: 0 var(--spacing-xxxl) 44px var(--spacing-xxxl);
+  }
+  
+  .scrollArea {
+    padding: var(--spacing-xxl) var(--padding-lg) 0 var(--padding-lg);
+  }
+}
+
+// 터치 기기 최적화
+@media (hover: none) {
+  .submitButton {
+    min-height: 48px; // 터치 영역 확대
+    font-size: 16px; // iOS 줌 방지
+  }
+  
+  .ratingForm input[type="range"]::-webkit-slider-thumb {
+    width: 28px; // 터치 영역 확대
+    height: 28px;
+  }
+  
+  .ratingForm input[type="range"]::-moz-range-thumb {
+    width: 28px;
+    height: 28px;
+  }
+  
+  .ratingForm input[type="range"]::-ms-thumb {
+    width: 28px;
+    height: 28px;
+  }
+}
+
+// 접근성 개선
+@media (prefers-reduced-motion: reduce) {
+  .submitButton,
+  .ratingForm input[type="range"]::-webkit-slider-thumb {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+@media (prefers-contrast: high) {
+  .card, .summaryROW {
+    border: 2px solid currentColor;
+  }
+  
+  .submitButton {
+    border: 2px solid currentColor !important;
+  }
 }

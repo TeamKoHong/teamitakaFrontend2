@@ -4,6 +4,10 @@
     display: flex;
     flex-direction: column;
     position: relative;
+    
+    &.bg-gray {
+        background-color: #F2F2F2;
+    }
 }
 
 .header {
@@ -436,30 +440,28 @@
 }
 
 .step4-input-field {
-    margin-bottom: 16px;
+    margin-bottom: 8px;
     input {
         width: 100%;
-        padding: 24px 16px;
-        border-radius: 8px;
+        padding: 23px 16px;
+        border-radius: 5px;
         background-color: #F5F5F5;
         color: #140805;
         font-size: 15px;
         font-weight: 400;
         border: none;
         &::placeholder {
-            color: #807C7C;
+            color: #C6C6C6;
             font-size: 15px;
             font-weight: 600;
         }
         &:focus {
             outline: none;
-            border: 1px solid #F76241;
-            background-color: #FFF;
+            border: none;
         }
         &:not(:placeholder-shown) {
             outline: none;
-            border: 1px solid #F76241;
-            background-color: #FFF;
+            border: none;
         }
     }
 }
