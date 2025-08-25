@@ -4,23 +4,14 @@ import SectionHeader from "../Common/SectionHeader";
 import { useState } from "react";
 import { TbEyeFilled } from "react-icons/tb";
 import { RiFileList2Fill } from "react-icons/ri";
+import RecruitingProjectSlide from "../../RecruitingProjectSlide";
 
 const RecruitingComponent = () => {
-  const [filter, setFilter] = useState("all");
+  const [openSlide, setOpenSlide] = useState(false);
 
-  const handleFilterChange = (e) => {
-    setFilter(e.target.value);
-    // 여기서 선택된 옵션에 따라 API 호출 등의 동작을 구현하면 됩니다.
-  };
-
-  const filterOptions = [
-    { value: "all", label: "최신순" },
-    { value: "progress", label: "날짜 순" },
-    { value: "complete", label: "회의 빠른 순" },
-  ];
   return (
     <div className="recruiting-container">
-      {/* 상단 레이아웃 */}
+      {/* 기존 레이아웃 */}
       <div className="recruiting-top">
         <div className="recruiting-top-info">
           <SectionHeader
@@ -56,7 +47,6 @@ const RecruitingComponent = () => {
         </div>
       </div>
       <hr />
-      {/* 하단 레이아웃 */}
       <div className="recruiting-bottom">
         <div className="recruiting-bottom-info">
           <p>
@@ -71,10 +61,18 @@ const RecruitingComponent = () => {
           <p className="project-name">프로젝트명</p>
           <div className="buttons">
             <button className="btn delete">삭제하기</button>
-            <button className="btn retry">다시 모집하기</button>
+            <button className="btn retry" onClick={() => setOpenSlide(true)}>
+              다시 모집하기
+            </button>
           </div>
         </div>
       </div>
+
+      {/* 슬라이드 */}
+      <RecruitingProjectSlide
+        open={openSlide}
+        onClose={() => setOpenSlide(false)}
+      />
     </div>
   );
 };

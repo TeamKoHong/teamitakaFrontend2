@@ -1,0 +1,217 @@
+.als-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.3);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease;
+  z-index: 9998;
+
+  &.open {
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
+.als-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%; /* 모바일 전체 */
+  background: #f2f2f2;
+  transform: translateX(100%);
+  transition: transform 0.3s ease;
+  z-index: 9999;
+
+  display: flex;
+  flex-direction: column;
+
+  &.open {
+    transform: translateX(0);
+  }
+}
+
+.als-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+
+  .description {
+    margin: 48px 60px;
+    color: #999;
+    font-size: 13px;
+    text-align: center;
+  }
+
+  .highlight-text {
+    margin-top: 23px;
+    margin-bottom: 20px;
+    margin-left: 22px;
+    font-size: 15px;
+    
+    line-height: 1.4;
+
+    .project-name {
+      font-size: 15px;
+      font-weight: bold;
+    }
+    .red {
+      color: #f76241;
+      
+    }
+  }
+
+  .avatars-container {
+    padding: 0 16px;
+    .avatars-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 20px 9px; /* 가로 간격 9 */
+      justify-items: center;
+      align-items: start;
+      padding-bottom: 80px; // 그라데이션 영역을 위한 여유 공간
+
+      .avatar-card {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        cursor: pointer;
+        transition: transform 0.2s ease;
+
+        &:hover {
+          transform: scale(1.05);
+        }
+
+        &:active {
+          transform: scale(0.95);
+        }
+
+        img {
+          width: 64px;
+          height: 64px;
+          border-radius: 50%;
+          object-fit: cover;
+          border: 1px solid #e5e5e5;
+          margin-bottom: 9px; /* 프로필과 이름 거리 9 */
+          transition: border-color 0.2s ease;
+        }
+
+        &:hover img {
+          border-color: #F76241;
+        }
+
+        p {
+          font-size: 12px;
+          font-weight: 600;
+          margin: 0;
+        }
+
+        &.selected img {
+          border-color: #2ecc71;
+          box-shadow: 0 0 0 3px rgba(46, 204, 113, 0.2);
+        }
+      }
+    }
+  }
+
+  .selected-banner {
+    background: transparent; /* 배경 제거 */
+    margin: 16px 16px 8px 16px;
+    padding: 0;
+    border-radius: 0;
+    box-shadow: none;
+
+    .selected-title {
+      font-weight: 700;
+      font-size: 14px;
+      margin: 0 0 4px 0;
+      color: #333;
+    }
+    .selected-sub {
+      font-size: 12px;
+      color: #f76241;
+      margin: 0 0 12px 0;
+    }
+    .selected-avatars {
+      display: flex;
+      gap: 9px; /* 아바타 간격 9 */
+      overflow-x: auto; /* 가로 스크롤 */
+      flex-wrap: nowrap; /* 줄바꿈 금지 */
+      -webkit-overflow-scrolling: touch; /* iOS 부드러운 스크롤 */
+      padding-bottom: 2px; /* 스크롤바 여백 */
+
+      /* 스크롤바 숨김 (웹킷 기반) */
+      &::-webkit-scrollbar {
+        height: 0;
+      }
+
+      .selected-avatar {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-width: 70px; /* 레이아웃 고정 */
+        flex: 0 0 auto; /* 절대 축소 금지 */
+        flex-shrink: 0; /* 축소 방지 */
+
+        img {
+          width: 64px;
+          height: 64px;
+          border-radius: 50%;
+          object-fit: cover;
+          border: 2px solid #2ecc71;
+          margin-bottom: 9px; /* 프로필-이름 간격 9 */
+        }
+        p {
+          font-size: 12px;
+          margin: 0;
+          font-weight: 600;
+        }
+      }
+    }
+  }
+}
+
+.bottom-fixed-button {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 20px 22px;
+  height: 150px;
+  padding-bottom: 40px; // safe-area 고려
+  background: linear-gradient(to bottom, rgba(242, 242, 242, 0) 0%, rgba(242, 242, 242, 0.2) 20%, rgba(242, 242, 242, 0.4) 40%, rgba(242, 242, 242, 0.6) 60%, rgba(242, 242, 242, 0.8) 80%, #F2F2F2 100%);
+  display: flex;
+  align-items: flex-end;
+
+  .select-team-button {
+    width: 100%;
+    background: #807C7C;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 500;
+    text-align: center;
+    padding: 16px 20px;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+
+    &:hover {
+      background: rgba(0, 0, 0, 0.8);
+    }
+
+    &:active {
+      background: rgba(0, 0, 0, 0.9);
+    }
+
+    &.active {
+      background: #F76241;
+    }
+  }
+}

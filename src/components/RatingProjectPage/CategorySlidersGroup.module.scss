@@ -1,0 +1,6 @@
+@use '../../styles/variables' as *;
+.group { display: flex; flex-direction: column; margin: $spacing-md 0; }
+.unifiedCard { background: $white; border-radius: 18px; box-shadow: $shadow-sm; padding: $spacing-md; }
+.row { padding: $spacing-xs 0; }
+.divider { height: 1px; background: #eee; margin: $spacing-xs 0; }
+
