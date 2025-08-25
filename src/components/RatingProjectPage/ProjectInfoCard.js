@@ -1,5 +1,6 @@
 import styles from './ProjectInfoCard.module.scss';
-import { PiCalendarBlankDuotone, PiClockDuotone } from "react-icons/pi";
+import { ReactComponent as CalendarIcon } from '../../assets/icons/calendar.svg';
+import { ReactComponent as ClockIcon } from '../../assets/icons/clock.svg';
 import DdayProgress from './DdayProgress';
 
 export default function ProjectInfoCard({ name, period, meetingTime, avatars, dday, id }) {
@@ -9,8 +10,8 @@ export default function ProjectInfoCard({ name, period, meetingTime, avatars, dd
         <div className={styles.headerLeft}>
           <div className={styles.projectName}>{name}</div>
           <div className={styles.infoRow}>
-            <span className={styles.iconText}><PiCalendarBlankDuotone /> {period}</span>
-            <span className={styles.iconText}><PiClockDuotone /> {meetingTime}</span>
+            <span className={styles.iconText}><CalendarIcon className={styles.icon} aria-hidden="true" /> {period}</span>
+            <span className={styles.iconText}><ClockIcon className={styles.icon} aria-hidden="true" /> {meetingTime}</span>
           </div>
           <div className={styles.avatars}>
             {avatars.map((src, i) => (

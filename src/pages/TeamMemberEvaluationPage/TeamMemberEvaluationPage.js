@@ -1,18 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import styles from './TeamMemberEvaluationPage.module.scss';
+import avatar1 from '../../assets/icons/avatar1.png';
+import avatar2 from '../../assets/icons/avatar2.png';
+import avatar3 from '../../assets/icons/avatar3.png';
+// import avatar4 from '../../assets/icons/avatar4.png'; // 필요 시 교체용으로 대기
 import DefaultHeader from '../../components/Common/DefaultHeader';
 import BottomNav from '../../components/Common/BottomNav/BottomNav';
 import EvaluationStep1 from './components/EvaluationStep1';
 import EvaluationStep2 from './components/EvaluationStep2';
 import EvaluationStep3 from './components/EvaluationStep3';
-import EvaluationStep4 from './components/EvaluationStep4';
-import EvaluationStep5 from './components/EvaluationStep5';
 
 function TeamMemberEvaluationPage() {
   const { projectId, memberId } = useParams();
   const navigate = useNavigate();
-  const [currentStep, setCurrentStep] = useState(1);
+  const [currentStep, setCurrentStep] = useState(1); // 1: 카테고리, 2: 전체/역할, 3: 완료
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [projectData, setProjectData] = useState(null);
@@ -46,42 +48,49 @@ function TeamMemberEvaluationPage() {
               id: 101,
               name: '김재원',
               position: '프론트엔드 개발자',
-              avatar: '/assets/icons/avatar1.png'
+              avatar: avatar1
             },
             {
               id: 102,
               name: '이영희',
               position: '백엔드 개발자',
-              avatar: '/assets/icons/avatar2.png'
+              avatar: avatar2
             },
             {
               id: 103,
               name: '박철수',
               position: '디자이너',
-              avatar: '/assets/icons/avatar3.png'
+              avatar: avatar3
             }
           ]
         };
 
-        // 김재원(memberId: 101)을 기본 평가 대상으로 설정
-        const dummyMember = dummyProject.members.find(m => m.id === parseInt(memberId)) || dummyProject.members[0];
+        // memberId가 없거나 유효하지 않은 경우 기본값 사용
+        const targetMemberId = memberId ? parseInt(memberId) : 101;
+        const dummyMember = dummyProject.members.find(m => m.id === targetMemberId) || dummyProject.members[0];
+        
+        console.log('Project Data:', dummyProject);
+        console.log('Member Data:', dummyMember);
+        console.log('Target Member ID:', targetMemberId);
         
         setProjectData(dummyProject);
         setMemberData(dummyMember);
       } catch (err) {
-        setError('데이터를 불러오는데 실패했습니다.');
         console.error('Failed to fetch data:', err);
+        setError('데이터를 불러오는데 실패했습니다.');
       } finally {
         setLoading(false);
       }
     };
 
-    fetchData();
+    if (projectId) {
+      fetchData();
+    }
   }, [projectId, memberId]);
 
   const handleNextStep = () => {
-    if (currentStep < 5) {
-      setCurrentStep(currentStep + 1);
+    if (currentStep < 3) {
+      setCurrentStep(currentStep + 1); // 1 -> 2 -> 3
     }
   };
 
@@ -133,7 +142,8 @@ function TeamMemberEvaluationPage() {
     try {
       // 실제 API 호출로 대체 예정
       console.log('평가 데이터 제출:', evaluationData);
-      handleNextStep();
+      // Step3 완료 페이지로 이동
+      setCurrentStep(3);
     } catch (err) {
       setError('평가 제출에 실패했습니다.');
     }
@@ -143,11 +153,10 @@ function TeamMemberEvaluationPage() {
     try {
       // 실제 API 호출로 대체 예정
       console.log('평가 완료:', evaluationData);
-      handleNextStep();
-      
+      // 완료 화면(2단계)이므로 그대로 유지
       // 잠시 후 평가 관리 페이지로 이동
       setTimeout(() => {
-        navigate(`/project/${projectId}/rating-project`);
+        navigate(`/evaluation/project/${projectId}`);
       }, 2000);
     } catch (err) {
       setError('평가 완료 처리에 실패했습니다.');
@@ -184,23 +193,41 @@ function TeamMemberEvaluationPage() {
 
     switch (currentStep) {
       case 1:
-        return <EvaluationStep1 {...commonProps} />;
+        // Step 1: 카테고리 점수 입력 → Next 시 Step 2 이동
+        return (
+          <EvaluationStep1
+            {...commonProps}
+            onNext={handleNextStep}
+          />
+        );
       case 2:
-        return <EvaluationStep2 {...commonProps} />;
+        return (
+          <EvaluationStep2
+            {...commonProps}
+          />
+        );
       case 3:
-        return <EvaluationStep3 {...commonProps} />;
-      case 4:
-        return <EvaluationStep4 {...commonProps} />;
-      case 5:
-        return <EvaluationStep5 {...commonProps} />;
+        return (
+          <EvaluationStep3
+            memberData={memberData}
+            evaluationData={evaluationData}
+            onGoProject={() => navigate('/project-management?tab=completed')}
+            onGoHome={() => navigate('/project-management?tab=completed')}
+          />
+        );
       default:
-        return <EvaluationStep1 {...commonProps} />;
+        return (
+          <EvaluationStep1
+            {...commonProps}
+            onNext={handleNextStep}
+          />
+        );
     }
   };
 
   return (
     <div className={styles.pageContainer}>
-      <DefaultHeader title="팀원 평가" />
+      {currentStep !== 3 && <DefaultHeader title="팀원 평가" />}
       <div className={styles.content}>
         {renderCurrentStep()}
       </div>
