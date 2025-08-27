@@ -61,7 +61,50 @@
 }
 
 // --- 카드 스타일 ---
+// 배너를 포함하는 섹션의 좌우 패딩 설정
+.section-project-banner {
+    padding: 0 20px;
+}
 
+// 배너 섹션 내부 헤더의 좌우 패딩만 제거
+.section-project-banner .section-header {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+// 프로젝트 생성 배너 스타일
+.create-project-banner {
+    background-color: #FF6B00;
+    color: white;
+    height: 61px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+
+    .banner-icon {
+    font-size: 20px;
+    margin-left: 20px;    
+    }
+
+    .banner-text {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .banner-title {
+        font-size: 16px;
+        font-weight: 700;
+        margin-bottom: 4px;
+    }
+
+    .banner-description {
+        font-size: 12px;
+        font-weight: 400;
+        margin: 0;
+        opacity: 0.95;
+    }
+}
 // 오늘의 추천 카드 (배너용)
 .recommend-card {
     flex: 0 0 320px; // 카드 너비 고정
