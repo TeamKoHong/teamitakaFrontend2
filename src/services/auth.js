@@ -1,6 +1,7 @@
 export const sendVerificationCode = async (emailData) => {
     try {
-        const response = await fetch('/api/auth/send-verification', {
+        const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'https://teamitaka-backend-732827775376.us-central1.run.app';
+        const response = await fetch(`${API_BASE_URL}/api/auth/send-verification`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -21,7 +22,8 @@ export const sendVerificationCode = async (emailData) => {
 
 export const verifyCode = async (verificationData) => {
     try {
-        const response = await fetch('/api/auth/verify-code', {
+        const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'https://teamitaka-backend-732827775376.us-central1.run.app';
+        const response = await fetch(`${API_BASE_URL}/api/auth/verify-code`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -42,7 +44,8 @@ export const verifyCode = async (verificationData) => {
 
 export const checkVerificationStatus = async (email) => {
     try {
-        const response = await fetch(`/api/auth/status?email=${encodeURIComponent(email)}`, {
+        const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'https://teamitaka-backend-732827775376.us-central1.run.app';
+        const response = await fetch(`${API_BASE_URL}/api/auth/status?email=${encodeURIComponent(email)}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -62,7 +65,8 @@ export const checkVerificationStatus = async (email) => {
 
 export const resendVerificationCode = async (emailData) => {
     try {
-        const response = await fetch('/api/auth/resend-verification', {
+        const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'https://teamitaka-backend-732827775376.us-central1.run.app';
+        const response = await fetch(`${API_BASE_URL}/api/auth/resend-verification`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
