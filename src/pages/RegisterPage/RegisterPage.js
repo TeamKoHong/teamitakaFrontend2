@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import './RegisterPage.scss';
 import { useNavigate } from 'react-router-dom';
+import { sendVerificationCode, verifyCode } from '../../services/auth.js';
 
 function RegisterPage() {
     const navigate = useNavigate();
@@ -19,6 +20,9 @@ function RegisterPage() {
         terms: false,
         rights: false
     });
+    const [isVerificationLoading, setIsVerificationLoading] = useState(false);
+    const [verificationError, setVerificationError] = useState('');
+    const [verificationSuccess, setVerificationSuccess] = useState(false);
 
     const handleNext = () => {
         if (currentStep < 8) {
@@ -48,6 +52,82 @@ function RegisterPage() {
             ...prev,
             [key]: !prev[key]
         }));
+    };
+
+    const handleSendVerificationCode = async () => {
+        // 입력값 검증
+        if (!email.trim() || !department.trim()) {
+            setVerificationError('이메일과 학부를 모두 입력해주세요.');
+            return;
+        }
+        
+        // 이메일 형식 검증
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            setVerificationError('올바른 이메일 형식이 아닙니다.');
+            return;
+        }
+        
+        try {
+            setIsVerificationLoading(true);
+            setVerificationError('');
+            
+            const result = await sendVerificationCode({
+                email: email,
+                department: department,
+                university: university
+            });
+            
+            if (result.success) {
+                setVerificationSuccess(true);
+                setVerificationError('');
+            } else {
+                setVerificationError(result.message || '인증번호 전송에 실패했습니다.');
+            }
+            
+        } catch (error) {
+            setVerificationError(error.message || '네트워크 오류가 발생했습니다.');
+        } finally {
+            setIsVerificationLoading(false);
+        }
+    };
+
+    const handleVerifyCode = async () => {
+        if (!verificationCode.trim()) {
+            setVerificationError('인증번호를 입력해주세요.');
+            return;
+        }
+
+        if (verificationCode.length !== 6) {
+            setVerificationError('인증번호는 6자리 숫자입니다.');
+            return;
+        }
+
+        try {
+            setIsVerificationLoading(true);
+            setVerificationError('');
+
+            const result = await verifyCode({
+                email: email,
+                code: verificationCode
+            });
+
+            if (result.success) {
+                setVerificationSuccess(true);
+                setVerificationError('');
+                // 인증 성공 시 다음 단계로 자동 진행
+                setTimeout(() => {
+                    setCurrentStep(4);
+                }, 2000);
+            } else {
+                setVerificationError(result.message || '인증번호 확인에 실패했습니다.');
+            }
+
+        } catch (error) {
+            setVerificationError(error.message || '인증번호 확인 중 오류가 발생했습니다.');
+        } finally {
+            setIsVerificationLoading(false);
+        }
     };
 
     const isNextButtonActive = () => {
@@ -229,17 +309,54 @@ function RegisterPage() {
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                             />
-                            <button className={`verify-button ${email ? 'active' : ''}`}>
-                                {email ? '인증번호 전송' : '인증하기'}
+                            <button 
+                                className={`verify-button ${email && department ? 'active' : ''}`}
+                                onClick={handleSendVerificationCode}
+                                disabled={!email || !department || isVerificationLoading}
+                            >
+                                {isVerificationLoading ? '전송 중...' : 
+                                 email && department ? '인증번호 전송' : '인증하기'}
                             </button>
                         </div>
+                        
+                        {verificationError && (
+                            <div className="verification-error">
+                                ❌ {verificationError}
+                            </div>
+                        )}
+
+                        {verificationSuccess && (
+                            <div className="verification-success">
+                                ✅ {verificationCode.trim() ? '인증이 완료되었습니다!' : '인증번호가 전송되었습니다!'}
+                            </div>
+                        )}
                         <div className="step3-input-field">
                             <input
                                 type="text"
                                 placeholder="인증번호를 입력해주세요"
                                 value={verificationCode}
                                 onChange={(e) => setVerificationCode(e.target.value)}
+                                maxLength={6}
+                                style={{ marginBottom: '8px' }}
                             />
+                            <button 
+                                className={`verify-code-button ${verificationCode.length === 6 ? 'active' : ''}`}
+                                onClick={handleVerifyCode}
+                                disabled={verificationCode.length !== 6 || isVerificationLoading}
+                                style={{
+                                    width: '100%',
+                                    padding: '12px',
+                                    borderRadius: '8px',
+                                    border: 'none',
+                                    fontSize: '14px',
+                                    fontWeight: '600',
+                                    cursor: verificationCode.length === 6 && !isVerificationLoading ? 'pointer' : 'not-allowed',
+                                    backgroundColor: verificationCode.length === 6 && !isVerificationLoading ? '#F76241' : '#E0E0E0',
+                                    color: verificationCode.length === 6 && !isVerificationLoading ? 'white' : '#999'
+                                }}
+                            >
+                                {isVerificationLoading ? '확인 중...' : '인증번호 확인'}
+                            </button>
                         </div>
                     </div>
                 );
