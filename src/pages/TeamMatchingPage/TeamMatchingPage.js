@@ -7,28 +7,9 @@ import { IoEyeOutline } from "react-icons/io5";
 import { HiOutlineChatBubbleOvalLeft } from "react-icons/hi2";
 import { Link } from 'react-router-dom';
 import { recruitmentData as keywordMatchingData, filterOptions as recruitmentFilters } from '../RecruitmentPage/RecruitmentPage';
+import { FaPencilAlt } from "react-icons/fa"; // 👈 1. 이 줄을 추가하세요.
 
 // --- 데이터 ---
-const recommendedProjectsData = [ // '오늘의 프로젝트 추천'을 위한 데이터
-    {
-        id: 'rec1',
-        title: '홍익대 DCS(2) 구해여 👍',
-        description: '브랜딩 파트 오십니더! UCTP 우대합니다.',
-        views: 172,
-        comments: 80,
-        current: 3,
-        total: 4,
-    },
-    {
-        id: 'rec2',
-        title: 'AI 기반 작곡 프로젝트 팀원 모집',
-        description: '딥러닝으로 음악을 만들어볼 프론트엔드, 백엔드 개발자를 찾습니다.',
-        views: 250,
-        comments: 95,
-        current: 2,
-        total: 4,
-    },
-];
 
 const initialHotTopics = [
     {
@@ -52,7 +33,17 @@ const initialHotTopics = [
 ];
 
 // --- 컴포넌트 ---
-
+const CreateProjectBanner = () => (
+    <div className="create-project-banner">
+        <div className="banner-icon">
+            <FaPencilAlt />
+        </div>
+        <div className="banner-text">
+            <div className="banner-title">프로젝트 생성하기 +</div>
+            <p className="banner-description">잘 맞는 팀을 구하고 싶다면 직접 생성해보세요!</p>
+        </div>
+    </div>
+);
 // '오늘의 프로젝트 추천' 카드 컴포넌트
 const RecommendCard = ({ item }) => (
     <div className="recommend-card">
@@ -126,14 +117,11 @@ export default function TeamMatchingPage() {
             <Header/>
 
             <main className="app-content">
-                <section className="section">
+                <section className="section section-project-banner">
                     <div className="section-header">
-                        <h2 className="section-title">오늘의 프로젝트 추천</h2>
+                        <h2 className="section-title">팀원 구하기</h2>
                     </div>
-                    {/* 수정된 부분: 가로 스크롤 배너로 변경 */}
-                    <div className="horizontal-scroll-list">
-                       {recommendedProjectsData.map(item => <RecommendCard key={item.id} item={item} />)}
-                    </div>
+                    <CreateProjectBanner />
                 </section>
 
                 <section className="section">
