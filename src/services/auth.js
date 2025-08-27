@@ -1,6 +1,11 @@
 export const sendVerificationCode = async (emailData) => {
     try {
-        const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'https://teamitaka-backend-732827775376.us-central1.run.app';
+        const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+        
+        if (!API_BASE_URL) {
+            throw new Error('REACT_APP_API_BASE_URL 환경 변수가 설정되지 않았습니다.');
+        }
+        
         const response = await fetch(`${API_BASE_URL}/api/auth/send-verification`, {
             method: 'POST',
             headers: {
@@ -22,7 +27,12 @@ export const sendVerificationCode = async (emailData) => {
 
 export const verifyCode = async (verificationData) => {
     try {
-        const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'https://teamitaka-backend-732827775376.us-central1.run.app';
+        const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+        
+        if (!API_BASE_URL) {
+            throw new Error('REACT_APP_API_BASE_URL 환경 변수가 설정되지 않았습니다.');
+        }
+        
         const response = await fetch(`${API_BASE_URL}/api/auth/verify-code`, {
             method: 'POST',
             headers: {
@@ -44,7 +54,12 @@ export const verifyCode = async (verificationData) => {
 
 export const checkVerificationStatus = async (email) => {
     try {
-        const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'https://teamitaka-backend-732827775376.us-central1.run.app';
+        const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+        
+        if (!API_BASE_URL) {
+            throw new Error('REACT_APP_API_BASE_URL 환경 변수가 설정되지 않았습니다.');
+        }
+        
         const response = await fetch(`${API_BASE_URL}/api/auth/status?email=${encodeURIComponent(email)}`, {
             method: 'GET',
             headers: {
@@ -65,7 +80,12 @@ export const checkVerificationStatus = async (email) => {
 
 export const resendVerificationCode = async (emailData) => {
     try {
-        const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'https://teamitaka-backend-732827775376.us-central1.run.app';
+        const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+        
+        if (!API_BASE_URL) {
+            throw new Error('REACT_APP_API_BASE_URL 환경 변수가 설정되지 않았습니다.');
+        }
+        
         const response = await fetch(`${API_BASE_URL}/api/auth/resend-verification`, {
             method: 'POST',
             headers: {
