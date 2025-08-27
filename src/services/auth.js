@@ -6,6 +6,8 @@ export const sendVerificationCode = async (emailData) => {
             throw new Error('REACT_APP_API_BASE_URL 환경 변수가 설정되지 않았습니다.');
         }
         
+        console.log('Sending data to backend:', emailData); // 디버깅용 로그
+        
         const response = await fetch(`${API_BASE_URL}/api/auth/send-verification`, {
             method: 'POST',
             headers: {
@@ -14,13 +16,17 @@ export const sendVerificationCode = async (emailData) => {
             body: JSON.stringify(emailData),
         });
 
+        console.log('Response status:', response.status); // 디버깅용 로그
+
         if (!response.ok) {
-            const errorData = await response.json();
+            const errorData = await response.json().catch(() => ({ message: '응답을 파싱할 수 없습니다.' }));
+            console.error('Backend error details:', errorData); // 디버깅용 로그
             throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
         }
 
         return await response.json();
     } catch (error) {
+        console.error('Full error:', error); // 디버깅용 로그
         throw new Error(error.message || '인증번호 전송에 실패했습니다.');
     }
 };
