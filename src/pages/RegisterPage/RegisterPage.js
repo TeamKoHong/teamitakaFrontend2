@@ -73,9 +73,7 @@ function RegisterPage() {
             setVerificationError('');
             
             const result = await sendVerificationCode({
-                email: email,
-                department: department,
-                university: university
+                email: email
             });
             
             if (result.success) {
