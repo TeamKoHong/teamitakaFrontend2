@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './RegisterPage.scss';
 import { useNavigate } from 'react-router-dom';
-import { sendVerificationCode, verifyCode } from '../../services/auth.js';
+import { useAuth } from '../../contexts/AuthContext';
+import { sendVerificationCode, verifyCode, registerUser } from '../../services/auth.js';
 
 function RegisterPage() {
     const navigate = useNavigate();
+    const { login, isAuthenticated } = useAuth();
     const [currentStep, setCurrentStep] = useState(1);
     const [university, setUniversity] = useState('');
     const [studentId, setStudentId] = useState('');
@@ -23,6 +25,16 @@ function RegisterPage() {
     const [isVerificationLoading, setIsVerificationLoading] = useState(false);
     const [verificationError, setVerificationError] = useState('');
     const [verificationSuccess, setVerificationSuccess] = useState(false);
+    const [isRegistrationLoading, setIsRegistrationLoading] = useState(false);
+    const [registrationError, setRegistrationError] = useState('');
+    const [isEmailVerified, setIsEmailVerified] = useState(false);
+
+    // 이미 로그인된 사용자는 메인 페이지로 리디렉션
+    useEffect(() => {
+        if (isAuthenticated) {
+            navigate('/main');
+        }
+    }, [isAuthenticated, navigate]);
 
     const handleNext = () => {
         if (currentStep < 8) {
@@ -113,6 +125,7 @@ function RegisterPage() {
             if (result.success) {
                 setVerificationSuccess(true);
                 setVerificationError('');
+                setIsEmailVerified(true);
                 // 인증 성공 시 다음 단계로 자동 진행
                 setTimeout(() => {
                     setCurrentStep(4);
@@ -125,6 +138,68 @@ function RegisterPage() {
             setVerificationError(error.message || '인증번호 확인 중 오류가 발생했습니다.');
         } finally {
             setIsVerificationLoading(false);
+        }
+    };
+
+    const handleCompleteRegistration = async () => {
+        if (!isEmailVerified) {
+            setRegistrationError('이메일 인증을 먼저 완료해주세요.');
+            return;
+        }
+
+        if (password !== passwordConfirm) {
+            setRegistrationError('비밀번호가 일치하지 않습니다.');
+            return;
+        }
+
+        if (password.length < 6) {
+            setRegistrationError('비밀번호는 6자 이상이어야 합니다.');
+            return;
+        }
+
+        try {
+            setIsRegistrationLoading(true);
+            setRegistrationError('');
+
+            const registrationData = {
+                email: email,
+                password: password,
+                university: university,
+                department: department,
+                student_id: studentId || null
+            };
+
+            console.log('Registration data:', registrationData);
+
+            const result = await registerUser(registrationData);
+
+            if (result.success || result.token) {
+                console.log('Registration successful:', result);
+                
+                // AuthContext를 통해 자동 로그인 처리
+                if (result.token && result.user) {
+                    const loginSuccess = login(result.user, result.token);
+                    
+                    if (loginSuccess) {
+                        console.log('회원가입 후 자동 로그인 성공');
+                        // 회원가입 성공 시 완료 화면으로 이동
+                        setCurrentStep(7);
+                    } else {
+                        setRegistrationError('회원가입은 완료되었지만 자동 로그인에 실패했습니다.');
+                    }
+                } else {
+                    // 토큰이나 사용자 정보가 없는 경우에도 완료 화면 표시
+                    setCurrentStep(7);
+                }
+            } else {
+                setRegistrationError(result.message || '회원가입에 실패했습니다.');
+            }
+
+        } catch (error) {
+            console.error('Registration error:', error);
+            setRegistrationError(error.message || '회원가입 중 오류가 발생했습니다.');
+        } finally {
+            setIsRegistrationLoading(false);
         }
     };
 
@@ -520,11 +595,16 @@ function RegisterPage() {
                                 }}
                             />
                         </div>
+                        {registrationError && (
+                            <div className="verification-error" style={{ marginTop: '8px' }}>
+                                ❌ {registrationError}
+                            </div>
+                        )}
                         <div style={{ marginTop: '9px' }}>
                             <button 
                                 className={`next-button ${password === passwordConfirm && password.trim() && passwordConfirm.trim() ? 'active' : ''}`}
-                                onClick={handleNext}
-                                disabled={password !== passwordConfirm || !password.trim() || !passwordConfirm.trim()}
+                                onClick={handleCompleteRegistration}
+                                disabled={password !== passwordConfirm || !password.trim() || !passwordConfirm.trim() || isRegistrationLoading}
                                 style={{
                                     width: '100%',
                                     padding: '16px',
@@ -532,12 +612,12 @@ function RegisterPage() {
                                     border: 'none',
                                     fontSize: '16px',
                                     fontWeight: '600',
-                                    cursor: password === passwordConfirm && password.trim() && passwordConfirm.trim() ? 'pointer' : 'not-allowed',
-                                    backgroundColor: password === passwordConfirm && password.trim() && passwordConfirm.trim() ? 'var(--main, #F76241)' : '#E0E0E0',
-                                    color: password === passwordConfirm && password.trim() && passwordConfirm.trim() ? 'white' : '#999'
+                                    cursor: password === passwordConfirm && password.trim() && passwordConfirm.trim() && !isRegistrationLoading ? 'pointer' : 'not-allowed',
+                                    backgroundColor: password === passwordConfirm && password.trim() && passwordConfirm.trim() && !isRegistrationLoading ? 'var(--main, #F76241)' : '#E0E0E0',
+                                    color: password === passwordConfirm && password.trim() && passwordConfirm.trim() && !isRegistrationLoading ? 'white' : '#999'
                                 }}
                             >
-                                완료
+                                {isRegistrationLoading ? '가입 중...' : '완료'}
                             </button>
                         </div>
                     </div>
