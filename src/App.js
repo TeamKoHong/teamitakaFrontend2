@@ -26,6 +26,10 @@ import SearchPage from './pages/SearchPage/SearchPage';
 // 메인 페이지 임포트
 import MainPage from './components/Home/MainPage';
 
+// 인증 관련 임포트
+import { AuthProvider } from './contexts/AuthContext';
+import ProtectedRoute, { PublicRoute } from './components/ProtectedRoute';
+
 // 라우팅 상수 임포트
 import { 
   MAIN_ROUTES, 
@@ -216,46 +220,54 @@ function RedirectToReceived() {
 const App = () => {
   return (
     <Router>
-      <Routes>
-        {/* ===== 메인 페이지 라우트 ===== */}
-        <Route path={MAIN_ROUTES.HOME} element={<OnboardingPage />} />
-        <Route path={MAIN_ROUTES.MAIN} element={<MainPage />} />
-        <Route path={MAIN_ROUTES.LOGIN} element={<LoginPage />} />
-        <Route path={MAIN_ROUTES.REGISTER} element={<RegisterPage />} />
-        <Route path={MAIN_ROUTES.MY} element={<Navigate to={PROJECT_ROUTES.MANAGEMENT} replace />} />
+      <AuthProvider>
+        <Routes>
+          {/* ===== 공개 페이지 (로그인하지 않은 사용자만) ===== */}
+          <Route path={MAIN_ROUTES.HOME} element={<PublicRoute><OnboardingPage /></PublicRoute>} />
+          <Route path={MAIN_ROUTES.LOGIN} element={<PublicRoute><LoginPage /></PublicRoute>} />
+          <Route path={MAIN_ROUTES.REGISTER} element={<PublicRoute><RegisterPage /></PublicRoute>} />
 
-        {/* ===== 프로젝트 관리 라우트 ===== */}
-        <Route path={PROJECT_ROUTES.MANAGEMENT} element={<ProjectManagement />} />
-        <Route path={PROJECT_ROUTES.DETAIL} element={<ProjectDetailPage />} />
-        <Route path={PROJECT_ROUTES.MEMBER} element={<ProjectMemberPage />} />
-        <Route path={PROJECT_ROUTES.PROCEEDINGS} element={<ProceedingsPage />} />
-        <Route path={PROJECT_ROUTES.CALENDAR} element={<ProjectCalender />} />
+          {/* ===== 보호된 페이지 (로그인한 사용자만) ===== */}
+          <Route path={MAIN_ROUTES.MAIN} element={<ProtectedRoute><MainPage /></ProtectedRoute>} />
+          <Route path={MAIN_ROUTES.MY} element={<ProtectedRoute><Navigate to={PROJECT_ROUTES.MANAGEMENT} replace /></ProtectedRoute>} />
 
-        {/* ===== 평가 시스템 라우트 (새로운 구조) ===== */}
-        <Route path={EVALUATION_ROUTES.MANAGEMENT} element={<RatingManagementPage/>}/>
-        <Route path={EVALUATION_ROUTES.PROJECT} element={<ProjectEvaluationGuard />} />
-        <Route path={EVALUATION_ROUTES.TEAM_MEMBER} element={<TeamMemberEvaluationGuard />} />
-        <Route path={EVALUATION_ROUTES.STATUS_GIVEN} element={<EvaluationStatusGuard />} />
-        <Route path={EVALUATION_ROUTES.STATUS_RECEIVED} element={<EvaluationStatusGuard />} />
-        <Route path={EVALUATION_ROUTES.STATUS} element={<EvaluationStatusGuard />} />
-        
-        {/* ===== 기존 URL 호환성 리다이렉트 ===== */}
-        <Route path={LEGACY_EVALUATION_ROUTES.RATING_MANAGEMENT} element={<Navigate to={EVALUATION_ROUTES.MANAGEMENT} replace />} />
-        <Route path={LEGACY_EVALUATION_ROUTES.RATING_PROJECT} element={<Navigate to={EVALUATION_ROUTES.PROJECT} replace />} />
-        <Route path={LEGACY_EVALUATION_ROUTES.EVALUATE_MEMBER} element={<Navigate to={EVALUATION_ROUTES.TEAM_MEMBER} replace />} />
-        <Route path={LEGACY_EVALUATION_ROUTES.RATING_STATUS_GIVEN} element={<Navigate to={EVALUATION_ROUTES.STATUS_GIVEN} replace />} />
-        <Route path={LEGACY_EVALUATION_ROUTES.RATING_STATUS_RECEIVED} element={<Navigate to={EVALUATION_ROUTES.STATUS_RECEIVED} replace />} />
-        <Route path={LEGACY_EVALUATION_ROUTES.RATING_STATUS} element={<Navigate to={EVALUATION_ROUTES.STATUS} replace />} />
+          {/* ===== 프로젝트 관리 라우트 (보호됨) ===== */}
+          <Route path={PROJECT_ROUTES.MANAGEMENT} element={<ProtectedRoute><ProjectManagement /></ProtectedRoute>} />
+          <Route path={PROJECT_ROUTES.DETAIL} element={<ProtectedRoute><ProjectDetailPage /></ProtectedRoute>} />
+          <Route path={PROJECT_ROUTES.MEMBER} element={<ProtectedRoute><ProjectMemberPage /></ProtectedRoute>} />
+          <Route path={PROJECT_ROUTES.PROCEEDINGS} element={<ProtectedRoute><ProceedingsPage /></ProtectedRoute>} />
+          <Route path={PROJECT_ROUTES.CALENDAR} element={<ProtectedRoute><ProjectCalender /></ProtectedRoute>} />
 
-        {/* ===== 팀 매칭 및 기타 라우트 ===== */}
-        <Route path={OTHER_ROUTES.TEAM_MATCHING} element={<TeamMatchingPage />} />
-        <Route path={OTHER_ROUTES.RECRUITMENT} element={<RecruitmentPage />} />
-        <Route path={OTHER_ROUTES.SEARCH} element={<SearchPage />} />
-        <Route path={OTHER_ROUTES.TEAM} element={<Navigate to={OTHER_ROUTES.TEAM_MATCHING} replace />} />
+          {/* ===== 평가 시스템 라우트 (보호됨) ===== */}
+          <Route path={EVALUATION_ROUTES.MANAGEMENT} element={<ProtectedRoute><RatingManagementPage /></ProtectedRoute>} />
+          <Route path={EVALUATION_ROUTES.PROJECT} element={<ProtectedRoute><ProjectEvaluationGuard /></ProtectedRoute>} />
+          <Route path={EVALUATION_ROUTES.TEAM_MEMBER} element={<ProtectedRoute><TeamMemberEvaluationGuard /></ProtectedRoute>} />
+          <Route path={EVALUATION_ROUTES.STATUS_GIVEN} element={<ProtectedRoute><EvaluationStatusGuard /></ProtectedRoute>} />
+          <Route path={EVALUATION_ROUTES.STATUS_RECEIVED} element={<ProtectedRoute><EvaluationStatusGuard /></ProtectedRoute>} />
+          <Route path={EVALUATION_ROUTES.STATUS} element={<ProtectedRoute><EvaluationStatusGuard /></ProtectedRoute>} />
+          
+          {/* ===== 기존 URL 호환성 리다이렉트 ===== */}
+          <Route path={LEGACY_EVALUATION_ROUTES.RATING_MANAGEMENT} element={<Navigate to={EVALUATION_ROUTES.MANAGEMENT} replace />} />
+          <Route path={LEGACY_EVALUATION_ROUTES.RATING_PROJECT} element={<Navigate to={EVALUATION_ROUTES.PROJECT} replace />} />
+          <Route path={LEGACY_EVALUATION_ROUTES.EVALUATE_MEMBER} element={<Navigate to={EVALUATION_ROUTES.TEAM_MEMBER} replace />} />
+          <Route path={LEGACY_EVALUATION_ROUTES.RATING_STATUS_GIVEN} element={<Navigate to={EVALUATION_ROUTES.STATUS_GIVEN} replace />} />
+          <Route path={LEGACY_EVALUATION_ROUTES.RATING_STATUS_RECEIVED} element={<Navigate to={EVALUATION_ROUTES.STATUS_RECEIVED} replace />} />
+          <Route path={LEGACY_EVALUATION_ROUTES.RATING_STATUS} element={<Navigate to={EVALUATION_ROUTES.STATUS} replace />} />
 
-        {/* ===== 데모 및 개발 도구 라우트 ===== */}
-        <Route path={DEMO_ROUTES.CATEGORY_SLIDER} element={<CategorySliderDemo />} />
-      </Routes>
+          {/* ===== 팀 매칭 및 기타 라우트 (보호됨) ===== */}
+          <Route path={OTHER_ROUTES.TEAM_MATCHING} element={<ProtectedRoute><TeamMatchingPage /></ProtectedRoute>} />
+          <Route path={OTHER_ROUTES.RECRUITMENT} element={<ProtectedRoute><RecruitmentPage /></ProtectedRoute>} />
+          <Route path={OTHER_ROUTES.SEARCH} element={<ProtectedRoute><SearchPage /></ProtectedRoute>} />
+          <Route path={OTHER_ROUTES.TEAM} element={<Navigate to={OTHER_ROUTES.TEAM_MATCHING} replace />} />
+
+          {/* ===== 데모 및 개발 도구 라우트 (개발용) ===== */}
+          <Route path={DEMO_ROUTES.CATEGORY_SLIDER} element={<CategorySliderDemo />} />
+          
+          {/* ===== 기본 리다이렉트 ===== */}
+          <Route path="/" element={<Navigate to={MAIN_ROUTES.HOME} replace />} />
+          <Route path="*" element={<Navigate to={MAIN_ROUTES.HOME} replace />} />
+        </Routes>
+      </AuthProvider>
     </Router>
   );
 };
