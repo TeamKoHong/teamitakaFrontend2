@@ -1,304 +1,264 @@
+/* src/components/Home/main.scss */
+
+/* ========== Tokens ========== */
+$brand:        #ff5c00;  // Teamitaka 오렌지
+$brand-strong: #f6532f;
+$ink:          #222;
+$ink-2:        #444;
+$ink-3:        #666;
+$ink-4:        #999;
+$bg:           #f6f6f7;  // 화면 전체 배경
+$card:         #ffffff;
+$shadow:       0 6px 16px rgba(0, 0, 0, 0.06);
+$radius-lg:    16px;
+$radius-md:    12px;
+$radius-sm:    8px;
+
+/* ========== Page Container ========== */
 .main-page {
-  padding: 16px;
-  background-color: #f9f9f9;
-  font-family: sans-serif;
+  background: $bg;
   min-height: 100vh;
+  padding: 20px 16px 0;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  color: $ink;
 }
 
-// 헤더
+/* ========== Header ========== */
 .header {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  font-weight: bold;
-  font-size: 20px;
-  color: #ff5c00;
-  margin-bottom: 20px;
+  justify-content: space-between;
+  margin-bottom: 12px;
 
   .logo {
+    color: $brand;
     font-size: 24px;
+    font-weight: 800;
+    letter-spacing: 0.2px;
   }
 
-  .alarm-icon {
-    width: 20px;
-    height: 20px;
-    margin-left: auto;
+  .icon-btn {
+    border: 0;
+    background: transparent;
+    padding: 4px;
+    display: grid;
+    place-items: center;
     cursor: pointer;
+
+    .alarm-icon {
+      width: 20px;
+      height: 20px;
+      display: block;
+    }
   }
 }
 
-// 유저 프로필 카드
+/* ========== Profile Card ========== */
 .profile-card {
-  display: flex;
-  background: #fff;
-  border-radius: 12px;
-  padding: 16px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-  margin-bottom: 24px;
   position: relative;
+  background: $card;
+  border-radius: $radius-lg;
+  box-shadow: $shadow;
+  padding: 16px;
+  display: grid;
+  grid-template-columns: 56px 1fr;
+  column-gap: 12px;
+  margin: 6px 0 18px;
 
   .profile-left {
+    display: grid;
+    place-items: center;
+
     .profile-img {
-      font-size: 48px;
-      margin-right: 16px;
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: #f1f1f1;
+      display: grid;
+      place-items: center;
+      font-size: 28px;
+      color: $ink-3;
     }
   }
 
   .profile-middle {
-    flex: 1;
     display: flex;
     flex-direction: column;
-    gap: 6px;
-    position: relative;
+    gap: 8px;
+    min-width: 0;
 
     .name {
-      font-weight: 600;
-      font-size: 18px;
-      line-height: 1.3;
+      font-size: 16px;
+      font-weight: 800;
+
+      .emph {
+        color: $brand;
+      }
     }
 
     .school {
-      font-size: 11px;
-      color: #666;
-      display: flex;
+      display: inline-flex;
       align-items: center;
-      gap: 4px;
+      gap: 6px;
+      font-size: 12px;
+      color: $ink-3;
 
       .school-icon {
-        width: 16px;
-        height: 16px;
+        width: 14px;
+        height: 14px;
         object-fit: contain;
       }
     }
 
+    .stats {
+      font-size: 12px;
+      color: $ink-2;
+
+      .count {
+        margin-left: 4px;
+        color: $brand;
+        font-weight: 800;
+      }
+
+      .divider {
+        margin: 0 8px;
+        color: #e6e6e6;
+      }
+
+      .muted {
+        color: $ink-4;
+      }
+    }
+
     .tags {
-      margin: 6px 0;
-
-      .tag {
-        display: inline-block;
-        background: #eee;
-        padding: 4px 8px;
-        border-radius: 8px;
-        margin-right: 6px;
-        font-size: 12px;
-      }
-
-      .tag.red {
-        background-color: #ff5c00;
-        color: white;
-      }
-    }
-
-    .info {
-      font-size: 10px;
-      color: #999;
-      white-space: nowrap;
-    }
-  }
-
-  .qr-icon {
-    width: 30px;
-    height: 30px;
-    object-fit: contain;
-  }
-}
-
-// 오늘의 할 일
-.todo-title {
-  font-size: 16px;
-  font-weight: bold;
-  margin-bottom: 12px;
-}
-
-.todo-section {
-  background: #fff;
-  border-radius: 12px;
-  padding: 2px 12px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-
-  h2 {
-    font-size: 16px;
-    margin-bottom: 12px;
-  }
-
-  .todo-list {
-    list-style: none;
-    padding: 0;
-
-    li {
       display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 4px 0;
-      border-bottom: 1px solid #eee;
-      font-size: 14px;
+      gap: 8px;
+      margin-top: 2px;
 
-      &:last-child {
-        border-bottom: none;
-      }
-
-      input[type="checkbox"] {
-        width: 18px;
-        height: 18px;
-      }
-    }
-  }
-}
-
-.project-slider {
-  margin-top: 24px;
-  padding: 0 8px;
-
-  h2 {
-    font-size: 16px;
-    margin-bottom: 12px;
-  }
-
-  .slider-container {
-    display: flex;
-    gap: 12px;
-    overflow-x: auto;
-    padding-bottom: 8px;
-    scroll-snap-type: x mandatory;
-    -webkit-overflow-scrolling: touch;
-  }
-
-  .project-card {
-    min-width: 220px;
-    background: #fff;
-    padding: 16px;
-    border-radius: 12px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-    flex-shrink: 0;
-    scroll-snap-align: start;
-    position: relative;
-
-    .project-header {
-      display: flex;
-      justify-content: space-between;
-      font-weight: bold;
-
-      .project-time {
-        font-size: 12px;
-        color: #999;
-        font-weight: normal;
-      }
-    }
-
-    .project-detail {
-      font-size: 13px;
-      color: #666;
-      margin-top: 4px;
-    }
-
-    .project-members {
-      margin: 10px 0;
-      font-size: 20px;
-    }
-
-    .project-dday {
-      position: absolute;
-      bottom: 12px;
-      right: 12px;
-      color: #ff5c00;
-      font-weight: bold;
-    }
-  }
-}
-
-// 🔥 모집 마감 임박 프로젝트트
-.urgent-projects {
-  padding: 16px;
-  background-color: #f9f9f9;
-
-  .section-title {
-    font-size: 16px;
-    font-weight: bold;
-    margin-bottom: 12px;
-  }
-
-  .project-list {
-    list-style: none;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
-
-  .project-card {
-    display: flex;
-    align-items: flex-start;
-    padding: 12px;
-    background: none;
-    border-radius: 0;
-    box-shadow: none;
-
-    .thumbnail {
-      width: 60px;
-      height: 60px;
-      border-radius: 8px;
-      margin-right: 12px;
-      object-fit: cover;
-    }
-
-    .project-info {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      width: 100%;
-
-      .badge {
-        display: inline-block;
-        width: auto;
-        padding: 2px 4px;
-        font-size: 10px;
-        background: #2962ff;
-        color: white;
-        border-radius: 4px;
+      .tag.pill {
+        padding: 6px 10px;
+        font-size: 11px;
+        line-height: 1;
+        border-radius: 999px;
+        background: #ffe8de;
+        color: $brand;
+        font-weight: 600;
         white-space: nowrap;
       }
+    }
+  }
 
-      .title {
-        font-size: 14px;
-        font-weight: 600;
-        margin-bottom: 1.4px;
-      }
+  /* 오른쪽 빨간 원형 버튼 (QR/메뉴) - 카드 안 우측에 떠있는 형태 */
+  .profile-right {
+    position: absolute;
+    right: 12px;
+    top: 12px;
 
-      .info-row {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        width: 100%;
-        margin-top: 4px;
-        flex-wrap: nowrap;
+    .qr-btn {
+      width: 40px;
+      height: 40px;
+      border: 0;
+      border-radius: 50%;
+      background: $brand;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba($brand-strong, 0.35);
 
-        .company {
-          font-size: 12px;
-          color: #777;
-          margin-right: 8px;
-        }
-
-        .meta {
-          display: flex;
-          align-items: center;
-          gap: 8px;
-
-          span {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            font-size: 11px;
-            color: #666;
-          }
-        }
+      .qr-icon {
+        width: 18px;
+        height: 18px;
+        filter: brightness(0) invert(1); /* 아이콘이 컬러면 흰색처럼 보이게 */
+        object-fit: contain;
       }
     }
   }
 }
 
-.meta-icon {
-  width: 12px;
-  height: 12px;
-  object-fit: contain;
-  display: block;
+/* ========== "내가 참여 중인 프로젝트" 섹션 ========== */
+.my-projects {
+  background: $card;
+  border-radius: $radius-lg;
+  box-shadow: $shadow;
+  padding: 16px;
+  margin-bottom: 16px;
+
+  .section-title {
+    font-size: 15px;
+    font-weight: 800;
+    color: $ink;
+    margin-bottom: 12px;
+  }
+
+  /* 비어있는 상태 카드 */
+  .empty-card {
+    background: #fafafa;
+    border-radius: $radius-lg;
+    padding: 24px 16px;
+    text-align: center;
+    display: grid;
+    place-items: center;
+    row-gap: 12px;
+
+    .empty-img {
+      width: 128px;
+      height: auto;
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .empty-text {
+      font-size: 13px;
+      color: $ink-3;
+      line-height: 1.6;
+    }
+
+    .primary-btn {
+      margin-top: 4px;
+      width: 100%;
+      max-width: 320px;
+      height: 44px;
+      border: 0;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 800;
+      color: #fff;
+      cursor: pointer;
+      background: linear-gradient(180deg, $brand 0%, $brand-strong 100%);
+      box-shadow: 0 8px 16px rgba($brand-strong, 0.28);
+      transition: transform .06s ease, box-shadow .12s ease;
+
+      &:active {
+        transform: translateY(1px);
+        box-shadow: 0 6px 12px rgba($brand-strong, 0.24);
+      }
+    }
+  }
+}
+
+/* ========== BottomNav와 겹치지 않게 여백 확보 ========== */
+.bottom-spacer {
+  height: 84px; /* 하단 네비 높이만큼 확보 */
+}
+
+/* ========== 작은 화면 미세 조정 ========== */
+@media (max-width: 360px) {
+  .profile-card {
+    grid-template-columns: 48px 1fr;
+
+    .profile-left .profile-img {
+      width: 48px;
+      height: 48px;
+      font-size: 24px;
+    }
+
+    .profile-right .qr-btn {
+      width: 36px; height: 36px;
+      .qr-icon { width: 16px; height: 16px; }
+    }
+  }
+
+  .my-projects .empty-card .empty-img {
+    width: 112px;
+  }
 }

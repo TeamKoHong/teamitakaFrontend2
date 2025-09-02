@@ -228,7 +228,9 @@ const App = () => {
           <Route path={MAIN_ROUTES.REGISTER} element={<PublicRoute><RegisterPage /></PublicRoute>} />
 
           {/* ===== 보호된 페이지 (로그인한 사용자만) ===== */}
-          <Route path={MAIN_ROUTES.MAIN} element={<ProtectedRoute><MainPage /></ProtectedRoute>} />
+          <Route path={MAIN_ROUTES.MAIN} element={<MainPage />} />
+          {/* 메이 페이지 수정용으로 잠시 보호 페이지 걷어둠, 작업 후 복구 예정 */}
+          {/* <Route path={MAIN_ROUTES.MAIN} element={<ProtectedRoute><MainPage /></ProtectedRoute>} /> */}
           <Route path={MAIN_ROUTES.MY} element={<ProtectedRoute><Navigate to={PROJECT_ROUTES.MANAGEMENT} replace /></ProtectedRoute>} />
 
           {/* ===== 프로젝트 관리 라우트 (보호됨) ===== */}
