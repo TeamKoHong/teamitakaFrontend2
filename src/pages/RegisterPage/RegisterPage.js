@@ -439,9 +439,9 @@ function RegisterPage() {
                 );
             case 4:
                 return (
-                    <div>
+                    <div className="animated-bg">
                         <div>
-                            <p style={{
+                            <p className="fade-in-text" style={{
                                 color: 'var(--main, #F76241)',
                                 textAlign: 'center',
                                 fontFamily: 'Pretendard',
@@ -454,7 +454,7 @@ function RegisterPage() {
                             }}>
                                 대학인증을 진행중<span style={{ color: '#140805' }}>입니다!</span>
                             </p>
-                            <p style={{
+                            <p className="fade-in-text" style={{
                                 color: 'rgba(0, 0, 0, 0.69)',
                                 textAlign: 'center',
                                 fontFamily: 'Pretendard',
@@ -467,13 +467,11 @@ function RegisterPage() {
                             }}>
                                 잠시만 기다려주세요!
                             </p>
-                            <div style={{ textAlign: 'center', marginTop: '40px' }}>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="56" height="16" viewBox="0 0 56 16" fill="none">
-                                    <circle opacity="0.4" cx="4" cy="12" r="4" fill="#F76241"/>
-                                    <circle opacity="0.6" cx="20" cy="4" r="4" fill="#F76241"/>
-                                    <circle opacity="0.8" cx="36" cy="9" r="4" fill="#F76241"/>
-                                    <circle cx="52" cy="12" r="4" fill="#F76241"/>
-                                </svg>
+                            <div className="loading-container">
+                                <div className="loading-dot"></div>
+                                <div className="loading-dot"></div>
+                                <div className="loading-dot"></div>
+                                <div className="loading-dot"></div>
                             </div>
                         </div>
                     </div>
