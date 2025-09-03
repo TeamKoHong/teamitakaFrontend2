@@ -608,6 +608,65 @@
         gap: 10px;
         margin-top: 30px;
     }
+    
+    .verification-card {
+        margin: 20px 10px;
+        border-radius: 16px;
+        padding: 30px 15px;
+        min-height: 350px;
+        
+        .verification-title {
+            font-size: 22px;
+            margin: 0 0 14px;
+        }
+        
+        .verification-subtitle {
+            font-size: 16px;
+            margin: 0 0 10px;
+        }
+        
+        .verification-time {
+            font-size: 13px;
+            margin: 0 0 28px;
+        }
+        
+        .verification-tip {
+            font-size: 12px;
+            margin: 20px 0 0;
+        }
+        
+        .loading-spinner {
+            margin: 20px 0 28px;
+            
+            .spinner {
+                width: 36px;
+                height: 36px;
+            }
+        }
+        
+        .progress-steps {
+            margin: 28px 0;
+            
+            .step-item {
+                margin: 0 6px;
+                
+                .step-number {
+                    width: 28px;
+                    height: 28px;
+                    font-size: 12px;
+                }
+                
+                .step-text {
+                    font-size: 11px;
+                    max-width: 50px;
+                }
+            }
+            
+            .step-line {
+                width: 16px;
+            }
+        }
+    }
 }
 
 // 접근성 고려 (애니메이션 줄이기 설정)
@@ -628,139 +687,170 @@
 
 // 인증 카드 컨테이너
 .verification-card {
-    background: #ffffff;
-    border-radius: 20px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
-    margin: 40px 20px;
-    padding: 0;
-    min-height: calc(100vh - 200px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-// 카드 내용
-.card-content {
-    text-align: center;
-    padding: 40px 20px;
-    width: 100%;
-    max-width: 400px;
-}
-
-// 진행 단계 스타일
-.progress-steps {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-top: 40px;
-    gap: 8px;
-}
-
-.step-item {
+    flex: 1;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: 8px;
-    
-    &.completed {
-        .step-number {
-            background-color: #28A745;
-            color: white;
-        }
-        
-        .step-text {
-            color: #28A745;
-            font-weight: 600;
-        }
-    }
-    
-    &.active {
-        .step-number {
-            background-color: #F76241;
-            color: white;
-            animation: pulse 2s infinite;
-        }
-        
-        .step-text {
-            color: #F76241;
-            font-weight: 700;
-        }
-    }
-}
-
-.step-number {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    background-color: #E0E0E0;
-    color: #666;
-    display: flex;
-    align-items: center;
     justify-content: center;
-    font-size: 14px;
-    font-weight: 600;
-    transition: all 0.3s ease;
+    align-items: center;
+    padding: 40px 20px;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    margin: 20px;
+    min-height: 400px;
+    
+    .card-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        width: 100%;
+        max-width: 400px;
+    }
+    
+    .verification-title {
+        color: var(--main, #F76241);
+        font-family: Pretendard;
+        font-size: 24px;
+        font-weight: 700;
+        line-height: 1.4;
+        margin: 0 0 16px;
+        animation: fadeInUp 0.6s ease-out;
+    }
+    
+    .verification-subtitle {
+        color: rgba(0, 0, 0, 0.8);
+        font-family: Pretendard;
+        font-size: 18px;
+        font-weight: 600;
+        line-height: 1.4;
+        margin: 0 0 12px;
+        animation: fadeInUp 0.6s ease-out 0.1s both;
+    }
+    
+    .verification-time {
+        color: rgba(0, 0, 0, 0.6);
+        font-family: Pretendard;
+        font-size: 14px;
+        font-weight: 500;
+        line-height: 1.4;
+        margin: 0 0 32px;
+        animation: fadeInUp 0.6s ease-out 0.2s both;
+    }
+    
+    .verification-tip {
+        color: rgba(0, 0, 0, 0.5);
+        font-family: Pretendard;
+        font-size: 13px;
+        font-weight: 400;
+        line-height: 1.4;
+        margin: 24px 0 0;
+        animation: fadeInUp 0.6s ease-out 0.4s both;
+        opacity: 0.8;
+    }
+    
+    // 개선된 로딩 스피너
+    .loading-spinner {
+        margin: 24px 0 32px;
+        animation: fadeInUp 0.6s ease-out 0.3s both;
+        
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #F76241;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+    }
+    
+    // 개선된 진행 단계
+    .progress-steps {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 32px 0;
+        animation: fadeInUp 0.6s ease-out 0.3s both;
+        
+        .step-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0 8px;
+            
+            .step-number {
+                width: 32px;
+                height: 32px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 14px;
+                font-weight: 600;
+                margin-bottom: 8px;
+                transition: all 0.3s ease;
+                
+                &.completed {
+                    background: #F76241;
+                    color: white;
+                }
+                
+                &.active {
+                    background: #F76241;
+                    color: white;
+                    animation: pulse 2s infinite;
+                }
+                
+                &:not(.completed):not(.active) {
+                    background: #E0E0E0;
+                    color: #999;
+                }
+            }
+            
+            .step-text {
+                font-size: 12px;
+                font-weight: 500;
+                color: rgba(0, 0, 0, 0.7);
+                text-align: center;
+                line-height: 1.2;
+                max-width: 60px;
+            }
+        }
+        
+        .step-line {
+            width: 20px;
+            height: 2px;
+            background: #E0E0E0;
+            margin: 0 4px;
+            margin-top: -20px;
+        }
+    }
 }
 
-.step-text {
-    font-size: 12px;
-    color: #666;
-    font-weight: 500;
-    text-align: center;
-    white-space: nowrap;
-    transition: all 0.3s ease;
+// 애니메이션 키프레임
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
-.step-line {
-    width: 20px;
-    height: 2px;
-    background-color: #E0E0E0;
-    margin: 0 4px;
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
 
-// 펄스 애니메이션
 @keyframes pulse {
-    0% {
+    0%, 100% {
         transform: scale(1);
         box-shadow: 0 0 0 0 rgba(247, 98, 65, 0.7);
     }
-    70% {
+    50% {
         transform: scale(1.05);
         box-shadow: 0 0 0 10px rgba(247, 98, 65, 0);
-    }
-    100% {
-        transform: scale(1);
-        box-shadow: 0 0 0 0 rgba(247, 98, 65, 0);
-    }
-}
-
-// 모바일 최적화
-@media (max-width: 768px) {
-    .verification-card {
-        margin: 20px 10px;
-        border-radius: 16px;
-    }
-    
-    .card-content {
-        padding: 30px 15px;
-    }
-    
-    .progress-steps {
-        gap: 6px;
-        margin-top: 30px;
-    }
-    
-    .step-number {
-        width: 28px;
-        height: 28px;
-        font-size: 12px;
-    }
-    
-    .step-text {
-        font-size: 11px;
-    }
-    
-    .step-line {
-        width: 16px;
     }
 }
