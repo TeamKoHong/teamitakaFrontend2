@@ -3,6 +3,7 @@ import './RegisterPage.scss';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { sendVerificationCode, verifyCode, registerUser } from '../../services/auth.js';
+import VerificationLoading from '../../components/Common/VerificationLoading';
 
 function RegisterPage() {
     const navigate = useNavigate();
@@ -130,10 +131,7 @@ function RegisterPage() {
                 setVerificationSuccess(true);
                 setVerificationError('');
                 setIsEmailVerified(true);
-                // 인증 성공 시 다음 단계로 자동 진행
-                setTimeout(() => {
-                    setCurrentStep(4);
-                }, 2000);
+                // 인증 성공 시 자동 진행하지 않고 사용자가 다음 버튼을 누르도록 함
             } else {
                 setVerificationError(result.message || '인증번호 확인에 실패했습니다.');
             }
@@ -439,52 +437,12 @@ function RegisterPage() {
                 );
             case 4:
                 return (
-                    <div className="verification-card">
-                        <div className="card-content">
-                            <p className="fade-in-text verification-title">
-                                대학 인증을 확인하고 있어요
-                            </p>
-                            <p className="fade-in-text verification-subtitle">
-                                잠시만 기다려주세요!
-                            </p>
-                            <p className="fade-in-text verification-time">
-                                보통 10-30초 정도 소요됩니다
-                            </p>
-                            
-                            {/* 개선된 로딩 애니메이션 */}
-                            <div className="loading-spinner">
-                                <div className="spinner"></div>
-                            </div>
-                            
-                            {/* 개선된 진행 단계 표시 */}
-                            <div className="progress-steps">
-                                <div className="step-item completed">
-                                    <div className="step-number">1</div>
-                                    <div className="step-text">정보 입력</div>
-                                </div>
-                                <div className="step-line"></div>
-                                <div className="step-item completed">
-                                    <div className="step-number">2</div>
-                                    <div className="step-text">인증 요청</div>
-                                </div>
-                                <div className="step-line"></div>
-                                <div className="step-item active">
-                                    <div className="step-number">3</div>
-                                    <div className="step-text">인증 확인 중</div>
-                                </div>
-                                <div className="step-line"></div>
-                                <div className="step-item">
-                                    <div className="step-number">4</div>
-                                    <div className="step-text">완료</div>
-                                </div>
-                            </div>
-                            
-                            {/* 추가 안내 메시지 */}
-                            <p className="fade-in-text verification-tip">
-                                화면이 멈춘 것 같다면 새로고침 해주세요
-                            </p>
-                        </div>
-                    </div>
+                    <VerificationLoading 
+                        title="대학 인증을 확인하고 있어요"
+                        subtitle="잠시만 기다려주세요. 보통 10-30초 정도 소요됩니다."
+                        tip="화면이 멈춘 것 같다면 새로고침 해주세요"
+                        showSteps={false}
+                    />
                 );
             case 5:
                 return (
