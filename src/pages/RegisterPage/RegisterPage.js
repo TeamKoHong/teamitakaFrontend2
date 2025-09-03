@@ -3,6 +3,7 @@ import './RegisterPage.scss';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { sendVerificationCode, verifyCode, registerUser } from '../../services/auth.js';
+import VerificationLoading from '../../components/Common/VerificationLoading';
 
 function RegisterPage() {
     const navigate = useNavigate();
@@ -130,10 +131,7 @@ function RegisterPage() {
                 setVerificationSuccess(true);
                 setVerificationError('');
                 setIsEmailVerified(true);
-                // 인증 성공 시 다음 단계로 자동 진행
-                setTimeout(() => {
-                    setCurrentStep(4);
-                }, 2000);
+                // 인증 성공 시 자동 진행하지 않고 사용자가 다음 버튼을 누르도록 함
             } else {
                 setVerificationError(result.message || '인증번호 확인에 실패했습니다.');
             }
@@ -439,26 +437,12 @@ function RegisterPage() {
                 );
             case 4:
                 return (
-                    <div className="verification-loading-container">
-                        <div className="verification-content">
-                            <h1 className="verification-title">
-                                대학 인증을 확인하고 있어요
-                            </h1>
-                            <p className="verification-subtitle">
-                                잠시만 기다려주세요. 보통 10-30초 정도 소요됩니다.
-                            </p>
-                            
-                            {/* 단일 스피너 로딩 애니메이션 */}
-                            <div className="loading-spinner">
-                                <div className="spinner"></div>
-                            </div>
-                            
-                            {/* 추가 안내 메시지 */}
-                            <p className="verification-tip">
-                                화면이 멈춘 것 같다면 새로고침 해주세요
-                            </p>
-                        </div>
-                    </div>
+                    <VerificationLoading 
+                        title="대학 인증을 확인하고 있어요"
+                        subtitle="잠시만 기다려주세요. 보통 10-30초 정도 소요됩니다."
+                        tip="화면이 멈춘 것 같다면 새로고침 해주세요"
+                        showSteps={false}
+                    />
                 );
             case 5:
                 return (
