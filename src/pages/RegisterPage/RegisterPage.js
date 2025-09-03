@@ -45,9 +45,9 @@ function RegisterPage() {
                 // 3초 후 case5로 자동 이동
                 setTimeout(() => {
                     setCurrentStep(5);
-                    // 추가로 2.5초 후 메인 페이지로 자동 이동
+                    // 추가로 2.5초 후 비밀번호 설정 단계로 이동
                     setTimeout(() => {
-                        navigate('/main');
+                        setCurrentStep(6);
                     }, 2500);
                 }, 3000);
             } else if (currentStep === 6) {
@@ -218,8 +218,8 @@ function RegisterPage() {
                        consents.terms && 
                        consents.rights;
             case 3:
-                // 이메일 입력: 학부 + 이메일 + 인증번호
-                return department.trim() && email.trim() && verificationCode.trim();
+                // 이메일 입력: 학부 + 이메일 + 인증번호 + 이메일 인증 성공
+                return department.trim() && email.trim() && verificationCode.trim() && isEmailVerified;
             case 4:
                 return password.trim() && passwordConfirm.trim();
             default:
