@@ -441,50 +441,22 @@ function RegisterPage() {
                 return (
                     <div className="verification-card">
                         <div className="card-content">
-                            <p className="fade-in-text" style={{
-                                color: 'var(--main, #F76241)',
-                                textAlign: 'center',
-                                fontFamily: 'Pretendard',
-                                fontSize: '24px',
-                                fontStyle: 'normal',
-                                fontWeight: '700',
-                                lineHeight: 'normal',
-                                marginTop: '280px'
-                            }}>
+                            <p className="fade-in-text verification-title">
                                 대학 인증을 확인하고 있어요
                             </p>
-                            <p className="fade-in-text" style={{
-                                color: 'rgba(0, 0, 0, 0.69)',
-                                textAlign: 'center',
-                                fontFamily: 'Pretendard',
-                                fontSize: '18px',
-                                fontStyle: 'normal',
-                                fontWeight: '500',
-                                lineHeight: 'normal',
-                                margin: '12px 0 8px'
-                            }}>
+                            <p className="fade-in-text verification-subtitle">
                                 잠시만 기다려주세요!
                             </p>
-                            <p className="fade-in-text" style={{
-                                color: 'rgba(0, 0, 0, 0.5)',
-                                textAlign: 'center',
-                                fontFamily: 'Pretendard',
-                                fontSize: '14px',
-                                fontStyle: 'normal',
-                                fontWeight: '400',
-                                lineHeight: 'normal',
-                                margin: '0 0 20px'
-                            }}>
-                                보통 1분 정도 소요됩니다
+                            <p className="fade-in-text verification-time">
+                                보통 10-30초 정도 소요됩니다
                             </p>
-                            <div className="loading-container">
-                                <div className="loading-dot"></div>
-                                <div className="loading-dot"></div>
-                                <div className="loading-dot"></div>
-                                <div className="loading-dot"></div>
+                            
+                            {/* 개선된 로딩 애니메이션 */}
+                            <div className="loading-spinner">
+                                <div className="spinner"></div>
                             </div>
                             
-                            {/* 진행 단계 표시 */}
+                            {/* 개선된 진행 단계 표시 */}
                             <div className="progress-steps">
                                 <div className="step-item completed">
                                     <div className="step-number">1</div>
@@ -506,6 +478,11 @@ function RegisterPage() {
                                     <div className="step-text">완료</div>
                                 </div>
                             </div>
+                            
+                            {/* 추가 안내 메시지 */}
+                            <p className="fade-in-text verification-tip">
+                                화면이 멈춘 것 같다면 새로고침 해주세요
+                            </p>
                         </div>
                     </div>
                 );
