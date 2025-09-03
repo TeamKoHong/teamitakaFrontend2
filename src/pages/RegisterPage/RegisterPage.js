@@ -41,10 +41,14 @@ function RegisterPage() {
             if (currentStep === 3) {
                 // case3에서 다음 버튼을 누르면 case4로 이동
                 setCurrentStep(4);
-                // 5초 후 case5로 자동 이동
+                // 3초 후 case5로 자동 이동
                 setTimeout(() => {
                     setCurrentStep(5);
-                }, 5000);
+                    // 추가로 2.5초 후 메인 페이지로 자동 이동
+                    setTimeout(() => {
+                        navigate('/main');
+                    }, 2500);
+                }, 3000);
             } else if (currentStep === 6) {
                 // case6에서 완료 버튼을 누르면 case7로 이동
                 setCurrentStep(7);
@@ -507,7 +511,7 @@ function RegisterPage() {
                                 textTransform: 'capitalize',
                                 margin: '0 0 8px'
                             }}>
-                                대학교 인증이 완료되었어요
+                                대학교 인증이 완료되었습니다!
                             </p>
                             <p style={{
                                 color: 'var(--grey-3, #807C7C)',
