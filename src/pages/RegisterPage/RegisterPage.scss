@@ -491,6 +491,14 @@
     background-color: #FFF5F5;
     border-radius: 4px;
     border: 1px solid #FFE0E0;
+    
+    // 일일 한도 초과 에러 스타일
+    &.daily-limit-error {
+        color: #FF6B35;
+        background-color: #FFF8F5;
+        border-color: #FFE0D0;
+        font-weight: 500;
+    }
 }
 
 .verification-success {
