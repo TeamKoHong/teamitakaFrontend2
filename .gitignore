@@ -10,3 +10,4 @@ worklogs/
 .history/worklogs/
 .claude
 prompt/
+build/
