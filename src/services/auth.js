@@ -134,7 +134,9 @@ export const registerUser = async (userData) => {
         if (!response.ok) {
             const errorData = await response.json().catch(() => ({ message: '응답을 파싱할 수 없습니다.' }));
             console.error('Registration error details:', errorData);
-            throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+            console.error('Response status:', response.status);
+            console.error('Response headers:', Object.fromEntries(response.headers.entries()));
+            throw new Error(errorData.message || errorData.error || `HTTP error! status: ${response.status}`);
         }
 
         const result = await response.json();
