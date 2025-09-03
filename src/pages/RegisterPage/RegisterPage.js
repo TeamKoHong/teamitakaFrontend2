@@ -26,6 +26,7 @@ function RegisterPage() {
     const [isVerificationLoading, setIsVerificationLoading] = useState(false);
     const [verificationError, setVerificationError] = useState('');
     const [verificationSuccess, setVerificationSuccess] = useState(false);
+    const [isDailyLimitExceeded, setIsDailyLimitExceeded] = useState(false);
     const [isRegistrationLoading, setIsRegistrationLoading] = useState(false);
     const [registrationError, setRegistrationError] = useState('');
     const [isEmailVerified, setIsEmailVerified] = useState(false);
@@ -101,7 +102,13 @@ function RegisterPage() {
             }
             
         } catch (error) {
-            setVerificationError(error.message || '네트워크 오류가 발생했습니다.');
+            // 일일 한도 초과 에러 처리
+            if (error.message && error.message.includes('하루 최대')) {
+                setVerificationError('하루 최대 5회까지만 인증번호를 전송할 수 있습니다. 내일 다시 시도해주세요.');
+                setIsDailyLimitExceeded(true);
+            } else {
+                setVerificationError(error.message || '네트워크 오류가 발생했습니다.');
+            }
         } finally {
             setIsVerificationLoading(false);
         }
@@ -394,18 +401,19 @@ function RegisterPage() {
                                 onChange={(e) => setEmail(e.target.value)}
                             />
                             <button 
-                                className={`verify-button ${email && department ? 'active' : ''}`}
+                                className={`verify-button ${email && department && !isDailyLimitExceeded ? 'active' : ''}`}
                                 onClick={handleSendVerificationCode}
-                                disabled={!email || !department || isVerificationLoading}
+                                disabled={!email || !department || isVerificationLoading || isDailyLimitExceeded}
                             >
                                 {isVerificationLoading ? '전송 중...' : 
+                                 isDailyLimitExceeded ? '일일 한도 초과' :
                                  email && department ? '인증번호 전송' : '인증하기'}
                             </button>
                         </div>
                         
                         {verificationError && (
-                            <div className="verification-error">
-                                ❌ {verificationError}
+                            <div className={`verification-error ${isDailyLimitExceeded ? 'daily-limit-error' : ''}`}>
+                                {isDailyLimitExceeded ? '⚠️' : '❌'} {verificationError}
                             </div>
                         )}
 
