@@ -439,20 +439,19 @@ function RegisterPage() {
                 );
             case 4:
                 return (
-                    <div className="animated-bg">
-                        <div>
+                    <div className="verification-card">
+                        <div className="card-content">
                             <p className="fade-in-text" style={{
                                 color: 'var(--main, #F76241)',
                                 textAlign: 'center',
                                 fontFamily: 'Pretendard',
-                                fontSize: '23px',
+                                fontSize: '24px',
                                 fontStyle: 'normal',
                                 fontWeight: '700',
                                 lineHeight: 'normal',
-                                textTransform: 'capitalize',
-                                marginTop: '330px'
+                                marginTop: '280px'
                             }}>
-                                대학인증을 진행중<span style={{ color: '#140805' }}>입니다!</span>
+                                대학 인증을 확인하고 있어요
                             </p>
                             <p className="fade-in-text" style={{
                                 color: 'rgba(0, 0, 0, 0.69)',
@@ -462,16 +461,50 @@ function RegisterPage() {
                                 fontStyle: 'normal',
                                 fontWeight: '500',
                                 lineHeight: 'normal',
-                                textTransform: 'capitalize',
-                                margin: '8px 0'
+                                margin: '12px 0 8px'
                             }}>
                                 잠시만 기다려주세요!
+                            </p>
+                            <p className="fade-in-text" style={{
+                                color: 'rgba(0, 0, 0, 0.5)',
+                                textAlign: 'center',
+                                fontFamily: 'Pretendard',
+                                fontSize: '14px',
+                                fontStyle: 'normal',
+                                fontWeight: '400',
+                                lineHeight: 'normal',
+                                margin: '0 0 20px'
+                            }}>
+                                보통 1분 정도 소요됩니다
                             </p>
                             <div className="loading-container">
                                 <div className="loading-dot"></div>
                                 <div className="loading-dot"></div>
                                 <div className="loading-dot"></div>
                                 <div className="loading-dot"></div>
+                            </div>
+                            
+                            {/* 진행 단계 표시 */}
+                            <div className="progress-steps">
+                                <div className="step-item completed">
+                                    <div className="step-number">1</div>
+                                    <div className="step-text">정보 입력</div>
+                                </div>
+                                <div className="step-line"></div>
+                                <div className="step-item completed">
+                                    <div className="step-number">2</div>
+                                    <div className="step-text">인증 요청</div>
+                                </div>
+                                <div className="step-line"></div>
+                                <div className="step-item active">
+                                    <div className="step-number">3</div>
+                                    <div className="step-text">인증 확인 중</div>
+                                </div>
+                                <div className="step-line"></div>
+                                <div className="step-item">
+                                    <div className="step-number">4</div>
+                                    <div className="step-text">완료</div>
+                                </div>
                             </div>
                         </div>
                     </div>
