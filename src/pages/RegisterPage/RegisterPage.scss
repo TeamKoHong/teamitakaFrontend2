@@ -1,5 +1,6 @@
 .register-page-container {
-    min-height: 100vh;
+    min-height: 100svh; // iOS Safari 100vh 문제 해결
+    min-height: 100vh; // 폴백
     background-color: white;
     display: flex;
     flex-direction: column;
@@ -670,7 +671,8 @@
 
 // 뷰포트 전체를 꽉 채우는 로딩 컨테이너
 .verification-loading-container {
-    min-height: 100vh;
+    min-height: 100svh; // iOS Safari 100vh 문제 해결
+    min-height: 100vh; // 폴백
     display: flex;
     align-items: center;
     justify-content: center;
