@@ -609,11 +609,12 @@
         margin-top: 30px;
     }
     
-    .verification-card {
-        margin: 20px 10px;
-        border-radius: 16px;
-        padding: 30px 15px;
-        min-height: 350px;
+    .verification-loading-container {
+        padding: 15px;
+        
+        .verification-content {
+            max-width: 350px;
+        }
         
         .verification-title {
             font-size: 22px;
@@ -621,18 +622,13 @@
         }
         
         .verification-subtitle {
-            font-size: 16px;
-            margin: 0 0 10px;
-        }
-        
-        .verification-time {
-            font-size: 13px;
+            font-size: 15px;
             margin: 0 0 28px;
         }
         
         .verification-tip {
-            font-size: 12px;
-            margin: 20px 0 0;
+            font-size: 11px;
+            margin: 18px 0 0;
         }
         
         .loading-spinner {
@@ -643,29 +639,6 @@
                 height: 36px;
             }
         }
-        
-        .progress-steps {
-            margin: 28px 0;
-            
-            .step-item {
-                margin: 0 6px;
-                
-                .step-number {
-                    width: 28px;
-                    height: 28px;
-                    font-size: 12px;
-                }
-                
-                .step-text {
-                    font-size: 11px;
-                    max-width: 50px;
-                }
-            }
-            
-            .step-line {
-                width: 16px;
-            }
-        }
     }
 }
 
@@ -674,38 +647,44 @@
     .loading-dot,
     .fade-in-text,
     .typing-text,
-    .animated-bg {
+    .animated-bg,
+    .verification-loading-container .verification-title,
+    .verification-loading-container .verification-subtitle,
+    .verification-loading-container .verification-tip,
+    .verification-loading-container .loading-spinner {
         animation: none;
     }
     
     .loading-dot {
         opacity: 0.7;
     }
+    
+    .verification-loading-container .loading-spinner .spinner {
+        animation: none;
+        border-top-color: #F76241;
+        opacity: 0.8;
+    }
 }
 
-// ===== 인증 카드 스타일 =====
+// ===== 대학 인증 로딩 화면 스타일 =====
 
-// 인증 카드 컨테이너
-.verification-card {
-    flex: 1;
+// 뷰포트 전체를 꽉 채우는 로딩 컨테이너
+.verification-loading-container {
+    min-height: 100vh;
     display: flex;
-    flex-direction: column;
-    justify-content: center;
     align-items: center;
-    padding: 40px 20px;
-    background: white;
-    border-radius: 20px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-    margin: 20px;
-    min-height: 400px;
+    justify-content: center;
+    background: #f8f9fa;
+    padding: 20px;
+    overflow: hidden;
     
-    .card-content {
+    .verification-content {
         display: flex;
         flex-direction: column;
         align-items: center;
         text-align: center;
-        width: 100%;
         max-width: 400px;
+        width: 100%;
     }
     
     .verification-title {
@@ -719,37 +698,26 @@
     }
     
     .verification-subtitle {
-        color: rgba(0, 0, 0, 0.8);
+        color: rgba(0, 0, 0, 0.7);
         font-family: Pretendard;
-        font-size: 18px;
-        font-weight: 600;
-        line-height: 1.4;
-        margin: 0 0 12px;
-        animation: fadeInUp 0.6s ease-out 0.1s both;
-    }
-    
-    .verification-time {
-        color: rgba(0, 0, 0, 0.6);
-        font-family: Pretendard;
-        font-size: 14px;
+        font-size: 16px;
         font-weight: 500;
         line-height: 1.4;
         margin: 0 0 32px;
-        animation: fadeInUp 0.6s ease-out 0.2s both;
+        animation: fadeInUp 0.8s ease-out;
     }
     
     .verification-tip {
-        color: rgba(0, 0, 0, 0.5);
+        color: rgba(0, 0, 0, 0.4);
         font-family: Pretendard;
-        font-size: 13px;
+        font-size: 12px;
         font-weight: 400;
         line-height: 1.4;
-        margin: 24px 0 0;
-        animation: fadeInUp 0.6s ease-out 0.4s both;
-        opacity: 0.8;
+        margin: 20px 0 0;
+        animation: fadeInUp 1.2s ease-out;
     }
     
-    // 개선된 로딩 스피너
+    // 단일 스피너 로딩 애니메이션
     .loading-spinner {
         margin: 24px 0 32px;
         animation: fadeInUp 0.6s ease-out 0.3s both;
@@ -761,68 +729,6 @@
             border-top: 3px solid #F76241;
             border-radius: 50%;
             animation: spin 1s linear infinite;
-        }
-    }
-    
-    // 개선된 진행 단계
-    .progress-steps {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin: 32px 0;
-        animation: fadeInUp 0.6s ease-out 0.3s both;
-        
-        .step-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin: 0 8px;
-            
-            .step-number {
-                width: 32px;
-                height: 32px;
-                border-radius: 50%;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                font-size: 14px;
-                font-weight: 600;
-                margin-bottom: 8px;
-                transition: all 0.3s ease;
-                
-                &.completed {
-                    background: #F76241;
-                    color: white;
-                }
-                
-                &.active {
-                    background: #F76241;
-                    color: white;
-                    animation: pulse 2s infinite;
-                }
-                
-                &:not(.completed):not(.active) {
-                    background: #E0E0E0;
-                    color: #999;
-                }
-            }
-            
-            .step-text {
-                font-size: 12px;
-                font-weight: 500;
-                color: rgba(0, 0, 0, 0.7);
-                text-align: center;
-                line-height: 1.2;
-                max-width: 60px;
-            }
-        }
-        
-        .step-line {
-            width: 20px;
-            height: 2px;
-            background: #E0E0E0;
-            margin: 0 4px;
-            margin-top: -20px;
         }
     }
 }
