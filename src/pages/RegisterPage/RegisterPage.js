@@ -168,10 +168,19 @@ function RegisterPage() {
                 password: password,
                 university: university,
                 department: department,
-                student_id: studentId || null
+                student_id: studentId && studentId.trim() ? studentId.trim() : null
             };
 
             console.log('Registration data:', registrationData);
+            console.log('Email verified status:', isEmailVerified);
+            console.log('All form data:', {
+                email,
+                password,
+                university,
+                department,
+                studentId,
+                isEmailVerified
+            });
 
             const result = await registerUser(registrationData);
 
