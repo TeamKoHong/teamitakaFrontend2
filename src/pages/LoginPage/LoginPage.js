@@ -25,6 +25,10 @@ function LoginPage() {
         navigate('/register');
     };
 
+    const handleGuestMode = () => {
+        navigate('/main');
+    };
+
     const handleShowLoginForm = () => {
         setShowLoginForm(true);
         setLoginError('');
@@ -216,6 +220,9 @@ function LoginPage() {
                     </button>
                     <button className="signup-button" onClick={handleSignup}>
                         회원가입
+                    </button>
+                    <button className="guest-button" onClick={handleGuestMode}>
+                        로그인 없이 둘러보기
                     </button>
                 </div>
                 
