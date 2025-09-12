@@ -140,8 +140,11 @@ export const AuthProvider = ({ children }) => {
                     console.log('기존 인증 정보 복원됨:', { user: user.email, tokenValid: true });
                 } else {
                     // 유효하지 않은 토큰이나 사용자 정보가 있으면 정리
-                    removeToken();
-                    console.log('저장된 인증 정보 없음 또는 만료됨');
+                    if (token || user) {
+                        // 실제로 토큰이나 사용자 정보가 있었던 경우에만 정리하고 로그 출력
+                        removeToken();
+                        console.log('저장된 인증 정보 없음 또는 만료됨');
+                    }
                 }
             } catch (error) {
                 console.error('인증 초기화 오류:', error);
