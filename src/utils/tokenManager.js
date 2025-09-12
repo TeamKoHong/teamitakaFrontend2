@@ -65,10 +65,15 @@ export const getUser = () => {
 // 토큰 및 사용자 정보 삭제
 export const removeToken = () => {
     try {
+        const hadToken = localStorage.getItem(TOKEN_KEY) !== null;
         localStorage.removeItem(TOKEN_KEY);
         localStorage.removeItem(USER_KEY);
         localStorage.removeItem(TOKEN_EXPIRY_KEY);
-        console.log('토큰 삭제 완료');
+        
+        // 실제로 토큰이 있었던 경우에만 로그 출력
+        if (hadToken) {
+            console.log('토큰 삭제 완료');
+        }
         return true;
     } catch (error) {
         console.error('토큰 삭제 실패:', error);
