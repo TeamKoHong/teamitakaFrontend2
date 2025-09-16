@@ -209,9 +209,8 @@ function LoginPage() {
             <div className="login-content">
                 <h1 className="welcome-text">반가워요!</h1>
                 <div className="subtitle">
-                    <span className="highlight">맞춤형 팀 매칭</span>
-                    <span className="normal">으로 </span>
-                    <span className="normal">프로젝트를 완성하세요!</span>
+                    <span className="highlight">맞춤형 팀 매칭으로</span>
+                    <span className="normal"> 프로젝트를 완성하세요!</span>
                 </div>
                 
                 <div className="button-group">
