@@ -211,7 +211,7 @@ function LoginPage() {
                 <div className="subtitle">
                     <span className="highlight">맞춤형 팀 매칭</span>
                     <span className="normal">으로 </span>
-                    <span className="normal">완벽한 프로젝트 케미를</span>
+                    <span className="normal">프로젝트를 완성하세요!</span>
                 </div>
                 
                 <div className="button-group">
