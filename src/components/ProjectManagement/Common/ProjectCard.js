@@ -5,15 +5,14 @@ import avatar2 from "../../../assets/icons/avatar2.png";
 import avatar3 from "../../../assets/icons/avatar3.png";
 import avatar4 from "../../../assets/icons/avatar4.png";
 import { useNavigate } from "react-router-dom";
-import { navigateToRatingProjectById } from "../../../utils/navigation";
 import { IoCalendarOutline, IoTimeOutline } from "react-icons/io5";
 import CircularProgress from "../../Common/CircularProgress";
 const ProjectCard = () => {
   const navigate = useNavigate();
 
   const handleGoToProjectDetail = (projectId) => {
-    // In project-management context, clicking a project should take user to rating-project
-    navigateToRatingProjectById(navigate, projectId);
+    // Navigate to project detail page
+    navigate(`/project/${projectId}`);
   };
   return (
     <div
