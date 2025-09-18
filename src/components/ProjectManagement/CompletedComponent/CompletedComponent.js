@@ -25,7 +25,7 @@ const CompletedComponent = () => {
       avatars: [avatar1, avatar2],
       dday: { value: 47, percent: 75 },
       resultLink: "any_link.com",
-      isMutualReviewCompleted: false,
+      isMutualReviewCompleted: true,
     },
     {
       id: 6,
@@ -57,7 +57,8 @@ const CompletedComponent = () => {
       setModalOpen(true);
       return;
     }
-    navigate(`/project/${project.id}/rating-project`, {
+    // 완료된 프로젝트는 evaluation/project/:projectId로 이동
+    navigate(`/evaluation/project/${project.id}`, {
       state: { projectSummary: project, from: { path: '/project-management', tab: 'completed' } },
     });
   };
@@ -79,7 +80,22 @@ const CompletedComponent = () => {
       </div>
 
       {/* 상호 평가 진행 중 프로젝트 */}
-      <div className="pending-review-card">
+      <div 
+        className="pending-review-card"
+        role="button"
+        tabIndex={0}
+        onClick={() => {
+          setModalProject({ id: 1, name: "고려대 X 홍익대 프로젝트", isMutualReviewCompleted: false });
+          setModalOpen(true);
+        }}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            setModalProject({ id: 1, name: "고려대 X 홍익대 프로젝트", isMutualReviewCompleted: false });
+            setModalOpen(true);
+          }
+        }}
+      >
         <span className="review-badge">상호평가 진행중</span>
         <svg
           xmlns="http://www.w3.org/2000/svg"
