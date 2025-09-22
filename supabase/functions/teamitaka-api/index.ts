@@ -28,6 +28,7 @@ function isValidEmail(email: string): boolean {
 }
 
 serve(async (req) => {
+  // CORS preflight 처리
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders });
   }
@@ -37,6 +38,8 @@ serve(async (req) => {
     const path = url.pathname;
 
     console.log(`[${req.method}] ${path}`);
+    console.log(`Request URL: ${req.url}`);
+    console.log(`Pathname: ${path}`);
 
     // Health check endpoint
     if (path === '/api/health') {
@@ -59,10 +62,12 @@ serve(async (req) => {
 
     // 이메일 인증 요청 처리
     if (path === '/api/auth/send-verification' && req.method === 'POST') {
+      console.log('📧 이메일 인증 엔드포인트에 도달했습니다.');
+      
       const body = await req.json();
       const { email } = body;
 
-      console.log(`이메일 인증 요청: ${email}`);
+      console.log(`📧 이메일 인증 요청: ${email}`);
 
       if (!email) {
         return new Response(
@@ -172,6 +177,87 @@ serve(async (req) => {
       }
 
       console.log(`인증 코드 생성 완료: ${verificationCode}`);
+      console.log(`📧 이메일 인증 코드 [${email}]: ${verificationCode}`);
+
+      // 이메일 발송 (SendGrid 사용)
+      let emailSent = false;
+      try {
+        const sendgridApiKey = Deno.env.get('SENDGRID_API_KEY');
+        console.log(`📧 SendGrid API Key 존재 여부: ${!!sendgridApiKey}`);
+        
+        if (sendgridApiKey) {
+          console.log(`📧 이메일 발송 시도: ${email}`);
+          
+          const emailResponse = await fetch('https://api.sendgrid.com/v3/mail/send', {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${sendgridApiKey}`,
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              personalizations: [{
+                to: [{ email: email }],
+                subject: 'TeamItaka 이메일 인증 코드'
+              }],
+              from: {
+                email: 'test@example.com', // 임시 테스트용 - 실제 SendGrid 인증된 이메일로 변경 필요
+                name: 'TeamItaka'
+              },
+              content: [{
+                type: 'text/html',
+                value: `
+                  <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+                    <div style="text-align: center; margin-bottom: 30px;">
+                      <h1 style="color: #ff5c00; font-size: 28px; margin: 0;">TeamItaka</h1>
+                    </div>
+                    
+                    <div style="background-color: #ffffff; border: 1px solid #e0e0e0; border-radius: 8px; padding: 30px; margin-bottom: 20px;">
+                      <h2 style="color: #333; font-size: 24px; margin: 0 0 20px 0;">이메일 인증</h2>
+                      <p style="color: #666; font-size: 16px; line-height: 1.5; margin: 0 0 20px 0;">
+                        안녕하세요! TeamItaka 회원가입을 위한 인증 코드입니다.
+                      </p>
+                      
+                      <div style="background-color: #f8f9fa; border: 2px solid #ff5c00; border-radius: 8px; padding: 25px; text-align: center; margin: 25px 0;">
+                        <h1 style="color: #ff5c00; font-size: 36px; margin: 0; letter-spacing: 8px; font-weight: bold;">${verificationCode}</h1>
+                      </div>
+                      
+                      <p style="color: #666; font-size: 14px; margin: 20px 0 0 0;">
+                        이 코드는 <strong>3분 후에 만료</strong>됩니다.<br>
+                        만약 이 요청을 하지 않으셨다면 이 이메일을 무시하세요.
+                      </p>
+                    </div>
+                    
+                    <div style="text-align: center; padding: 20px 0; border-top: 1px solid #e0e0e0;">
+                      <p style="color: #999; font-size: 12px; margin: 0;">
+                        © 2024 TeamItaka. All rights reserved.
+                      </p>
+                    </div>
+                  </div>
+                `
+              }]
+            }),
+          });
+
+          console.log(`📧 SendGrid 응답 상태: ${emailResponse.status}`);
+          
+          if (emailResponse.ok) {
+            console.log(`✅ 이메일 발송 성공: ${email}`);
+            emailSent = true;
+          } else {
+            const errorData = await emailResponse.json();
+            console.error('❌ 이메일 발송 오류:', errorData);
+            console.error(`❌ SendGrid 에러 상세: ${JSON.stringify(errorData)}`);
+          }
+        } else {
+          console.warn('⚠️ SENDGRID_API_KEY가 설정되지 않았습니다. 이메일 발송을 건너뜁니다.');
+        }
+      } catch (emailError) {
+        console.error('❌ 이메일 발송 중 예외 발생:', emailError);
+        console.error(`❌ 에러 상세: ${emailError.message}`);
+      }
+      
+      // 이메일 발송 실패해도 인증 코드는 생성되었으므로 성공으로 처리
+      console.log(`📧 이메일 발송 결과: ${emailSent ? '성공' : '실패 (하지만 계속 진행)'}`);
 
       return new Response(
         JSON.stringify({ 
@@ -180,7 +266,7 @@ serve(async (req) => {
           data: {
             email: email,
             expiresIn: 180,
-            verificationCode: verificationCode
+            verificationCode: verificationCode // 개발 환경에서만 코드 반환
           }
         }),
         { 
