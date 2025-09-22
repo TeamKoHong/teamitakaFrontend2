@@ -27,59 +27,188 @@ const getApiConfig = () => {
 };
 
 // 이메일 인증 코드 전송
-export const sendVerificationCode = async (emailData) => {
+export const sendVerificationCode = async (email, retryCount = 0) => {
     try {
+        // 이메일 형식 검증
+        if (!email || !isValidEmail(email)) {
+            throw new Error('올바른 이메일 형식이 아닙니다.');
+        }
+
         const { API_BASE_URL, headers } = getApiConfig();
         
-        // 이메일 인증을 위한 데이터에 action 필드 추가
-        const requestData = {
-            ...emailData,
-            action: 'send-verification'
-        };
+        console.log(`📧 이메일 인증 요청 시도 ${retryCount + 1}: ${email}`);
         
         const response = await fetch(`${API_BASE_URL}/api/auth/send-verification`, {
             method: 'POST',
             headers,
-            body: JSON.stringify(requestData),
+            body: JSON.stringify({ email }),
         });
         
         if (!response.ok) {
-            const errorData = await response.json().catch(() => ({ message: '응답을 파싱할 수 없습니다.' }));
+            const errorData = await response.json().catch(() => ({ 
+                error: 'UNKNOWN_ERROR',
+                message: '응답을 파싱할 수 없습니다.' 
+            }));
+            
             console.error('Backend error details:', errorData);
+            
+            // 재시도 가능한 에러인지 확인
+            if (shouldRetry(response.status, retryCount)) {
+                console.log(`🔄 재시도 중... (${retryCount + 1}/3)`);
+                await new Promise(resolve => setTimeout(resolve, 1000 * (retryCount + 1))); // 지수 백오프
+                return sendVerificationCode(email, retryCount + 1);
+            }
+            
             throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
         }
 
-        return await response.json();
+        const result = await response.json();
+        console.log(`✅ 이메일 인증 코드 전송 성공: ${email}`);
+        return result;
+        
     } catch (error) {
-        console.error('Full error:', error);
+        console.error('이메일 발송 오류:', error);
+        
+        // 네트워크 에러인 경우 재시도
+        if (isNetworkError(error) && retryCount < 2) {
+            console.log(`🔄 네트워크 에러로 인한 재시도... (${retryCount + 1}/3)`);
+            await new Promise(resolve => setTimeout(resolve, 1000 * (retryCount + 1)));
+            return sendVerificationCode(email, retryCount + 1);
+        }
+        
         throw new Error(error.message || '인증번호 전송에 실패했습니다.');
     }
 };
 
+// 이메일 형식 검증 함수
+const isValidEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+};
+
+// 재시도 여부 판단 함수
+const shouldRetry = (statusCode, retryCount) => {
+    const retryableStatuses = [408, 429, 500, 502, 503, 504];
+    return retryableStatuses.includes(statusCode) && retryCount < 2;
+};
+
+// 네트워크 에러 판단 함수
+const isNetworkError = (error) => {
+    return error.name === 'TypeError' || 
+           error.message.includes('fetch') || 
+           error.message.includes('network') ||
+           error.message.includes('Failed to fetch');
+};
+
+// 로딩 상태 관리 함수들
+export const createLoadingState = () => ({
+    isLoading: false,
+    error: null,
+    retryCount: 0
+});
+
+export const setLoading = (state, isLoading) => ({
+    ...state,
+    isLoading,
+    error: isLoading ? null : state.error
+});
+
+export const setError = (state, error) => ({
+    ...state,
+    isLoading: false,
+    error,
+    retryCount: state.retryCount + 1
+});
+
+export const clearError = (state) => ({
+    ...state,
+    error: null,
+    retryCount: 0
+});
+
+// React Hook 사용 예시 (useState와 useEffect 필요)
+// import React, { useState } from 'react'; // 파일 상단에 추가 필요
+export const useEmailVerification = () => {
+    const [state, setState] = React.useState(createLoadingState());
+    
+    const sendCode = async (email) => {
+        setState(setLoading(state, true));
+        try {
+            const result = await sendVerificationCode(email);
+            setState(clearError(state));
+            return result;
+        } catch (error) {
+            setState(setError(state, error.message));
+            throw error;
+        }
+    };
+    
+    const verifyCode = async (email, code) => {
+        setState(setLoading(state, true));
+        try {
+            const result = await verifyCode(email, code);
+            setState(clearError(state));
+            return result;
+        } catch (error) {
+            setState(setError(state, error.message));
+            throw error;
+        }
+    };
+    
+    const resendCode = async (email) => {
+        setState(setLoading(state, true));
+        try {
+            const result = await resendVerificationCode(email);
+            setState(clearError(state));
+            return result;
+        } catch (error) {
+            setState(setError(state, error.message));
+            throw error;
+        }
+    };
+    
+    return {
+        ...state,
+        sendCode,
+        verifyCode,
+        resendCode,
+        clearError: () => setState(clearError(state))
+    };
+};
+
 // 인증 코드 검증
-export const verifyCode = async (verificationData) => {
+export const verifyCode = async (email, code) => {
     try {
+        if (!email || !code) {
+            throw new Error('이메일과 인증 코드가 필요합니다.');
+        }
+
         const { API_BASE_URL, headers } = getApiConfig();
         
-        // 코드 검증을 위한 데이터에 action 필드 추가
-        const requestData = {
-            ...verificationData,
-            action: 'verify-code'
-        };
+        console.log(`🔐 인증 코드 검증: ${email}`);
         
         const response = await fetch(`${API_BASE_URL}/api/auth/verify-code`, {
             method: 'POST',
             headers,
-            body: JSON.stringify(requestData),
+            body: JSON.stringify({ email, code }),
         });
 
         if (!response.ok) {
-            const errorData = await response.json();
+            const errorData = await response.json().catch(() => ({ 
+                error: 'UNKNOWN_ERROR',
+                message: '응답을 파싱할 수 없습니다.' 
+            }));
+            
+            console.error('인증 코드 검증 오류:', errorData);
             throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
         }
 
-        return await response.json();
+        const result = await response.json();
+        console.log(`✅ 인증 코드 검증 성공: ${email}`);
+        return result;
+        
     } catch (error) {
+        console.error('인증 코드 검증 오류:', error);
         throw new Error(error.message || '인증번호 확인에 실패했습니다.');
     }
 };
@@ -106,23 +235,38 @@ export const checkVerificationStatus = async (email) => {
 };
 
 // 인증 코드 재전송
-export const resendVerificationCode = async (emailData) => {
+export const resendVerificationCode = async (email) => {
     try {
+        if (!email || !isValidEmail(email)) {
+            throw new Error('올바른 이메일 형식이 아닙니다.');
+        }
+
         const { API_BASE_URL, headers } = getApiConfig();
         
-        const response = await fetch(`${API_BASE_URL}/api/auth/resend-verification`, {
+        console.log(`🔄 인증 코드 재전송: ${email}`);
+        
+        const response = await fetch(`${API_BASE_URL}/api/auth/send-verification`, {
             method: 'POST',
             headers,
-            body: JSON.stringify(emailData),
+            body: JSON.stringify({ email }),
         });
 
         if (!response.ok) {
-            const errorData = await response.json();
+            const errorData = await response.json().catch(() => ({ 
+                error: 'UNKNOWN_ERROR',
+                message: '응답을 파싱할 수 없습니다.' 
+            }));
+            
+            console.error('인증 코드 재전송 오류:', errorData);
             throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
         }
 
-        return await response.json();
+        const result = await response.json();
+        console.log(`✅ 인증 코드 재전송 성공: ${email}`);
+        return result;
+        
     } catch (error) {
+        console.error('인증 코드 재전송 오류:', error);
         throw new Error(error.message || '인증번호 재전송에 실패했습니다.');
     }
 };
