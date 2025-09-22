@@ -361,6 +361,13 @@ export const loginUser = async (loginData) => {
 
         const result = await response.json();
         
+        // 성공인데 토큰이 없는 경우 명시적 오류 처리
+        if (result && result.success && !result.token) {
+            const err = new Error('로그인 토큰을 받지 못했습니다. 잠시 후 다시 시도하거나 문의해주세요.');
+            err.code = 'MISSING_TOKEN';
+            throw err;
+        }
+        
         if (result.token) {
             localStorage.setItem('authToken', result.token);
             localStorage.setItem('user', JSON.stringify(result.user));
