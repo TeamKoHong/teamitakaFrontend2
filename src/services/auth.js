@@ -1,5 +1,5 @@
 // API 기본 URL과 인증 헤더를 설정하는 헬퍼 함수
-const getApiConfig = () => {
+export const getApiConfig = () => {
     const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
     
     if (!API_BASE_URL) {
