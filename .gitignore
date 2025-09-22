@@ -127,3 +127,14 @@ config/secrets/
 Thumbs.db
 ehthumbs.db
 Desktop.ini
+
+# 🔐 Supabase 관련 민감한 정보
+supabase/
+supabase_cli*
+supabase.tar.gz
+
+# 🔐 하드코딩된 API 키 및 토큰
+*_api_key*
+*_token*
+*_secret*
+*_password*
