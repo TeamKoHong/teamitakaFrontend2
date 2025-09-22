@@ -557,7 +557,7 @@ function RegisterPage() {
                         </div>
                         <div className="step4-input-field">
                             <input
-                                type="text"
+                                type="password"
                                 placeholder="비밀번호 입력"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
@@ -568,7 +568,7 @@ function RegisterPage() {
                         </div>
                         <div className="step4-input-field">
                             <input
-                                type="text"
+                                type="password"
                                 placeholder="비밀번호 확인"
                                 value={passwordConfirm}
                                 onChange={(e) => setPasswordConfirm(e.target.value)}
@@ -685,7 +685,7 @@ function RegisterPage() {
                         </div>
                         <div className="step4-input-field">
                             <input
-                                type="text"
+                                type="password"
                                 placeholder="비밀번호"
                                 onChange={(e) => setPassword(e.target.value)}
                             />
