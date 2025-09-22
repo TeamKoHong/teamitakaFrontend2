@@ -9,12 +9,30 @@ const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') || '';
 const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
 // CORS 헤더 설정
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
+const getAllowedOrigin = (origin: string | null) => {
+  const allowedOrigins = [
+    'https://www.teamitaka.com',
+    'https://teamitaka.com',
+    'http://localhost:3000',
+    'http://localhost:3001',
+    'https://localhost:3000',
+    'https://localhost:3001'
+  ];
+  
+  if (origin && allowedOrigins.includes(origin)) {
+    return origin;
+  }
+  
+  // 기본값으로 프로덕션 도메인 반환
+  return 'https://www.teamitaka.com';
+};
+
+const corsHeaders = (origin: string | null) => ({
+  'Access-Control-Allow-Origin': getAllowedOrigin(origin),
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
   'Access-Control-Allow-Methods': 'POST, GET, OPTIONS, PUT, DELETE',
   'Access-Control-Allow-Credentials': 'true',
-};
+});
 
 // 이메일 인증 코드 생성
 function generateVerificationCode(): string {
@@ -30,7 +48,8 @@ function isValidEmail(email: string): boolean {
 serve(async (req) => {
   // CORS preflight 처리
   if (req.method === 'OPTIONS') {
-    return new Response('ok', { headers: corsHeaders });
+    const origin = req.headers.get('origin');
+    return new Response('ok', { headers: corsHeaders(origin) });
   }
 
   try {
@@ -43,6 +62,7 @@ serve(async (req) => {
 
     // Health check endpoint
     if (path === '/api/health') {
+      const origin = req.headers.get('origin');
       return new Response(
         JSON.stringify({ 
           status: 'OK', 
@@ -53,7 +73,7 @@ serve(async (req) => {
         }), 
         { 
           headers: { 
-            ...corsHeaders,
+            ...corsHeaders(origin),
             'Content-Type': 'application/json' 
           } 
         }
@@ -64,6 +84,7 @@ serve(async (req) => {
     if (path === '/api/auth/send-verification' && req.method === 'POST') {
       console.log('📧 이메일 인증 엔드포인트에 도달했습니다.');
       
+      const origin = req.headers.get('origin');
       const body = await req.json();
       const { email } = body;
 
@@ -78,7 +99,7 @@ serve(async (req) => {
           { 
             status: 400,
             headers: { 
-              ...corsHeaders,
+              ...corsHeaders(origin),
               'Content-Type': 'application/json' 
             } 
           }
@@ -94,7 +115,7 @@ serve(async (req) => {
           { 
             status: 400,
             headers: { 
-              ...corsHeaders,
+              ...corsHeaders(origin),
               'Content-Type': 'application/json' 
             } 
           }
@@ -118,7 +139,7 @@ serve(async (req) => {
           { 
             status: 500,
             headers: { 
-              ...corsHeaders,
+              ...corsHeaders(origin),
               'Content-Type': 'application/json' 
             } 
           }
@@ -134,7 +155,7 @@ serve(async (req) => {
           { 
             status: 409,
             headers: { 
-              ...corsHeaders,
+              ...corsHeaders(origin),
               'Content-Type': 'application/json' 
             } 
           }
@@ -169,7 +190,7 @@ serve(async (req) => {
           { 
             status: 500,
             headers: { 
-              ...corsHeaders,
+              ...corsHeaders(origin),
               'Content-Type': 'application/json' 
             } 
           }
@@ -280,6 +301,7 @@ serve(async (req) => {
 
     // 인증 코드 검증
     if (path === '/api/auth/verify-code' && req.method === 'POST') {
+      const origin = req.headers.get('origin');
       const body = await req.json();
       const { email, code } = body;
 
@@ -294,7 +316,7 @@ serve(async (req) => {
           { 
             status: 400,
             headers: { 
-              ...corsHeaders,
+              ...corsHeaders(origin),
               'Content-Type': 'application/json' 
             } 
           }
@@ -322,7 +344,7 @@ serve(async (req) => {
           { 
             status: 400,
             headers: { 
-              ...corsHeaders,
+              ...corsHeaders(origin),
               'Content-Type': 'application/json' 
             } 
           }
@@ -357,6 +379,7 @@ serve(async (req) => {
       );
     }
 
+    const origin = req.headers.get('origin');
     return new Response(
       JSON.stringify({ 
         error: 'NOT_FOUND', 
@@ -370,7 +393,7 @@ serve(async (req) => {
       { 
         status: 404,
         headers: { 
-          ...corsHeaders,
+          ...corsHeaders(origin),
           'Content-Type': 'application/json' 
         } 
       }
@@ -378,6 +401,7 @@ serve(async (req) => {
 
   } catch (error) {
     console.error('서버 오류:', error);
+    const origin = req.headers.get('origin');
     return new Response(
       JSON.stringify({ 
         error: 'SERVER_ERROR', 
@@ -386,7 +410,7 @@ serve(async (req) => {
       { 
         status: 500,
         headers: { 
-          ...corsHeaders,
+          ...corsHeaders(origin),
           'Content-Type': 'application/json' 
         } 
       }
