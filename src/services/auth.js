@@ -306,6 +306,33 @@ export const registerUser = async (userData) => {
     }
 };
 
+// 로그인 에러 메시지 매핑 (사용자 친화적 요약)
+const mapLoginErrorMessage = (status, errorData) => {
+    const code = (errorData && (errorData.code || errorData.error)) || '';
+    const message = errorData && errorData.message;
+
+    // 우선순위: 상태코드 → 표준 에러코드 → 서버 메시지 → 기본 메시지
+    if (status === 400 || code === 'VALIDATION_ERROR') {
+        return '입력하신 정보를 다시 확인해주세요.';
+    }
+    if (status === 401 || code === 'INVALID_CREDENTIALS') {
+        return '이메일 또는 비밀번호가 올바르지 않습니다.';
+    }
+    if (status === 403 || code === 'EMAIL_NOT_VERIFIED') {
+        return '이메일 인증이 완료되지 않았습니다. 받은 메일함을 확인해주세요.';
+    }
+    if (status === 404 || code === 'USER_NOT_FOUND') {
+        return '해당 이메일로 가입된 계정을 찾을 수 없습니다.';
+    }
+    if (status === 429 || code === 'RATE_LIMITED') {
+        return '요청이 너무 많습니다. 잠시 후 다시 시도해주세요.';
+    }
+    if (status >= 500 || code === 'SERVER_ERROR') {
+        return '서버 오류로 로그인에 실패했습니다. 잠시 후 다시 시도해주세요.';
+    }
+    return message || '로그인에 실패했습니다.';
+};
+
 // 사용자 로그인
 export const loginUser = async (loginData) => {
     try {
@@ -320,7 +347,8 @@ export const loginUser = async (loginData) => {
         if (!response.ok) {
             const errorData = await response.json().catch(() => ({ message: '응답을 파싱할 수 없습니다.' }));
             console.error('Login error details:', errorData);
-            throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+            const friendly = mapLoginErrorMessage(response.status, errorData);
+            throw new Error(friendly);
         }
 
         const result = await response.json();
@@ -333,6 +361,9 @@ export const loginUser = async (loginData) => {
         return result;
     } catch (error) {
         console.error('Login error:', error);
+        if (isNetworkError(error)) {
+            throw new Error('네트워크 오류가 발생했습니다. 연결을 확인하고 다시 시도해주세요.');
+        }
         throw new Error(error.message || '로그인에 실패했습니다.');
     }
 };
