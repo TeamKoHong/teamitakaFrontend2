@@ -1,18 +1,50 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import './main.scss';
 import BottomNav from '../Common/BottomNav/BottomNav';
 import bellIcon from '../../assets/icons/bell.png';
 import schoolIcon from '../../assets/icons/school.png';
 import qrIcon from '../../assets/icons/qrCode.png';
 import mascotImg from '../../assets/icons/project_empty.png';
+import { useNavigate } from 'react-router-dom';
+import { getMe } from '../../services/user';
 
 const MainPage = () => {
+  const navigate = useNavigate();
+  const [user, setUser] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const load = async () => {
+      try {
+        setIsLoading(true);
+        setError(null);
+        const result = await getMe();
+        // result: { success: true, user: {...} }
+        if (result && result.success && result.user) {
+          setUser(result.user);
+        } else {
+          throw new Error('SERVER_ERROR');
+        }
+      } catch (e) {
+        if (e && e.code === 'UNAUTHORIZED') {
+          // 세션 만료 또는 미로그인 → 로그인 페이지로 유도
+          localStorage.removeItem('authToken');
+          localStorage.removeItem('user');
+          navigate('/login', { replace: true });
+          return;
+        }
+        setError('일시적인 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    load();
+  }, [navigate]);
+
   return (
     <div className="main-page">
-
-      {/* ===== 상단 통합 박스 (헤더 + 프로필) ===== */}
       <div className="top-card">
-        {/* 헤더 */}
         <header className="header">
           <h1 className="logo">Teamitaka</h1>
           <button className="icon-btn" aria-label="알림">
@@ -20,26 +52,28 @@ const MainPage = () => {
           </button>
         </header>
 
-        {/* 유저 프로필 카드 */}
         <section className="profile-card">
-          {/* 오른쪽: 프로필 이미지 */}
           <div className="profile-left">
             <div className="profile-img" aria-hidden>🧍</div>
-            {/* ⭐ QR 버튼을 이미지에 붙이도록 이 위치로 이동 */}
             <button className="qr-btn" aria-label="내 QR">
               <img src={qrIcon} alt="QR" className="qr-icon" />
             </button>
           </div>
 
-          {/* 왼쪽: 사용자 정보 */}
           <div className="profile-middle">
             <div className="name">
-              사용자명 <span className="emph">티미</span>님
+              {isLoading && <span>불러오는 중...</span>}
+              {!isLoading && user && (
+                <>사용자명 <span className="emph">{user.username || user.email}</span>님</>
+              )}
+              {!isLoading && !user && !error && <span>사용자 정보를 불러올 수 없습니다.</span>}
             </div>
 
             <div className="school">
               <img src={schoolIcon} alt="" className="school-icon" />
-              재학중인 대학교 학과 재학 중
+              {user?.university && user?.major
+                ? `${user.university} ${user.major} 재학 중`
+                : '학과 정보가 없습니다'}
             </div>
 
             <div className="stats">
@@ -53,13 +87,16 @@ const MainPage = () => {
               <span className="tag pill">키워드1</span>
               <span className="tag pill">키워드2</span>
             </div>
-          </div>
 
-          {/* ⭐ 기존 profile-right 블록 제거 (QR를 위로 이동했기 때문) */}
+            {error && (
+              <div style={{ marginTop: '8px', color: '#F76241', fontSize: '12px' }}>
+                {error} <button onClick={() => window.location.reload()}>다시 시도</button>
+              </div>
+            )}
+          </div>
         </section>
       </div>
 
-      {/* ===== 내가 참여 중인 프로젝트 ===== */}
       <h2 className="section-title">내가 참여 중인 프로젝트</h2>
       <section className="my-projects">
         <div className="empty-card">
