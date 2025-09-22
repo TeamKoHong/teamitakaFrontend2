@@ -128,6 +128,7 @@ export const clearError = (state) => ({
 
 // React Hook 사용 예시 (useState와 useEffect 필요)
 // import React, { useState } from 'react'; // 파일 상단에 추가 필요
+/*
 export const useEmailVerification = () => {
     const [state, setState] = React.useState(createLoadingState());
     
@@ -175,6 +176,7 @@ export const useEmailVerification = () => {
         clearError: () => setState(clearError(state))
     };
 };
+*/
 
 // 인증 코드 검증
 export const verifyCode = async (email, code) => {
