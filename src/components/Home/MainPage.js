@@ -7,28 +7,27 @@ import qrIcon from '../../assets/icons/qrCode.png';
 import mascotImg from '../../assets/icons/project_empty.png';
 import { useNavigate } from 'react-router-dom';
 import { getMe } from '../../services/user';
+import { getSummary } from '../../services/dashboard';
 
 const MainPage = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
+  const [summary, setSummary] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    let mounted = true;
     const load = async () => {
       try {
         setIsLoading(true);
         setError(null);
-        const result = await getMe();
-        // result: { success: true, user: {...} }
-        if (result && result.success && result.user) {
-          setUser(result.user);
-        } else {
-          throw new Error('SERVER_ERROR');
-        }
+        const [meRes, sumRes] = await Promise.all([getMe().catch(e => { throw e; }), getSummary().catch(e => { throw e; })]);
+        if (!mounted) return;
+        if (meRes && meRes.success && meRes.user) setUser(meRes.user);
+        if (sumRes && sumRes.success) setSummary(sumRes.data || sumRes.summary || null);
       } catch (e) {
         if (e && e.code === 'UNAUTHORIZED') {
-          // 세션 만료 또는 미로그인 → 로그인 페이지로 유도
           localStorage.removeItem('authToken');
           localStorage.removeItem('user');
           navigate('/login', { replace: true });
@@ -36,11 +35,15 @@ const MainPage = () => {
         }
         setError('일시적인 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
       } finally {
-        setIsLoading(false);
+        if (mounted) setIsLoading(false);
       }
     };
     load();
+    return () => { mounted = false; };
   }, [navigate]);
+
+  const ongoingCount = summary?.projects?.ongoing ?? 'N';
+  const unreadCount = summary?.notifications?.unread ?? '0';
 
   return (
     <div className="main-page">
@@ -49,6 +52,9 @@ const MainPage = () => {
           <h1 className="logo">Teamitaka</h1>
           <button className="icon-btn" aria-label="알림">
             <img src={bellIcon} alt="알림" className="alarm-icon" />
+            {unreadCount !== '0' && (
+              <span className="badge" aria-label={`안 읽은 알림 ${unreadCount}건`}>{unreadCount}</span>
+            )}
           </button>
         </header>
 
@@ -77,7 +83,7 @@ const MainPage = () => {
             </div>
 
             <div className="stats">
-              현재 진행중인 프로젝트 <span className="count">총 N건</span>
+              현재 진행중인 프로젝트 <span className="count">총 {ongoingCount}건</span>
               <span className="divider"></span>
               <br />
               팀플 경험 <span className="muted">00회</span>

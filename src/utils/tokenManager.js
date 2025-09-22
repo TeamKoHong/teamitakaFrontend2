@@ -143,10 +143,16 @@ export const isAuthenticated = () => {
     return isTokenValid();
 };
 
-// 토큰 자동 갱신을 위한 임계값 체크 (30분 미만 남은 경우)
+// 토큰 자동 갱신을 위한 임계값 체크 (환경변수로 제어)
 export const shouldRefreshToken = () => {
+    // 기본: 자동 갱신 기능 비활성화 (백엔드 /api/auth/refresh 미구현 상태)
+    const enabled = String(process.env.REACT_APP_ENABLE_REFRESH || 'false') === 'true';
+    if (!enabled) return false;
+
     const remainingTime = getTokenRemainingTime();
-    return remainingTime > 0 && remainingTime < 30 * 60; // 30분
+    // 기본 임계값 60초(환경변수로 조정 가능)
+    const thresholdSec = Number(process.env.REACT_APP_REFRESH_THRESHOLD_SEC || 60);
+    return remainingTime > 0 && remainingTime < thresholdSec;
 };
 
 // 로그아웃
