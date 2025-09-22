@@ -2,21 +2,27 @@ export const sendVerificationCode = async (emailData) => {
     try {
         const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
         
+        // API_BASE_URL은 환경 변수에서 가져옴
+        
         if (!API_BASE_URL) {
             throw new Error('REACT_APP_API_BASE_URL 환경 변수가 설정되지 않았습니다.');
         }
         
-        console.log('Sending data to backend:', emailData); // 디버깅용 로그
+        // 이메일 인증을 위한 데이터에 action 필드 추가
+        const requestData = {
+            ...emailData,
+            action: 'send-verification'
+        };
         
         const response = await fetch(`${API_BASE_URL}/api/auth/send-verification`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(emailData),
+            body: JSON.stringify(requestData),
         });
 
-        console.log('Response status:', response.status); // 디버깅용 로그
+        // 응답 상태 확인
 
         if (!response.ok) {
             const errorData = await response.json().catch(() => ({ message: '응답을 파싱할 수 없습니다.' }));
@@ -39,12 +45,18 @@ export const verifyCode = async (verificationData) => {
             throw new Error('REACT_APP_API_BASE_URL 환경 변수가 설정되지 않았습니다.');
         }
         
+        // 코드 검증을 위한 데이터에 action 필드 추가
+        const requestData = {
+            ...verificationData,
+            action: 'verify-code'
+        };
+        
         const response = await fetch(`${API_BASE_URL}/api/auth/verify-code`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(verificationData),
+            body: JSON.stringify(requestData),
         });
 
         if (!response.ok) {
@@ -119,7 +131,7 @@ export const registerUser = async (userData) => {
             throw new Error('REACT_APP_API_BASE_URL 환경 변수가 설정되지 않았습니다.');
         }
         
-        console.log('Sending registration data:', userData);
+        // 회원가입 데이터 전송
         
         const response = await fetch(`${API_BASE_URL}/api/auth/register`, {
             method: 'POST',
@@ -129,7 +141,7 @@ export const registerUser = async (userData) => {
             body: JSON.stringify(userData),
         });
 
-        console.log('Registration response status:', response.status);
+        // 회원가입 응답 상태 확인
 
         if (!response.ok) {
             const errorData = await response.json().catch(() => ({ message: '응답을 파싱할 수 없습니다.' }));
@@ -161,7 +173,7 @@ export const loginUser = async (loginData) => {
             throw new Error('REACT_APP_API_BASE_URL 환경 변수가 설정되지 않았습니다.');
         }
         
-        console.log('Sending login data:', { email: loginData.email });
+        // 로그인 데이터 전송
         
         const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
             method: 'POST',
@@ -171,7 +183,7 @@ export const loginUser = async (loginData) => {
             body: JSON.stringify(loginData),
         });
 
-        console.log('Login response status:', response.status);
+        // 로그인 응답 상태 확인
 
         if (!response.ok) {
             const errorData = await response.json().catch(() => ({ message: '응답을 파싱할 수 없습니다.' }));

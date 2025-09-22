@@ -1,280 +1,183 @@
-﻿# 📱 TeamItaka Frontend
+# Supabase CLI
 
-팀 이타카(TeamItaka) 프로젝트 매칭 및 팀원 평가 플랫폼의 프론트엔드 애플리케이션입니다.
+[![Coverage Status](https://coveralls.io/repos/github/supabase/cli/badge.svg?branch=main)](https://coveralls.io/github/supabase/cli?branch=main) [![Bitbucket Pipelines](https://img.shields.io/bitbucket/pipelines/supabase-cli/setup-cli/master?style=flat-square&label=Bitbucket%20Canary)](https://bitbucket.org/supabase-cli/setup-cli/pipelines) [![Gitlab Pipeline Status](https://img.shields.io/gitlab/pipeline-status/sweatybridge%2Fsetup-cli?label=Gitlab%20Canary)
+](https://gitlab.com/sweatybridge/setup-cli/-/pipelines)
 
-## 🚀 프로젝트 개요
+[Supabase](https://supabase.io) is an open source Firebase alternative. We're building the features of Firebase using enterprise-grade open source tools.
 
-TeamItaka는 대학생들을 위한 팀 프로젝트 매칭 및 관리 플랫폼으로, 팀 구성부터 프로젝트 완료 후 평가까지의 전체 과정을 지원합니다.
+This repository contains all the functionality for Supabase CLI.
 
-### 주요 기능
+- [x] Running Supabase locally
+- [x] Managing database migrations
+- [x] Creating and deploying Supabase Functions
+- [x] Generating types directly from your database schema
+- [x] Making authenticated HTTP requests to [Management API](https://supabase.com/docs/reference/api/introduction)
 
-- 🔐 **사용자 인증**: 이메일 인증 기반 회원가입/로그인
-- 👥 **팀 매칭**: 프로젝트별 팀원 모집 및 매칭
-- 📊 **프로젝트 관리**: 프로젝트 진행 상황 추적 및 관리
-- ⭐ **평가 시스템**: 프로젝트 및 팀원 상호평가
-- 📅 **일정 관리**: 프로젝트 일정 및 회의록 관리
-- 🔍 **검색 & 필터링**: 프로젝트 및 팀원 검색
+## Getting started
 
-## 🛠 기술 스택
+### Install the CLI
 
-### 프론트엔드
-- **React** `18.2.0` - UI 라이브러리
-- **React Router Dom** `7.6.1` - 클라이언트 사이드 라우팅
-- **Redux Toolkit** `2.8.2` - 상태 관리
-- **Sass** `1.90.0` - CSS 전처리기
+Available via [NPM](https://www.npmjs.com) as dev dependency. To install:
 
-### UI/UX 라이브러리
-- **React Icons** `5.5.0` - 아이콘 컴포넌트
-- **React Spring Bottom Sheet** `3.4.1` - 모바일 바텀 시트
-- **Swiper** `11.2.6` - 터치 슬라이더
-
-### 개발 도구
-- **React Scripts** `5.0.1` - Create React App 기반 빌드 도구
-- **Day.js** `1.11.13` - 날짜/시간 처리
-
-## 📁 프로젝트 구조
-
-```
-src/
-├── components/          # 재사용 가능한 컴포넌트
-│   ├── Common/         # 공통 컴포넌트
-│   │   ├── BottomNav/  # 하단 네비게이션
-│   │   ├── Button/     # 버튼 컴포넌트
-│   │   └── UI/         # 기본 UI 컴포넌트
-│   ├── Home/           # 메인 페이지 컴포넌트
-│   ├── ProjectManagement/    # 프로젝트 관리 컴포넌트
-│   ├── RatingManagement/     # 평가 관리 컴포넌트
-│   ├── RatingProjectPage/    # 프로젝트 평가 컴포넌트
-│   └── TeamMemberEvaluationPage/  # 팀원 평가 컴포넌트
-├── pages/              # 페이지 컴포넌트
-│   ├── LoginPage/      # 로그인 페이지
-│   ├── RegisterPage/   # 회원가입 페이지
-│   ├── ProjectManagement/    # 프로젝트 관리 페이지
-│   ├── RatingManagementPage/ # 평가 관리 페이지
-│   └── TeamMatchingPage/     # 팀 매칭 페이지
-├── contexts/           # React Context
-│   └── AuthContext.js  # 인증 컨텍스트
-├── services/           # API 서비스
-│   ├── auth.js         # 인증 관련 API
-│   └── rating.js       # 평가 관련 API
-├── utils/              # 유틸리티 함수
-│   ├── tokenManager.js # 토큰 관리
-│   ├── navigation.js   # 네비게이션 헬퍼
-│   └── calculateProgress.js  # 진행률 계산
-├── constants/          # 상수 정의
-│   └── routes.js       # 라우트 상수
-├── assets/            # 정적 자산
-│   └── icons/         # 아이콘 이미지
-└── styles/            # 글로벌 스타일
-    ├── _variables.scss # SCSS 변수
-    └── global.css      # 전역 CSS
-```
-
-## 🎯 주요 기능 상세
-
-### 1. 인증 시스템
-- 이메일 인증 기반 회원가입
-- JWT 토큰 기반 로그인
-- 자동 토큰 갱신
-- 보호된 라우트 시스템
-
-### 2. 프로젝트 관리
-- 프로젝트 생성 및 모집
-- 프로젝트 상태 관리 (모집중, 진행중, 완료)
-- 프로젝트 상세 정보 및 일정 관리
-- 팀원 관리 및 권한 시스템
-
-### 3. 평가 시스템
-- **프로젝트 평가**: 프로젝트 전반적 만족도 평가
-- **팀원 상호평가**: 다차원 팀원 평가 (의사소통, 기술력, 협업 능력 등)
-- **평가 결과 조회**: 받은 평가 및 보낸 평가 확인
-- **평가 통계**: 카테고리별 평균 점수 시각화
-
-### 4. 사용자 경험
-- 모바일 최적화 반응형 디자인
-- 직관적인 네비게이션
-- 실시간 피드백 및 로딩 상태
-- 접근성(Accessibility) 고려한 UI
-
-## 🚦 라우팅 구조
-
-### 메인 라우트
-- `/` - 온보딩 페이지
-- `/main` - 메인 대시보드
-- `/login` - 로그인
-- `/register` - 회원가입
-
-### 프로젝트 관리
-- `/project-management` - 프로젝트 관리
-- `/project/:id` - 프로젝트 상세
-- `/project/:id/member` - 팀원 관리
-- `/project/:id/calender` - 프로젝트 일정
-
-### 평가 시스템
-- `/evaluation/management` - 평가 관리
-- `/evaluation/project/:projectId` - 프로젝트 평가
-- `/evaluation/team-member/:projectId/:memberId` - 팀원 평가
-- `/evaluation/status/:projectId/received` - 받은 평가
-- `/evaluation/status/:projectId/given` - 보낸 평가
-
-### 기타
-- `/team-matching` - 팀 매칭
-- `/recruitment` - 프로젝트 모집
-- `/search` - 검색
-
-## 🔧 개발 환경 설정
-
-### 필수 조건
-- Node.js 16.0 이상
-- npm 또는 yarn
-
-### 설치 및 실행
-
-1. **저장소 클론**
 ```bash
-git clone <repository-url>
-cd teamitakaFrontend2
+npm i supabase --save-dev
 ```
 
-2. **의존성 설치**
+To install the beta release channel:
+
 ```bash
-npm install
+npm i supabase@beta --save-dev
 ```
 
-3. **환경 변수 설정**
+When installing with yarn 4, you need to disable experimental fetch with the following nodejs config.
+
+```
+NODE_OPTIONS=--no-experimental-fetch yarn add supabase
+```
+
+> **Note**
+For Bun versions below v1.0.17, you must add `supabase` as a [trusted dependency](https://bun.sh/guides/install/trusted) before running `bun add -D supabase`.
+
+<details>
+  <summary><b>macOS</b></summary>
+
+  Available via [Homebrew](https://brew.sh). To install:
+
+  ```sh
+  brew install supabase/tap/supabase
+  ```
+
+  To install the beta release channel:
+  
+  ```sh
+  brew install supabase/tap/supabase-beta
+  brew link --overwrite supabase-beta
+  ```
+  
+  To upgrade:
+
+  ```sh
+  brew upgrade supabase
+  ```
+</details>
+
+<details>
+  <summary><b>Windows</b></summary>
+
+  Available via [Scoop](https://scoop.sh). To install:
+
+  ```powershell
+  scoop bucket add supabase https://github.com/supabase/scoop-bucket.git
+  scoop install supabase
+  ```
+
+  To upgrade:
+
+  ```powershell
+  scoop update supabase
+  ```
+</details>
+
+<details>
+  <summary><b>Linux</b></summary>
+
+  Available via [Homebrew](https://brew.sh) and Linux packages.
+
+  #### via Homebrew
+
+  To install:
+
+  ```sh
+  brew install supabase/tap/supabase
+  ```
+
+  To upgrade:
+
+  ```sh
+  brew upgrade supabase
+  ```
+
+  #### via Linux packages
+
+  Linux packages are provided in [Releases](https://github.com/supabase/cli/releases). To install, download the `.apk`/`.deb`/`.rpm`/`.pkg.tar.zst` file depending on your package manager and run the respective commands.
+
+  ```sh
+  sudo apk add --allow-untrusted <...>.apk
+  ```
+
+  ```sh
+  sudo dpkg -i <...>.deb
+  ```
+
+  ```sh
+  sudo rpm -i <...>.rpm
+  ```
+
+  ```sh
+  sudo pacman -U <...>.pkg.tar.zst
+  ```
+</details>
+
+<details>
+  <summary><b>Other Platforms</b></summary>
+
+  You can also install the CLI via [go modules](https://go.dev/ref/mod#go-install) without the help of package managers.
+
+  ```sh
+  go install github.com/supabase/cli@latest
+  ```
+
+  Add a symlink to the binary in `$PATH` for easier access:
+
+  ```sh
+  ln -s "$(go env GOPATH)/bin/cli" /usr/bin/supabase
+  ```
+
+  This works on other non-standard Linux distros.
+</details>
+
+<details>
+  <summary><b>Community Maintained Packages</b></summary>
+
+  Available via [pkgx](https://pkgx.sh/). Package script [here](https://github.com/pkgxdev/pantry/blob/main/projects/supabase.com/cli/package.yml).
+  To install in your working directory:
+
+  ```bash
+  pkgx install supabase
+  ```
+
+  Available via [Nixpkgs](https://nixos.org/). Package script [here](https://github.com/NixOS/nixpkgs/blob/master/pkgs/development/tools/supabase-cli/default.nix).
+</details>
+
+### Run the CLI
+
 ```bash
-# .env.local 파일 생성
-REACT_APP_API_BASE_URL=https://your-api-server.com
+supabase bootstrap
 ```
 
-4. **개발 서버 실행**
+Or using npx:
+
 ```bash
-npm start
+npx supabase bootstrap
 ```
 
-5. **빌드**
-```bash
-npm run build
+The bootstrap command will guide you through the process of setting up a Supabase project using one of the [starter](https://github.com/supabase-community/supabase-samples/blob/main/samples.json) templates.
+
+## Docs
+
+Command & config reference can be found [here](https://supabase.com/docs/reference/cli/about).
+
+## Breaking changes
+
+We follow semantic versioning for changes that directly impact CLI commands, flags, and configurations.
+
+However, due to dependencies on other service images, we cannot guarantee that schema migrations, seed.sql, and generated types will always work for the same CLI major version. If you need such guarantees, we encourage you to pin a specific version of CLI in package.json.
+
+## Developing
+
+To run from source:
+
+```sh
+# Go >= 1.22
+go run . help
 ```
-
-### 사용 가능한 스크립트
-
-- `npm start` - 개발 서버 실행 (http://localhost:3000)
-- `npm run build` - 프로덕션 빌드
-- `npm test` - 테스트 실행
-- `npm run eject` - CRA 설정 추출 (비가역적)
-
-## 🌐 API 연동
-
-### 백엔드 서버
-- **프로덕션**: `https://teamitaka-backend-zwe2nuc5ga-uc.a.run.app`
-- **개발**: 로컬 환경 변수에서 설정
-
-### 주요 API 엔드포인트
-- `POST /api/auth/register` - 회원가입
-- `POST /api/auth/login` - 로그인
-- `POST /api/auth/send-verification` - 이메일 인증 발송
-- `POST /api/auth/verify-code` - 인증 코드 확인
-- `POST /api/auth/refresh` - 토큰 갱신
-
-## 🧪 테스트
-
-### 테스트 설정
-- **Testing Library**: React 컴포넌트 테스트
-- **Jest**: JavaScript 테스트 프레임워크
-
-### 테스트 실행
-```bash
-npm test
-```
-
-## 🎨 디자인 시스템
-
-### 색상 팔레트
-- **Primary**: `#F76241` - 메인 브랜드 색상
-- **Secondary**: 보조 색상들
-- **UI Colors**: 그레이스케일 및 시스템 색상
-
-### 컴포넌트 규칙
-- 모든 컴포넌트는 모듈화된 CSS/SCSS 사용
-- 일관된 간격 및 타이포그래피
-- 접근성 가이드라인 준수
-
-## 📱 모바일 최적화
-
-- 반응형 웹 디자인
-- 터치 친화적 인터페이스
-- PWA 지원을 위한 manifest.json
-- 모바일 네비게이션 패턴
-
-## 🔒 보안
-
-- JWT 토큰 기반 인증
-- XSS 방지를 위한 입력 검증
-- HTTPS 통신
-- 민감한 정보 환경 변수 관리
-
-## 📊 상태 관리
-
-### Redux Toolkit 구조
-- 인증 상태 관리
-- 프로젝트 데이터 관리
-- UI 상태 관리
-
-### Context API
-- 인증 컨텍스트 (`AuthContext`)
-- 글로벌 설정 관리
-
-## 🚀 배포
-
-### 빌드 최적화
-- 코드 분할 (Code Splitting)
-- 번들 크기 최적화
-- 정적 자산 압축
-
-### 환경별 설정
-- 개발 환경: `.env.local`
-- 프로덕션 환경: `.env.production`
-
-## 🐛 문제 해결
-
-### 일반적인 이슈
-1. **토큰 만료**: 자동 갱신 로직 구현됨
-2. **CORS 에러**: 백엔드 서버 설정 확인
-3. **빌드 에러**: 의존성 버전 호환성 확인
-
-### 디버깅 도구
-- React DevTools
-- Redux DevTools
-- 브라우저 개발자 도구
-
-## 📝 컨벤션
-
-### 코드 스타일
-- ESLint 설정 준수
-- Prettier 코드 포맷팅
-- 일관된 네이밍 컨벤션
-
-### 파일 구조
-- 컴포넌트별 폴더 구조
-- 기능별 모듈화
-- 재사용성 고려한 설계
-
-## 🤝 기여 가이드
-
-1. 기능별 브랜치 생성
-2. 커밋 메시지 컨벤션 준수
-3. PR 템플릿 작성
-4. 코드 리뷰 수행
-
-## 📜 라이선스
-
-이 프로젝트는 [라이선스 유형]에 따라 라이선스가 부여됩니다.
-
-## 📞 연락처
-
-프로젝트 관련 문의사항이 있으시면 언제든 연락해 주세요.
-
----
-
-*본 문서는 프로젝트의 지속적인 발전과 함께 업데이트됩니다.*
