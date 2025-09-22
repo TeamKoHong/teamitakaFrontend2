@@ -1,10 +1,10 @@
 import { getApiConfig } from './auth';
 
-export const getMyProjects = async ({ status = 'ACTIVE', limit = 10, offset = 0 } = {}) => {
+export const getMyProjects = async ({ status = 'ongoing', limit = 10, offset = 0 } = {}) => {
     const { API_BASE_URL, headers } = getApiConfig();
     const token = localStorage.getItem('authToken');
     const qs = new URLSearchParams({ status, limit: String(limit), offset: String(offset) }).toString();
-    const res = await fetch(`${API_BASE_URL}/api/projects?${qs}`, {
+    const res = await fetch(`${API_BASE_URL}/api/projects/mine?${qs}`, {
         headers: { ...headers, Authorization: `Bearer ${token}` },
     });
     if (res.status === 401 || res.status === 403) {
