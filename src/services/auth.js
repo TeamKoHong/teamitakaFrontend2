@@ -321,8 +321,14 @@ const mapLoginErrorMessage = (status, errorData) => {
     if (status === 403 || code === 'EMAIL_NOT_VERIFIED') {
         return '이메일 인증이 완료되지 않았습니다. 받은 메일함을 확인해주세요.';
     }
-    if (status === 404 || code === 'USER_NOT_FOUND') {
-        return '해당 이메일로 가입된 계정을 찾을 수 없습니다.';
+    if (status === 404) {
+        if (code === 'USER_NOT_FOUND') {
+            return '해당 이메일로 가입된 계정을 찾을 수 없습니다.';
+        }
+        if (code === 'NOT_FOUND') {
+            return '로그인 서비스를 일시적으로 사용할 수 없습니다. 잠시 후 다시 시도해주세요.';
+        }
+        return '요청을 처리할 수 없습니다. 잠시 후 다시 시도해주세요.';
     }
     if (status === 429 || code === 'RATE_LIMITED') {
         return '요청이 너무 많습니다. 잠시 후 다시 시도해주세요.';
@@ -348,7 +354,9 @@ export const loginUser = async (loginData) => {
             const errorData = await response.json().catch(() => ({ message: '응답을 파싱할 수 없습니다.' }));
             console.error('Login error details:', errorData);
             const friendly = mapLoginErrorMessage(response.status, errorData);
-            throw new Error(friendly);
+            const err = new Error(friendly);
+            err.code = (errorData && (errorData.code || errorData.error)) || `HTTP_${response.status}`;
+            throw err;
         }
 
         const result = await response.json();
@@ -362,7 +370,9 @@ export const loginUser = async (loginData) => {
     } catch (error) {
         console.error('Login error:', error);
         if (isNetworkError(error)) {
-            throw new Error('네트워크 오류가 발생했습니다. 연결을 확인하고 다시 시도해주세요.');
+            const err = new Error('네트워크 오류가 발생했습니다. 연결을 확인하고 다시 시도해주세요.');
+            err.code = 'NETWORK_ERROR';
+            throw err;
         }
         throw new Error(error.message || '로그인에 실패했습니다.');
     }

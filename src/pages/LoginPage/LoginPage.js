@@ -44,6 +44,11 @@ function LoginPage() {
     const handleLogin = async (e) => {
         e.preventDefault();
         
+        // 중복 제출 방지
+        if (isLoginLoading || isLoading) {
+            return;
+        }
+        
         // 입력 검증
         if (!email.trim() || !password.trim()) {
             setLoginError('이메일과 비밀번호를 모두 입력해주세요.');
@@ -125,13 +130,14 @@ function LoginPage() {
                         </h1>
                     </div>
 
-                    <form onSubmit={handleLogin}>
+                    <form onSubmit={handleLogin} autoComplete="on">
                         <div className="input-field" style={{ marginBottom: '16px' }}>
                             <input
                                 type="email"
                                 placeholder="학교 이메일"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
+                                autoComplete="email"
                                 style={{
                                     width: '100%',
                                     padding: '16px',
@@ -149,6 +155,7 @@ function LoginPage() {
                                 placeholder="비밀번호"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
+                                autoComplete="current-password"
                                 style={{
                                     width: '100%',
                                     padding: '16px',
