@@ -90,9 +90,7 @@ function RegisterPage() {
             setIsVerificationLoading(true);
             setVerificationError('');
             
-            const result = await sendVerificationCode({
-                email: email
-            });
+            const result = await sendVerificationCode(email);
             
             if (result.success) {
                 setVerificationSuccess(true);
@@ -129,10 +127,7 @@ function RegisterPage() {
             setIsVerificationLoading(true);
             setVerificationError('');
 
-            const result = await verifyCode({
-                email: email,
-                code: verificationCode
-            });
+            const result = await verifyCode(email, verificationCode);
 
             if (result.success) {
                 setVerificationSuccess(true);
