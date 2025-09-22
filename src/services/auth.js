@@ -2,8 +2,6 @@ export const sendVerificationCode = async (emailData) => {
     try {
         const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
         
-        // API_BASE_URL은 환경 변수에서 가져옴
-        
         if (!API_BASE_URL) {
             throw new Error('REACT_APP_API_BASE_URL 환경 변수가 설정되지 않았습니다.');
         }
@@ -14,25 +12,37 @@ export const sendVerificationCode = async (emailData) => {
             action: 'send-verification'
         };
         
+        // Supabase Edge Function인지 확인
+        const isSupabaseFunction = API_BASE_URL.includes('supabase.co/functions');
+        
+        const headers = {
+            'Content-Type': 'application/json',
+        };
+        
+        // Supabase Edge Function인 경우 apikey 헤더 추가
+        if (isSupabaseFunction) {
+            const supabaseAnonKey = process.env.REACT_APP_SUPABASE_ANON_KEY;
+            if (!supabaseAnonKey) {
+                throw new Error('REACT_APP_SUPABASE_ANON_KEY 환경 변수가 설정되지 않았습니다.');
+            }
+            headers['apikey'] = supabaseAnonKey;
+        }
+        
         const response = await fetch(`${API_BASE_URL}/api/auth/send-verification`, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
+            headers,
             body: JSON.stringify(requestData),
         });
 
-        // 응답 상태 확인
-
         if (!response.ok) {
             const errorData = await response.json().catch(() => ({ message: '응답을 파싱할 수 없습니다.' }));
-            console.error('Backend error details:', errorData); // 디버깅용 로그
+            console.error('Backend error details:', errorData);
             throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
         }
 
         return await response.json();
     } catch (error) {
-        console.error('Full error:', error); // 디버깅용 로그
+        console.error('Full error:', error);
         throw new Error(error.message || '인증번호 전송에 실패했습니다.');
     }
 };
@@ -51,11 +61,25 @@ export const verifyCode = async (verificationData) => {
             action: 'verify-code'
         };
         
+        // Supabase Edge Function인지 확인
+        const isSupabaseFunction = API_BASE_URL.includes('supabase.co/functions');
+        
+        const headers = {
+            'Content-Type': 'application/json',
+        };
+        
+        // Supabase Edge Function인 경우 apikey 헤더 추가
+        if (isSupabaseFunction) {
+            const supabaseAnonKey = process.env.REACT_APP_SUPABASE_ANON_KEY;
+            if (!supabaseAnonKey) {
+                throw new Error('REACT_APP_SUPABASE_ANON_KEY 환경 변수가 설정되지 않았습니다.');
+            }
+            headers['apikey'] = supabaseAnonKey;
+        }
+        
         const response = await fetch(`${API_BASE_URL}/api/auth/verify-code`, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
+            headers,
             body: JSON.stringify(requestData),
         });
 
@@ -131,8 +155,6 @@ export const registerUser = async (userData) => {
             throw new Error('REACT_APP_API_BASE_URL 환경 변수가 설정되지 않았습니다.');
         }
         
-        // 회원가입 데이터 전송
-        
         const response = await fetch(`${API_BASE_URL}/api/auth/register`, {
             method: 'POST',
             headers: {
@@ -140,8 +162,6 @@ export const registerUser = async (userData) => {
             },
             body: JSON.stringify(userData),
         });
-
-        // 회원가입 응답 상태 확인
 
         if (!response.ok) {
             const errorData = await response.json().catch(() => ({ message: '응답을 파싱할 수 없습니다.' }));
@@ -173,8 +193,6 @@ export const loginUser = async (loginData) => {
             throw new Error('REACT_APP_API_BASE_URL 환경 변수가 설정되지 않았습니다.');
         }
         
-        // 로그인 데이터 전송
-        
         const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
             method: 'POST',
             headers: {
@@ -182,8 +200,6 @@ export const loginUser = async (loginData) => {
             },
             body: JSON.stringify(loginData),
         });
-
-        // 로그인 응답 상태 확인
 
         if (!response.ok) {
             const errorData = await response.json().catch(() => ({ message: '응답을 파싱할 수 없습니다.' }));
