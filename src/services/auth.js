@@ -44,16 +44,15 @@ export const sendVerificationCode = async (emailData) => {
         });
         
         if (!response.ok) {
-            const errorData = await response.json().catch(() => ({}));
+            const errorData = await response.json().catch(() => ({ message: '응답을 파싱할 수 없습니다.' }));
             console.error('Backend error details:', errorData);
-            throw new Error(`HTTP error! status: ${response.status}`);
+            throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
         }
-        
-        const result = await response.json();
-        return result;
+
+        return await response.json();
     } catch (error) {
         console.error('Full error:', error);
-        throw error;
+        throw new Error(error.message || '인증번호 전송에 실패했습니다.');
     }
 };
 
@@ -73,18 +72,15 @@ export const verifyCode = async (verificationData) => {
             headers,
             body: JSON.stringify(requestData),
         });
-        
+
         if (!response.ok) {
-            const errorData = await response.json().catch(() => ({}));
-            console.error('Backend error details:', errorData);
-            throw new Error(`HTTP error! status: ${response.status}`);
+            const errorData = await response.json();
+            throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
         }
-        
-        const result = await response.json();
-        return result;
+
+        return await response.json();
     } catch (error) {
-        console.error('Full error:', error);
-        throw error;
+        throw new Error(error.message || '인증번호 확인에 실패했습니다.');
     }
 };
 
@@ -97,18 +93,15 @@ export const checkVerificationStatus = async (email) => {
             method: 'GET',
             headers,
         });
-        
+
         if (!response.ok) {
-            const errorData = await response.json().catch(() => ({}));
-            console.error('Backend error details:', errorData);
-            throw new Error(`HTTP error! status: ${response.status}`);
+            const errorData = await response.json();
+            throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
         }
-        
-        const result = await response.json();
-        return result;
+
+        return await response.json();
     } catch (error) {
-        console.error('Full error:', error);
-        throw error;
+        throw new Error(error.message || '인증 상태 확인에 실패했습니다.');
     }
 };
 
@@ -122,18 +115,15 @@ export const resendVerificationCode = async (emailData) => {
             headers,
             body: JSON.stringify(emailData),
         });
-        
+
         if (!response.ok) {
-            const errorData = await response.json().catch(() => ({}));
-            console.error('Backend error details:', errorData);
-            throw new Error(`HTTP error! status: ${response.status}`);
+            const errorData = await response.json();
+            throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
         }
-        
-        const result = await response.json();
-        return result;
+
+        return await response.json();
     } catch (error) {
-        console.error('Full error:', error);
-        throw error;
+        throw new Error(error.message || '인증번호 재전송에 실패했습니다.');
     }
 };
 
@@ -147,18 +137,26 @@ export const registerUser = async (userData) => {
             headers,
             body: JSON.stringify(userData),
         });
-        
+
         if (!response.ok) {
-            const errorData = await response.json().catch(() => ({}));
-            console.error('Backend error details:', errorData);
-            throw new Error(`HTTP error! status: ${response.status}`);
+            const errorData = await response.json().catch(() => ({ message: '응답을 파싱할 수 없습니다.' }));
+            console.error('Registration error details:', errorData);
+            console.error('Response status:', response.status);
+            console.error('Response headers:', Object.fromEntries(response.headers.entries()));
+            throw new Error(errorData.message || errorData.error || `HTTP error! status: ${response.status}`);
         }
-        
+
         const result = await response.json();
+        
+        if (result.token) {
+            localStorage.setItem('authToken', result.token);
+            localStorage.setItem('user', JSON.stringify(result.user));
+        }
+
         return result;
     } catch (error) {
-        console.error('Full error:', error);
-        throw error;
+        console.error('Registration error:', error);
+        throw new Error(error.message || '회원가입에 실패했습니다.');
     }
 };
 
@@ -172,19 +170,70 @@ export const loginUser = async (loginData) => {
             headers,
             body: JSON.stringify(loginData),
         });
-        
+
         if (!response.ok) {
-            const errorData = await response.json().catch(() => ({}));
-            console.error('Backend error details:', errorData);
-            throw new Error(`HTTP error! status: ${response.status}`);
+            const errorData = await response.json().catch(() => ({ message: '응답을 파싱할 수 없습니다.' }));
+            console.error('Login error details:', errorData);
+            throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
         }
-        
+
         const result = await response.json();
+        
+        if (result.token) {
+            localStorage.setItem('authToken', result.token);
+            localStorage.setItem('user', JSON.stringify(result.user));
+        }
+
         return result;
     } catch (error) {
-        console.error('Full error:', error);
-        throw error;
+        console.error('Login error:', error);
+        throw new Error(error.message || '로그인에 실패했습니다.');
     }
+};
+
+// 로그아웃
+export const logoutUser = () => {
+    try {
+        localStorage.removeItem('authToken');
+        localStorage.removeItem('user');
+        return { success: true };
+    } catch (error) {
+        console.error('Logout error:', error);
+        throw new Error('로그아웃에 실패했습니다.');
+    }
+};
+
+// 현재 사용자 정보 가져오기
+export const getCurrentUser = () => {
+    try {
+        const token = localStorage.getItem('authToken');
+        const userStr = localStorage.getItem('user');
+        
+        if (!token || !userStr) {
+            return null;
+        }
+        
+        return {
+            token,
+            user: JSON.parse(userStr)
+        };
+    } catch (error) {
+        console.error('Get current user error:', error);
+        localStorage.removeItem('authToken');
+        localStorage.removeItem('user');
+        return null;
+    }
+};
+
+// 인증 상태 확인
+export const isAuthenticated = () => {
+    const token = localStorage.getItem('authToken');
+    return !!token;
+};
+
+// 인증 토큰 가져오기
+export const getAuthToken = () => {
+    return localStorage.getItem('authToken');
 };
 
 // 토큰 갱신
@@ -204,17 +253,22 @@ export const refreshToken = async () => {
                 'Authorization': `Bearer ${currentToken}`
             },
         });
-        
+
         if (!response.ok) {
-            const errorData = await response.json().catch(() => ({}));
-            console.error('Backend error details:', errorData);
-            throw new Error(`HTTP error! status: ${response.status}`);
+            logoutUser();
+            throw new Error('토큰 갱신에 실패했습니다.');
         }
-        
+
         const result = await response.json();
+        
+        if (result.token) {
+            localStorage.setItem('authToken', result.token);
+        }
+
         return result;
     } catch (error) {
-        console.error('Full error:', error);
-        throw error;
+        console.error('Token refresh error:', error);
+        logoutUser();
+        throw new Error(error.message || '토큰 갱신에 실패했습니다.');
     }
 };
