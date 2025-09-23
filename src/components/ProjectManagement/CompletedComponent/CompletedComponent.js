@@ -29,7 +29,7 @@ const CompletedComponent = () => {
     try {
       setIsLoading(true);
       setError(null);
-      const res = await getMyProjects({ status: 'COMPLETED', limit: page.limit || 10, offset: nextOffset });
+      const res = await getMyProjects({ status: 'completed', limit: page.limit || 10, offset: nextOffset });
       if (res?.success) {
         setItems(nextOffset === 0 ? res.items : [...items, ...res.items]);
         setPage(res.page || { total: 0, limit: 10, offset: nextOffset });
