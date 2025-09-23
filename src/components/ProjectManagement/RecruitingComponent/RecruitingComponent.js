@@ -1,22 +1,56 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./RecruitingComponent.scss";
 import SectionHeader from "../Common/SectionHeader";
-import { useState } from "react";
-import { TbEyeFilled } from "react-icons/tb";
-import { RiFileList2Fill } from "react-icons/ri";
-import RecruitingProjectSlide from "../../RecruitingProjectSlide";
+import ProjectCard from "../Common/ProjectCard";
+import { useNavigate } from "react-router-dom";
+import { getMyProjects } from "../../../services/projects";
 
 const RecruitingComponent = () => {
-  const [openSlide, setOpenSlide] = useState(false);
+  const navigate = useNavigate();
+
+  const [items, setItems] = useState([]);
+  const [page, setPage] = useState({ total: 0, limit: 10, offset: 0 });
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const load = async (nextOffset = 0) => {
+    try {
+      setIsLoading(true);
+      setError(null);
+      const res = await getMyProjects({ status: 'recruiting', limit: page.limit || 10, offset: nextOffset });
+      if (res?.success) {
+        setItems(nextOffset === 0 ? res.items : [...items, ...res.items]);
+        setPage(res.page || { total: 0, limit: 10, offset: nextOffset });
+      } else {
+        throw new Error('SERVER_ERROR');
+      }
+    } catch (e) {
+      if (e?.code === 'UNAUTHORIZED') {
+        localStorage.removeItem('authToken');
+        localStorage.removeItem('user');
+        navigate('/login', { replace: true });
+        return;
+      }
+      setError('일시적인 오류가 발생했습니다. 다시 시도해주세요.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    load(0);
+    // eslint-disable-next-line
+  }, []);
+
+  const canLoadMore = items.length < (page.total || 0);
 
   return (
     <div className="recruiting-container">
-      {/* 기존 레이아웃 */}
       <div className="recruiting-top">
         <div className="recruiting-top-info">
           <SectionHeader
-            explainText={`프로젝트 모집 기간이 완료되어\n팀원을 구해보세요!`}
-            highlightText="팀원"
+            explainText={`프로젝트 팀원을 모집하고\n함께 시작해보세요!`}
+            highlightText="모집중"
             filterOptions={[
               { value: "latest", label: "최신순" },
               { value: "date", label: "날짜순" },
@@ -25,54 +59,27 @@ const RecruitingComponent = () => {
             onFilterChange={(e) => console.log(e.target.value)}
           />
         </div>
-        <div className="recruiting-card">
-          <h3>교내 동아리 전시 프로젝트 팀원 구합니다.</h3>
-          <p className="description">
-            교내 1층 전시 홀에 작품을 설치 할 예정입니다. 자유주제이며 함께 두달
-            동안 할 팀원을 구합니다.
-          </p>
-          <div className="info">
-            <div className="info-left">
-              <div className="views">
-                <TbEyeFilled className="info-view-icon" />
-                <span>214</span>
-              </div>
-              <div className="comments">
-                <RiFileList2Fill className="info-icon" />
-                <span>12</span>
-              </div>
-            </div>
-            <span className="d-day">D-DAY</span>
-          </div>
-        </div>
-      </div>
-      <hr />
-      <div className="recruiting-bottom">
-        <div className="recruiting-bottom-info">
-          <p>
-            모집 인원이 아쉽게 다 모이지 않았어요 <br />
-            <span className="highlight">다시 한번 모집</span>해보세요
-          </p>
-        </div>
-        <div className="recruiting-action">
-          <p className="recruiting-action-explain">
-            목표 모집 인원에 도달하지 못했어요.
-          </p>
-          <p className="project-name">프로젝트명</p>
-          <div className="buttons">
-            <button className="btn delete">삭제하기</button>
-            <button className="btn retry" onClick={() => setOpenSlide(true)}>
-              다시 모집하기
-            </button>
-          </div>
-        </div>
       </div>
 
-      {/* 슬라이드 */}
-      <RecruitingProjectSlide
-        open={openSlide}
-        onClose={() => setOpenSlide(false)}
-      />
+      <hr />
+
+      <div className="recruiting-list">
+        {isLoading && items.length === 0 && <div>불러오는 중...</div>}
+        {error && (
+          <div style={{ color: '#F76241' }}>
+            {error} <button onClick={() => load(page.offset || 0)}>다시 시도</button>
+          </div>
+        )}
+        {items.map((p) => (
+          <ProjectCard key={p.project_id} project={p} />
+        ))}
+      </div>
+
+      {canLoadMore && !isLoading && (
+        <div style={{ textAlign: 'center', margin: '16px 0' }}>
+          <button onClick={() => load((page.offset || 0) + (page.limit || 10))}>더 보기</button>
+        </div>
+      )}
     </div>
   );
 };
