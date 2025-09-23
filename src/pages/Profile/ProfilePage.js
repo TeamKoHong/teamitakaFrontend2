@@ -8,6 +8,7 @@ import linkIcon from "../../images/link.png";
 import tagIcon from "../../images/tag.png";
 import trophyIcon from "../../images/trophy.png";
 import schoolIcon from "../../images/school.png";
+import BottomNav from "../../components/Common/BottomNav/BottomNav";
 
 const ProfilePage = () => {
   const navigate = useNavigate();
@@ -106,6 +107,8 @@ const ProfilePage = () => {
       <div style={{ marginTop: 24, textAlign: 'right' }}>
         <button onClick={onLogout} style={{ padding: '10px 16px' }}>로그아웃</button>
       </div>
+      <div style={{ height: 56 }} />
+      <BottomNav />
     </div>
   );
 };
