@@ -83,6 +83,11 @@ export const ROUTE_METADATA = {
     requiresAuth: false,
     showBottomNav: false,
   },
+  [MAIN_ROUTES.MY]: {
+    title: '프로필',
+    requiresAuth: true,
+    showBottomNav: true,
+  },
   [PROJECT_ROUTES.MANAGEMENT]: {
     title: '프로젝트 관리',
     requiresAuth: true,

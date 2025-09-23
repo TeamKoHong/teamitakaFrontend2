@@ -22,6 +22,7 @@ import RegisterPage from './pages/RegisterPage/RegisterPage';
 import TeamMatchingPage from './pages/TeamMatchingPage/TeamMatchingPage';
 import RecruitmentPage from './pages/RecruitmentPage/RecruitmentPage';
 import SearchPage from './pages/SearchPage/SearchPage';
+import ProfilePage from './pages/Profile/ProfilePage';
 
 // 메인 페이지 임포트
 import MainPage from './components/Home/MainPage';
@@ -229,7 +230,7 @@ const App = () => {
 
           {/* ===== 메인 페이지 (로그인 제한 없음) ===== */}
           <Route path={MAIN_ROUTES.MAIN} element={<MainPage />} />
-          <Route path={MAIN_ROUTES.MY} element={<Navigate to={PROJECT_ROUTES.MANAGEMENT} replace />} />
+          <Route path={MAIN_ROUTES.MY} element={<ProfilePage />} />
 
           {/* ===== 프로젝트 관리 라우트 (로그인 제한 없음) ===== */}
           <Route path={PROJECT_ROUTES.MANAGEMENT} element={<ProjectManagement />} />
