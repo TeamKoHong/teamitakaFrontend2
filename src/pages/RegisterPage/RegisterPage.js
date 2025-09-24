@@ -1,10 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './RegisterPage.scss';
 import { useNavigate } from 'react-router-dom';
-import { sendVerificationCode, verifyCode } from '../../services/auth.js';
+import { useAuth } from '../../contexts/AuthContext';
+import { sendVerificationCode, verifyCode, registerUser } from '../../services/auth.js';
+import VerificationLoading from '../../components/Common/VerificationLoading';
 
 function RegisterPage() {
     const navigate = useNavigate();
+    const { login, isAuthenticated } = useAuth();
     const [currentStep, setCurrentStep] = useState(1);
     const [university, setUniversity] = useState('');
     const [studentId, setStudentId] = useState('');
@@ -23,16 +26,31 @@ function RegisterPage() {
     const [isVerificationLoading, setIsVerificationLoading] = useState(false);
     const [verificationError, setVerificationError] = useState('');
     const [verificationSuccess, setVerificationSuccess] = useState(false);
+    const [isDailyLimitExceeded, setIsDailyLimitExceeded] = useState(false);
+    const [isRegistrationLoading, setIsRegistrationLoading] = useState(false);
+    const [registrationError, setRegistrationError] = useState('');
+    const [isEmailVerified, setIsEmailVerified] = useState(false);
+
+    // 이미 로그인된 사용자는 메인 페이지로 리디렉션
+    useEffect(() => {
+        if (isAuthenticated) {
+            navigate('/main');
+        }
+    }, [isAuthenticated, navigate]);
 
     const handleNext = () => {
         if (currentStep < 8) {
             if (currentStep === 3) {
                 // case3에서 다음 버튼을 누르면 case4로 이동
                 setCurrentStep(4);
-                // 5초 후 case5로 자동 이동
+                // 3초 후 case5로 자동 이동
                 setTimeout(() => {
                     setCurrentStep(5);
-                }, 5000);
+                    // 추가로 2.5초 후 비밀번호 설정 단계로 이동
+                    setTimeout(() => {
+                        setCurrentStep(6);
+                    }, 2500);
+                }, 3000);
             } else if (currentStep === 6) {
                 // case6에서 완료 버튼을 누르면 case7로 이동
                 setCurrentStep(7);
@@ -72,11 +90,7 @@ function RegisterPage() {
             setIsVerificationLoading(true);
             setVerificationError('');
             
-            const result = await sendVerificationCode({
-                email: email,
-                department: department,
-                university: university
-            });
+            const result = await sendVerificationCode(email);
             
             if (result.success) {
                 setVerificationSuccess(true);
@@ -86,7 +100,13 @@ function RegisterPage() {
             }
             
         } catch (error) {
-            setVerificationError(error.message || '네트워크 오류가 발생했습니다.');
+            // 일일 한도 초과 에러 처리
+            if (error.message && error.message.includes('하루 최대')) {
+                setVerificationError('하루 최대 5회까지만 인증번호를 전송할 수 있습니다. 내일 다시 시도해주세요.');
+                setIsDailyLimitExceeded(true);
+            } else {
+                setVerificationError(error.message || '네트워크 오류가 발생했습니다.');
+            }
         } finally {
             setIsVerificationLoading(false);
         }
@@ -107,18 +127,13 @@ function RegisterPage() {
             setIsVerificationLoading(true);
             setVerificationError('');
 
-            const result = await verifyCode({
-                email: email,
-                code: verificationCode
-            });
+            const result = await verifyCode(email, verificationCode);
 
             if (result.success) {
                 setVerificationSuccess(true);
                 setVerificationError('');
-                // 인증 성공 시 다음 단계로 자동 진행
-                setTimeout(() => {
-                    setCurrentStep(4);
-                }, 2000);
+                setIsEmailVerified(true);
+                // 인증 성공 시 자동 진행하지 않고 사용자가 다음 버튼을 누르도록 함
             } else {
                 setVerificationError(result.message || '인증번호 확인에 실패했습니다.');
             }
@@ -127,6 +142,77 @@ function RegisterPage() {
             setVerificationError(error.message || '인증번호 확인 중 오류가 발생했습니다.');
         } finally {
             setIsVerificationLoading(false);
+        }
+    };
+
+    const handleCompleteRegistration = async () => {
+        if (!isEmailVerified) {
+            setRegistrationError('이메일 인증을 먼저 완료해주세요.');
+            return;
+        }
+
+        if (password !== passwordConfirm) {
+            setRegistrationError('비밀번호가 일치하지 않습니다.');
+            return;
+        }
+
+        if (password.length < 6) {
+            setRegistrationError('비밀번호는 6자 이상이어야 합니다.');
+            return;
+        }
+
+        try {
+            setIsRegistrationLoading(true);
+            setRegistrationError('');
+
+            const registrationData = {
+                email: email,
+                password: password,
+                university: university,
+                department: department,
+                student_id: studentId && studentId.trim() ? studentId.trim() : null
+            };
+
+            console.log('Registration data:', registrationData);
+            console.log('Email verified status:', isEmailVerified);
+            console.log('All form data:', {
+                email,
+                password,
+                university,
+                department,
+                studentId,
+                isEmailVerified
+            });
+
+            const result = await registerUser(registrationData);
+
+            if (result.success || result.token) {
+                console.log('Registration successful:', result);
+                
+                // AuthContext를 통해 자동 로그인 처리
+                if (result.token && result.user) {
+                    const loginSuccess = login(result.user, result.token);
+                    
+                    if (loginSuccess) {
+                        console.log('회원가입 후 자동 로그인 성공');
+                        // 회원가입 성공 시 완료 화면으로 이동
+                        setCurrentStep(7);
+                    } else {
+                        setRegistrationError('회원가입은 완료되었지만 자동 로그인에 실패했습니다.');
+                    }
+                } else {
+                    // 토큰이나 사용자 정보가 없는 경우에도 완료 화면 표시
+                    setCurrentStep(7);
+                }
+            } else {
+                setRegistrationError(result.message || '회원가입에 실패했습니다.');
+            }
+
+        } catch (error) {
+            console.error('Registration error:', error);
+            setRegistrationError(error.message || '회원가입 중 오류가 발생했습니다.');
+        } finally {
+            setIsRegistrationLoading(false);
         }
     };
 
@@ -143,8 +229,8 @@ function RegisterPage() {
                        consents.terms && 
                        consents.rights;
             case 3:
-                // 이메일 입력: 학부 + 이메일 + 인증번호
-                return department.trim() && email.trim() && verificationCode.trim();
+                // 이메일 입력: 학부 + 이메일 + 인증번호 + 이메일 인증 성공
+                return department.trim() && email.trim() && verificationCode.trim() && isEmailVerified;
             case 4:
                 return password.trim() && passwordConfirm.trim();
             default:
@@ -310,18 +396,19 @@ function RegisterPage() {
                                 onChange={(e) => setEmail(e.target.value)}
                             />
                             <button 
-                                className={`verify-button ${email && department ? 'active' : ''}`}
+                                className={`verify-button ${email && department && !isDailyLimitExceeded ? 'active' : ''}`}
                                 onClick={handleSendVerificationCode}
-                                disabled={!email || !department || isVerificationLoading}
+                                disabled={!email || !department || isVerificationLoading || isDailyLimitExceeded}
                             >
                                 {isVerificationLoading ? '전송 중...' : 
+                                 isDailyLimitExceeded ? '일일 한도 초과' :
                                  email && department ? '인증번호 전송' : '인증하기'}
                             </button>
                         </div>
                         
                         {verificationError && (
-                            <div className="verification-error">
-                                ❌ {verificationError}
+                            <div className={`verification-error ${isDailyLimitExceeded ? 'daily-limit-error' : ''}`}>
+                                {isDailyLimitExceeded ? '⚠️' : '❌'} {verificationError}
                             </div>
                         )}
 
@@ -362,44 +449,12 @@ function RegisterPage() {
                 );
             case 4:
                 return (
-                    <div>
-                        <div>
-                            <p style={{
-                                color: 'var(--main, #F76241)',
-                                textAlign: 'center',
-                                fontFamily: 'Pretendard',
-                                fontSize: '23px',
-                                fontStyle: 'normal',
-                                fontWeight: '700',
-                                lineHeight: 'normal',
-                                textTransform: 'capitalize',
-                                marginTop: '330px'
-                            }}>
-                                대학인증을 진행중<span style={{ color: '#140805' }}>입니다!</span>
-                            </p>
-                            <p style={{
-                                color: 'rgba(0, 0, 0, 0.69)',
-                                textAlign: 'center',
-                                fontFamily: 'Pretendard',
-                                fontSize: '18px',
-                                fontStyle: 'normal',
-                                fontWeight: '500',
-                                lineHeight: 'normal',
-                                textTransform: 'capitalize',
-                                margin: '8px 0'
-                            }}>
-                                잠시만 기다려주세요!
-                            </p>
-                            <div style={{ textAlign: 'center', marginTop: '40px' }}>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="56" height="16" viewBox="0 0 56 16" fill="none">
-                                    <circle opacity="0.4" cx="4" cy="12" r="4" fill="#F76241"/>
-                                    <circle opacity="0.6" cx="20" cy="4" r="4" fill="#F76241"/>
-                                    <circle opacity="0.8" cx="36" cy="9" r="4" fill="#F76241"/>
-                                    <circle cx="52" cy="12" r="4" fill="#F76241"/>
-                                </svg>
-                            </div>
-                        </div>
-                    </div>
+                    <VerificationLoading 
+                        title="대학 인증을 확인하고 있어요"
+                        subtitle="잠시만 기다려주세요. 보통 10-30초 정도 소요됩니다."
+                        tip="화면이 멈춘 것 같다면 새로고침 해주세요"
+                        showSteps={false}
+                    />
                 );
             case 5:
                 return (
@@ -434,7 +489,7 @@ function RegisterPage() {
                                 textTransform: 'capitalize',
                                 margin: '0 0 8px'
                             }}>
-                                대학교 인증이 완료되었어요
+                                대학교 인증이 완료되었습니다!
                             </p>
                             <p style={{
                                 color: 'var(--grey-3, #807C7C)',
@@ -502,7 +557,7 @@ function RegisterPage() {
                         </div>
                         <div className="step4-input-field">
                             <input
-                                type="text"
+                                type="password"
                                 placeholder="비밀번호 입력"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
@@ -513,7 +568,7 @@ function RegisterPage() {
                         </div>
                         <div className="step4-input-field">
                             <input
-                                type="text"
+                                type="password"
                                 placeholder="비밀번호 확인"
                                 value={passwordConfirm}
                                 onChange={(e) => setPasswordConfirm(e.target.value)}
@@ -522,11 +577,16 @@ function RegisterPage() {
                                 }}
                             />
                         </div>
+                        {registrationError && (
+                            <div className="verification-error" style={{ marginTop: '8px' }}>
+                                ❌ {registrationError}
+                            </div>
+                        )}
                         <div style={{ marginTop: '9px' }}>
                             <button 
                                 className={`next-button ${password === passwordConfirm && password.trim() && passwordConfirm.trim() ? 'active' : ''}`}
-                                onClick={handleNext}
-                                disabled={password !== passwordConfirm || !password.trim() || !passwordConfirm.trim()}
+                                onClick={handleCompleteRegistration}
+                                disabled={password !== passwordConfirm || !password.trim() || !passwordConfirm.trim() || isRegistrationLoading}
                                 style={{
                                     width: '100%',
                                     padding: '16px',
@@ -534,12 +594,12 @@ function RegisterPage() {
                                     border: 'none',
                                     fontSize: '16px',
                                     fontWeight: '600',
-                                    cursor: password === passwordConfirm && password.trim() && passwordConfirm.trim() ? 'pointer' : 'not-allowed',
-                                    backgroundColor: password === passwordConfirm && password.trim() && passwordConfirm.trim() ? 'var(--main, #F76241)' : '#E0E0E0',
-                                    color: password === passwordConfirm && password.trim() && passwordConfirm.trim() ? 'white' : '#999'
+                                    cursor: password === passwordConfirm && password.trim() && passwordConfirm.trim() && !isRegistrationLoading ? 'pointer' : 'not-allowed',
+                                    backgroundColor: password === passwordConfirm && password.trim() && passwordConfirm.trim() && !isRegistrationLoading ? 'var(--main, #F76241)' : '#E0E0E0',
+                                    color: password === passwordConfirm && password.trim() && passwordConfirm.trim() && !isRegistrationLoading ? 'white' : '#999'
                                 }}
                             >
-                                완료
+                                {isRegistrationLoading ? '가입 중...' : '완료'}
                             </button>
                         </div>
                     </div>
@@ -625,7 +685,7 @@ function RegisterPage() {
                         </div>
                         <div className="step4-input-field">
                             <input
-                                type="text"
+                                type="password"
                                 placeholder="비밀번호"
                                 onChange={(e) => setPassword(e.target.value)}
                             />
