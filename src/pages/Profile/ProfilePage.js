@@ -1,5 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../contexts/AuthContext";
 import { getMe } from "../../services/user";
 
 import profileImage from "../../images/profileImage.png";
@@ -12,6 +13,7 @@ import BottomNav from "../../components/Common/BottomNav/BottomNav";
 
 const ProfilePage = () => {
   const navigate = useNavigate();
+  const { logout } = useAuth();
   const [user, setUser] = React.useState(null);
   const [isLoading, setIsLoading] = React.useState(true);
   const [error, setError] = React.useState(null);
@@ -46,8 +48,11 @@ const ProfilePage = () => {
   const onLogout = () => {
     // 수동 로그아웃에서는 세션 만료 모달을 띄우지 않도록 suppress 플래그 설정
     try { sessionStorage.setItem('suppress-session-expired', '1'); } catch (e) {}
-    localStorage.removeItem("authToken");
-    localStorage.removeItem("user");
+    // 컨텍스트 로그아웃으로 상태까지 정리
+    try { logout(); } catch (e) {
+      localStorage.removeItem("authToken");
+      localStorage.removeItem("user");
+    }
     navigate("/login", { replace: true });
   };
 
