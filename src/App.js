@@ -30,6 +30,7 @@ import MainPage from './components/Home/MainPage';
 // 인증 관련 임포트
 import { AuthProvider } from './contexts/AuthContext';
 import ToastHost from './components/Common/ToastHost';
+import AuthEventBridge from './components/Common/AuthEventBridge';
 import { PublicRoute } from './components/ProtectedRoute';
 
 // 라우팅 상수 임포트
@@ -224,6 +225,7 @@ const App = () => {
     <Router>
       <AuthProvider>
         <ToastHost />
+        <AuthEventBridge />
         <Routes>
           {/* ===== 공개 페이지 (로그인하지 않은 사용자만) ===== */}
           <Route path={MAIN_ROUTES.HOME} element={<PublicRoute><OnboardingPage /></PublicRoute>} />
