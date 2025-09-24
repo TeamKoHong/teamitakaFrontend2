@@ -1,4 +1,5 @@
 import { getApiConfig } from './auth';
+import { notifyLoginExpired } from '../components/Common/ToastHost';
 
 export const getMe = async () => {
     const { API_BASE_URL, headers } = getApiConfig();
@@ -13,6 +14,7 @@ export const getMe = async () => {
         headers: { ...headers, Authorization: `Bearer ${token}` },
     });
     if (res.status === 401 || res.status === 403) {
+        notifyLoginExpired();
         const err = new Error('UNAUTHORIZED');
         err.code = 'UNAUTHORIZED';
         throw err;
