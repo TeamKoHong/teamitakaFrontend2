@@ -1,5 +1,5 @@
 import React from 'react';
-import AlertModal from './AlertModal';
+import SessionExpiredModal from './SessionExpiredModal';
 
 /**
  * 간단한 전역 토스트/알림 호스트
@@ -27,16 +27,7 @@ export default function ToastHost() {
   const close = () => setOpen(false);
 
   return (
-    <AlertModal
-      isOpen={open}
-      title="세션 만료"
-      description={msg}
-      primaryLabel="확인"
-      secondaryLabel="닫기"
-      onPrimary={close}
-      onSecondary={close}
-      onClose={close}
-    />
+    <SessionExpiredModal isOpen={open} message={msg} onClose={close} />
   );
 }
 
