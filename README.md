@@ -1,159 +1,157 @@
 # TeamItaka Frontend
 
-React-based frontend for TeamItaka. This app handles user flows like onboarding, registration, email verification, project browsing/management, and member evaluations.
+팀 프로젝트 매칭·관리·평가 플랫폼의 React 기반 프론트엔드입니다. 온보딩, 회원가입/로그인, 프로젝트 탐색·관리, 팀원 평가 플로우를 제공합니다.
+
+## 주요 기능
+
+- 온보딩·로그인/회원가입, 이메일 인증
+- 프로젝트 목록/상세/관리, 일정(캘린더), 회의록(Proceedings)
+- 팀 매칭/지원, 검색
+- 팀원 상호 평가: 프로젝트별 평가, 상태(보냄/받음) 확인
+- 모바일 우선 UI, 하단 네비게이션
 
 ## Tech Stack
 
-- React 18
-- React Router DOM 7
+- React 18, React Router DOM 7
 - Redux Toolkit
 - SASS (SCSS)
 - Swiper
 
-## Requirements
+## 요구 사항
 
-- Node.js: 20 LTS recommended (to match engine requirements of react-router-dom@7)
-- npm: 10+
+- Node.js 20 LTS 권장 (react-router-dom@7 호환)
+- npm 10+
 
-You can check your versions with:
+버전 확인:
 
 ```bash
 node -v
 npm -v
 ```
 
-## Getting Started
+## 빠른 시작
 
-1) Install dependencies
+1) 의존성 설치
 
 ```bash
 npm ci
 ```
 
-2) Create environment file
+2) 환경변수 파일 생성 (`.env.local`)
 
-Create `.env.local` at the project root:
-
-```
-# API base for backend (Supabase Edge Function reverse-proxy or direct)
+```bash
+# Supabase Edge Function 혹은 백엔드 API Base URL
 REACT_APP_API_BASE_URL=https://<your-project>.supabase.co/functions/v1/teamitaka-api
 
-# Supabase anon key used for calling Edge Functions
+# Supabase anon key (Edge Functions 호출 시 사용)
 REACT_APP_SUPABASE_ANON_KEY=your_anon_key_here
 
-# Optional environment flag
+# 선택: 환경 플래그
 REACT_APP_ENV=development
 ```
 
-3) Start the dev server
+3) 로컬 서버 시작
 
 ```bash
 npm start
 ```
 
-The app runs at http://localhost:3000
+기본 주소: `http://localhost:3000`
 
 ## Scripts
 
-- `npm start` — Start development server
-- `npm run build` — Production build to `build/`
-- `npm test` — Run tests
+- `npm start`: 개발 서버 실행
+- `npm run build`: 프로덕션 빌드(`build/`)
+- `npm test`: 테스트 실행 (React Testing Library, Jest)
 
-## Project Structure (high level)
+## 디렉터리 구조 (요약)
 
 ```
 src/
-  components/        # UI components
-  pages/             # Route-level pages
-  services/          # API calls (auth, rating, etc.)
-  contexts/          # React Context (e.g., AuthContext)
-  utils/             # Helpers and utilities
-  styles/            # Global styles and variables
+  components/        # 재사용 UI 컴포넌트
+  pages/             # 라우트 단위 페이지
+  services/          # API 호출(auth, rating, projects 등)
+  contexts/          # 전역 컨텍스트 (예: AuthContext)
+  utils/             # 유틸리티/헬퍼
+  styles/            # 글로벌 스타일/변수
 ```
 
-## Environment Variables
+## 라우팅 개요
 
-- `REACT_APP_API_BASE_URL`: Base URL for API. For Supabase Edge Functions, it looks like `https://<project>.supabase.co/functions/v1/teamitaka-api`.
-- `REACT_APP_SUPABASE_ANON_KEY`: Supabase anon key sent as `Authorization` and `apikey` headers when calling Edge Functions.
-- `REACT_APP_ENV`: Optional flag (`development` | `production`).
+- 메인: `/`, `/main`, `/login`, `/register`, `/my`
+- 프로젝트: `/project-management`, `/project/:id`, `/project/:id/member`, `/project/:id/proceedings`, `/project/:id/calender`
+- 평가: `/evaluation/management`, `/evaluation/project/:projectId`, `/evaluation/team-member/:projectId/:memberId`, `/evaluation/status/:projectId`, `/evaluation/status/:projectId/given`, `/evaluation/status/:projectId/received`
+- 기타: `/team-matching`, `/recruitment`, `/search`, `/team`
 
-Do not commit `.env*` files. They are gitignored.
+상세 라우트 정의는 `src/constants/routes.js` 참고.
 
-## Email Verification (Frontend API usage)
+## 환경 변수
 
-All functions are in `src/services/auth.js` and use a shared helper that sets headers and base URL from environment variables.
+- `REACT_APP_API_BASE_URL`: API Base URL (Supabase Functions 예: `https://<project>.supabase.co/functions/v1/teamitaka-api`)
+- `REACT_APP_SUPABASE_ANON_KEY`: Supabase anon key (Functions 호출 시 `Authorization`, `apikey` 헤더로 사용)
+- `REACT_APP_ENV`: `development` | `production`
+
+`.env*` 파일은 커밋하지 않습니다 (gitignored).
+
+## API 사용 예시 (이메일 인증)
+
+`src/services/auth.js` 내 함수 사용:
 
 ```js
 import { sendVerificationCode, verifyCode, resendVerificationCode } from './services/auth';
 
-// Send verification code
 await sendVerificationCode('user@example.com');
-
-// Verify code
 await verifyCode('user@example.com', '123456');
-
-// Resend code
 await resendVerificationCode('user@example.com');
 ```
 
-These functions:
-- Validate email format on the client
-- Retry transient failures (HTTP 408/429/5xx) up to 3 times with backoff
-- Throw user-friendly errors
-
-Response (success):
+성공 응답 예시:
 
 ```json
-{
-  "success": true,
-  "message": "인증번호가 이메일로 전송되었습니다.",
-  "data": { "email": "user@example.com", "expiresIn": 180 }
-}
+{ "success": true, "message": "인증번호가 이메일로 전송되었습니다.", "data": { "email": "user@example.com", "expiresIn": 180 } }
 ```
 
-## Deployment (Vercel)
+## 개발 가이드
 
-Recommended config:
+- TDD 지향: 기능 추가 전 테스트부터 작성, 실패 → 구현 → 통과
+- 구조 원칙: SRP 중심으로 컴포넌트/서비스 분리, 재사용·가독성 우선
+- 라우팅/상태는 `pages/`·`components/`·`services/` 레이어 간 단방향 의존 추구
+- Git: Conventional Commits, 브랜치 전략은 아래 참고
 
-- Build Command: `npm run build`
+## 테스트
+
+- 도구: Jest, React Testing Library
+- 실행: `npm test`
+- 리액트 라우터 테스트를 위해 `src/test-utils/react-router-dom-mock.js` 매퍼 사용(Jest `moduleNameMapper` 설정 참고)
+
+## 보안·비밀 관리
+
+- 실 비밀키는 커밋 금지. Vercel/Supabase 환경변수에 저장
+- 사용자 입력은 검증하고, 렌더링 시 XSS에 유의(위험한 HTML 주입 금지)
+- 프로덕션/개발 환경에서 실제 민감 데이터 노출 금지
+
+## 배포 (Vercel)
+
 - Install Command: `npm ci`
+- Build Command: `npm run build`
 - Output Directory: `build`
-- Node version: set Project Setting → Environment → `NODE_VERSION` = `20`
-- Environment variables (Production):
-  - `REACT_APP_API_BASE_URL`
-  - `REACT_APP_SUPABASE_ANON_KEY`
+- Node: `20`
+- 필수 환경변수: `REACT_APP_API_BASE_URL`, `REACT_APP_SUPABASE_ANON_KEY`
 
-Note: Supabase Edge Function code is deployed in Supabase, not in this repo. Ensure the function is deployed and reachable.
+Supabase Edge Functions 코드는 Supabase에 배포됩니다. 프론트 배포 전 Functions 가용 여부를 확인하세요. 추가 상세는 `docs/deployment/SUPABASE_MIGRATION_GUIDE.md` 참고.
 
-## Security & Secrets
+## 문제 해결 (FAQ)
 
-- Never commit secrets. Keep `REACT_APP_*` values in Vercel project env vars.
-- If a secret was exposed, rotate it immediately in Supabase and Vercel.
+- CORS 오류: Functions가 `OPTIONS` 처리 및 `Access-Control-Allow-*` 헤더 반환하는지 확인
+- 401/인증 오류: `REACT_APP_SUPABASE_ANON_KEY` 설정 및 빌드 노출 여부 확인
+- 이메일 미수신: Supabase Functions 로그, SendGrid 설정(SENDER, API KEY) 확인
+- Node 엔진 에러: Node 20 사용, 필요시 잠금 파일 초기화 후 재설치
 
-## Troubleshooting
+## Git 워크플로우
 
-- CORS error on send-verification:
-  - Check the Edge Function handles `OPTIONS` and returns 200 with `Access-Control-Allow-*` headers.
-  - Ensure the function is actually deployed and the path matches `/api/auth/send-verification`.
-
-- 401 Missing authorization/Invalid JWT:
-  - Confirm `REACT_APP_SUPABASE_ANON_KEY` is set in env and exposed at build time.
-  - Calls to `*.supabase.co/functions` automatically include `apikey` and `Authorization` headers from the anon key.
-
-- Email not received:
-  - In Supabase Edge Function: verify `SENDGRID_API_KEY` and a verified sender (Single Sender or Domain Auth) in SendGrid.
-  - Check Supabase → Functions → Logs for SendGrid responses.
-
-- Build errors (Node engine):
-  - Use Node 20 on CI/hosting to satisfy engines for router v7.
-  - Clear lockfile and reinstall if needed: `rm -rf node_modules package-lock.json && npm ci`.
-
-## Branching & Commit Convention
-
-- Branches: `feature/*`, `bugfix/*`, `hotfix/*`, `refactor/*`
-- Commits: Conventional Commits
-  - `feat: ...`, `fix: ...`, `refactor: ...`, `docs: ...`, `test: ...`, `chore: ...`
+- 브랜치: `feature/*`, `bugfix/*`, `hotfix/*`, `refactor/*`
+- 커밋: Conventional Commits (`feat:`, `fix:`, `docs:`, `refactor:`, `test:`, `chore:`)
 
 ## License
 
-See `LICENSE` in the repository.
+`LICENSE` 파일을 참조하세요.
