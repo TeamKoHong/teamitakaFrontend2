@@ -44,6 +44,8 @@ const ProfilePage = () => {
   }, []);
 
   const onLogout = () => {
+    // 수동 로그아웃에서는 세션 만료 모달을 띄우지 않도록 suppress 플래그 설정
+    try { sessionStorage.setItem('suppress-session-expired', '1'); } catch (e) {}
     localStorage.removeItem("authToken");
     localStorage.removeItem("user");
     navigate("/login", { replace: true });
