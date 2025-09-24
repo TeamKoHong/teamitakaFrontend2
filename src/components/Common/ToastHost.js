@@ -1,0 +1,43 @@
+import React from 'react';
+import AlertModal from './AlertModal';
+
+/**
+ * 간단한 전역 토스트/알림 호스트
+ * - 이벤트 기반으로 로그인 만료 알림 표시
+ */
+export const toastBus = new EventTarget();
+
+export function notifyLoginExpired(message = '로그인이 만료되었습니다. 다시 로그인해주세요.') {
+  toastBus.dispatchEvent(new CustomEvent('login-expired', { detail: { message } }));
+}
+
+export default function ToastHost() {
+  const [open, setOpen] = React.useState(false);
+  const [msg, setMsg] = React.useState('');
+
+  React.useEffect(() => {
+    const handler = (e) => {
+      setMsg(e.detail?.message || '로그인이 만료되었습니다. 다시 로그인해주세요.');
+      setOpen(true);
+    };
+    toastBus.addEventListener('login-expired', handler);
+    return () => toastBus.removeEventListener('login-expired', handler);
+  }, []);
+
+  const close = () => setOpen(false);
+
+  return (
+    <AlertModal
+      isOpen={open}
+      title="세션 만료"
+      description={msg}
+      primaryLabel="확인"
+      secondaryLabel="닫기"
+      onPrimary={close}
+      onSecondary={close}
+      onClose={close}
+    />
+  );
+}
+
+
