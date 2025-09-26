@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import './RegisterPage.scss';
 import './RegisterPage.step2.scss';
 import { useNavigate } from 'react-router-dom';
@@ -549,24 +549,6 @@ function RegisterPage() {
                                 onChange={(e) => setVerificationCode(e.target.value.replace(/[^0-9]/g, '').slice(0, 6))}
                                 className="code-hidden-input"
                             />
-                            <button 
-                                className={`verify-code-button ${verificationCode.length === 6 ? 'active' : ''}`}
-                                onClick={handleVerifyCode}
-                                disabled={verificationCode.length !== 6 || isVerificationLoading}
-                                style={{
-                                    width: '100%',
-                                    padding: '12px',
-                                    borderRadius: '8px',
-                                    border: 'none',
-                                    fontSize: '14px',
-                                    fontWeight: '600',
-                                    cursor: verificationCode.length === 6 && !isVerificationLoading ? 'pointer' : 'not-allowed',
-                                    backgroundColor: verificationCode.length === 6 && !isVerificationLoading ? '#F76241' : '#E0E0E0',
-                                    color: verificationCode.length === 6 && !isVerificationLoading ? 'white' : '#999'
-                                }}
-                            >
-                                {isVerificationLoading ? '확인 중...' : '인증번호 확인'}
-                            </button>
                         </div>
                         <div className="resend-code-link" onClick={handleResendCode}>코드 다시 받기</div>
                         {showToast && (

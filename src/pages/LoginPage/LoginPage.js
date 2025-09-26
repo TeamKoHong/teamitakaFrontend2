@@ -229,9 +229,6 @@ function LoginPage() {
                     <button className="login-button">
                         로그인
                     </button>
-                    <button className="guest-button" onClick={handleGuestMode}>
-                        로그인 없이 둘러보기
-                    </button>
                 </div>
                 
                 <div className="find-links">
@@ -247,7 +244,7 @@ function LoginPage() {
                         회원가입
                     </button>
                 </div>
-                <div className="look-without-register">
+                <div className="look-without-register" onClick={handleGuestMode}>
                     회원가입 없이 둘러볼래요
                 </div>
             </div>

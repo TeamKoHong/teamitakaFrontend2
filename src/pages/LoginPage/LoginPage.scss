@@ -31,7 +31,8 @@
 
 .subtitle {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    flex-wrap: wrap;
     align-items: center;
     justify-content: center;
     font-style: normal;
@@ -50,6 +51,12 @@
     .normal {
         color: #000;
         font-size: 28px;
+        margin-right: 0;
+    }
+    .normal::after {
+        content: '';
+        display: block; /* 줄바꿈 강제 */
+        width: 100%;
     }
     
     // 모바일에서는 글자 크기만 조정
@@ -60,6 +67,7 @@
         
         .normal {
             font-size: 26px;
+            margin-right: 0;
         }
     }
 }
@@ -123,7 +131,8 @@
     &:focus {
         outline: none;
         border: 1px solid #000;
-
+    }
+}
 .guest-button {
     background: transparent;
     color: #807C7C;
