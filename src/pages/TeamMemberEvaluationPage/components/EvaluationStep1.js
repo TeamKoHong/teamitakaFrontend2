@@ -7,9 +7,18 @@ const EvaluationStep1 = ({
   projectData,
   memberData,
   evaluationData,
-  onNext,
-  onCategoryRatingChange
+  onCategoryRatingChange,
+  onNext
 }) => {
+  // 데이터 유효성 검사
+  if (!projectData || !memberData) {
+    return (
+      <div className={styles.errorContainer}>
+        <div className={styles.errorText}>데이터를 불러올 수 없습니다.</div>
+      </div>
+    );
+  }
+
   const categories = [
     {
       key: 'participation',
@@ -29,18 +38,18 @@ const EvaluationStep1 = ({
     {
       key: 'collaboration',
       name: '협력',
-      description: '해당 팀원의 팀워크와 협력 능력을 점수로 평가해주세요'
+      description: '해당 팀원의 프로젝트 내에서 보인 협동심을 점수로 평가해주세요'
     },
     {
       key: 'individualAbility',
       name: '개인능력',
-      description: '해당 팀원의 개인적인 업무 능력을 점수로 평가해주세요'
+      description: '해당 팀원의 프로젝트 수행 능력을 점수로 평가해주세요'
     }
   ];
 
   // 모든 카테고리가 평가되었는지 확인
   const isAllCategoriesRated = categories.every(
-    category => evaluationData.categoryRatings[category.key] > 0
+    (category) => (evaluationData.categoryRatings[category.key] || 0) > 0
   );
 
   return (
@@ -84,12 +93,12 @@ const EvaluationStep1 = ({
         </div>
       </div>
 
-      {/* 진행 표시기 */}
-      <ProgressIndicator currentStep={1} totalSteps={5} />
+      {/* 진행 표시기 (2단계로 축소) */}
+      <ProgressIndicator currentStep={1} totalSteps={2} />
 
       {/* 질문 */}
       <div className={styles.questionText}>
-        해당 팀원의 능력 별 점수는 몇 점인가요?
+        해당 팀원의 능력별 점수는 몇 점인가요?
       </div>
 
       {/* 카테고리별 평가 섹션 */}
@@ -101,22 +110,21 @@ const EvaluationStep1 = ({
             name={category.name}
             description={category.description}
             value={evaluationData.categoryRatings[category.key] || 1}
-            onChange={(value) => onCategoryRatingChange(category.key, value)}
+            onChange={(rating) => onCategoryRatingChange(category.key, rating)}
+            min={1}
+            max={5}
+            disabled={false}
+            compact={false}
+            showDescription={true}
+            showThumb={true}
           />
         ))}
       </div>
 
-      {/* 입력 완료 상태 피드백 */}
-      {!isAllCategoriesRated && (
-        <div className={styles.completionFeedback}>
-          모든 카테고리를 평가해주세요
-        </div>
-      )}
-      
       {/* 다음 단계 버튼 */}
       <div className={styles.buttonContainer}>
         <button
-          className={`${styles.button} ${styles.primary}`}
+          className={`${styles.nextButton} ${!isAllCategoriesRated ? styles.disabled : ''}`}
           onClick={onNext}
           disabled={!isAllCategoriesRated}
         >
