@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import './RegisterPage.scss';
+import './RegisterPage.step2.scss';
 import { useNavigate } from 'react-router-dom';
 
 function RegisterPage() {
@@ -12,26 +13,45 @@ function RegisterPage() {
     const [password, setPassword] = useState('');
     const [passwordConfirm, setPasswordConfirm] = useState('');
     const [department, setDepartment] = useState('');
+    const [showToast, setShowToast] = useState(false);
+    const [showTermsPage, setShowTermsPage] = useState(false);
+    const [currentTermsType, setCurrentTermsType] = useState('');
+    const isValidEmail = (value) => {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(value);
+    };
+    const isValidPassword = (value) => {
+        // 영문과 숫자를 모두 포함하고 8자 이상
+        const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+        return passwordRegex.test(value);
+    };
+
+    const codeInputRef = useRef(null);
+
+    const handleBackClick = () => {
+        if (currentStep > 1) {
+            setCurrentStep(currentStep - 1);
+        } else {
+            navigate(-1);
+        }
+    };
+
     const [consents, setConsents] = useState({
-        personalInfo: false,
-        personalInfoProvision: false,
-        age14: false,
+        all: false,
         terms: false,
-        rights: false
+        privacy: false,
+        marketing: false,
+        thirdParty: false
     });
 
     const handleNext = () => {
         if (currentStep < 8) {
             if (currentStep === 3) {
-                // case3에서 다음 버튼을 누르면 case4로 이동
+                // 인증코드 입력 완료 → 완료 화면으로 이동
                 setCurrentStep(4);
-                // 5초 후 case5로 자동 이동
-                setTimeout(() => {
-                    setCurrentStep(5);
-                }, 5000);
             } else if (currentStep === 6) {
                 // case6에서 완료 버튼을 누르면 case7로 이동
-                setCurrentStep(7);
+                navigate('/login');
             } else {
                 setCurrentStep(currentStep + 1);
             }
@@ -44,17 +64,152 @@ function RegisterPage() {
     };
 
     const handleConsentChange = (key) => {
-        setConsents(prev => ({
-            ...prev,
-            [key]: !prev[key]
-        }));
+        if (key === 'all') {
+            const newAllValue = !consents.all;
+            setConsents({
+                all: newAllValue,
+                terms: newAllValue,
+                privacy: newAllValue,
+                marketing: newAllValue,
+                thirdParty: newAllValue
+            });
+        } else {
+            const newConsents = {
+                ...consents,
+                [key]: !consents[key]
+            };
+            
+            // 개별 체크박스 변경 시 전체 동의 상태 업데이트
+            const allChecked = newConsents.terms && newConsents.privacy && newConsents.marketing && newConsents.thirdParty;
+            newConsents.all = allChecked;
+            
+            setConsents(newConsents);
+        }
+    };
+
+    const handleResendCode = () => {
+        setShowToast(true);
+        // 3초 후 토스트 메시지 숨기기
+        setTimeout(() => {
+            setShowToast(false);
+        }, 3000);
+    };
+
+    const handleTermsClick = (termsType) => {
+        setCurrentTermsType(termsType);
+        setShowTermsPage(true);
+    };
+
+    const handleBackToRegister = () => {
+        setShowTermsPage(false);
+        setCurrentTermsType('');
+    };
+
+    const getTermsContent = (termsType) => {
+        switch (termsType) {
+            case 'terms':
+                return {
+                    title: '서비스 이용 약관',
+                    subtitle: '1. (필수) 서비스 이용약관',
+                    content: `제1조 (목적)
+본 약관은 티미타카(이하 본사)가 제공하는 서비스의 이용과 관련하여, 회사와 이용자 간의 권리·의무 및 책임사항을 규정함을 목적으로 합니다.
+
+제2조 (정의)
+1. "서비스"라 함은 회사가 제공하는 모든 온라인/모바일 기반 기능을 말합니다.
+2. "이용자"라 함은 본 약관에 동의하고 서비스를 이용하는 회원 및 비회원을 의미합니다.
+
+제3조 (약관의 효력 및 변경)
+1. 본 약관은 서비스 화면에 게시하거나 기타 방법으로 공지함으로써 효력이 발생합니다.
+2. 회사는 필요 시 관련 법령을 위반하지 않는 범위 내에서 약관을 변경할 수 있으며, 변경 시 사전 공지합니다.
+
+제4조 (회원가입 및 계정 관리)
+1. 이용자는 회사가 정한 절차에 따라 회원가입을 신청하고, 회사가 이를 승낙함으로써 회원이 됩니다.
+2. 회원은 자신의 계정 정보를 정확히 관리해야 하며, 타인에게 양도·대여할 수 없습니다.
+
+제5조 (서비스의 제공 및 변경)
+1. 회사는 안정적인 서비스를 제공하기 위해 노력합니다.
+2. 회사는 서비스의 일부 또는 전부를 변경·중단할 수 있으며, 사전에 공지합니다.
+
+제6조 (이용자의 의무)
+1. 타인의 계정을 도용하거나 허위 정보를 입력해서는 안 됩니다.
+2. 서비스 운영을 방해하는 행위를 해서는 안 됩니다.
+
+제7조 (회사의 책임 제한)
+1. 회사는 천재지변, 시스템 장애 등 불가항력으로 인한 서비스 중단에 대해 책임을 지지 않습니다.
+2. 회사는 이용자의 귀책 사유로 발생한 손해에 대해서는 책임을 지지 않습니다.
+
+제8조 (준거법 및 관할법원)
+본 약관은 대한민국 법률에 따라 해석되며, 분쟁 발생 시 회사 본점 소재지를 관할하는 법원을 전속 관할법원으로 합니다.`
+                };
+            case 'privacy':
+                return {
+                    title: '개인정보 처리방침',
+                    subtitle: '2. (필수) 개인정보 처리방침',
+                    content: `제1조 (개인정보의 처리목적)
+회사는 다음의 목적을 위해 개인정보를 수집·이용합니다.
+ · 회원 가입 및 본인 확인
+ · 서비스 제공 및 맞춤형 기능 제공
+ · 고객 문의 응대 및 공지사항 전달
+
+제2조 (수집하는 개인정보 항목)
+ · 필수: 이름, 이메일, 비밀번호, 학교 이메일 인증 값
+ · 선택: 프로필 사진
+
+제3조 (개인정보의 보관 및 이용 기간)
+ · 회원 탈퇴 시 즉시 파기
+ · 법령에서 정한 기간 동안 보존해야 하는 경우, 해당 기간 동안 보관
+
+제4조 (개인정보 제3자 제공)
+회사는 이용자의 사전 동의 없이 개인정보를 제3자에게 제공하지 않습니다. 단, 법령에 따라 요청이 있는 경우는 예외로 합니다.
+
+제5조 (개인정보 처리 위탁)
+서비스 운영을 위해 일부 업무를 외부에 위탁할 수 있으며, 이 경우 이용자에게 고지합니다.
+
+제6조 (이용자의 권리와 행사 방법)
+이용자는 언제든지 자신의 개인정보를 열람·정정·삭제할 수 있습니다.`
+                };
+            case 'marketing':
+                return {
+                    title: '마케팅 정보 수신 동의',
+                    subtitle: '3. (선택) 마케팅 정보 수신 동의',
+                    content: `제1조 (마케팅 활용 목적)
+회사는 서비스 관련 혜택, 이벤트, 프로모션, 신규 기능 안내 등을 이메일, 앱 알림 등을 통해 발송할 수 있습니다.
+
+제2조 (수집 항목)
+ · 이메일 주소, 앱 푸시 토큰
+
+제3조 (동의 철회)
+ · 이용자는 언제든지 [알림]에서 수신 동의를 철회할 수 있습니다.
+ · 철회 시 마케팅 정보 발송은 중단되며, 필수 서비스 공지는 계속 발송될 수 있습니다.`
+                };
+            case 'thirdParty':
+                return {
+                    title: '제 3자 제공 동의',
+                    subtitle: '4. (선택) 제3자 제공 동의',
+                    content: `제1조 (제3자 제공 목적)
+회사는 서비스 품질 향상 및 제휴 서비스 제공을 위하여 이용자의 개인정보를 제3자에게 제공할 수 있습니다.
+
+제2조 (제공 항목 및 대상)
+ · 제공 항목: 이메일, 이름, 서비스 이용 기록 일부
+ · 제공 대상: 제휴 콘텐츠 업체, 광고 파트너사
+
+제3조 (보관 및 이용 기간)
+ · 제공 시 명시된 목적 달성 시까지
+ · 법령상 의무가 있는 경우 해당 기간 동안 보관
+
+제4조 (동의 철회)
+ · 이용자는 언제든지 제3자 제공 동의를 철회할 수 있으며, 철회 즉시 제3자 제공이 중단됩니다.`
+                };
+            default:
+                return { title: '', subtitle: '', content: '' };
+        }
     };
 
     const isNextButtonActive = () => {
         switch (currentStep) {
             case 1:
-                // 대학 검색: 대학 선택만
-                return university.trim();
+                // 필수 항목만 체크되면 활성화
+                return consents.terms && consents.privacy;
             case 2:
                 // 약관 동의: 모든 필수 약관 동의
                 return consents.personalInfo && 
@@ -63,8 +218,8 @@ function RegisterPage() {
                        consents.terms && 
                        consents.rights;
             case 3:
-                // 이메일 입력: 학부 + 이메일 + 인증번호
-                return department.trim() && email.trim() && verificationCode.trim();
+                // 인증 코드: 6자리 모두 입력되면 활성화
+                return verificationCode.trim().length === 6;
             case 4:
                 return password.trim() && passwordConfirm.trim();
             default:
@@ -81,24 +236,86 @@ function RegisterPage() {
                             <div className="progress-step active"></div>
                             <div className="progress-step"></div>
                             <div className="progress-step"></div>
+                            <div className="progress-step"></div>
                         </div>
                         <div className="step-description">
-                            <p>약관을 동의하면</p>
-                            <p><span className="highlight">대학교 인증</span>을 시작합니다.</p>
+                            <p>서비스 이용을 위해</p>
+                            <p>약관에 동의해주세요.</p>
                         </div>
-                        <div className="input-group">
-                            <label>대학 검색</label>
-                            <div className="input-with-check">
-                                <input
-                                    type="text"
-                                    placeholder="대학교 검색하기"
-                                    value={university}
-                                    onChange={(e) => setUniversity(e.target.value)}
-                                />
-                                {university.trim() && (
-                                    <div className="check-icon">
-                                    </div>
-                                )}
+                        <div className="step-description-sub">
+                            <p>필수 항목에 동의해야 가입할 수 있습니다.</p>
+                        </div>
+                        
+                        <div className="consent-section">
+                            <div className={`consent-item all-consent ${consents.all ? 'checked' : ''}`} onClick={() => handleConsentChange('all')}>
+                                <div className={`checkbox all-checkbox ${consents.all ? 'checked' : ''}`}>
+                                    <img
+                                        src={consents.all ? '/check__active.png' : '/check__inactive.png'}
+                                        alt="전체 동의 체크"
+                                        className="check-image"
+                                    />
+                                </div>
+                                <span className="consent-text">전체 동의</span>
+                            </div>
+                            
+                            <div className={`consent-item ${consents.terms ? 'checked' : ''}`} onClick={() => handleConsentChange('terms')}>
+                                <div className="checkbox-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="17" height="14" viewBox="0 0 17 14" fill="none">
+                                        <path d="M14.4393 1.27284C15.025 0.68705 15.9746 0.68705 16.5604 1.27284C17.1461 1.85862 17.1461 2.80814 16.5604 3.39393L7.22734 12.7269C6.64156 13.3127 5.69204 13.3127 5.10625 12.7269L0.439258 8.06092C-0.146474 7.47519 -0.146365 6.52563 0.439258 5.93983C1.02504 5.35404 1.97457 5.35404 2.56035 5.93983L6.16582 9.5453L14.4393 1.27284Z" fill={consents.terms ? "#F76241" : "#807C7C"}/>
+                                    </svg>
+                                </div>
+                                <span className="consent-text">
+                                    <span className="consent-label">[필수]</span>
+                                    <span className="consent-content"> 서비스 이용약관 동의</span>
+                                </span>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="8" height="14" viewBox="0 0 8 14" fill="none" onClick={() => handleTermsClick('terms')} style={{cursor: 'pointer'}}>
+                                    <path d="M2 12.5L6.38848 7.67267C6.73523 7.29125 6.73523 6.70875 6.38848 6.32733L2 1.5" stroke={consents.terms ? "#F76241" : "#807C7C"} strokeWidth="2.5" strokeLinecap="round"/>
+                                </svg>
+                            </div>
+                            
+                            <div className={`consent-item ${consents.privacy ? 'checked' : ''}`} onClick={() => handleConsentChange('privacy')}>
+                                <div className="checkbox-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="17" height="14" viewBox="0 0 17 14" fill="none">
+                                        <path d="M14.4393 1.27284C15.025 0.68705 15.9746 0.68705 16.5604 1.27284C17.1461 1.85862 17.1461 2.80814 16.5604 3.39393L7.22734 12.7269C6.64156 13.3127 5.69204 13.3127 5.10625 12.7269L0.439258 8.06092C-0.146474 7.47519 -0.146365 6.52563 0.439258 5.93983C1.02504 5.35404 1.97457 5.35404 2.56035 5.93983L6.16582 9.5453L14.4393 1.27284Z" fill={consents.privacy ? "#F76241" : "#807C7C"}/>
+                                    </svg>
+                                </div>
+                                <span className="consent-text">
+                                    <span className="consent-label">[필수]</span>
+                                    <span className="consent-content"> 개인정보 처리방침 동의</span>
+                                </span>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="8" height="14" viewBox="0 0 8 14" fill="none" onClick={() => handleTermsClick('privacy')} style={{cursor: 'pointer'}}>
+                                    <path d="M2 12.5L6.38848 7.67267C6.73523 7.29125 6.73523 6.70875 6.38848 6.32733L2 1.5" stroke={consents.privacy ? "#F76241" : "#807C7C"} strokeWidth="2.5" strokeLinecap="round"/>
+                                </svg>
+                            </div>
+                            
+                            <div className={`consent-item ${consents.marketing ? 'checked' : ''}`} onClick={() => handleConsentChange('marketing')}>
+                                <div className="checkbox-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="17" height="14" viewBox="0 0 17 14" fill="none">
+                                        <path d="M14.4393 1.27284C15.025 0.68705 15.9746 0.68705 16.5604 1.27284C17.1461 1.85862 17.1461 2.80814 16.5604 3.39393L7.22734 12.7269C6.64156 13.3127 5.69204 13.3127 5.10625 12.7269L0.439258 8.06092C-0.146474 7.47519 -0.146365 6.52563 0.439258 5.93983C1.02504 5.35404 1.97457 5.35404 2.56035 5.93983L6.16582 9.5453L14.4393 1.27284Z" fill={consents.marketing ? "#F76241" : "#807C7C"}/>
+                                    </svg>
+                                </div>
+                                <span className="consent-text">
+                                    <span className="consent-label">[선택]</span>
+                                    <span className="consent-content"> 마케팅 정보 수신 동의</span>
+                                </span>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="8" height="14" viewBox="0 0 8 14" fill="none" onClick={() => handleTermsClick('marketing')} style={{cursor: 'pointer'}}>
+                                    <path d="M2 12.5L6.38848 7.67267C6.73523 7.29125 6.73523 6.70875 6.38848 6.32733L2 1.5" stroke={consents.marketing ? "#F76241" : "#807C7C"} strokeWidth="2.5" strokeLinecap="round"/>
+                                </svg>
+                            </div>
+                            
+                            <div className={`consent-item ${consents.thirdParty ? 'checked' : ''}`} onClick={() => handleConsentChange('thirdParty')}>
+                                <div className="checkbox-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="17" height="14" viewBox="0 0 17 14" fill="none">
+                                        <path d="M14.4393 1.27284C15.025 0.68705 15.9746 0.68705 16.5604 1.27284C17.1461 1.85862 17.1461 2.80814 16.5604 3.39393L7.22734 12.7269C6.64156 13.3127 5.69204 13.3127 5.10625 12.7269L0.439258 8.06092C-0.146474 7.47519 -0.146365 6.52563 0.439258 5.93983C1.02504 5.35404 1.97457 5.35404 2.56035 5.93983L6.16582 9.5453L14.4393 1.27284Z" fill={consents.thirdParty ? "#F76241" : "#807C7C"}/>
+                                    </svg>
+                                </div>
+                                <span className="consent-text">
+                                    <span className="consent-label">[선택]</span>
+                                    <span className="consent-content"> 제3자 제공 동의</span>
+                                </span>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="8" height="14" viewBox="0 0 8 14" fill="none" onClick={() => handleTermsClick('thirdParty')} style={{cursor: 'pointer'}}>
+                                    <path d="M2 12.5L6.38848 7.67267C6.73523 7.29125 6.73523 6.70875 6.38848 6.32733L2 1.5" stroke={consents.thirdParty ? "#F76241" : "#807C7C"} strokeWidth="2.5" strokeLinecap="round"/>
+                                </svg>
                             </div>
                         </div>
                     </div>
@@ -107,355 +324,198 @@ function RegisterPage() {
                 return (
                     <div className="step-content">
                         <div className="progress-indicator">
-                            <div className="progress-step"></div>
+                            <div className="progress-step completed"></div>
                             <div className="progress-step active"></div>
+                            <div className="progress-step"></div>
                             <div className="progress-step"></div>
                         </div>
                         <div className="step-description">
-                            <p>약관을 동의하면</p>
-                            <p><span className="highlight">대학교 인증</span>을 시작합니다.</p>
+                            <p>학생 인증을 위해</p>
+                            <p>학교 이메일을 입력해주세요.</p>
                         </div>
-                        <div className="consent-sections">
-                            <div className="consent-section">
-                                <h3 className="consent-section-title">필수 동의 (서비스)</h3>
-                                <div className="consent-items">
-                                    <div className={`consent-item ${consents.personalInfo ? 'checked' : ''}`} onClick={() => handleConsentChange('personalInfo')}>
-                                        <div className="check-icon">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="17" height="13" viewBox="0 0 17 13" fill="none">
-                                                <path d="M14.5537 0.918916C15.1428 0.438799 16.0115 0.473407 16.5605 1.02243C17.1096 1.57146 17.1442 2.44012 16.664 3.02927L16.5605 3.14353L7.22752 12.4765C6.64174 13.0623 5.69222 13.0623 5.10643 12.4765L0.439439 7.81052L0.335923 7.69626C-0.144314 7.10716 -0.109491 6.23852 0.439439 5.68942C0.988513 5.14035 1.85712 5.10566 2.44627 5.58591L2.56053 5.68942L6.166 9.29489L14.4394 1.02243L14.5537 0.918916Z" fill="currentColor"/>
-                                            </svg>
-                                        </div>
-                                        <span>개인 정보 수집/이용 동의</span>
-                                        <div className="arrow-icon">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="8" height="14" viewBox="0 0 8 14" fill="none">
-                                                <path d="M1.2607 13.175C0.781753 12.7396 0.718796 12.0175 1.09566 11.508L1.17671 11.4094L5.41206 6.75021L1.17671 2.09103C0.712342 1.58023 0.74992 0.789797 1.2607 0.325407C1.7715 -0.138962 2.56193 -0.101384 3.02632 0.409391L7.41499 5.23654C8.14648 6.04118 8.1919 7.24359 7.55171 8.09787L7.41499 8.26388L3.02632 13.091L2.9355 13.1809C2.46414 13.6043 1.73962 13.6104 1.2607 13.175Z" fill="currentColor"/>
-                                            </svg>
-                                        </div>
-                                    </div>
-                                    <div className={`consent-item ${consents.personalInfoProvision ? 'checked' : ''}`} onClick={() => handleConsentChange('personalInfoProvision')}>
-                                        <div className="check-icon">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="17" height="13" viewBox="0 0 17 13" fill="none">
-                                                <path d="M14.5537 0.918916C15.1428 0.438799 16.0115 0.473407 16.5605 1.02243C17.1096 1.57146 17.1442 2.44012 16.664 3.02927L16.5605 3.14353L7.22752 12.4765C6.64174 13.0623 5.69222 13.0623 5.10643 12.4765L0.439439 7.81052L0.335923 7.69626C-0.144314 7.10716 -0.109491 6.23852 0.439439 5.68942C0.988513 5.14035 1.85712 5.10566 2.44627 5.58591L2.56053 5.68942L6.166 9.29489L14.4394 1.02243L14.5537 0.918916Z" fill="currentColor"/>
-                                            </svg>
-                                        </div>
-                                        <span>개인 정보 제공 동의</span>
-                                        <div className="arrow-icon">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="8" height="14" viewBox="0 0 8 14" fill="none">
-                                                <path d="M1.2607 13.175C0.781753 12.7396 0.718796 12.0175 1.09566 11.508L1.17671 11.4094L5.41206 6.75021L1.17671 2.09103C0.712342 1.58023 0.74992 0.789797 1.2607 0.325407C1.7715 -0.138962 2.56193 -0.101384 3.02632 0.409391L7.41499 5.23654C8.14648 6.04118 8.1919 7.24359 7.55171 8.09787L7.41499 8.26388L3.02632 13.091L2.9355 13.1809C2.46414 13.6043 1.73962 13.6104 1.2607 13.175Z" fill="currentColor"/>
-                                            </svg>
-                                        </div>
-                                    </div>
-                                    <div className={`consent-item ${consents.age14 ? 'checked' : ''}`} onClick={() => handleConsentChange('age14')}>
-                                        <div className="check-icon">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="17" height="13" viewBox="0 0 17 13" fill="none">
-                                                <path d="M14.5537 0.918916C15.1428 0.438799 16.0115 0.473407 16.5605 1.02243C17.1096 1.57146 17.1442 2.44012 16.664 3.02927L16.5605 3.14353L7.22752 12.4765C6.64174 13.0623 5.69222 13.0623 5.10643 12.4765L0.439439 7.81052L0.335923 7.69626C-0.144314 7.10716 -0.109491 6.23852 0.439439 5.68942C0.988513 5.14035 1.85712 5.10566 2.44627 5.58591L2.56053 5.68942L6.166 9.29489L14.4394 1.02243L14.5537 0.918916Z" fill="currentColor"/>
-                                            </svg>
-                                        </div>
-                                        <span>만 14세 이상</span>
-                                        <div className="arrow-icon">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="8" height="14" viewBox="0 0 8 14" fill="none">
-                                                <path d="M1.2607 13.175C0.781753 12.7396 0.718796 12.0175 1.09566 11.508L1.17671 11.4094L5.41206 6.75021L1.17671 2.09103C0.712342 1.58023 0.74992 0.789797 1.2607 0.325407C1.7715 -0.138962 2.56193 -0.101384 3.02632 0.409391L7.41499 5.23654C8.14648 6.04118 8.1919 7.24359 7.55171 8.09787L7.41499 8.26388L3.02632 13.091L2.9355 13.1809C2.46414 13.6043 1.73962 13.6104 1.2607 13.175Z" fill="currentColor"/>
-                                            </svg>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="consent-section">
-                                <div className="consent-section-title">필수 동의 (약관 및 인증)</div>
-                                <div className="consent-items">
-                                    <div className={`consent-item ${consents.terms ? 'checked' : ''}`} onClick={() => handleConsentChange('terms')}>
-                                        <div className="check-icon">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="17" height="13" viewBox="0 0 17 13" fill="none">
-                                                <path d="M14.5537 0.918916C15.1428 0.438799 16.0115 0.473407 16.5605 1.02243C17.1096 1.57146 17.1442 2.44012 16.664 3.02927L16.5605 3.14353L7.22752 12.4765C6.64174 13.0623 5.69222 13.0623 5.10643 12.4765L0.439439 7.81052L0.335923 7.69626C-0.144314 7.10716 -0.109491 6.23852 0.439439 5.68942C0.988513 5.14035 1.85712 5.10566 2.44627 5.58591L2.56053 5.68942L6.166 9.29489L14.4394 1.02243L14.5537 0.918916Z" fill="currentColor"/>
-                                            </svg>
-                                        </div>
-                                        <span>개인 정보 수집/이용 동의</span>
-                                        <div className="arrow-icon">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="8" height="14" viewBox="0 0 8 14" fill="none">
-                                                <path d="M1.2607 13.175C0.781753 12.7396 0.718796 12.0175 1.09566 11.508L1.17671 11.4094L5.41206 6.75021L1.17671 2.09103C0.712342 1.58023 0.74992 0.789797 1.2607 0.325407C1.7715 -0.138962 2.56193 -0.101384 3.02632 0.409391L7.41499 5.23654C8.14648 6.04118 8.1919 7.24359 7.55171 8.09787L7.41499 8.26388L3.02632 13.091L2.9355 13.1809C2.46414 13.6043 1.73962 13.6104 1.2607 13.175Z" fill="currentColor"/>
-                                            </svg>
-                                        </div>
-                                    </div>
-                                    <div className={`consent-item ${consents.rights ? 'checked' : ''}`} onClick={() => handleConsentChange('rights')}>
-                                        <div className="check-icon">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="17" height="13" viewBox="0 0 17 13" fill="none">
-                                                <path d="M14.5537 0.918916C15.1428 0.438799 16.0115 0.473407 16.5605 1.02243C17.1096 1.57146 17.1442 2.44012 16.664 3.02927L16.5605 3.14353L7.22752 12.4765C6.64174 13.0623 5.69222 13.0623 5.10643 12.4765L0.439439 7.81052L0.335923 7.69626C-0.144314 7.10716 -0.109491 6.23852 0.439439 5.68942C0.988513 5.14035 1.85712 5.10566 2.44627 5.58591L2.56053 5.68942L6.166 9.29489L14.4394 1.02243L14.5537 0.918916Z" fill="currentColor"/>
-                                            </svg>
-                                        </div>
-                                        <span>개인 정보 제공 동의</span>
-                                        <div className="arrow-icon">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="8" height="14" viewBox="0 0 8 14" fill="none">
-                                                <path d="M1.2607 13.175C0.781753 12.7396 0.718796 12.0175 1.09566 11.508L1.17671 11.4094L5.41206 6.75021L1.17671 2.09103C0.712342 1.58023 0.74992 0.789797 1.2607 0.325407C1.7715 -0.138962 2.56193 -0.101384 3.02632 0.409391L7.41499 5.23654C8.14648 6.04118 8.1919 7.24359 7.55171 8.09787L7.41499 8.26388L3.02632 13.091L2.9355 13.1809C2.46414 13.6043 1.73962 13.6104 1.2607 13.175Z" fill="currentColor"/>
-                                            </svg>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                        <div className="step-description-sub">
+                            <p>티미타카는 학교 이메일로만 가입할 수 있습니다.</p>
                         </div>
+                        <div className="step-description-small">
+                            <p>학교 이메일 입력</p>
+                        </div>
+                        <div className="standard-input-field">
+                            <input
+                                type="email"
+                                placeholder="본인 명의의 학교 이메일을 입력해주세요."
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                            />
+                        </div>
+                        {email && !isValidEmail(email) && (
+                            <div className="input-error-text">올바른 이메일 형식을 입력해주세요.</div>
+                        )}
                     </div>
                 );
             case 3:
                 return (
                     <div className="step-content">
                         <div className="progress-indicator">
-                            <div className="progress-step"></div>
+                            <div className="progress-step completed"></div>
                             <div className="progress-step active"></div>
+                            <div className="progress-step"></div>
                             <div className="progress-step"></div>
                         </div>
                         <div className="step-description">
-                            <p>인증 시 필요한</p>
-                            <p><span className="highlight">대학 메일을 입력</span>해주세요.</p>
+                            <p>입력하신 이메일로 받은</p>
+                            <p>인증 코드를 입력해주세요.</p>
                         </div>
-                        <div className="step3-input-with-check">
-                            <span className="step3-input-with-check-text">{`${university}`}</span>
-                            <span className="check-icon">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-                                    <path d="M5 12L10 17L20 7" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                                </svg>
-                            </span>
+                        <div className="step-description-sub">
+                            <p>인증 코드를 이메일로 보냈습니다.</p>
                         </div>
-                        <div className="step3-input-field">
+                        <div className="step-description-small">
+                            <p>인증 코드 입력</p>
+                        </div>
+                        <div className="code-input-wrapper" onClick={() => codeInputRef.current && codeInputRef.current.focus()}>
+                            {Array.from({ length: 6 }).map((_, idx) => (
+                                <div key={idx} className="code-box">
+                                    {verificationCode[idx] || ''}
+                                </div>
+                            ))}
                             <input
-                                type="text"
-                                placeholder="학부를 입력해주세요"
-                                value={department}
-                                onChange={(e) => setDepartment(e.target.value)}
-                            />
-                        </div>
-                        <div className="step3-input-with-verify-button">
-                            <input
-                                type="email"
-                                placeholder="대학 이메일을 입력해주세요"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                            />
-                            <button className={`verify-button ${email ? 'active' : ''}`}>
-                                {email ? '인증번호 전송' : '인증하기'}
-                            </button>
-                        </div>
-                        <div className="step3-input-field">
-                            <input
-                                type="text"
-                                placeholder="인증번호를 입력해주세요"
+                                ref={codeInputRef}
+                                type="tel"
+                                inputMode="numeric"
+                                pattern="[0-9]*"
+                                maxLength={6}
                                 value={verificationCode}
-                                onChange={(e) => setVerificationCode(e.target.value)}
+                                onChange={(e) => setVerificationCode(e.target.value.replace(/[^0-9]/g, '').slice(0, 6))}
+                                className="code-hidden-input"
                             />
                         </div>
+                        <div className="resend-code-link" onClick={handleResendCode}>코드 다시 받기</div>
+                        {showToast && (
+                            <div className="toast-message">
+                                <div className="toast-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="17" viewBox="0 0 22 17" fill="none">
+                                        <path d="M19.4501 0.978472C19.9877 0.420763 20.8752 0.40458 21.4332 0.941933C21.9913 1.47951 22.0083 2.36787 21.4707 2.92597L8.85762 16.0213C8.59314 16.2959 8.22765 16.4507 7.84641 16.4507C7.46536 16.4506 7.10053 16.2957 6.83613 16.0213L0.529591 9.47366C-0.00787739 8.91566 0.00834407 8.02723 0.56613 7.48962C1.12413 6.95215 2.01256 6.96837 2.55017 7.52616L7.84641 13.0243L19.4501 0.978472Z" fill="#FFFDFC"/>
+                                    </svg>
+                                </div>
+                                <span className="toast-text">인증 코드를 전송했습니다.</span>
+                            </div>
+                        )}
                     </div>
                 );
             case 4:
                 return (
-                    <div>
-                        <div>
-                            <p style={{
-                                color: 'var(--main, #F76241)',
-                                textAlign: 'center',
-                                fontFamily: 'Pretendard',
-                                fontSize: '23px',
-                                fontStyle: 'normal',
-                                fontWeight: '700',
-                                lineHeight: 'normal',
-                                textTransform: 'capitalize',
-                                marginTop: '330px'
-                            }}>
-                                대학인증을 진행중<span style={{ color: '#140805' }}>입니다!</span>
-                            </p>
-                            <p style={{
-                                color: 'rgba(0, 0, 0, 0.69)',
-                                textAlign: 'center',
-                                fontFamily: 'Pretendard',
-                                fontSize: '18px',
-                                fontStyle: 'normal',
-                                fontWeight: '500',
-                                lineHeight: 'normal',
-                                textTransform: 'capitalize',
-                                margin: '8px 0'
-                            }}>
-                                잠시만 기다려주세요!
-                            </p>
-                            <div style={{ textAlign: 'center', marginTop: '40px' }}>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="56" height="16" viewBox="0 0 56 16" fill="none">
-                                    <circle opacity="0.4" cx="4" cy="12" r="4" fill="#F76241"/>
-                                    <circle opacity="0.6" cx="20" cy="4" r="4" fill="#F76241"/>
-                                    <circle opacity="0.8" cx="36" cy="9" r="4" fill="#F76241"/>
-                                    <circle cx="52" cy="12" r="4" fill="#F76241"/>
-                                </svg>
+                    <div className="step-content">
+                        <div className="progress-indicator">
+                            <div className="progress-step completed"></div>
+                            <div className="progress-step active"></div>
+                            <div className="progress-step"></div>
+                            <div className="progress-step"></div>
+                        </div>
+                        <div className="step-description">
+                            <p>입력하신 이메일로 받은</p>
+                            <p>인증 코드를 입력해주세요.</p>
+                        </div>
+                        <div className="step-description-sub">
+                            <p>인증 코드를 이메일로 보냈습니다.</p>
+                        </div>
+                        <div></div>
+                        <div style={{ textAlign: 'center', marginTop: '122px' }}>
+                            <div style={{ position: 'relative', display: 'inline-block' }}>
+                                <img src="/Star 92.png" alt="star" style={{ width: '64px', height: '64px' }} />
+                                <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="17" viewBox="0 0 22 17" fill="none">
+                                        <path d="M19.4501 0.978472C19.9877 0.420763 20.8752 0.40458 21.4332 0.941933C21.9913 1.47951 22.0083 2.36787 21.4707 2.92597L8.85762 16.0213C8.59314 16.2959 8.22765 16.4507 7.84641 16.4507C7.46536 16.4506 7.10053 16.2957 6.83613 16.0213L0.529591 9.47366C-0.00787739 8.91566 0.00834407 8.02723 0.56613 7.48962C1.12413 6.95215 2.01256 6.96837 2.55017 7.52616L7.84641 13.0243L19.4501 0.978472Z" fill="#140805"/>
+                                    </svg>
+                                </div>
+                            </div>
+                            <div style={{ marginTop: '16px', color: '#140805', textAlign: 'center', fontFamily: 'Pretendard', fontSize: '25px', fontStyle: 'normal', fontWeight: 700, lineHeight: 'normal' }}>
+                                대학교 인증 완료
+                            </div>
+                            <div style={{ marginTop: '4px', color: '#807C7C', textAlign: 'center', fontFamily: 'Pretendard', fontSize: '14px', fontStyle: 'normal', fontWeight: 400, lineHeight: 'normal' }}>
+                                2022.03.10 부로 인증되었습니다.
                             </div>
                         </div>
                     </div>
                 );
             case 5:
                 return (
-                    <div>
-                        <div>
-                            <div style={{
-                                borderRadius: '30px',
-                                background: '#F76241',
-                                display: 'flex',
-                                width: '60px',
-                                height: '60px',
-                                padding: '16px 9px',
-                                flexDirection: 'column',
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                                gap: '10px',
-                                flexShrink: '0',
-                                margin: '330px auto 25px'
-                            }}>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="21" viewBox="0 0 30 21" fill="none">
-                                    <path d="M2 8.54545L11.6571 18L28 2" stroke="white" strokeWidth="4" strokeLinecap="round"/>
-                                </svg>
-                            </div>
-                            <p style={{
-                                color: '#000',
-                                textAlign: 'center',
-                                fontFamily: 'Pretendard',
-                                fontSize: '25px',
-                                fontStyle: 'normal',
-                                fontWeight: '700',
-                                lineHeight: 'normal',
-                                textTransform: 'capitalize',
-                                margin: '0 0 8px'
-                            }}>
-                                대학교 인증이 완료되었어요
-                            </p>
-                            <p style={{
-                                color: 'var(--grey-3, #807C7C)',
-                                textAlign: 'center',
-                                fontFamily: 'Pretendard',
-                                fontSize: '16px',
-                                fontStyle: 'normal',
-                                fontWeight: '400',
-                                lineHeight: 'normal',
-                                textTransform: 'capitalize',
-                                margin: '0'
-                            }}>
-                                인증 내역은{' '}
-                                <span style={{
-                                    color: 'var(--grey-3, #807C7C)',
-                                    fontFamily: 'Pretendard',
-                                    fontSize: '16px',
-                                    fontStyle: 'normal',
-                                    fontWeight: '400',
-                                    lineHeight: 'normal',
-                                    textDecorationLine: 'underline',
-                                    textDecorationStyle: 'solid',
-                                    textDecorationSkipInk: 'auto',
-                                    textDecorationThickness: '4.5%',
-                                    textUnderlineOffset: '25%',
-                                    textUnderlinePosition: 'from-font',
-                                    textTransform: 'capitalize'
-                                }}>
-                                    마이페이지
-                                </span>
-                                에서 볼 수 있어요.
-                            </p>
+                    <div className="step-content">
+                        <div className="progress-indicator">
+                            <div className="progress-step completed"></div>
+                            <div className="progress-step completed"></div>
+                            <div className="progress-step active"></div>
+                            <div className="progress-step"></div>
                         </div>
+                        <div className="step-description">
+                            <p>계정 보안을 위한</p>
+                            <p>비밀번호를 설정하세요</p>
+                        </div>
+                        <div className="step-description-sub">
+                            <p>비밀번호를 설정하세요.</p>
+                        </div>
+                        <div className='step-description-small'>
+                            <p>비밀번호 설정</p>
+                        </div>
+                        <div className='standard-input-field'>
+                             <input
+                                 type="password"
+                                 placeholder="비밀번호 입력 (영문+숫자 8자 이상)"
+                                 value={password}
+                                 onChange={(e) => setPassword(e.target.value)}
+                             />
+                         </div>
+                         <div className='standard-input-field'>
+                             <input
+                                 type="password"
+                                 placeholder="비밀번호 확인"
+                                 value={passwordConfirm}
+                                 onChange={(e) => setPasswordConfirm(e.target.value)}
+                             />
+                        </div>
+                        {(() => {
+                            const hasAnyInput = password.trim() !== '' || passwordConfirm.trim() !== '';
+                            if (!hasAnyInput) return null;
+                            if (!isValidPassword(password)) {
+                                return <div className='input-error-text'>비밀번호는 영문, 숫자를 혼용해 8자 이상으로 설정하세요.</div>;
+                            }
+                            if (passwordConfirm.trim() === '') {
+                                return <div className='input-error-text'>비밀번호를 한번 더 입력해 확인해주세요.</div>;
+                            }
+                            if (password !== passwordConfirm) {
+                                return <div className='input-error-text'>비밀번호가 일치하지 않습니다.</div>;
+                            }
+                            return null;
+                        })()}
                     </div>
                 );
             case 6:
                 return (
-                    <div className="step-content">
-                        <button
-                                onClick={() => setCurrentStep(5)}
-                                style={{
-                                    background: 'none',
-                                    border: 'none',
-                                    padding: '4px',
-                                    cursor: 'pointer',
-                                    marginBottom: '24px',
-                                    marginTop: '30px',
-                                    display: 'flex',
-                                    justifyContent: 'flex-start',
-                                    alignItems: 'flex-start'
-                                }}
-                            >
-                                <svg xmlns="http://www.w3.org/2000/svg" width="10" height="17" viewBox="0 0 10 17" fill="none">
-                                    <path d="M8.81641 1L1.99822 8.5L8.81641 16" stroke="#140805" strokeWidth="2"/>
-                                </svg>
-                        </button>
-                        <div className="progress-indicator">
-                            <div className="progress-step"></div>
-                            <div className="progress-step"></div>
-                            <div className="progress-step active"></div>
-                        </div>
-                        <div className="step-description">
-                            <p>로그인 시 사용할</p>
-                            <p><span className="highlight">비밀번호</span>를 입력해주세요.</p>
-                        </div>
-                        <div className="step4-input-field">
-                            <input
-                                type="text"
-                                placeholder="비밀번호 입력"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                style={{
-                                    marginBottom: '8px'
-                                }}
-                            />
-                        </div>
-                        <div className="step4-input-field">
-                            <input
-                                type="text"
-                                placeholder="비밀번호 확인"
-                                value={passwordConfirm}
-                                onChange={(e) => setPasswordConfirm(e.target.value)}
-                                style={{
-                                    marginBottom: '8px'
-                                }}
-                            />
-                        </div>
-                        <div style={{ marginTop: '9px' }}>
-                            <button 
-                                className={`next-button ${password === passwordConfirm && password.trim() && passwordConfirm.trim() ? 'active' : ''}`}
-                                onClick={handleNext}
-                                disabled={password !== passwordConfirm || !password.trim() || !passwordConfirm.trim()}
-                                style={{
-                                    width: '100%',
-                                    padding: '16px',
-                                    borderRadius: '8px',
-                                    border: 'none',
-                                    fontSize: '16px',
-                                    fontWeight: '600',
-                                    cursor: password === passwordConfirm && password.trim() && passwordConfirm.trim() ? 'pointer' : 'not-allowed',
-                                    backgroundColor: password === passwordConfirm && password.trim() && passwordConfirm.trim() ? 'var(--main, #F76241)' : '#E0E0E0',
-                                    color: password === passwordConfirm && password.trim() && passwordConfirm.trim() ? 'white' : '#999'
-                                }}
-                            >
-                                완료
-                            </button>
-                        </div>
-                    </div>
-                );
-            case 7:
-                return (
                     <div>
                         <div>
                             <div style={{
-                                borderRadius: '30px',
+                                borderRadius: '28.5px',
                                 background: '#F76241',
                                 display: 'flex',
-                                width: '60px',
-                                height: '60px',
-                                padding: '16px 9px',
+                                width: '57px',
+                                height: '57px',
+                                padding: '20px 17px',
                                 flexDirection: 'column',
                                 justifyContent: 'center',
                                 alignItems: 'center',
                                 gap: '10px',
                                 flexShrink: '0',
-                                margin: '330px auto 24px'
+                                margin: '330px auto 16px'
                             }}>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="21" viewBox="0 0 30 21" fill="none">
-                                    <path d="M2 8.54545L11.6571 18L28 2" stroke="white" strokeWidth="4" strokeLinecap="round"/>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="16" viewBox="0 0 22 16" fill="none">
+                                    <path d="M8.16137 15.0385C7.90176 15.2944 7.48474 15.2944 7.22514 15.0385L0.975385 8.87736C0.438962 8.34854 0.438962 7.48306 0.975385 6.95424C1.50109 6.43599 2.34554 6.43599 2.87124 6.95424L7.69325 11.7079L19.1288 0.434491C19.6545 -0.0837587 20.4989 -0.0837579 21.0246 0.434492C21.561 0.963311 21.561 1.82879 21.0246 2.35761L8.16137 15.0385Z" fill="#FFFDFC"/>
                                 </svg>
                             </div>
                             <p style={{
-                                color: '#000',
+                                color: '#140805',
                                 textAlign: 'center',
                                 fontFamily: 'Pretendard',
-                                fontSize: '25px',
+                                fontSize: '18px',
                                 fontStyle: 'normal',
-                                fontWeight: '700',
+                                fontWeight: '600',
                                 lineHeight: 'normal',
                                 textTransform: 'capitalize',
                                 margin: '0 0 8px'
@@ -465,132 +525,108 @@ function RegisterPage() {
                         </div>
                     </div>
                 );
-            case 8:
-                return (
-                    <div className="step-content">
-                        <div>
-                            <button 
-                                onClick={() => setCurrentStep(7)}
-                                style={{
-                                    background: 'none',
-                                    border: 'none',
-                                    padding: '4px',
-                                    cursor: 'pointer',
-                                    marginBottom: '24px',
-                                    marginTop: '30px'
-                                }}
-                            >
-                                <svg xmlns="http://www.w3.org/2000/svg" width="10" height="17" viewBox="0 0 10 17" fill="none">
-                                    <path d="M8.81641 1L1.99822 8.5L8.81641 16" stroke="#140805" strokeWidth="2"/>
-                                </svg>
-                            </button>
-                        </div>
-                        <div style={{
-                            color: '#000',
-                            fontFamily: 'Pretendard',
-                            fontSize: '24px',
-                            fontStyle: 'normal',
-                            fontWeight: '600',
-                            lineHeight: '36px',
-                            marginBottom: '24px'
-                        }}>
-                            로그인
-                        </div>
-                        <div className="step4-input-field">
-                            <input
-                                type="email"
-                                placeholder="학교 이메일"
-                                onChange={(e) => setEmail(e.target.value)}
-                                style={{
-                                    marginBottom: '8px'
-                                }}
-                            />
-                        </div>
-                        <div className="step4-input-field">
-                            <input
-                                type="text"
-                                placeholder="비밀번호"
-                                onChange={(e) => setPassword(e.target.value)}
-                            />
-                        </div>
-                        <div className="find-links">
-                            <span style={{
-                                color: '#807C7C',
-                                fontFamily: 'Pretendard',
-                                fontSize: '12px',
-                                fontStyle: 'normal',
-                                fontWeight: '400',
-                                lineHeight: 'normal',
-                            }}>
-                                비밀번호를 잊어버리셨나요?
-                            </span>
-                        </div>
-                        <div style={{ marginTop: '24px' }}>
-                            <button 
-                                className={`next-button ${email.trim() && password.trim() ? 'active' : ''}`}
-                                onClick={handleNext}
-                                disabled={!email.trim() || !password.trim()}
-                                style={{
-                                    width: '100%',
-                                    padding: '16px',
-                                    borderRadius: '8px',
-                                    border: 'none',
-                                    fontSize: '16px',
-                                    fontWeight: '600',
-                                    cursor: email.trim() && password.trim() ? 'pointer' : 'not-allowed',
-                                    backgroundColor: email.trim() && password.trim() ? 'var(--main, #F76241)' : '#E0E0E0',
-                                    color: email.trim() && password.trim() ? 'white' : '#999'
-                                }}
-                            >
-                                로그인
-                            </button>
-                        </div>
-                    </div>
-                );
             default:
                 return null;
         }
     };
 
+    if (showTermsPage) {
+        return (
+            <div className="terms-page-container">
+                <div className="terms-header">
+                    <button className="back-button" onClick={handleBackToRegister}>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="10" height="17" viewBox="0 0 10 17" fill="none">
+                            <path d="M8.81641 1L1.99822 8.5L8.81641 16" stroke="#140805" strokeWidth="2"/>
+                        </svg>
+                    </button>
+                    <div className="header-title">{getTermsContent(currentTermsType).title}</div>
+                </div>
+                <div className="terms-content">
+                    <h1 className="terms-subtitle">{getTermsContent(currentTermsType).subtitle}</h1>
+                    <div className="terms-text-content">
+                        <pre>{getTermsContent(currentTermsType).content}</pre>
+                    </div>
+                </div>
+                <div className="terms-footer">
+                    <button className="terms-agree-button" onClick={handleBackToRegister}>
+                        동의합니다.
+                    </button>
+                </div>
+            </div>
+        );
+    }
+
     return (
-        <div className={`register-page-container ${currentStep === 4 || currentStep === 5 || currentStep === 7 ? 'bg-gray' : ''}`}>
-                {currentStep !== 4 && currentStep !== 5 && currentStep !== 6 && currentStep !== 7 && currentStep !== 8 && (
+        <div className={`register-page-container`}>
+                { currentStep !== 6 && (
                  <div className="header">
-                     <button className="close-button" onClick={() => navigate('/login')}>
-                         <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 17 17" fill="none">
-                             <path d="M16.4141 1.41406L9.62109 8.20703L16.4141 15L15 16.4141L8.20703 9.62109L1.41406 16.4141L0 15L6.79297 8.20703L0 1.41406L1.41406 0L8.20703 6.79297L15 0L16.4141 1.41406Z" fill="#140805"/>
+                    <button className="back-button" onClick={handleBackClick}>
+                         <svg xmlns="http://www.w3.org/2000/svg" width="10" height="17" viewBox="0 0 10 17" fill="none">
+                             <path d="M8.81641 1L1.99822 8.5L8.81641 16" stroke="#140805" strokeWidth="2"/>
                          </svg>
                      </button>
+                    <div className="header-title">{currentStep === 2 || currentStep === 3 || currentStep === 4 ? '학생 이메일 인증' : currentStep === 5? '비밀번호 설정' : '서비스 약관 동의'}</div>
                  </div>
              )}
             <div className="main-content">
                 {renderStep()}
             </div>
-                         {currentStep !== 4 && currentStep !== 6 && currentStep !== 8 && (
-                 <div className="bottom-button">
-                     {currentStep === 5 ? (
-                         <button 
-                             className="next-button active"
-                             onClick={() => setCurrentStep(6)}
-                         >
-                             닫기
-                         </button>
-                     ) : currentStep === 7 ? (
-                         <button 
-                             className="next-button active"
-                             onClick={() => setCurrentStep(8)}
-                         >
-                             로그인 하기
-                         </button>
-                     ) : (
-                         <button 
-                             className={`next-button ${isNextButtonActive() ? 'active' : ''}`}
-                             onClick={handleNext}
-                             disabled={!isNextButtonActive()}
-                         >
-                             다음
-                         </button>
-                     )}
+                         {currentStep && (
+                <div className="bottom-button">
+                    {currentStep === 4 ? (
+                        <button 
+                            className="next-button active"
+                            onClick={() => setCurrentStep(5)}
+                        >
+                            대학교 인증 확인
+                        </button>
+                    ) : (
+                        currentStep === 1 ? (
+                            (consents.terms && consents.privacy && consents.marketing && consents.thirdParty) ? (
+                                <button 
+                                    className="next-button active"
+                                    onClick={handleNext}
+                                >
+                                    다음으로
+                                </button>
+                            ) : null
+                        ) : currentStep === 2 ? (
+                            isValidEmail(email) ? (
+                                <button 
+                                    className="next-button active"
+                                    onClick={() => setCurrentStep(3)}
+                                >
+                                    인증 코드 전송
+                                </button>
+                            ) : null
+                        ) : (
+                            currentStep === 5 ? (
+                                (isValidPassword(password) && passwordConfirm.trim() !== '' && password === passwordConfirm) ? (
+                                    <button 
+                                        className="next-button active"
+                                        onClick={handleNext}
+                                    >
+                                        다음으로
+                                    </button>
+                                ) : null
+                            ) : currentStep === 6 ? (
+                                <button 
+                                    className="next-button active"
+                                    onClick={handleNext}
+                                >
+                                    로그인 하기
+                                </button>
+                            ) : (
+                                <button 
+                                    className={`next-button ${isNextButtonActive() ? 'active' : ''}`}
+                                    onClick={handleNext}
+                                    disabled={!isNextButtonActive()}
+                                >
+                                    {currentStep === 3 ? '입력 완료' : '다음으로'}
+                                </button>
+                            )
+                        )
+                    )}
                  </div>
              )}
         </div>

@@ -16,22 +16,34 @@ function LoginPage() {
                 <div className="subtitle">
                     <span className="highlight">맞춤형 팀 매칭</span>
                     <span className="normal">으로 </span>
-                    <span className="normal">완벽한 프로젝트 케미를</span>
+                    <span className="normal">프로젝트를 완성하세요!</span>
                 </div>
                 
                 <div className="button-group">
+                    <input className="input-field" placeholder="아이디 입력" type="text">
+                    </input>
+                    <input className="input-field" placeholder="비밀번호 입력" type="password">
+                    </input>
                     <button className="login-button">
-                        이메일로 로그인하기
-                    </button>
-                    <button className="signup-button" onClick={handleSignup}>
-                        회원가입
+                        로그인
                     </button>
                 </div>
                 
                 <div className="find-links">
                     <button className="find-links-button">
-                        아이디 찾기 / 비밀번호 찾기
+                        아이디 찾기
                     </button>
+                    <span className="find-links-separator">|</span>
+                    <button className="find-links-button">
+                        비밀번호 찾기
+                    </button>
+                    <span className="find-links-separator">|</span>
+                    <button className="find-links-button" onClick={handleSignup}>
+                        회원가입
+                    </button>
+                </div>
+                <div className="look-without-register">
+                    회원가입 없이 둘러볼래요
                 </div>
             </div>
         </div>
