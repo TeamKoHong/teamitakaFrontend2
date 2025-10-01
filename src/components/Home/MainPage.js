@@ -1,40 +1,42 @@
+// [MainPage.js]
 import React from 'react';
+import { useNavigate } from "react-router-dom";
 import './main.scss';
 import BottomNav from '../Common/BottomNav/BottomNav';
+
 import bellIcon from '../../assets/icons/bell.png';
 import schoolIcon from '../../assets/icons/school.png';
-import qrIcon from '../../assets/icons/qrCode.png';
 import mascotImg from '../../assets/icons/project_empty.png';
 
 const MainPage = () => {
+  const navigate = useNavigate();
   return (
     <div className="main-page">
-
-      {/* ===== 상단 통합 박스 (헤더 + 프로필) ===== */}
+      {/* ===== 상단: 앱바 + 프로필 카드 ===== */}
       <div className="top-card">
-        {/* 헤더 */}
+        {/* 앱바 */}
         <header className="header">
           <h1 className="logo">Teamitaka</h1>
-          <button className="icon-btn" aria-label="알림">
+          <button
+            className="icon-btn"
+            aria-label="알림"
+            onClick={() => navigate('/notifications')}
+          >
             <img src={bellIcon} alt="알림" className="alarm-icon" />
           </button>
         </header>
 
-        {/* 유저 프로필 카드 */}
-        <section className="profile-card">
-          {/* 오른쪽: 프로필 이미지 */}
+        {/* 프로필 카드 */}
+        <section className="profile-card" aria-label="프로필 요약">
           <div className="profile-left">
             <div className="profile-img" aria-hidden>🧍</div>
-            {/* ⭐ QR 버튼을 이미지에 붙이도록 이 위치로 이동 */}
-            <button className="qr-btn" aria-label="내 QR">
-              <img src={qrIcon} alt="QR" className="qr-icon" />
-            </button>
           </div>
 
-          {/* 왼쪽: 사용자 정보 */}
+          {/* 왼쪽: 텍스트 정보 */}
           <div className="profile-middle">
             <div className="name">
-              사용자명 <span className="emph">티미</span>님
+              <span className="name-strong">사용자명</span>{' '}
+              <span className="name-regular">티미님</span>
             </div>
 
             <div className="school">
@@ -43,10 +45,10 @@ const MainPage = () => {
             </div>
 
             <div className="stats">
-              현재 진행중인 프로젝트 <span className="count">총 N건</span>
-              <span className="divider"></span>
+              <span className="stats-strong">현재 진행중인 프로젝트</span>{' '}
+              <span className="count">총 N건</span>
               <br />
-              팀플 경험 <span className="muted">00회</span>
+              협업 경험 <span className="muted">00회</span>
             </div>
 
             <div className="tags">
@@ -54,23 +56,35 @@ const MainPage = () => {
               <span className="tag pill">키워드2</span>
             </div>
           </div>
-
-          {/* ⭐ 기존 profile-right 블록 제거 (QR를 위로 이동했기 때문) */}
         </section>
       </div>
 
       {/* ===== 내가 참여 중인 프로젝트 ===== */}
       <h2 className="section-title">내가 참여 중인 프로젝트</h2>
       <section className="my-projects">
-        <div className="empty-card">
+        <div className="empty-card" role="status" aria-live="polite">
           <img src={mascotImg} alt="" className="empty-img" />
           <p className="empty-text">
-            진행 중인 프로젝트가 없어요.<br />
+            진행 중인 프로젝트가 없어요.
+            <br />
             지금 바로 프로젝트를 시작해보세요!
           </p>
-          <button className="primary-btn">팀 프로젝트 시작하기</button>
+          <button className="primary-btn" type="button">
+            팀 프로젝트 시작하기
+          </button>
         </div>
       </section>
+
+      {/* ===== 프로젝트 지원하기 버튼 ===== */}
+      <div className="support-btn-wrap">
+        <button
+          className="support-btn"
+          type="button"
+          onClick={() => navigate("/apply2")}
+        >
+          프로젝트 지원하기
+        </button>
+      </div>
 
       <div className="bottom-spacer" />
       <BottomNav />

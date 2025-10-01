@@ -1,220 +1,224 @@
-/* src/components/Home/main.scss */
-
 /* ========== Tokens ========== */
-$brand:        #ff5c00;
-$brand-strong: #f6532f;
-$ink:          #222;
-$ink-2:        #444;
-$ink-3:        #666;
-$ink-4:        #999;
-$bg:           #f6f6f7;
+$brand:        #ef4423;         // 주황
+$brand-strong: #ef4423;
+$ink:          #111;
+$ink-2:        #373737;
+$ink-3:        #6b7280;
+$ink-4:        #9ca3af;
+$bg:           #f7f7fb;         // 페이지 배경
 $card:         #ffffff;
 $shadow:       0 6px 16px rgba(0, 0, 0, 0.06);
+$line:         #e5e7eb;
 $radius-lg:    16px;
 $radius-md:    12px;
-$radius-sm:    8px;
+$header-h:     56px;
+
+/* 프로필 아바타 내리는 정도 */
+$avatar-offset: 102px;     // 기본
+$avatar-offset-sm: 106px;  // 360px 이하
+
+/* 헤더 아래 흰 공백(카드와 헤더 사이 간격) 조절 */
+$card-gap-top: -40px;
+/* 56 - (-40) = 96px 만큼 프로필 카드 위로 당김 */
+$pull-up: $header-h - $card-gap-top;
+
+/* ✅ 키워드(.tags) 아래 흰색 공백 크기 */
+$keywords-bottom-space: 24px;
 
 /* ========== MainPage 컨테이너 ========== */
 .main-page {
   background: $bg;
   min-height: 100vh;
-  padding: 20px 16px 0;
+  padding: 0 16px;
+  padding-top: $header-h; // 고정 헤더 높이만큼 밀기
   font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
   color: $ink;
 
-  /* ===== Header ===== */
+  /* ===== Header(AppBar) ===== */
   .header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 100;
+    height: $header-h;
+    display: flex; align-items: center; justify-content: space-between;
     background: $card;
-    padding: 16px;
-    margin: 0;
-    border-radius: 0;
+    padding: 0 16px;
+    border-bottom: none; // 프로필 카드와 경계 제거
   }
 
   .logo {
     color: $brand;
     font-size: 22px;
     font-weight: 800;
-    letter-spacing: 0.2px;
+    letter-spacing: .2px;
   }
 
   .icon-btn {
-    border: 0;
-    background: transparent;
-    padding: 4px;
-    display: grid;
-    place-items: center;
-    cursor: pointer;
+    border: 0; background: transparent;
+    width: 44px; height: 44px;
+    display: grid; place-items: center; cursor: pointer;
 
-    .alarm-icon { width: 20px; height: 20px; display: block; }
+    .alarm-icon {
+      width: 14.999924659729004px;
+      height: 18.461538314819336px;
+      display: block;
+      opacity: 1;
+      transform: none; /* angle: 0deg */
+    }
   }
 
   /* ===== 프로필 카드 ===== */
   .profile-card {
     position: relative;
     background: $card;
-    border-radius: 0 0 $radius-lg $radius-lg;
-    box-shadow: $shadow;
+    border-radius: 0 0 $radius-lg $radius-lg; // 상단 0: 헤더와 한 장처럼
+    box-shadow: none; 
     padding: 16px;
+    /* 기존: margin: 0 -16px 20px;  -> 헤더 아래 흰 공백 제거 */
+    margin: -$pull-up -16px 20px;
 
-    /* ★ 좌우 나란히 + 수직 가운데 정렬 */
-    display: grid;                                /* ★ 변경 */
-    grid-template-columns: 1fr 108px;             /* ★ 변경: 아바타 칼럼 넓힘 */
-    column-gap: 14px;                              /* ★ 변경 */
-    align-items: center;                           /* ★ 변경 */
-    margin: 0 0 20px;
+    /* 2컬럼: 왼쪽 텍스트 / 오른쪽 아바타 */
+    display: grid;
+    grid-template-columns: 1fr 108px;
+    column-gap: 14px;
 
-    /* 오른쪽: 프로필 이미지 영역 */
+    /* 정확히 상단 정렬 */
+    align-items: start;
+
+    /* 오른쪽: 프로필 이미지  */
     .profile-left {
       grid-column: 2;
       display: grid;
-      place-items: center;
-      position: relative;                          /* ★ QR 기준점 */
+      align-items: start;
+      justify-items: start;
+      position: relative;
+
+      /* 아바타를 확실히 아래로 내림 */
+      transform: translateY($avatar-offset) !important;
+      will-change: transform;
 
       .profile-img {
-        width: 100px;                               /* ★ 변경 */
-        height: 100px;                              /* ★ 변경 */
-        border-radius: 12%;                         /* 둥근 네모 */
+        width: 100px; height: 100px;
+        border-radius: 12%;
         background: #e9e9ec;
-        display: grid;
-        place-items: center;
-        font-size: 32px;
-        color: $ink-3;
-      }
-
-      /* ★ QR 버튼: 이미지 우하단에 겹치기 */
-      .qr-btn {                                     /* ★ 추가 */
-        position: absolute;
-        bottom: 0;
-        right: 0;
-        transform: translate(25%, 25%);
-        width: 36px;
-        height: 36px;
-        border-radius: 50%;
-        border: 0;
-        background: $brand;
-        display: grid;
-        place-items: center;
-        cursor: pointer;
-        z-index: 2;
-        box-shadow: 0 4px 12px rgba($brand-strong, 0.35);
-
-        .qr-icon {
-          width: 18px;
-          height: 18px;
-          object-fit: contain;                      /* ★ 위치 수정 */
-          filter: brightness(0) invert(1);
-        }
+        display: grid; place-items: center;
+        font-size: 32px; color: $ink-3;
+        margin-bottom: 0;
       }
     }
 
-    /* 왼쪽: 사용자 정보 */
+    /* 왼쪽: 텍스트 */
     .profile-middle {
       grid-column: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      min-width: 0;
-      padding-top: 2px;
+      display: flex; flex-direction: column; gap: 6px; min-width: 0;
+      align-self: start;
+      padding-top: 0;
+
+      /* ✅ 키워드 아래 흰색 공백 */
+      padding-bottom: $keywords-bottom-space;
 
       .name {
-        font-size: 17px;
-        font-weight: 800;
-        line-height: 1.25;                          /* ★ 추가 */
-        margin-bottom: 2px;                         /* ★ 추가: 이름과 학교 사이 미세 여백 */
-        .emph { color: $brand; }
+        display: flex; align-items: baseline; gap: 6px;
+        line-height: 1.25; margin-bottom: 2px;
+        .name-strong   { font-size: 17px; font-weight: 800; color: $ink; }
+        .name-regular  { font-size: 17px; font-weight: 400; color: $ink; }
       }
 
       .school {
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        font-size: 12px;
-        color: $ink-3;
-        line-height: 1.35;                          /* ★ 추가 */
-        margin-bottom: 10px;                        /* ★ 변경: 학교 ↔ 아래 블록 여백 확대 */
-
+        display: flex; align-items: center; gap: 6px;
+        font-size: 12px; color: $ink-4; line-height: 1.35; margin-bottom: 10px;
         .school-icon { width: 14px; height: 14px; object-fit: contain; }
       }
 
-      /* 현재진행/팀플경험 블록 상단 여백 */
       .stats {
-        font-size: 13px;
-        color: $ink-2;
-        line-height: 1.5;                           /* ★ 추가 */
-        margin-top: 6px;                            /* ★ 추가: 눈에 띄는 공백 */
-        .count { margin-left: 4px; color: $brand; font-weight: 800; }
-        .divider { margin: 0 8px; color: #ddd; }
-        .muted { color: $ink-4; }
+        font-size: 13px; color: $ink-2; line-height: 1.5; margin-top: 6px;
+        .stats-strong { font-weight: 800; color: $ink; }
+        .count        { margin-left: 4px; color: $brand; font-weight: 800; }
+        .muted        { color: $ink-4; }
       }
 
       .tags {
-        display: flex;
-        gap: 8px;
-        margin-top: 10px;                           /* ★ 변경: 태그 위 여백 */
+        display: flex; gap: 8px; margin-top: 10px;
         .tag.pill {
-          padding: 5px 10px;
-          font-size: 11px;
-          border-radius: 999px;
-          background: #ffe8de;
-          color: $brand;
-          font-weight: 600;
+          padding: 6px 10px; font-size: 12px; font-weight: 600;
+          border-radius: 999px; background: #fff4ef; color: $brand;
           white-space: nowrap;
         }
       }
     }
   }
 
-  /* ===== Section Title ===== */
+  /* ===== 섹션 타이틀 ===== */
   > h2.section-title {
     font-size: 15px; font-weight: 800; color: $ink;
-    margin: 0 0 16px;
+    margin: 8px 0 16px;
   }
 
   /* ===== 내가 참여 중인 프로젝트 ===== */
   .my-projects {
     background: $card;
     border-radius: $radius-lg;
-    box-shadow: $shadow;
+    box-shadow: none; /* ✅ 그림자 제거 */
     padding: 16px;
     margin-bottom: 16px;
 
     .empty-card {
-      background: #fff;
       border-radius: $radius-lg;
       padding: 24px 16px;
       text-align: center;
-      display: grid;
-      place-items: center;
-      row-gap: 12px;
+      display: grid; place-items: center; row-gap: 12px;
 
       .empty-img { width: 128px; height: auto; display: block; margin-bottom: 4px; }
-      .empty-text { font-size: 13px; color: $ink-3; line-height: 1.6; }
+      .empty-text { font-size: 13px; color: #444; line-height: 1.6; }
 
       .primary-btn {
-        margin-top: 4px; width: 100%; max-width: 320px; height: 44px;
-        border: 0; border-radius: 12px; font-size: 14px; font-weight: 800; color: #fff;
-        cursor: pointer; background: linear-gradient(180deg, $brand 0%, $brand-strong 100%);
-        box-shadow: 0 8px 16px rgba($brand-strong, .28);
-        transition: transform .06s ease, box-shadow .12s ease;
-        &:active { transform: translateY(1px); box-shadow: 0 6px 12px rgba($brand-strong, .24); }
+        margin-top: 8px;
+        width: 240px;
+        height: 44px;
+        border: 0;
+        border-radius: 999px;
+        font-size: 14px; font-weight: 800; color: #fff;
+        cursor: pointer; background: $brand;
+        box-shadow: none; /* ✅ 버튼 그림자 제거 */
+        transition: transform .06s ease;
+        &:active { transform: translateY(1px); /* 그림자 제거 유지 */ }
       }
     }
   }
 
   .bottom-spacer { height: 84px; }
 
+  /* ===== 프로젝트 지원하기 버튼 ===== */
+  .support-btn-wrap {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 16px;
+  }
+
+  .support-btn {
+    width: 260px;
+    height: 48px;
+    background: $brand;
+    border: none;
+    border-radius: 999px;
+    font-size: 15px;
+    font-weight: 800;
+    color: #fff;
+    cursor: pointer;
+    box-shadow: none; /* ✅ 버튼 그림자 제거 */
+    transition: transform 0.06s ease;
+
+    &:hover { /* 그림자 효과 제거 상태 유지 */ }
+    &:active { transform: translateY(1px); }
+  }
+
   @media (max-width: 360px) {
     .profile-card {
-      grid-template-columns: 1fr 84px;             /* ★ 모바일에서 칼럼 폭 조정 */
+      grid-template-columns: 1fr 84px;
       column-gap: 12px;
 
-      .profile-left .profile-img { width: 76px; height: 76px; font-size: 26px; }
-      .profile-left .qr-btn { width: 32px; height: 32px;
-        .qr-icon { width: 16px; height: 16px; }
-      }
+      /* 모바일에서도 아바타 더 내려서 정렬 */
+      .profile-left { transform: translateY($avatar-offset-sm) !important; }
+      .profile-left .profile-img { width: 76px; height: 76px; font-size: 26px; margin-bottom: 0; }
     }
 
     .my-projects .empty-card .empty-img { width: 112px; }
