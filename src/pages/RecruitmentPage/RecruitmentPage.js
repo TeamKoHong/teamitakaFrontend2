@@ -16,7 +16,6 @@ export const recruitmentData = [
     isBest: true,
     imageUrl: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=2070&auto=format&fit=crop',
     title: '김혜현 교수님] 비주얼 마케터 디자인 팀 프로젝트 인원 구합니다!',
-    author: '얼리버드',
     views: 302,
     comments: 79,
     date: '25.03.24',
@@ -28,7 +27,6 @@ export const recruitmentData = [
     isBest: true,
     imageUrl: 'https://images.unsplash.com/photo-1552664730-d307ca884978?q=80&w=2070&auto=format&fit=crop',
     title: '김건상 교수님] 기초 디자인 테크닉 (2) 함께 스케치 디벨로퍼 구합니다. 스터디 작업..',
-    author: '시라소니',
     views: 214,
     comments: 93,
     date: '25.03.27',
@@ -40,13 +38,11 @@ export const recruitmentData = [
     isBest: false,
     imageUrl: '', // 빈값이면 placeholder 사용
     title: '하면서 교수님] 지도하에 공모전 함께 할 팀플러 구합니다!!',
-    author: '뱁새',
     views: 182,
     comments: 19,
     date: '25.03.12',
     tags: ['기획', '서비스'],
   },
-  // ... 기타 항목들
 ];
 
 export default function RecruitmentPage() {
@@ -93,7 +89,6 @@ export default function RecruitmentPage() {
             </div>
             <div className="item-content">
               <h2 className="item-title">{item.title}</h2>
-              <p className="item-author">{item.author}</p>
 
               <div className="item-info">
                 <span><IoEyeOutline /> {item.views}</span>
