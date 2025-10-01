@@ -5,7 +5,7 @@
   height: 262px;
   position: relative;
   background: linear-gradient(180deg, rgba(236, 236, 236, 0) 0%, #868686 100%);
-  padding: 78px 22px 26px 22px;
+  padding: 71px 22px 26px 22px;
 
   .shape-container {
     cursor: pointer;
@@ -31,6 +31,7 @@
     p {
       font-size: 17px;
       font-style: normal;
+      font-family: Pretendard;
       font-weight: 600;
       line-height: normal;
     }
@@ -50,6 +51,7 @@
   display: flex;
   flex-direction: column;
   background-color: transparent;
+  gap: 8px; // 옵션 리스트와 취소 버튼 사이 간격
 }
 
 /* 옵션 리스트 */
@@ -63,8 +65,11 @@
 }
 
 .option-list {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   border-radius: 18px;
-  padding: 23px 0;
+  padding: 16px 23px;
   height: 117px;
 
   .divider {

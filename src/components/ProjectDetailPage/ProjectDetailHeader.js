@@ -46,8 +46,8 @@ function ProjectDetailHeader({ projectName }) {
         open={sheetOpen}
         onDismiss={() => setSheetOpen(false)}
         blocking={true}
-        snapPoints={({ maxHeight }) => [215]} // 높이 고정값
-        className="offset-sheet" // root 에 offset-sheet 클래스가 붙습니다
+        snapPoints={({ maxHeight }) => [215]} // 높이 조정 (패딩 고려하여 215로 복원)
+        className="offset-sheet"
       >
         <div className="sheet-body">
           <ul className="option-list">
