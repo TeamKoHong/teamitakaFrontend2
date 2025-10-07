@@ -54,7 +54,7 @@ function BottomNav() {
         className={isTabActive('/my') ? "nav-item active" : "nav-item"}
       >
         <MdOutlinePerson className="nav-icon" />
-        <span>마이</span>
+        <span>프로필</span>
       </NavLink>
     </nav>
   );

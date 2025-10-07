@@ -71,6 +71,19 @@
     border-radius: var(--border-radius-xl);
     background: #fff;
     margin-bottom: var(--spacing-xxl);
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background: #f8f9fa;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    &:active {
+      transform: translateY(0);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    }
 
     .review-badge {
       top: -10px;

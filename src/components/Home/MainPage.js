@@ -1,20 +1,52 @@
-// [MainPage.js]
-import React from 'react';
+
 import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from 'react';
+
 import './main.scss';
 import BottomNav from '../Common/BottomNav/BottomNav';
 
 import bellIcon from '../../assets/icons/bell.png';
 import schoolIcon from '../../assets/icons/school.png';
 import mascotImg from '../../assets/icons/project_empty.png';
+import { useNavigate } from 'react-router-dom';
+import { getMe } from '../../services/user';
+import { getSummary } from '../../services/dashboard';
 
 const MainPage = () => {
   const navigate = useNavigate();
+
+  const [user, setUser] = useState(null);
+  const [summary, setSummary] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    let mounted = true;
+    const load = async () => {
+      try {
+        setIsLoading(true);
+        setError(null);
+        const [meRes, sumRes] = await Promise.all([getMe().catch(e => { throw e; }), getSummary().catch(e => { throw e; })]);
+        if (!mounted) return;
+        if (meRes && meRes.success && meRes.user) setUser(meRes.user);
+        if (sumRes && sumRes.success) setSummary(sumRes.data || sumRes.summary || null);
+      } catch (e) {
+        // 401/403은 전역 AuthEventBridge/ToastHost에서 처리하므로 여기서는 중복 네비게이션을 하지 않음
+        setError('일시적인 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
+      } finally {
+        if (mounted) setIsLoading(false);
+      }
+    };
+    load();
+    return () => { mounted = false; };
+  }, [navigate]);
+
+  const ongoingCount = summary?.projects?.ongoing ?? 'N';
+  const unreadCount = summary?.notifications?.unread ?? '0';
+
   return (
     <div className="main-page">
-      {/* ===== 상단: 앱바 + 프로필 카드 ===== */}
       <div className="top-card">
-        {/* 앱바 */}
         <header className="header">
           <h1 className="logo">Teamitaka</h1>
           <button
@@ -23,8 +55,12 @@ const MainPage = () => {
             onClick={() => navigate('/notifications')}
           >
             <img src={bellIcon} alt="알림" className="alarm-icon" />
+            {unreadCount !== '0' && (
+              <span className="badge" aria-label={`안 읽은 알림 ${unreadCount}건`}>{unreadCount}</span>
+            )}
           </button>
         </header>
+
 
         {/* 프로필 카드 */}
         <section className="profile-card" aria-label="프로필 요약">
@@ -35,18 +71,24 @@ const MainPage = () => {
           {/* 왼쪽: 텍스트 정보 */}
           <div className="profile-middle">
             <div className="name">
-              <span className="name-strong">사용자명</span>{' '}
-              <span className="name-regular">티미님</span>
+              {isLoading && <span>불러오는 중...</span>}
+              {!isLoading && user && (
+                <>사용자명 <span className="emph">{user.username || user.email}</span>님</>
+              )}
+              {!isLoading && !user && !error && <span>사용자 정보를 불러올 수 없습니다.</span>}
             </div>
 
             <div className="school">
               <img src={schoolIcon} alt="" className="school-icon" />
-              재학중인 대학교 학과 재학 중
+              {user?.university && user?.major
+                ? `${user.university} ${user.major} 재학 중`
+                : '학과 정보가 없습니다'}
             </div>
 
             <div className="stats">
-              <span className="stats-strong">현재 진행중인 프로젝트</span>{' '}
-              <span className="count">총 N건</span>
+<span className="stats-strong">현재 진행중인 프로젝트</span>{' '}
+<span className="count">총 {ongoingCount}건</span>
+<span className="divider" aria-hidden="true"></span>
               <br />
               협업 경험 <span className="muted">00회</span>
             </div>
@@ -55,11 +97,16 @@ const MainPage = () => {
               <span className="tag pill">키워드1</span>
               <span className="tag pill">키워드2</span>
             </div>
+
+            {error && (
+              <div style={{ marginTop: '8px', color: '#F76241', fontSize: '12px' }}>
+                {error} <button onClick={() => window.location.reload()}>다시 시도</button>
+              </div>
+            )}
           </div>
         </section>
       </div>
 
-      {/* ===== 내가 참여 중인 프로젝트 ===== */}
       <h2 className="section-title">내가 참여 중인 프로젝트</h2>
       <section className="my-projects">
         <div className="empty-card" role="status" aria-live="polite">
