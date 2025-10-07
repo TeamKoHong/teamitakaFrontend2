@@ -221,6 +221,7 @@ $footer-h: 74px; /* 버튼48 + 패딩 */
     position: relative;
     display: grid; grid-template-columns: 1fr 1fr;
     border-top: 1px solid $line;
+    margin-top: auto; 
   }
   .modal.confirm .bar-btn {
     height: 48px; border: 0; font-weight: 700; font-size: 14px; cursor: pointer;
@@ -272,18 +273,19 @@ $footer-h: 74px; /* 버튼48 + 패딩 */
 .apply-page.apply-complete.modal-open {
   .center-wrap { margin-top: -20px; }
   .container, .applied-card { overflow: visible !important; }
-  &, * { transform: none !important; filter: none !important; perspective: none !important; }
+  &, * { filter: none !important; perspective: none !important; }
 }
 
-/* ========= Portal-safe modal overrides ========= */
-.modal-overlay {
-  position: fixed !important;
-  inset: 0 !important;
-  background: rgba(0,0,0,.35) !important;
-  display: grid !important;
-  place-items: center !important;
-  z-index: 1000 !important;
-}
+// /* =========모달 테스트(뒤에 회색 깔림림) ========= */
+// .modal-overlay {
+//   position: fixed !important;
+//   inset: 0 !important;
+//   background: rgba(0,0,0,.35) !important;
+//   display: grid !important;
+//   place-items: center !important;
+//   z-index: 1000 !important;
+// }
+
 .modal {
   position: fixed !important;
   top: 342px !important;
@@ -291,7 +293,6 @@ $footer-h: 74px; /* 버튼48 + 패딩 */
   width: 287px !important;
   height: 161px !important;
   opacity: 1 !important;
-  transform: none !important;
   background: $card-bg !important;
   border-radius: 18px !important;
   overflow: hidden !important;
@@ -300,7 +301,7 @@ $footer-h: 74px; /* 버튼48 + 패딩 */
   z-index: 1001 !important;
 }
 
-/* ⬇️ confirm 변형 전역 오버라이드(포털 렌더 시) */
+/* confirm 변형 전역 오버라이드(포털 렌더 시) */
 .modal.confirm {
   box-shadow: 0 18px 36px rgba(0,0,0,.24) !important;
 }
@@ -320,6 +321,7 @@ $footer-h: 74px; /* 버튼48 + 패딩 */
   position: relative !important;
   display: grid !important; grid-template-columns: 1fr 1fr !important;
   border-top: 1px solid $line !important;
+  margin-top: auto !important;
 }
 .modal.confirm .bar-btn {
   height: 48px !important; border: 0 !important; font-weight: 700 !important; font-size: 14px !important; cursor: pointer !important;
@@ -388,14 +390,18 @@ $footer-h: 74px; /* 버튼48 + 패딩 */
   z-index: 1001 !important;
 }
 
-/* 토스트 aria 케이스 */
-:where([role="status"], [role="alert"]) .toast-box,
-:where(.MuiSnackbar-root) .toast-box {
-  position: fixed !important;
-  top: 404px !important;
-  left: 62px !important;
-  width: 267px !important;
-  height: 115px !important;
-  opacity: 1 !important;
-  gap: 10px !important;
-}
+
+
+// /* 토스트 aria 케이스 */
+// :where([role="status"], [role="alert"]) .toast-box,
+// :where(.MuiSnackbar-root) .toast-box {
+//   position: fixed !important;
+//   top: 404px !important;
+//   left: 62px !important;
+//   width: 267px !important;
+//   height: 115px !important;
+//   opacity: 1 !important;
+//   gap: 10px !important;
+// }
+
+
