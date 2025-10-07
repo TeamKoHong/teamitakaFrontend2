@@ -22,6 +22,7 @@ import RegisterPage from './pages/RegisterPage/RegisterPage';
 import TeamMatchingPage from './pages/TeamMatchingPage/TeamMatchingPage';
 import RecruitmentPage from './pages/RecruitmentPage/RecruitmentPage';
 import SearchPage from './pages/SearchPage/SearchPage';
+import ProfilePage from './pages/Profile/ProfilePage';
 
 // 메인 페이지 임포트
 import MainPage from './components/Home/MainPage';
@@ -37,7 +38,9 @@ import NotificationsPage from './pages/NotificationsPage/NotificationsPage';
 
 // 인증 관련 임포트
 import { AuthProvider } from './contexts/AuthContext';
-import { PublicRoute } from './components/ProtectedRoute';
+import ToastHost from './components/Common/ToastHost';
+import AuthEventBridge from './components/Common/AuthEventBridge';
+import ProtectedRoute, { PublicRoute } from './components/ProtectedRoute';
 
 // 라우팅 상수 임포트
 import { 
@@ -230,16 +233,17 @@ const App = () => {
   return (
     <Router>
       <AuthProvider>
+        <ToastHost />
+        <AuthEventBridge />
         <Routes>
           {/* ===== 공개 페이지 (로그인하지 않은 사용자만) ===== */}
           <Route path={MAIN_ROUTES.HOME} element={<PublicRoute><OnboardingPage /></PublicRoute>} />
           <Route path={MAIN_ROUTES.LOGIN} element={<PublicRoute><LoginPage /></PublicRoute>} />
           <Route path={MAIN_ROUTES.REGISTER} element={<PublicRoute><RegisterPage /></PublicRoute>} />
 
-          {/* ===== 메인 페이지 (로그인 제한 없음) ===== */}
-          <Route path={MAIN_ROUTES.MAIN} element={<MainPage />} />
-          <Route path={MAIN_ROUTES.MY} element={<Navigate to={PROJECT_ROUTES.MANAGEMENT} replace />} />
-
+          {/* ===== 메인/프로필 (인증 필요) ===== */}
+          <Route path={MAIN_ROUTES.MAIN} element={<ProtectedRoute><MainPage /></ProtectedRoute>} />
+          <Route path={MAIN_ROUTES.MY} element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
 
           {/* ===== 프로젝트 관리 라우트 (로그인 제한 없음) ===== */}
           <Route path={PROJECT_ROUTES.MANAGEMENT} element={<ProjectManagement />} />

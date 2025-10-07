@@ -38,9 +38,8 @@
     font-size: 14px;
     cursor: pointer;
     &.active {
-      background-color: #ff6b3c;
+      background-color: #000000;
       color: #fff;
-      border-color: #ff6b3c;
     }
   }
 }
@@ -66,17 +65,18 @@
         background: #f0f0f0;
         object-fit: cover;
       }
-      .best-badge {
+    .best-badge {
         position: absolute;
-        top: 4px;
-        left: 4px;
-        padding: 2px 6px;
-        background: #3466f2;
-        color: #fff;
-        font-size: 10px;
-        border-radius: 2px;
-      }
-    }
+        top: 8px;
+        left: 8px;
+        background-color: #F79341;
+        color: white;
+        padding: 2px 5px;
+        font-size: 9px;
+        font-weight: 700;
+        border-radius: 3px;
+
+    }}
     .item-content {
       flex: 1;
       .item-title {

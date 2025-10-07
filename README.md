@@ -1,280 +1,157 @@
-﻿# 📱 TeamItaka Frontend
+# TeamItaka Frontend
 
-팀 이타카(TeamItaka) 프로젝트 매칭 및 팀원 평가 플랫폼의 프론트엔드 애플리케이션입니다.
+팀 프로젝트 매칭·관리·평가 플랫폼의 React 기반 프론트엔드입니다. 온보딩, 회원가입/로그인, 프로젝트 탐색·관리, 팀원 평가 플로우를 제공합니다.
 
-## 🚀 프로젝트 개요
+## 주요 기능
 
-TeamItaka는 대학생들을 위한 팀 프로젝트 매칭 및 관리 플랫폼으로, 팀 구성부터 프로젝트 완료 후 평가까지의 전체 과정을 지원합니다.
+- 온보딩·로그인/회원가입, 이메일 인증
+- 프로젝트 목록/상세/관리, 일정(캘린더), 회의록(Proceedings)
+- 팀 매칭/지원, 검색
+- 팀원 상호 평가: 프로젝트별 평가, 상태(보냄/받음) 확인
+- 모바일 우선 UI, 하단 네비게이션
 
-### 주요 기능
+## Tech Stack
 
-- 🔐 **사용자 인증**: 이메일 인증 기반 회원가입/로그인
-- 👥 **팀 매칭**: 프로젝트별 팀원 모집 및 매칭
-- 📊 **프로젝트 관리**: 프로젝트 진행 상황 추적 및 관리
-- ⭐ **평가 시스템**: 프로젝트 및 팀원 상호평가
-- 📅 **일정 관리**: 프로젝트 일정 및 회의록 관리
-- 🔍 **검색 & 필터링**: 프로젝트 및 팀원 검색
+- React 18, React Router DOM 7
+- Redux Toolkit
+- SASS (SCSS)
+- Swiper
 
-## 🛠 기술 스택
+## 요구 사항
 
-### 프론트엔드
-- **React** `18.2.0` - UI 라이브러리
-- **React Router Dom** `7.6.1` - 클라이언트 사이드 라우팅
-- **Redux Toolkit** `2.8.2` - 상태 관리
-- **Sass** `1.90.0` - CSS 전처리기
+- Node.js 20 LTS 권장 (react-router-dom@7 호환)
+- npm 10+
 
-### UI/UX 라이브러리
-- **React Icons** `5.5.0` - 아이콘 컴포넌트
-- **React Spring Bottom Sheet** `3.4.1` - 모바일 바텀 시트
-- **Swiper** `11.2.6` - 터치 슬라이더
+버전 확인:
 
-### 개발 도구
-- **React Scripts** `5.0.1` - Create React App 기반 빌드 도구
-- **Day.js** `1.11.13` - 날짜/시간 처리
-
-## 📁 프로젝트 구조
-
-```
-src/
-├── components/          # 재사용 가능한 컴포넌트
-│   ├── Common/         # 공통 컴포넌트
-│   │   ├── BottomNav/  # 하단 네비게이션
-│   │   ├── Button/     # 버튼 컴포넌트
-│   │   └── UI/         # 기본 UI 컴포넌트
-│   ├── Home/           # 메인 페이지 컴포넌트
-│   ├── ProjectManagement/    # 프로젝트 관리 컴포넌트
-│   ├── RatingManagement/     # 평가 관리 컴포넌트
-│   ├── RatingProjectPage/    # 프로젝트 평가 컴포넌트
-│   └── TeamMemberEvaluationPage/  # 팀원 평가 컴포넌트
-├── pages/              # 페이지 컴포넌트
-│   ├── LoginPage/      # 로그인 페이지
-│   ├── RegisterPage/   # 회원가입 페이지
-│   ├── ProjectManagement/    # 프로젝트 관리 페이지
-│   ├── RatingManagementPage/ # 평가 관리 페이지
-│   └── TeamMatchingPage/     # 팀 매칭 페이지
-├── contexts/           # React Context
-│   └── AuthContext.js  # 인증 컨텍스트
-├── services/           # API 서비스
-│   ├── auth.js         # 인증 관련 API
-│   └── rating.js       # 평가 관련 API
-├── utils/              # 유틸리티 함수
-│   ├── tokenManager.js # 토큰 관리
-│   ├── navigation.js   # 네비게이션 헬퍼
-│   └── calculateProgress.js  # 진행률 계산
-├── constants/          # 상수 정의
-│   └── routes.js       # 라우트 상수
-├── assets/            # 정적 자산
-│   └── icons/         # 아이콘 이미지
-└── styles/            # 글로벌 스타일
-    ├── _variables.scss # SCSS 변수
-    └── global.css      # 전역 CSS
-```
-
-## 🎯 주요 기능 상세
-
-### 1. 인증 시스템
-- 이메일 인증 기반 회원가입
-- JWT 토큰 기반 로그인
-- 자동 토큰 갱신
-- 보호된 라우트 시스템
-
-### 2. 프로젝트 관리
-- 프로젝트 생성 및 모집
-- 프로젝트 상태 관리 (모집중, 진행중, 완료)
-- 프로젝트 상세 정보 및 일정 관리
-- 팀원 관리 및 권한 시스템
-
-### 3. 평가 시스템
-- **프로젝트 평가**: 프로젝트 전반적 만족도 평가
-- **팀원 상호평가**: 다차원 팀원 평가 (의사소통, 기술력, 협업 능력 등)
-- **평가 결과 조회**: 받은 평가 및 보낸 평가 확인
-- **평가 통계**: 카테고리별 평균 점수 시각화
-
-### 4. 사용자 경험
-- 모바일 최적화 반응형 디자인
-- 직관적인 네비게이션
-- 실시간 피드백 및 로딩 상태
-- 접근성(Accessibility) 고려한 UI
-
-## 🚦 라우팅 구조
-
-### 메인 라우트
-- `/` - 온보딩 페이지
-- `/main` - 메인 대시보드
-- `/login` - 로그인
-- `/register` - 회원가입
-
-### 프로젝트 관리
-- `/project-management` - 프로젝트 관리
-- `/project/:id` - 프로젝트 상세
-- `/project/:id/member` - 팀원 관리
-- `/project/:id/calender` - 프로젝트 일정
-
-### 평가 시스템
-- `/evaluation/management` - 평가 관리
-- `/evaluation/project/:projectId` - 프로젝트 평가
-- `/evaluation/team-member/:projectId/:memberId` - 팀원 평가
-- `/evaluation/status/:projectId/received` - 받은 평가
-- `/evaluation/status/:projectId/given` - 보낸 평가
-
-### 기타
-- `/team-matching` - 팀 매칭
-- `/recruitment` - 프로젝트 모집
-- `/search` - 검색
-
-## 🔧 개발 환경 설정
-
-### 필수 조건
-- Node.js 16.0 이상
-- npm 또는 yarn
-
-### 설치 및 실행
-
-1. **저장소 클론**
 ```bash
-git clone <repository-url>
-cd teamitakaFrontend2
+node -v
+npm -v
 ```
 
-2. **의존성 설치**
+## 빠른 시작
+
+1) 의존성 설치
+
 ```bash
-npm install
+npm ci
 ```
 
-3. **환경 변수 설정**
+2) 환경변수 파일 생성 (`.env.local`)
+
 ```bash
-# .env.local 파일 생성
-REACT_APP_API_BASE_URL=https://your-api-server.com
+# Supabase Edge Function 혹은 백엔드 API Base URL
+REACT_APP_API_BASE_URL=https://<your-project>.supabase.co/functions/v1/teamitaka-api
+
+# Supabase anon key (Edge Functions 호출 시 사용)
+REACT_APP_SUPABASE_ANON_KEY=your_anon_key_here
+
+# 선택: 환경 플래그
+REACT_APP_ENV=development
 ```
 
-4. **개발 서버 실행**
+3) 로컬 서버 시작
+
 ```bash
 npm start
 ```
 
-5. **빌드**
-```bash
-npm run build
+기본 주소: `http://localhost:3000`
+
+## Scripts
+
+- `npm start`: 개발 서버 실행
+- `npm run build`: 프로덕션 빌드(`build/`)
+- `npm test`: 테스트 실행 (React Testing Library, Jest)
+
+## 디렉터리 구조 (요약)
+
+```
+src/
+  components/        # 재사용 UI 컴포넌트
+  pages/             # 라우트 단위 페이지
+  services/          # API 호출(auth, rating, projects 등)
+  contexts/          # 전역 컨텍스트 (예: AuthContext)
+  utils/             # 유틸리티/헬퍼
+  styles/            # 글로벌 스타일/변수
 ```
 
-### 사용 가능한 스크립트
+## 라우팅 개요
 
-- `npm start` - 개발 서버 실행 (http://localhost:3000)
-- `npm run build` - 프로덕션 빌드
-- `npm test` - 테스트 실행
-- `npm run eject` - CRA 설정 추출 (비가역적)
+- 메인: `/`, `/main`, `/login`, `/register`, `/my`
+- 프로젝트: `/project-management`, `/project/:id`, `/project/:id/member`, `/project/:id/proceedings`, `/project/:id/calender`
+- 평가: `/evaluation/management`, `/evaluation/project/:projectId`, `/evaluation/team-member/:projectId/:memberId`, `/evaluation/status/:projectId`, `/evaluation/status/:projectId/given`, `/evaluation/status/:projectId/received`
+- 기타: `/team-matching`, `/recruitment`, `/search`, `/team`
 
-## 🌐 API 연동
+상세 라우트 정의는 `src/constants/routes.js` 참고.
 
-### 백엔드 서버
-- **프로덕션**: `https://teamitaka-backend-zwe2nuc5ga-uc.a.run.app`
-- **개발**: 로컬 환경 변수에서 설정
+## 환경 변수
 
-### 주요 API 엔드포인트
-- `POST /api/auth/register` - 회원가입
-- `POST /api/auth/login` - 로그인
-- `POST /api/auth/send-verification` - 이메일 인증 발송
-- `POST /api/auth/verify-code` - 인증 코드 확인
-- `POST /api/auth/refresh` - 토큰 갱신
+- `REACT_APP_API_BASE_URL`: API Base URL (Supabase Functions 예: `https://<project>.supabase.co/functions/v1/teamitaka-api`)
+- `REACT_APP_SUPABASE_ANON_KEY`: Supabase anon key (Functions 호출 시 `Authorization`, `apikey` 헤더로 사용)
+- `REACT_APP_ENV`: `development` | `production`
 
-## 🧪 테스트
+`.env*` 파일은 커밋하지 않습니다 (gitignored).
 
-### 테스트 설정
-- **Testing Library**: React 컴포넌트 테스트
-- **Jest**: JavaScript 테스트 프레임워크
+## API 사용 예시 (이메일 인증)
 
-### 테스트 실행
-```bash
-npm test
+`src/services/auth.js` 내 함수 사용:
+
+```js
+import { sendVerificationCode, verifyCode, resendVerificationCode } from './services/auth';
+
+await sendVerificationCode('user@example.com');
+await verifyCode('user@example.com', '123456');
+await resendVerificationCode('user@example.com');
 ```
 
-## 🎨 디자인 시스템
+성공 응답 예시:
 
-### 색상 팔레트
-- **Primary**: `#F76241` - 메인 브랜드 색상
-- **Secondary**: 보조 색상들
-- **UI Colors**: 그레이스케일 및 시스템 색상
+```json
+{ "success": true, "message": "인증번호가 이메일로 전송되었습니다.", "data": { "email": "user@example.com", "expiresIn": 180 } }
+```
 
-### 컴포넌트 규칙
-- 모든 컴포넌트는 모듈화된 CSS/SCSS 사용
-- 일관된 간격 및 타이포그래피
-- 접근성 가이드라인 준수
+## 개발 가이드
 
-## 📱 모바일 최적화
+- TDD 지향: 기능 추가 전 테스트부터 작성, 실패 → 구현 → 통과
+- 구조 원칙: SRP 중심으로 컴포넌트/서비스 분리, 재사용·가독성 우선
+- 라우팅/상태는 `pages/`·`components/`·`services/` 레이어 간 단방향 의존 추구
+- Git: Conventional Commits, 브랜치 전략은 아래 참고
 
-- 반응형 웹 디자인
-- 터치 친화적 인터페이스
-- PWA 지원을 위한 manifest.json
-- 모바일 네비게이션 패턴
+## 테스트
 
-## 🔒 보안
+- 도구: Jest, React Testing Library
+- 실행: `npm test`
+- 리액트 라우터 테스트를 위해 `src/test-utils/react-router-dom-mock.js` 매퍼 사용(Jest `moduleNameMapper` 설정 참고)
 
-- JWT 토큰 기반 인증
-- XSS 방지를 위한 입력 검증
-- HTTPS 통신
-- 민감한 정보 환경 변수 관리
+## 보안·비밀 관리
 
-## 📊 상태 관리
+- 실 비밀키는 커밋 금지. Vercel/Supabase 환경변수에 저장
+- 사용자 입력은 검증하고, 렌더링 시 XSS에 유의(위험한 HTML 주입 금지)
+- 프로덕션/개발 환경에서 실제 민감 데이터 노출 금지
 
-### Redux Toolkit 구조
-- 인증 상태 관리
-- 프로젝트 데이터 관리
-- UI 상태 관리
+## 배포 (Vercel)
 
-### Context API
-- 인증 컨텍스트 (`AuthContext`)
-- 글로벌 설정 관리
+- Install Command: `npm ci`
+- Build Command: `npm run build`
+- Output Directory: `build`
+- Node: `20`
+- 필수 환경변수: `REACT_APP_API_BASE_URL`, `REACT_APP_SUPABASE_ANON_KEY`
 
-## 🚀 배포
+Supabase Edge Functions 코드는 Supabase에 배포됩니다. 프론트 배포 전 Functions 가용 여부를 확인하세요. 추가 상세는 `docs/deployment/SUPABASE_MIGRATION_GUIDE.md` 참고.
 
-### 빌드 최적화
-- 코드 분할 (Code Splitting)
-- 번들 크기 최적화
-- 정적 자산 압축
+## 문제 해결 (FAQ)
 
-### 환경별 설정
-- 개발 환경: `.env.local`
-- 프로덕션 환경: `.env.production`
+- CORS 오류: Functions가 `OPTIONS` 처리 및 `Access-Control-Allow-*` 헤더 반환하는지 확인
+- 401/인증 오류: `REACT_APP_SUPABASE_ANON_KEY` 설정 및 빌드 노출 여부 확인
+- 이메일 미수신: Supabase Functions 로그, SendGrid 설정(SENDER, API KEY) 확인
+- Node 엔진 에러: Node 20 사용, 필요시 잠금 파일 초기화 후 재설치
 
-## 🐛 문제 해결
+## Git 워크플로우
 
-### 일반적인 이슈
-1. **토큰 만료**: 자동 갱신 로직 구현됨
-2. **CORS 에러**: 백엔드 서버 설정 확인
-3. **빌드 에러**: 의존성 버전 호환성 확인
+- 브랜치: `feature/*`, `bugfix/*`, `hotfix/*`, `refactor/*`
+- 커밋: Conventional Commits (`feat:`, `fix:`, `docs:`, `refactor:`, `test:`, `chore:`)
 
-### 디버깅 도구
-- React DevTools
-- Redux DevTools
-- 브라우저 개발자 도구
+## License
 
-## 📝 컨벤션
-
-### 코드 스타일
-- ESLint 설정 준수
-- Prettier 코드 포맷팅
-- 일관된 네이밍 컨벤션
-
-### 파일 구조
-- 컴포넌트별 폴더 구조
-- 기능별 모듈화
-- 재사용성 고려한 설계
-
-## 🤝 기여 가이드
-
-1. 기능별 브랜치 생성
-2. 커밋 메시지 컨벤션 준수
-3. PR 템플릿 작성
-4. 코드 리뷰 수행
-
-## 📜 라이선스
-
-이 프로젝트는 [라이선스 유형]에 따라 라이선스가 부여됩니다.
-
-## 📞 연락처
-
-프로젝트 관련 문의사항이 있으시면 언제든 연락해 주세요.
-
----
-
-*본 문서는 프로젝트의 지속적인 발전과 함께 업데이트됩니다.*
+`LICENSE` 파일을 참조하세요.

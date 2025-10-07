@@ -21,13 +21,7 @@ function Header({ title }) {
           >
             <CiSearch className="icon-search" />
           </button>
-          <button
-            className="btn-bell"
-            onClick={() => {/* 알림 클릭 로직 */}}
-            type="button"
-          >
-            <CiBellOn className="icon-bell" />
-          </button>
+          
         </div>
       </div>
     </header>

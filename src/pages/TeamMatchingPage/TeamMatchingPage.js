@@ -2,15 +2,14 @@ import React, { useState } from 'react';
 import './TeamMatchingPage.scss';
 import BottomNav from "../../components/Common/BottomNav/BottomNav";
 import Header from "../../components/TeamMatching/Header/Header";
-import { CiBookmark } from "react-icons/ci"; 
+import { CiBookmark } from "react-icons/ci";
 import { IoEyeOutline } from "react-icons/io5";
 import { HiOutlineChatBubbleOvalLeft } from "react-icons/hi2";
 import { Link } from 'react-router-dom';
 import { recruitmentData as keywordMatchingData, filterOptions as recruitmentFilters } from '../RecruitmentPage/RecruitmentPage';
-import { FaPencilAlt } from "react-icons/fa"; // 👈 1. 이 줄을 추가하세요.
+import { FaPencilAlt } from "react-icons/fa";
 
 // --- 데이터 ---
-
 const initialHotTopics = [
     {
         id: 'hot1',
@@ -44,15 +43,15 @@ const CreateProjectBanner = () => (
         </div>
     </div>
 );
-// '오늘의 프로젝트 추천' 카드 컴포넌트
+
 const RecommendCard = ({ item }) => (
     <div className="recommend-card">
         <h3 className="recommend-card-title">{item.title}</h3>
         <p className="recommend-card-desc">{item.description}</p>
         <div className="recommend-card-info">
             <div className="info-group">
-            <span><IoEyeOutline /> {item.views}</span>
-            <span><HiOutlineChatBubbleOvalLeft /> {item.comments}</span>            
+                <span><IoEyeOutline /> {item.views}</span>
+                <span><HiOutlineChatBubbleOvalLeft /> {item.comments}</span>
             </div>
             <span>{item.current} / {item.total}</span>
         </div>
@@ -63,7 +62,7 @@ const HotTopicCard = ({ item, onBookmarkToggle }) => (
     <div className="hot-topic-card">
         <div className="hot-topic-card-header">
             <span className={`tag ${item.category.toLowerCase()}`}>{item.category}</span>
-            <CiBookmark 
+            <CiBookmark
                 className={`bookmark-icon ${item.isBookmarked ? 'bookmarked' : ''}`}
                 onClick={() => onBookmarkToggle(item.id)}
             />
@@ -85,10 +84,9 @@ const MatchingCard = ({ item }) => (
         </div>
         <div className="matching-card-content">
             <div className="matching-card-title">{item.title}</div>
-            <div className="matching-card-author">{item.author}</div>
             <div className="matching-card-info">
                 <span><IoEyeOutline /> {item.views}</span>
-            <span><HiOutlineChatBubbleOvalLeft /> {item.comments}</span>
+                <span><HiOutlineChatBubbleOvalLeft /> {item.comments}</span>
                 <span>{item.date}</span>
             </div>
         </div>
@@ -96,26 +94,25 @@ const MatchingCard = ({ item }) => (
 );
 
 export default function TeamMatchingPage() {
-  const [activeFilter, setActiveFilter] = useState(recruitmentFilters[1]);
-  const [hotTopics, setHotTopics] = useState(initialHotTopics);
+    const [activeFilter, setActiveFilter] = useState(recruitmentFilters[1]);
+    const [hotTopics, setHotTopics] = useState(initialHotTopics);
 
-  const handleBookmarkToggle = (id) => {
-    setHotTopics(prev =>
-      prev.map(topic => topic.id === id ? { ...topic, isBookmarked: !topic.isBookmarked } : topic)
+    const handleBookmarkToggle = (id) => {
+        setHotTopics(prev =>
+            prev.map(topic => topic.id === id ? { ...topic, isBookmarked: !topic.isBookmarked } : topic)
+        );
+    };
+
+    const availableFilters = recruitmentFilters.filter(tag => tag !== '전체');
+
+    // RecruitmentPage에서 가져온 데이터를 필터링
+    const filteredMatching = keywordMatchingData.filter(item =>
+        item.tags.includes(activeFilter)
     );
-  };
-  const availableFilters = recruitmentFilters.filter(tag => tag !== '전체');
-
-  // RecruitmentPage에서 가져온 데이터를 필터링
-  const filteredMatching = keywordMatchingData.filter(item =>
-    item.tags.includes(activeFilter)
-  );
-
 
     return (
         <div className="team-matching-app">
-            <Header/>
-
+            <Header />
             <main className="app-content">
                 <section className="section section-project-banner">
                     <div className="section-header">
@@ -124,55 +121,57 @@ export default function TeamMatchingPage() {
                     <CreateProjectBanner />
                 </section>
 
-                <section className="section">
+                <section className="section section--panel">
                     <div className="section-header">
                         <h2 className="section-title">홍익 HOT 교내 공고</h2>
                     </div>
                     <div className="horizontal-scroll-list">
                         {hotTopics.map(item => (
-                            <HotTopicCard 
-                                key={item.id} 
-                                item={item} 
-                                onBookmarkToggle={handleBookmarkToggle} 
+                            <HotTopicCard
+                                key={item.id}
+                                item={item}
+                                onBookmarkToggle={handleBookmarkToggle}
                             />
                         ))}
                     </div>
                 </section>
 
-                 <section className="section">
-          <div className="section-header">
-            <h2 className="section-title">키워드 별 모집</h2>
-            <Link
-              to="/recruitment"
-              state={{ filter: activeFilter }}
-              className="section-more"
-            >
-              자세히보기 &gt;
-            </Link>
-          </div>
-          <div className="horizontal-scroll-list filter-tags">
-            {availableFilters.map(filter => (
-              <div
-                key={filter}
-                className={`filter-tag ${activeFilter === filter ? 'active' : ''}`}
-                onClick={() => setActiveFilter(filter)}
-              >
-                {filter}
-              </div>
-            ))}
-          </div>
-          <div className="matching-list">
-            {filteredMatching.map(item => (
-              <MatchingCard key={item.id} item={item} />
-            ))}
-          </div>
-        </section>
+                <section className="section">
+                                      <div className="section-top">
 
-      </main>
-      <BottomNav />
-      <div className="fab-container">
-        {/* fab menu unchanged */}
-      </div>
-    </div>
-  );
+                    <div className="section-header">
+                        <h2 className="section-title">키워드 별 모집</h2>
+                        <Link
+                            to="/recruitment"
+                            state={{ filter: activeFilter }}
+                            className="section-more"
+                        >
+                            자세히보기 &gt;
+                        </Link>
+                    </div>
+                    <div className="horizontal-scroll-list filter-tags">
+                        {availableFilters.map(filter => (
+                            <div
+                                key={filter}
+                                className={`filter-tag ${activeFilter === filter ? 'active' : ''}`}
+                                onClick={() => setActiveFilter(filter)}
+                            >
+                                {filter}
+                            </div>
+                        ))}
+                        </div>
+                    </div>
+                    <div className="matching-list">
+                        {filteredMatching.map(item => (
+                            <MatchingCard key={item.id} item={item} />
+                        ))}
+                    </div>
+                </section>
+            </main>
+            <BottomNav />
+            <div className="fab-container">
+                {/* fab menu unchanged */}
+            </div>
+        </div>
+    );
 }

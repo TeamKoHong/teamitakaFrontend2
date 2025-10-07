@@ -18,8 +18,7 @@
     "react-redux": "^9.2.0",
     "react-router-dom": "^7.6.1",
     "react-scripts": "5.0.1",
-    "react-spring-bottom-sheet": "^3.4.1",
-
+    "react-spring-bottom-sheet": "^3.5.0-alpha.0",
     "sass": "^1.90.0",
     "swiper": "^11.2.6"
   },
@@ -51,5 +50,19 @@
     "@testing-library/react": "^16.3.0",
     "sass": "^1.90.0",
     "sass-loader": "^13.3.3"
+  },
+  "overrides": {
+    "@reach/portal": {
+      "react": "$react",
+      "react-dom": "$react-dom"
+    },
+    "@reach/utils": {
+      "react": "$react",
+      "react-dom": "$react-dom"
+    },
+    "@xstate/react": {
+      "react": "$react",
+      "react-dom": "$react-dom"
+    }
   }
 }
