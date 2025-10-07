@@ -5,7 +5,7 @@ import Header from "../../components/TeamMatching/Header/Header";
 import { CiBookmark } from "react-icons/ci";
 import { IoEyeOutline } from "react-icons/io5";
 import { HiOutlineChatBubbleOvalLeft } from "react-icons/hi2";
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { recruitmentData as keywordMatchingData, filterOptions as recruitmentFilters } from '../RecruitmentPage/RecruitmentPage';
 import { FaPencilAlt } from "react-icons/fa";
 
@@ -32,17 +32,20 @@ const initialHotTopics = [
 ];
 
 // --- 컴포넌트 ---
-const CreateProjectBanner = () => (
-    <div className="create-project-banner">
-        <div className="banner-icon">
-            <FaPencilAlt />
+const CreateProjectBanner = () => {
+    const navigate = useNavigate();
+    return (
+        <div className="create-project-banner" onClick={() => navigate('/recruit')}>
+            <div className="banner-icon">
+                <FaPencilAlt />
+            </div>
+            <div className="banner-text">
+                <div className="banner-title">프로젝트 생성하기 +</div>
+                <p className="banner-description">잘 맞는 팀을 구하고 싶다면 직접 생성해보세요!</p>
+            </div>
         </div>
-        <div className="banner-text">
-            <div className="banner-title">프로젝트 생성하기 +</div>
-            <p className="banner-description">잘 맞는 팀을 구하고 싶다면 직접 생성해보세요!</p>
-        </div>
-    </div>
-);
+    );
+};
 
 const RecommendCard = ({ item }) => (
     <div className="recommend-card">
@@ -137,28 +140,27 @@ export default function TeamMatchingPage() {
                 </section>
 
                 <section className="section">
-                                      <div className="section-top">
-
-                    <div className="section-header">
-                        <h2 className="section-title">키워드 별 모집</h2>
-                        <Link
-                            to="/recruitment"
-                            state={{ filter: activeFilter }}
-                            className="section-more"
-                        >
-                            자세히보기 &gt;
-                        </Link>
-                    </div>
-                    <div className="horizontal-scroll-list filter-tags">
-                        {availableFilters.map(filter => (
-                            <div
-                                key={filter}
-                                className={`filter-tag ${activeFilter === filter ? 'active' : ''}`}
-                                onClick={() => setActiveFilter(filter)}
+                    <div className="section-top">
+                        <div className="section-header">
+                            <h2 className="section-title">키워드 별 모집</h2>
+                            <Link
+                                to="/recruitment"
+                                state={{ filter: activeFilter }}
+                                className="section-more"
                             >
-                                {filter}
-                            </div>
-                        ))}
+                                자세히보기 &gt;
+                            </Link>
+                        </div>
+                        <div className="horizontal-scroll-list filter-tags">
+                            {availableFilters.map(filter => (
+                                <div
+                                    key={filter}
+                                    className={`filter-tag ${activeFilter === filter ? 'active' : ''}`}
+                                    onClick={() => setActiveFilter(filter)}
+                                >
+                                    {filter}
+                                </div>
+                            ))}
                         </div>
                     </div>
                     <div className="matching-list">

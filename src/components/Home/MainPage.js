@@ -8,7 +8,6 @@ import BottomNav from '../Common/BottomNav/BottomNav';
 import bellIcon from '../../assets/icons/bell.png';
 import schoolIcon from '../../assets/icons/school.png';
 import mascotImg from '../../assets/icons/project_empty.png';
-import { useNavigate } from 'react-router-dom';
 import { getMe } from '../../services/user';
 import { getSummary } from '../../services/dashboard';
 
@@ -116,7 +115,10 @@ const MainPage = () => {
             <br />
             지금 바로 프로젝트를 시작해보세요!
           </p>
-          <button className="primary-btn" type="button">
+          <button className="primary-btn" 
+          type="button"
+            onClick={() => navigate('/recruit')}
+          >
             팀 프로젝트 시작하기
           </button>
         </div>
