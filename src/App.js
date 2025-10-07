@@ -27,6 +27,15 @@ import ProfilePage from './pages/Profile/ProfilePage';
 // 메인 페이지 임포트
 import MainPage from './components/Home/MainPage';
 
+// 프로젝트 지원하기 임포트
+import ProjectApply from "./pages/ProjectApply/ProjectApply";
+import ProjectApplySelect from "./pages/ProjectApply/ProjectApplySelect";
+import ProjectApplyComplete from "./pages/ProjectApply/ProjectApplyComplete";
+
+//알림 페이지지
+import NotificationSettings from './pages/NotificationsPage/NotificationSettings';
+import NotificationsPage from './pages/NotificationsPage/NotificationsPage';
+
 // 인증 관련 임포트
 import { AuthProvider } from './contexts/AuthContext';
 import ToastHost from './components/Common/ToastHost';
@@ -271,6 +280,13 @@ const App = () => {
           {/* ===== 기본 리다이렉트 ===== */}
           <Route path="/" element={<Navigate to={MAIN_ROUTES.HOME} replace />} />
           <Route path="*" element={<Navigate to={MAIN_ROUTES.HOME} replace />} />
+          <Route path="/apply2" element={<ProjectApply />} />
+        <Route path="/apply2/select" element={<ProjectApplySelect />} /> 
+        <Route path="/apply2/complete" element={<ProjectApplyComplete />} />
+
+        <Route path="/notifications" element={<NotificationsPage />} />
+        <Route path="/notifications/settings" element={<NotificationSettings />} />
+
         </Routes>
       </AuthProvider>
     </Router>
