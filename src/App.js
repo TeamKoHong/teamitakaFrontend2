@@ -27,6 +27,25 @@ import ProfilePage from './pages/Profile/ProfilePage';
 // 메인 페이지 임포트
 import MainPage from './components/Home/MainPage';
 
+// 프로젝트 지원하기 임포트
+import ProjectApply from "./pages/ProjectApply/ProjectApply";
+import ProjectApplySelect from "./pages/ProjectApply/ProjectApplySelect";
+import ProjectApplyComplete from "./pages/ProjectApply/ProjectApplyComplete";
+
+//알림 페이지 임포트
+import NotificationSettings from './pages/NotificationsPage/NotificationSettings';
+import NotificationsPage from './pages/NotificationsPage/NotificationsPage';
+
+//프로젝트 생성하기 임포트
+import ProjectRecruit from './pages/ProjectRecruit/ProjectRecruit/ProjectRecruit';
+import ProjectRecruitDetail from './pages/ProjectRecruit/ProjectRecruitDetail/ProjectRecruitDetail'; 
+import ProjectRecruitImage from './pages/ProjectRecruit/ProjectRecruitImage/ProjectRecruitImage'; 
+import ProjectDrafts from './pages/ProjectRecruit/ProjectDrafts/ProjectDrafts';
+import ProjectRecruitPreview from './pages/ProjectRecruit/ProjectRecruitPreview/ProjectRecruitPreview';
+import ProjectRecruitPublish from "./pages/ProjectRecruit/ProjectRecruitPublish/ProjectRecruitPublish";
+import ProjectRecruitPublishDone from "./pages/ProjectRecruit/ProjectRecruitPublish/ProjectRecruitPublishDone";
+
+
 // 인증 관련 임포트
 import { AuthProvider } from './contexts/AuthContext';
 import ToastHost from './components/Common/ToastHost';
@@ -232,9 +251,13 @@ const App = () => {
           <Route path={MAIN_ROUTES.LOGIN} element={<PublicRoute><LoginPage /></PublicRoute>} />
           <Route path={MAIN_ROUTES.REGISTER} element={<PublicRoute><RegisterPage /></PublicRoute>} />
 
-          {/* ===== 메인/프로필 (인증 필요) ===== */}
-          <Route path={MAIN_ROUTES.MAIN} element={<ProtectedRoute><MainPage /></ProtectedRoute>} />
+          {/* 테스트 중에 메인 페이지지 보호 해제*/}
+          <Route path={MAIN_ROUTES.MAIN} element={<MainPage />} />
           <Route path={MAIN_ROUTES.MY} element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
+          
+          {/* ===== 메인/프로필 (인증 필요) =====
+          <Route path={MAIN_ROUTES.MAIN} element={<ProtectedRoute><MainPage /></ProtectedRoute>} />
+          <Route path={MAIN_ROUTES.MY} element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} /> */}
 
           {/* ===== 프로젝트 관리 라우트 (로그인 제한 없음) ===== */}
           <Route path={PROJECT_ROUTES.MANAGEMENT} element={<ProjectManagement />} />
@@ -271,6 +294,24 @@ const App = () => {
           {/* ===== 기본 리다이렉트 ===== */}
           <Route path="/" element={<Navigate to={MAIN_ROUTES.HOME} replace />} />
           <Route path="*" element={<Navigate to={MAIN_ROUTES.HOME} replace />} />
+
+          <Route path="/apply2" element={<ProjectApply />} />
+          <Route path="/apply2/select" element={<ProjectApplySelect />} /> 
+          <Route path="/apply2/complete" element={<ProjectApplyComplete />} />
+
+          <Route path="/notifications" element={<NotificationsPage />} />
+          <Route path="/notifications/settings" element={<NotificationSettings />} />
+
+        {/* 프로젝트 생성하기 */}
+        <Route path="/recruit" element={<ProjectRecruit />} />
+        <Route path="/recruit/detail" element={<ProjectRecruitDetail />} /> 
+        <Route path="/recruit/image" element={<ProjectRecruitImage />} /> 
+        <Route path="/recruit/drafts" element={<ProjectDrafts />} />
+        <Route path="/recruit/preview" element={<ProjectRecruitPreview />} />
+        <Route path="/recruit/publish" element={<ProjectRecruitPublish />} />
+        <Route path="/recruit/publish/done" element={<ProjectRecruitPublishDone />} />
+
+
         </Routes>
       </AuthProvider>
     </Router>
