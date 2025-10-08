@@ -23,6 +23,7 @@ import TeamMatchingPage from './pages/TeamMatchingPage/TeamMatchingPage';
 import RecruitmentPage from './pages/RecruitmentPage/RecruitmentPage';
 import SearchPage from './pages/SearchPage/SearchPage';
 import ProfilePage from './pages/Profile/ProfilePage';
+import RecruitmentViewPage from './pages/RecruitmentViewPage/RecruitmentViewPage';
 
 // 메인 페이지 임포트
 import MainPage from './components/Home/MainPage';
@@ -287,7 +288,7 @@ const App = () => {
           <Route path={OTHER_ROUTES.RECRUITMENT} element={<RecruitmentPage />} />
           <Route path={OTHER_ROUTES.SEARCH} element={<SearchPage />} />
           <Route path={OTHER_ROUTES.TEAM} element={<Navigate to={OTHER_ROUTES.TEAM_MATCHING} replace />} />
-
+          <Route path="/recruitment/:id" element={<RecruitmentViewPage />} />
           {/* ===== 데모 및 개발 도구 라우트 (개발용) ===== */}
           <Route path={DEMO_ROUTES.CATEGORY_SLIDER} element={<CategorySliderDemo />} />
           
