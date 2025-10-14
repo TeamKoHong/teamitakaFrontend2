@@ -2,12 +2,58 @@
   height: 228px;
   display: flex;
   flex-direction: column;
-  .schedule-header {
-    font-size: 20px;
-    font-weight: 600;
-    text-align: center;
-    color: #403e3e;
+  background-color: #F2F2F2;
+  border-radius: 12px;
+  padding: 16px;
+  position: relative;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: repeating-linear-gradient(
+      to bottom,
+      #F76241 0px,
+      #F76241 4px,
+      transparent 4px,
+      transparent 8px
+    );
+  }
+  
+  .schedule-header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     margin-bottom: 22px;
+    
+    .schedule-header {
+      font-size: 18px;
+      font-weight: 600;
+      color: #403e3e;
+      margin: 0;
+    }
+    
+    .add-schedule-btn {
+      width: 27px;
+      height: 27px;
+      background-color: #F76241;
+      border: none;
+      border-radius: 8px;
+      color: white;
+      font-size: 16px;
+      font-weight: 300;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      
+      &:hover {
+        background-color: #E55A2B;
+      }
+    }
   }
 
   .week-row {
@@ -29,10 +75,11 @@
         color: #807c7c;
       }
       .date {
-        margin-top: 8px;
+        margin-top: 4px;
         line-height: normal;
         color: #403e3e;
-        font-size: 14px;
+        font-size: 16px;
+        font-weight: 600;
       }
 
       &.today {
@@ -60,32 +107,31 @@
 
   .events-list {
     overflow-y: auto;
-    margin-top: 12px;
+    margin-top: 16px;
     padding-right: 4px;
 
     .event-item {
       display: flex;
       align-items: flex-start;
       gap: 8px;
-      padding: 8px 0;
+      padding: 5px 0;
 
-      border-bottom: 1px dashed #d1cccb;
-
-      .time {
-        font-size: 16px;
-        font-style: normal;
-        font-weight: 500;
-        line-height: normal;
-        text-transform: capitalize;
-        color: #000;
+      .bullet {
+        width: 7px;
+        height: 7px;
+        background-color: #807C7C;
+        border-radius: 50%;
+        margin-top: 4px;
+        flex-shrink: 0;
       }
+      
       .desc {
-        font-size: 16px;
+        font-size: 14px;
         font-style: normal;
-        font-weight: 500;
+        font-weight: 400;
         line-height: normal;
-        text-transform: capitalize;
-        color: #000;
+        color: #403e3e;
+        font-family: Pretendard;
       }
     }
   }
