@@ -78,9 +78,10 @@ function ProjectDetailSlideBox() {
         <SwiperSlide className="slide-wrapper">
           <SlideContentSchedule />
         </SwiperSlide>
-        <SwiperSlide className="slide-wrapper">
+        {/* 3번째 슬라이드 (알림) - 기능적으로 제외 */}
+        {/* <SwiperSlide className="slide-wrapper">
           <NotificationBox />
-        </SwiperSlide>
+        </SwiperSlide> */}
         <div className="custom-swiper-pagination" />
       </Swiper>
     </div>
