@@ -7,6 +7,7 @@ import ProjectDetailPage from "./pages/ProjectDetailPage/ProjectDetailPage";
 import "react-spring-bottom-sheet/dist/style.css";
 import ProjectMemberPage from "./pages/ProjectMemberPage/ProjectMemberPage";
 import ProceedingsPage from "./pages/ProceedingsPage/ProceedingsPage";
+import CreateMeetingPage from "./pages/CreateMeetingPage/CreateMeetingPage";
 // import ProjectVotePage from "./pages/ProjectVotePage/ProjectVotePage";
 import ProjectCalender from "./pages/ProjectCalendar/ProjectCalendar";
 
@@ -241,6 +242,7 @@ const App = () => {
           <Route path={PROJECT_ROUTES.DETAIL} element={<ProjectDetailPage />} />
           <Route path={PROJECT_ROUTES.MEMBER} element={<ProjectMemberPage />} />
           <Route path={PROJECT_ROUTES.PROCEEDINGS} element={<ProceedingsPage />} />
+          <Route path={PROJECT_ROUTES.CREATE_MEETING} element={<CreateMeetingPage />} />
           <Route path={PROJECT_ROUTES.CALENDAR} element={<ProjectCalender />} />
 
           {/* ===== 평가 시스템 라우트 (로그인 제한 없음) ===== */}

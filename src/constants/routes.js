@@ -15,6 +15,7 @@ export const PROJECT_ROUTES = {
   DETAIL: '/project/:id',
   MEMBER: '/project/:id/member',
   PROCEEDINGS: '/project/:id/proceedings',
+  CREATE_MEETING: '/project/:id/proceedings/create',
   CALENDAR: '/project/:id/calender',
 };
 
