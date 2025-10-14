@@ -1,12 +1,18 @@
-import React from "react";
+import React, { useState } from "react";
 import DefaultHeader from "../../components/Common/DefaultHeader";
 import Calendar from "../../components/ProjectCalendar/Calendar";
 import "./ProjectCalendar.scss";
 import AddFloatingButton from "../../components/Common/UI/AddFloatingButton";
 
 export default function ProjectCalendar() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   const handleDayClick = (date) => {
     console.log("선택된 날짜:", date);
+  };
+
+  const handleAddButtonClick = () => {
+    setIsModalOpen(true);
   };
 
   return (
@@ -18,9 +24,13 @@ export default function ProjectCalendar() {
       />
 
       <div className="calendar-container">
-        <Calendar onDayClick={handleDayClick} />
+        <Calendar 
+          onDayClick={handleDayClick}
+          isModalOpen={isModalOpen}
+          onCloseModal={() => setIsModalOpen(false)}
+        />
       </div>
-      <AddFloatingButton />
+      <AddFloatingButton onClick={handleAddButtonClick} />
     </div>
   );
 }

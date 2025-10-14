@@ -17,16 +17,20 @@
     .header-right {
       display: flex;
 
-      .icon-mark {
-        width: 1.5rem;
-        height: 1.5rem;
-      }
-
-      .icon-day {
-        width: 1.5rem;
-        height: 1.5rem;
+      .btn-bookmark {
+        background: none;
+        border: none;
+        padding: 0;
         cursor: pointer;
-        margin-left: 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        img {
+          width: 16px;
+          height: 25px;
+          display: block;
+        }
       }
     }
   }

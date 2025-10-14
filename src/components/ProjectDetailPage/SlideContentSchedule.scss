@@ -5,23 +5,6 @@
   background-color: #F2F2F2;
   border-radius: 12px;
   padding: 16px;
-  position: relative;
-  
-  &::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    width: 1px;
-    background: repeating-linear-gradient(
-      to bottom,
-      #F76241 0px,
-      #F76241 4px,
-      transparent 4px,
-      transparent 8px
-    );
-  }
   
   .schedule-header-container {
     display: flex;
