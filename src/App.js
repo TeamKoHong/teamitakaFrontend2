@@ -7,6 +7,7 @@ import ProjectDetailPage from "./pages/ProjectDetailPage/ProjectDetailPage";
 import "react-spring-bottom-sheet/dist/style.css";
 import ProjectMemberPage from "./pages/ProjectMemberPage/ProjectMemberPage";
 import ProceedingsPage from "./pages/ProceedingsPage/ProceedingsPage";
+import CreateMeetingPage from "./pages/CreateMeetingPage/CreateMeetingPage";
 // import ProjectVotePage from "./pages/ProjectVotePage/ProjectVotePage";
 import ProjectCalender from "./pages/ProjectCalendar/ProjectCalendar";
 
@@ -23,6 +24,7 @@ import TeamMatchingPage from './pages/TeamMatchingPage/TeamMatchingPage';
 import RecruitmentPage from './pages/RecruitmentPage/RecruitmentPage';
 import SearchPage from './pages/SearchPage/SearchPage';
 import ProfilePage from './pages/Profile/ProfilePage';
+import BookmarkPage from './pages/BookmarkPage/BookmarkPage';
 
 // 메인 페이지 임포트
 import MainPage from './components/Home/MainPage';
@@ -264,6 +266,7 @@ const App = () => {
           <Route path={PROJECT_ROUTES.DETAIL} element={<ProjectDetailPage />} />
           <Route path={PROJECT_ROUTES.MEMBER} element={<ProjectMemberPage />} />
           <Route path={PROJECT_ROUTES.PROCEEDINGS} element={<ProceedingsPage />} />
+          <Route path={PROJECT_ROUTES.CREATE_MEETING} element={<CreateMeetingPage />} />
           <Route path={PROJECT_ROUTES.CALENDAR} element={<ProjectCalender />} />
 
           {/* ===== 평가 시스템 라우트 (로그인 제한 없음) ===== */}
@@ -286,6 +289,7 @@ const App = () => {
           <Route path={OTHER_ROUTES.TEAM_MATCHING} element={<TeamMatchingPage />} />
           <Route path={OTHER_ROUTES.RECRUITMENT} element={<RecruitmentPage />} />
           <Route path={OTHER_ROUTES.SEARCH} element={<SearchPage />} />
+          <Route path={OTHER_ROUTES.BOOKMARK} element={<BookmarkPage />} />
           <Route path={OTHER_ROUTES.TEAM} element={<Navigate to={OTHER_ROUTES.TEAM_MATCHING} replace />} />
 
           {/* ===== 데모 및 개발 도구 라우트 (개발용) ===== */}
