@@ -45,6 +45,7 @@ export const OTHER_ROUTES = {
   RECRUITMENT: '/recruitment',
   SEARCH: '/search',
   TEAM: '/team',
+  BOOKMARK: '/bookmark',
 };
 
 // ===== 데모 및 개발 도구 라우트 =====

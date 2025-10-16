@@ -1,9 +1,17 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import "./Header.scss";
 import bookMarkIcon from "../../../assets/icons/bookMarkIcon.svg";
 import Tab from "../Tab/Tab";
+import { OTHER_ROUTES } from "../../../constants/routes";
 
 function Header({ onTabChange, activeTabIndex }) {
+  const navigate = useNavigate();
+
+  const handleBookmarkClick = () => {
+    navigate(OTHER_ROUTES.BOOKMARK);
+  };
+
   return (
     <header className="pm-header">
       <div className="header-first">
@@ -11,7 +19,7 @@ function Header({ onTabChange, activeTabIndex }) {
           <h1 className="title">내 프로젝트 관리</h1>
         </div>
         <div className="header-right">
-          <button className="btn-bookmark">
+          <button className="btn-bookmark" onClick={handleBookmarkClick}>
             <img src={bookMarkIcon} alt="북마크" />
           </button>
         </div>
