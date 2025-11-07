@@ -225,38 +225,56 @@ function RegisterPage() {
 
     const handleSendVerificationCode = async () => {
         // 입력값 검증
-        if (!email.trim() || !department.trim()) {
-            setVerificationError('이메일과 학부를 모두 입력해주세요.');
+        if (!email.trim()) {
+            setVerificationError('이메일을 입력해주세요.');
             return;
         }
-        
+
         // 이메일 형식 검증
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(email)) {
             setVerificationError('올바른 이메일 형식이 아닙니다.');
             return;
         }
-        
+
         try {
             setIsVerificationLoading(true);
             setVerificationError('');
-            
+
             const result = await sendVerificationCode(email);
-            
-            if (result.success) {
+
+            // 성공 시 인증번호 입력 페이지로 이동
+            if (result.success || result.message) {
                 setVerificationSuccess(true);
                 setVerificationError('');
+                // 성공 시에만 다음 화면으로 이동
+                setCurrentStep(3);
             } else {
                 setVerificationError(result.message || '인증번호 전송에 실패했습니다.');
             }
-            
+
         } catch (error) {
+            console.error('인증번호 전송 에러:', error);
+
+            // 409 Conflict: 중복 이메일 에러 처리
+            if (error.code === 'DUPLICATE_EMAIL' || error.statusCode === 409) {
+                setVerificationError('이미 가입된 이메일입니다. 다른 이메일을 사용하거나 로그인해주세요.');
+                // 다음 페이지로 이동하지 않음
+                return;
+            }
+
+            // 400 Bad Request: 이메일 형식 오류
+            if (error.code === 'INVALID_EMAIL' || error.statusCode === 400) {
+                setVerificationError(error.message || '유효하지 않은 이메일 형식입니다.');
+                return;
+            }
+
             // 일일 한도 초과 에러 처리
             if (error.message && error.message.includes('하루 최대')) {
                 setVerificationError('하루 최대 5회까지만 인증번호를 전송할 수 있습니다. 내일 다시 시도해주세요.');
                 setIsDailyLimitExceeded(true);
             } else {
-                setVerificationError(error.message || '네트워크 오류가 발생했습니다.');
+                setVerificationError(error.message || '네트워크 오류가 발생했습니다. 다시 시도해주세요.');
             }
         } finally {
             setIsVerificationLoading(false);
@@ -485,6 +503,7 @@ function RegisterPage() {
             case 2:
                 return (
                     <div className="step-content">
+                        {isVerificationLoading && <VerificationLoading />}
                         <div className="progress-indicator">
                             <div className="progress-step completed"></div>
                             <div className="progress-step active"></div>
@@ -506,11 +525,21 @@ function RegisterPage() {
                                 type="email"
                                 placeholder="본인 명의의 학교 이메일을 입력해주세요."
                                 value={email}
-                                onChange={(e) => setEmail(e.target.value)}
+                                onChange={(e) => {
+                                    setEmail(e.target.value);
+                                    // 이메일 입력 시 에러 메시지 초기화
+                                    if (verificationError) {
+                                        setVerificationError('');
+                                    }
+                                }}
+                                disabled={isVerificationLoading}
                             />
                         </div>
-                        {email && !isValidEmail(email) && (
+                        {email && !isValidEmail(email) && !verificationError && (
                             <div className="input-error-text">올바른 이메일 형식을 입력해주세요.</div>
+                        )}
+                        {verificationError && (
+                            <div className="input-error-text">{verificationError}</div>
                         )}
                     </div>
                 );
@@ -754,11 +783,12 @@ function RegisterPage() {
                             ) : null
                         ) : currentStep === 2 ? (
                             isValidEmail(email) ? (
-                                <button 
+                                <button
                                     className="next-button active"
-                                    onClick={() => setCurrentStep(3)}
+                                    onClick={handleSendVerificationCode}
+                                    disabled={isVerificationLoading}
                                 >
-                                    인증 코드 전송
+                                    {isVerificationLoading ? '전송 중...' : '인증 코드 전송'}
                                 </button>
                             ) : null
                         ) : (
