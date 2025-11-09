@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { ReactComponent as EditIcon } from "../../assets/icons/editIcon.svg";
 import "./MemberDetailCard.scss";
 import avatar1 from "../../assets/icons/avatar1.png";
-import UnderArrow from "../Common/UI/UnderArrow";
+// import UnderArrow from "../Common/UI/UnderArrow"; // 현재 사용 안 함
 
 export default function MemberDetailCard({ member }) {
   const [isEditing, setIsEditing] = useState(false);
@@ -13,10 +13,10 @@ export default function MemberDetailCard({ member }) {
     tasks: "디자인, 발표"
   });
 
-  const handleClick = () => {
-    // 타임라인 열기 로직
-    console.log("타임라인 열기");
-  };
+  // const handleClick = () => {
+  //   // 타임라인 열기 로직
+  //   console.log("타임라인 열기");
+  // };
 
   const handleEditToggle = () => {
     setIsEditing(!isEditing);

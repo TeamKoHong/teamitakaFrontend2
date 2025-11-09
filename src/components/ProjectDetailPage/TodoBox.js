@@ -27,7 +27,7 @@ function TodoBox() {
   ]);
 
   // 프로젝트 피드 데이터
-  const [projectFeeds, setProjectFeeds] = useState([
+  const [projectFeeds] = useState([
     { id: 1, text: "글자글자글자글자글자글자글자글자글자글자", timestamp: "3시간 전" },
     { id: 2, text: "글자글자글자글자글자글자글자글자글자글자", timestamp: "24시간 전" },
     { id: 3, text: "글자글자글자글자글자글자글자글자글자글자", timestamp: "1주일 전" },
