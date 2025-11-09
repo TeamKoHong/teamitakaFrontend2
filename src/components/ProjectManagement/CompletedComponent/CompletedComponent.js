@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import "./CompletedComponent.scss";
-import SectionHeader from "../Common/SectionHeader";
-import { FaStar } from "react-icons/fa"; // 즐겨찾기 아이콘
+import EvaluationAlert from "./EvaluationAlert";
+import CompletedProjectCard from "./CompletedProjectCard";
 import { useNavigate } from 'react-router-dom';
 import AlertModal from '../../Common/AlertModal';
 import { fetchEvaluationTargets, getNextPendingMemberId } from '../../../services/rating';
@@ -14,6 +14,7 @@ const CompletedComponent = () => {
   const [page, setPage] = React.useState({ total: 0, limit: 10, offset: 0 });
   const [isLoading, setIsLoading] = React.useState(true);
   const [error, setError] = React.useState(null);
+  const [sortBy, setSortBy] = React.useState('latest');
 
   const [isModalOpen, setModalOpen] = React.useState(false);
   const [modalProject] = React.useState(null);
@@ -80,111 +81,38 @@ const CompletedComponent = () => {
 
   // evaluation_status별로 프로젝트 분리
   const pendingProjects = items.filter(p => p.evaluation_status === 'PENDING');
-  const completedProjects = items.filter(p => p.evaluation_status === 'COMPLETED' || p.evaluation_status === 'NOT_REQUIRED');
 
   return (
     <div className="completed-container">
-      <div className="completed-top">
-        <SectionHeader
-          explainText={`완료된 프로젝트 내역을 확인해보세요`}
-          highlightText="완료"
-          filterOptions={[
-            { value: "latest", label: "최신순" },
-            { value: "date", label: "완료 날짜순" },
-            { value: "rating", label: "평점순" },
-          ]}
-          onFilterChange={(e) => console.log(e.target.value)}
-        />
-      </div>
+      {/* EvaluationAlert - 평가 대기 프로젝트가 있을 때만 표시 */}
+      <EvaluationAlert
+        pendingCount={pendingProjects.length}
+        sortBy={sortBy}
+        onSortChange={(e) => setSortBy(e.target.value)}
+      />
 
-      <hr />
-
+      {/* 로딩 및 에러 상태 */}
       {isLoading && items.length === 0 && <div style={{ padding: '20px', textAlign: 'center' }}>불러오는 중...</div>}
       {error && <div style={{ color: '#F76241', padding: '20px', textAlign: 'center' }}>{error} <button onClick={() => load(page.offset || 0)}>다시 시도</button></div>}
 
-      {/* 평가 대기 프로젝트 섹션 */}
-      {pendingProjects.length > 0 && (
-        <div className="completed-section">
-          <div className="completed-header">
-            <h4 className="completed-section-title">⏳ 상호평가 대기 ({pendingProjects.length}개)</h4>
-            <p style={{ fontSize: '14px', color: '#807C7C', marginTop: '4px' }}>
-              팀원 평가를 완료하면 프로젝트 결과를 확인할 수 있어요
-            </p>
-          </div>
+      {/* 완료 프로젝트 섹션 (Figma 디자인) */}
+      {items.length > 0 && (
+        <div className="completed-section-new">
+          <h4 className="section-header-title">완료 프로젝트</h4>
 
-          <div className="completed-list">
-            {pendingProjects.map((proj) => (
-              <div
-                key={proj.project_id}
-                className="completed-item pending-evaluation"
-                style={{ border: '2px solid #FFA500', backgroundColor: '#FFF8DC' }}
-              >
-                <div className="completed-item-left">
-                  <h3>{proj.title}</h3>
-                  <p className="description">
-                    평가 현황: {proj.completed_reviews || 0}/{proj.required_reviews || 0} 완료
-                  </p>
-                  <p className="description" style={{ fontSize: '12px', marginTop: '4px' }}>
-                    마지막 업데이트: {proj.updated_at}
-                  </p>
-                </div>
-                <button
-                  className="evaluate-button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleEvaluateClick(proj);
-                  }}
-                  style={{
-                    padding: '8px 16px',
-                    backgroundColor: '#F76241',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '4px',
-                    cursor: 'pointer',
-                    fontWeight: '600'
-                  }}
-                >
-                  평가하기
-                </button>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* 평가 완료 프로젝트 섹션 */}
-      {completedProjects.length > 0 && (
-        <div className="completed-section" style={{ marginTop: pendingProjects.length > 0 ? '32px' : '0' }}>
-          <div className="completed-header">
-            <h4 className="completed-section-title">✅ 상호평가 완료 ({completedProjects.length}개)</h4>
-          </div>
-
-          <div className="completed-list">
-            {completedProjects.map((proj) => (
-              <div
-                key={proj.project_id}
-                role="button"
-                tabIndex={0}
-                className="completed-item"
-                onClick={() => handleCompletedItemClick(proj)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    handleCompletedItemClick(proj);
+          <div className="project-list-new">
+            {items.map((project) => (
+              <CompletedProjectCard
+                key={project.project_id}
+                project={project}
+                onClick={() => {
+                  if (project.evaluation_status === 'PENDING') {
+                    handleEvaluateClick(project);
+                  } else {
+                    handleCompletedItemClick(project);
                   }
                 }}
-              >
-                <div className="completed-item-left">
-                  <h3>{proj.title}</h3>
-                  <p className="description">마지막 업데이트: {proj.updated_at}</p>
-                  {proj.evaluation_status === 'NOT_REQUIRED' && (
-                    <p className="description" style={{ fontSize: '12px', color: '#807C7C' }}>
-                      (1인 프로젝트 - 평가 불필요)
-                    </p>
-                  )}
-                </div>
-                <FaStar className="favorite-icon" />
-              </div>
+              />
             ))}
           </div>
         </div>

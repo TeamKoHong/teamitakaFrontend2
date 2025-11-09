@@ -704,9 +704,30 @@
     .completed-item {
       border: 2px solid currentColor;
     }
-    
+
     .review-badge {
       border: 2px solid currentColor !important;
     }
+  }
+}
+
+// ===== Figma 디자인 스타일 (새 컴포넌트) =====
+
+.completed-section-new {
+  padding: 0px 24px;
+  margin-top: 16px;
+
+  .section-header-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: #140805;
+    margin: 0 0 16px 0;
+    text-transform: capitalize;
+  }
+
+  .project-list-new {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
   }
 }
