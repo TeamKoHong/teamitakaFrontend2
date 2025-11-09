@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import RatingInputStars from '../../../components/RatingManagement/RatingInputStars/RatingInputStars';
 import styles from '../TeamMemberEvaluationPage.module.scss';
 import ProgressIndicator from './ProgressIndicator';

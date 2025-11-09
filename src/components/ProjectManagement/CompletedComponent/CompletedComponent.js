@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import "./CompletedComponent.scss";
 import SectionHeader from "../Common/SectionHeader";
 import { FaStar } from "react-icons/fa"; // 즐겨찾기 아이콘
@@ -16,13 +16,37 @@ const CompletedComponent = () => {
   const [error, setError] = React.useState(null);
 
   const [isModalOpen, setModalOpen] = React.useState(false);
-  const [modalProject, setModalProject] = React.useState(null);
+  const [modalProject] = React.useState(null);
 
   const handleCompletedItemClick = (project) => {
-    // 완료된 프로젝트는 evaluation/project/:projectId로 이동
+    // 평가 완료 프로젝트는 평가 결과 조회 페이지로 이동
     navigate(`/evaluation/project/${project.project_id}`, {
       state: { projectSummary: project, from: { path: '/project-management', tab: 'completed' } },
     });
+  };
+
+  const handleEvaluateClick = async (project) => {
+    // 평가 대기 프로젝트는 팀원 평가 페이지로 이동
+    try {
+      const { targets } = await fetchEvaluationTargets(project.project_id);
+      const nextId = getNextPendingMemberId(targets);
+      if (nextId) {
+        navigate(`/evaluation/team-member/${project.project_id}/${nextId}`, {
+          state: { projectSummary: project, from: { path: '/project-management', tab: 'completed' } },
+        });
+      } else {
+        // 평가할 팀원이 없으면 프로젝트 평가 페이지로
+        navigate(`/evaluation/project/${project.project_id}`, {
+          state: { projectSummary: project, from: { path: '/project-management', tab: 'completed' } },
+        });
+      }
+    } catch (error) {
+      console.error('평가 대상 조회 실패:', error);
+      // 에러 발생 시에도 프로젝트 평가 페이지로 이동
+      navigate(`/evaluation/project/${project.project_id}`, {
+        state: { projectSummary: project, from: { path: '/project-management', tab: 'completed' } },
+      });
+    }
   };
 
   const load = async (nextOffset = 0) => {
@@ -54,6 +78,10 @@ const CompletedComponent = () => {
 
   const canLoadMore = items.length < (page.total || 0);
 
+  // evaluation_status별로 프로젝트 분리
+  const pendingProjects = items.filter(p => p.evaluation_status === 'PENDING');
+  const completedProjects = items.filter(p => p.evaluation_status === 'COMPLETED' || p.evaluation_status === 'NOT_REQUIRED');
+
   return (
     <div className="completed-container">
       <div className="completed-top">
@@ -71,43 +99,102 @@ const CompletedComponent = () => {
 
       <hr />
 
-      <div className="completed-section">
-        <div className="completed-header">
-          <h4 className="completed-section-title">완료 프로젝트</h4>
-        </div>
+      {isLoading && items.length === 0 && <div style={{ padding: '20px', textAlign: 'center' }}>불러오는 중...</div>}
+      {error && <div style={{ color: '#F76241', padding: '20px', textAlign: 'center' }}>{error} <button onClick={() => load(page.offset || 0)}>다시 시도</button></div>}
 
-        <div className="completed-list">
-          {isLoading && items.length === 0 && <div>불러오는 중...</div>}
-          {error && <div style={{ color: '#F76241' }}>{error} <button onClick={() => load(page.offset || 0)}>다시 시도</button></div>}
-          {items.map((proj) => (
-            <div
-              key={proj.project_id}
-              role="button"
-              tabIndex={0}
-              className="completed-item"
-              onClick={() => handleCompletedItemClick(proj)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  e.preventDefault();
-                  handleCompletedItemClick(proj);
-                }
-              }}
-            >
-              <div className="completed-item-left">
-                <h3>{proj.title}</h3>
-                <p className="description">마지막 업데이트: {proj.updated_at}</p>
-              </div>
-              <FaStar className="favorite-icon" />
-            </div>
-          ))}
-        </div>
-
-        {canLoadMore && !isLoading && (
-          <div style={{ textAlign: 'center', margin: '16px 0' }}>
-            <button onClick={() => load((page.offset || 0) + (page.limit || 10))}>더 보기</button>
+      {/* 평가 대기 프로젝트 섹션 */}
+      {pendingProjects.length > 0 && (
+        <div className="completed-section">
+          <div className="completed-header">
+            <h4 className="completed-section-title">⏳ 상호평가 대기 ({pendingProjects.length}개)</h4>
+            <p style={{ fontSize: '14px', color: '#807C7C', marginTop: '4px' }}>
+              팀원 평가를 완료하면 프로젝트 결과를 확인할 수 있어요
+            </p>
           </div>
-        )}
-      </div>
+
+          <div className="completed-list">
+            {pendingProjects.map((proj) => (
+              <div
+                key={proj.project_id}
+                className="completed-item pending-evaluation"
+                style={{ border: '2px solid #FFA500', backgroundColor: '#FFF8DC' }}
+              >
+                <div className="completed-item-left">
+                  <h3>{proj.title}</h3>
+                  <p className="description">
+                    평가 현황: {proj.completed_reviews || 0}/{proj.required_reviews || 0} 완료
+                  </p>
+                  <p className="description" style={{ fontSize: '12px', marginTop: '4px' }}>
+                    마지막 업데이트: {proj.updated_at}
+                  </p>
+                </div>
+                <button
+                  className="evaluate-button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleEvaluateClick(proj);
+                  }}
+                  style={{
+                    padding: '8px 16px',
+                    backgroundColor: '#F76241',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '4px',
+                    cursor: 'pointer',
+                    fontWeight: '600'
+                  }}
+                >
+                  평가하기
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* 평가 완료 프로젝트 섹션 */}
+      {completedProjects.length > 0 && (
+        <div className="completed-section" style={{ marginTop: pendingProjects.length > 0 ? '32px' : '0' }}>
+          <div className="completed-header">
+            <h4 className="completed-section-title">✅ 상호평가 완료 ({completedProjects.length}개)</h4>
+          </div>
+
+          <div className="completed-list">
+            {completedProjects.map((proj) => (
+              <div
+                key={proj.project_id}
+                role="button"
+                tabIndex={0}
+                className="completed-item"
+                onClick={() => handleCompletedItemClick(proj)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    handleCompletedItemClick(proj);
+                  }
+                }}
+              >
+                <div className="completed-item-left">
+                  <h3>{proj.title}</h3>
+                  <p className="description">마지막 업데이트: {proj.updated_at}</p>
+                  {proj.evaluation_status === 'NOT_REQUIRED' && (
+                    <p className="description" style={{ fontSize: '12px', color: '#807C7C' }}>
+                      (1인 프로젝트 - 평가 불필요)
+                    </p>
+                  )}
+                </div>
+                <FaStar className="favorite-icon" />
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {canLoadMore && !isLoading && (
+        <div style={{ textAlign: 'center', margin: '16px 0' }}>
+          <button onClick={() => load((page.offset || 0) + (page.limit || 10))}>더 보기</button>
+        </div>
+      )}
 
       <AlertModal
         isOpen={isModalOpen}

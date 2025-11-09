@@ -19,7 +19,7 @@ function RatingManagementPage() {
   const [activeTab, setActiveTab] = useState('received'); // 초기값: 내가 받은 평가
 
   // === 새로 추가된 정렬 관련 상태 ===
-  const [sortBy, setSortBy] = useState('createdAt'); // 기본 정렬 기준: 생성일
+  const [sortBy] = useState('createdAt'); // 기본 정렬 기준: 생성일
   const [sortOrder, setSortOrder] = useState('desc'); // 기본 정렬 방향: 내림차순 (최신순)
 
   // '최신순' 버튼 클릭 시 정렬 방향을 토글하는 핸들러
