@@ -3,20 +3,17 @@ import './RegisterPage.scss';
 import './RegisterPage.step2.scss';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
-import { sendVerificationCode, verifyCode, registerUser } from '../../services/auth.js';
+import { sendVerificationCode } from '../../services/auth.js';
 import VerificationLoading from '../../components/Common/VerificationLoading';
 
 function RegisterPage() {
     const navigate = useNavigate();
-    const { login, isAuthenticated } = useAuth();
+    const { isAuthenticated } = useAuth();
     const [currentStep, setCurrentStep] = useState(1);
-    const [university, setUniversity] = useState('');
-    const [studentId, setStudentId] = useState('');
     const [email, setEmail] = useState('');
     const [verificationCode, setVerificationCode] = useState('');
     const [password, setPassword] = useState('');
     const [passwordConfirm, setPasswordConfirm] = useState('');
-    const [department, setDepartment] = useState('');
     const [showToast, setShowToast] = useState(false);
     const [showTermsPage, setShowTermsPage] = useState(false);
     const [currentTermsType, setCurrentTermsType] = useState('');
@@ -50,11 +47,6 @@ function RegisterPage() {
     const [isVerificationLoading, setIsVerificationLoading] = useState(false);
     const [verificationError, setVerificationError] = useState('');
     const [verificationErrorCode, setVerificationErrorCode] = useState('');
-    const [verificationSuccess, setVerificationSuccess] = useState(false);
-    const [isDailyLimitExceeded, setIsDailyLimitExceeded] = useState(false);
-    const [isRegistrationLoading, setIsRegistrationLoading] = useState(false);
-    const [registrationError, setRegistrationError] = useState('');
-    const [isEmailVerified, setIsEmailVerified] = useState(false);
 
     // 이미 로그인된 사용자는 메인 페이지로 리디렉션
     useEffect(() => {
@@ -246,7 +238,6 @@ function RegisterPage() {
 
             // 성공 시 인증번호 입력 페이지로 이동
             if (result.success || result.message) {
-                setVerificationSuccess(true);
                 setVerificationError('');
                 // 성공 시에만 다음 화면으로 이동
                 setCurrentStep(3);
@@ -283,7 +274,6 @@ function RegisterPage() {
             if (error.message && error.message.includes('하루 최대')) {
                 setVerificationError('하루 최대 5회까지만 인증번호를 전송할 수 있습니다. 내일 다시 시도해주세요.');
                 setVerificationErrorCode('DAILY_LIMIT');
-                setIsDailyLimitExceeded(true);
             } else {
                 setVerificationError(error.message || '네트워크 오류가 발생했습니다. 다시 시도해주세요.');
                 setVerificationErrorCode('NETWORK_ERROR');
@@ -293,109 +283,7 @@ function RegisterPage() {
         }
     };
 
-    const handleVerifyCode = async () => {
-        if (!verificationCode.trim()) {
-            setVerificationError('인증번호를 입력해주세요.');
-            return;
-        }
-
-        if (verificationCode.length !== 6) {
-            setVerificationError('인증번호는 6자리 숫자입니다.');
-            return;
-        }
-
-        try {
-            setIsVerificationLoading(true);
-            setVerificationError('');
-
-            const result = await verifyCode(email, verificationCode);
-
-            if (result.success) {
-                setVerificationSuccess(true);
-                setVerificationError('');
-                setIsEmailVerified(true);
-                // 인증 성공 시 자동 진행하지 않고 사용자가 다음 버튼을 누르도록 함
-            } else {
-                setVerificationError(result.message || '인증번호 확인에 실패했습니다.');
-            }
-
-        } catch (error) {
-            setVerificationError(error.message || '인증번호 확인 중 오류가 발생했습니다.');
-        } finally {
-            setIsVerificationLoading(false);
-        }
-    };
-
-    const handleCompleteRegistration = async () => {
-        if (!isEmailVerified) {
-            setRegistrationError('이메일 인증을 먼저 완료해주세요.');
-            return;
-        }
-
-        if (password !== passwordConfirm) {
-            setRegistrationError('비밀번호가 일치하지 않습니다.');
-            return;
-        }
-
-        if (password.length < 6) {
-            setRegistrationError('비밀번호는 6자 이상이어야 합니다.');
-            return;
-        }
-
-        try {
-            setIsRegistrationLoading(true);
-            setRegistrationError('');
-
-            const registrationData = {
-                email: email,
-                password: password,
-                university: university,
-                department: department,
-                student_id: studentId && studentId.trim() ? studentId.trim() : null
-            };
-
-            console.log('Registration data:', registrationData);
-            console.log('Email verified status:', isEmailVerified);
-            console.log('All form data:', {
-                email,
-                password,
-                university,
-                department,
-                studentId,
-                isEmailVerified
-            });
-
-            const result = await registerUser(registrationData);
-
-            if (result.success || result.token) {
-                console.log('Registration successful:', result);
-                
-                // AuthContext를 통해 자동 로그인 처리
-                if (result.token && result.user) {
-                    const loginSuccess = login(result.user, result.token);
-                    
-                    if (loginSuccess) {
-                        console.log('회원가입 후 자동 로그인 성공');
-                        // 회원가입 성공 시 완료 화면으로 이동
-                        setCurrentStep(7);
-                    } else {
-                        setRegistrationError('회원가입은 완료되었지만 자동 로그인에 실패했습니다.');
-                    }
-                } else {
-                    // 토큰이나 사용자 정보가 없는 경우에도 완료 화면 표시
-                    setCurrentStep(7);
-                }
-            } else {
-                setRegistrationError(result.message || '회원가입에 실패했습니다.');
-            }
-
-        } catch (error) {
-            console.error('Registration error:', error);
-            setRegistrationError(error.message || '회원가입 중 오류가 발생했습니다.');
-        } finally {
-            setIsRegistrationLoading(false);
-        }
-    };
+    // 인증번호 확인 및 회원가입 완료 함수들은 현재 미사용 (향후 구현 예정)
 
     const isNextButtonActive = () => {
         switch (currentStep) {

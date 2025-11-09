@@ -56,6 +56,7 @@ const CategorySlider = ({
     thresholdExceededRef.current = false;
     downOnThumbRef.current = false;
     setIsPressed(false);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handlePointerMove = useCallback((e) => {
