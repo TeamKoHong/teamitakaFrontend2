@@ -81,6 +81,7 @@ const CompletedComponent = () => {
 
   // evaluation_status별로 프로젝트 분리
   const pendingProjects = items.filter(p => p.evaluation_status === 'PENDING');
+  const completedProjects = items.filter(p => p.evaluation_status === 'COMPLETED' || p.evaluation_status === 'NOT_REQUIRED');
 
   return (
     <div className="completed-container">
@@ -95,23 +96,34 @@ const CompletedComponent = () => {
       {isLoading && items.length === 0 && <div style={{ padding: '20px', textAlign: 'center' }}>불러오는 중...</div>}
       {error && <div style={{ color: '#F76241', padding: '20px', textAlign: 'center' }}>{error} <button onClick={() => load(page.offset || 0)}>다시 시도</button></div>}
 
-      {/* 완료 프로젝트 섹션 (Figma 디자인) */}
-      {items.length > 0 && (
-        <div className="completed-section-new">
-          <h4 className="section-header-title">완료 프로젝트</h4>
+      {/* 평가 대기 프로젝트 섹션 */}
+      {pendingProjects.length > 0 && (
+        <div className="pending-projects-section">
+          <h4 className="section-header-title">평가 대기 프로젝트</h4>
 
           <div className="project-list-new">
-            {items.map((project) => (
+            {pendingProjects.map((project) => (
               <CompletedProjectCard
                 key={project.project_id}
                 project={project}
-                onClick={() => {
-                  if (project.evaluation_status === 'PENDING') {
-                    handleEvaluateClick(project);
-                  } else {
-                    handleCompletedItemClick(project);
-                  }
-                }}
+                onClick={() => handleEvaluateClick(project)}
+              />
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* 완료 프로젝트 섹션 */}
+      {completedProjects.length > 0 && (
+        <div className="completed-projects-section">
+          <h4 className="section-header-title">완료 프로젝트</h4>
+
+          <div className="project-list-new">
+            {completedProjects.map((project) => (
+              <CompletedProjectCard
+                key={project.project_id}
+                project={project}
+                onClick={() => handleCompletedItemClick(project)}
               />
             ))}
           </div>
