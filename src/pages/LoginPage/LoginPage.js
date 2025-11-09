@@ -62,6 +62,9 @@ function LoginPage() {
             console.log('로그인 시도:', { email: loginData.email });
 
             const result = await loginUser(loginData);
+            console.log('백엔드 응답 전체:', result);
+            console.log('result.token:', result.token);
+            console.log('result.user:', result.user);
 
             if (result.token && result.user) {
                 // AuthContext를 통해 로그인 상태 업데이트
