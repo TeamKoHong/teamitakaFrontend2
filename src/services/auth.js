@@ -364,21 +364,6 @@ const mapLoginErrorMessage = (status, errorData) => {
 };
 
 // 사용자 로그인
-// JWT 토큰에서 사용자 정보 추출
-const decodeJWT = (token) => {
-    try {
-        const base64Url = token.split('.')[1];
-        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-        const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
-            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-        }).join(''));
-        return JSON.parse(jsonPayload);
-    } catch (error) {
-        console.error('JWT 디코딩 실패:', error);
-        return null;
-    }
-};
-
 export const loginUser = async (loginData) => {
     try {
         const { API_BASE_URL, headers } = getApiConfig();
@@ -407,26 +392,10 @@ export const loginUser = async (loginData) => {
             throw err;
         }
 
-        if (result.token) {
-            // 백엔드가 user 정보를 반환하지 않으면 JWT에서 추출
-            let user = result.user;
-
-            if (!user) {
-                const decoded = decodeJWT(result.token);
-                if (decoded) {
-                    user = {
-                        userId: decoded.userId,
-                        email: decoded.email,
-                        role: decoded.role
-                    };
-                }
-            }
-
+        // 백엔드가 success: true, token, user를 반환
+        if (result.token && result.user) {
             localStorage.setItem('authToken', result.token);
-            if (user) {
-                localStorage.setItem('user', JSON.stringify(user));
-                result.user = user; // result에 user 추가
-            }
+            localStorage.setItem('user', JSON.stringify(result.user));
         }
 
         return result;
