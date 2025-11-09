@@ -713,7 +713,9 @@
 
 // ===== Figma 디자인 스타일 (새 컴포넌트) =====
 
-.completed-section-new {
+// 공통 섹션 스타일
+.pending-projects-section,
+.completed-projects-section {
   padding: 0px 24px;
   margin-top: 16px;
 
@@ -730,4 +732,9 @@
     flex-direction: column;
     gap: 16px;
   }
+}
+
+// 평가 대기 섹션 - 하단 간격 추가
+.pending-projects-section {
+  margin-bottom: 32px;
 }
