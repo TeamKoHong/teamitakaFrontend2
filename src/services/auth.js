@@ -381,7 +381,6 @@ const decodeJWT = (token) => {
 
 export const loginUser = async (loginData) => {
     try {
-        console.log('🔵 [auth.js] loginUser 함수 시작');
         const { API_BASE_URL, headers } = getApiConfig();
 
         const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
@@ -400,7 +399,6 @@ export const loginUser = async (loginData) => {
         }
 
         const result = await response.json();
-        console.log('🔵 [auth.js] 백엔드 응답:', result);
 
         // 성공인데 토큰이 없는 경우 명시적 오류 처리
         if (result && result.success && !result.token) {
@@ -410,23 +408,17 @@ export const loginUser = async (loginData) => {
         }
 
         if (result.token) {
-            console.log('🔵 [auth.js] 토큰 있음, user 체크 중...');
             // 백엔드가 user 정보를 반환하지 않으면 JWT에서 추출
             let user = result.user;
-            console.log('🔵 [auth.js] 백엔드에서 받은 user:', user);
 
             if (!user) {
-                console.log('🔵 [auth.js] user 없음, JWT 디코딩 시작');
                 const decoded = decodeJWT(result.token);
-                console.log('🔵 [auth.js] JWT 디코딩 결과:', decoded);
-
                 if (decoded) {
                     user = {
                         userId: decoded.userId,
                         email: decoded.email,
                         role: decoded.role
                     };
-                    console.log('🔵 [auth.js] user 객체 생성:', user);
                 }
             }
 
@@ -434,11 +426,9 @@ export const loginUser = async (loginData) => {
             if (user) {
                 localStorage.setItem('user', JSON.stringify(user));
                 result.user = user; // result에 user 추가
-                console.log('🔵 [auth.js] result.user 설정 완료:', result.user);
             }
         }
 
-        console.log('🔵 [auth.js] 최종 result 반환:', result);
         return result;
     } catch (error) {
         console.error('Login error:', error);
