@@ -2,11 +2,12 @@ import React, { useState, useEffect } from 'react';
 import './TeamMatchingPage.scss';
 import BottomNav from "../../components/Common/BottomNav/BottomNav";
 import Header from "../../components/TeamMatching/Header/Header";
-import { CiBookmark } from "react-icons/ci";
+import recruit_write from "../../assets/recruit_write.png";
+import bookmark from "../../assets/bookmark.png";
+import bookmark_active from "../../assets/bookmark_active.png";
 import { IoEyeOutline } from "react-icons/io5";
 import { HiOutlineChatBubbleOvalLeft } from "react-icons/hi2";
 import { Link, useNavigate } from 'react-router-dom';
-import { FaPencilAlt } from "react-icons/fa";
 
 // recruit API만 임포트합니다.
 import { loadDrafts, saveDraftToList } from '../../api/recruit';
@@ -17,7 +18,7 @@ const CreateProjectBanner = () => {
     const navigate = useNavigate();
     return (
         <div className="create-project-banner" onClick={() => navigate('/recruit')}>
-            <div className="banner-icon"><FaPencilAlt /></div>
+            <img src={recruit_write} alt="생성" className="banner-icon" />
             <div className="banner-text">
                 <div className="banner-title">프로젝트 생성하기</div>
                 <p className="banner-description">잘 맞는 팀을 구하고 싶다면 직접 생성해보세요!</p>
@@ -36,7 +37,7 @@ const HotTopicCard = ({ item, onBookmarkToggle }) => {
         <div className="hot-topic-card" onClick={handleCardClick}>
             <div className="hot-topic-card-header">
                 <span className={`tag ${item.category?.toLowerCase()}`}>{item.category}</span>
-                <CiBookmark className={`bookmark-icon`} onClick={handleBookmarkClick} />
+            <img src={bookmark} alt="북마크" className="bookmark-icon" />
             </div>
             <div className="hot-topic-card-title">{item.title}</div>
             <div className="hot-topic-card-desc">{item.description}</div>

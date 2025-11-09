@@ -1,7 +1,7 @@
 // src/pages/SearchPage/SearchPage.js
 import React, { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { CiSearch } from 'react-icons/ci';
+import search_icon from "../../assets/search_icon.png";
 import './SearchPage.scss';
 
 const initialTags = ['동아리', '포트폴리오', '디자인'];
@@ -48,7 +48,7 @@ const inputRef = useRef(null);
           onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
         />
         <button className="search-btn">
-          <CiSearch />
+          <search_icon />
         </button>
       </div>
 

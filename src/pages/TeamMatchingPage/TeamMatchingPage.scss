@@ -81,6 +81,8 @@
     .banner-icon {
         font-size: 20px;
         margin-left: 20px;
+        width: 25px;
+        height: 25px;
     }
     .banner-text {
         display: flex;
@@ -96,40 +98,6 @@
         font-weight: 400;
         margin: 0;
         opacity: 0.95;
-    }
-}
-
-// 오늘의 추천 카드 (배너용)
-.recommend-card {
-    flex: 0 0 320px;
-    background: #5D80E5;
-    color: white;
-    padding: 20px;
-    border-radius: 12px;
-    margin-right: 12px;
-    display: flex;
-    flex-direction: column;
-
-    .recommend-card-title {
-        font-size: 20px;
-        font-weight: 700;
-        margin: 0 0 8px 0;
-    }
-    .recommend-card-desc {
-        font-size: 10px;
-        margin: 0 0 8px 0;
-        opacity: 0.9;
-    }
-    .recommend-card-info {
-        display: flex;
-        justify-content: space-between;
-        font-size: 10px;
-        opacity: 0.9;
-        margin-top: auto;
-        .info-group {
-            display: flex;
-            gap: 12px;
-        }
     }
 }
 
@@ -164,6 +132,8 @@
         &.bookmarked {
             color: #FF6B00;
         }
+        width: 16px;
+        height: 24px;
     }
     .hot-topic-card-title {
         font-size: 15px;

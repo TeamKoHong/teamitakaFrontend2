@@ -3,8 +3,8 @@ import { useParams, useNavigate } from 'react-router-dom';
 import './RecruitmentViewPage.scss';
 
 // 아이콘 임포트
+import bookmark_active from "../../assets/bookmark_active.png";
 import { IoChevronBack } from "react-icons/io5";
-import { CiBookmark } from "react-icons/ci";
 import { FaBookmark, FaEye } from "react-icons/fa";
 import { HiOutlineChatBubbleOvalLeft } from "react-icons/hi2";
 
@@ -142,7 +142,7 @@ export default function RecruitmentViewPage() {
             <footer className="footer">
                 <div className="footer-section">
                 <button onClick={handleScrapToggle} className="scrap-button-footer" aria-label="스크랩">
-                    {isScrapped ? <FaBookmark size={22} color="#FF6442"/> : <CiBookmark size={22} />}
+            <img src={bookmark_active} alt="북마크" className="bookmark-icon" />
                 </button>
                 <button onClick={handleApply} className="apply-button">
                     지원하기
