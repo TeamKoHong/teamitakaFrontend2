@@ -59,21 +59,29 @@ function LoginPage() {
                 password: password
             };
 
-            console.log('로그인 시도:', { email: loginData.email });
+            console.log('🟢 [LoginPage] 로그인 시도:', { email: loginData.email });
 
             const result = await loginUser(loginData);
+            console.log('🟢 [LoginPage] loginUser 결과:', result);
+            console.log('🟢 [LoginPage] result.token:', result.token);
+            console.log('🟢 [LoginPage] result.user:', result.user);
 
             if (result.token && result.user) {
+                console.log('🟢 [LoginPage] 토큰과 유저 모두 있음, AuthContext login 호출');
                 // AuthContext를 통해 로그인 상태 업데이트
                 const success = login(result.user, result.token);
 
                 if (success) {
-                    console.log('로그인 성공, 메인 페이지로 이동');
+                    console.log('🟢 [LoginPage] 로그인 성공, 메인 페이지로 이동');
                     navigate('/main');
                 } else {
+                    console.log('🔴 [LoginPage] login() 함수가 false 반환');
                     setLoginError('로그인 정보 저장에 실패했습니다.');
                 }
             } else {
+                console.log('🔴 [LoginPage] result.token 또는 result.user가 없음');
+                console.log('🔴 [LoginPage] token 존재:', !!result.token);
+                console.log('🔴 [LoginPage] user 존재:', !!result.user);
                 setLoginError(result.message || '로그인에 실패했습니다.');
             }
 
