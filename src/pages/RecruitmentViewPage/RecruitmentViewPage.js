@@ -6,8 +6,7 @@ import './RecruitmentViewPage.scss';
 import bookmark_active from "../../assets/bookmark_active.png";
 import { IoChevronBack } from "react-icons/io5";
 import { FaBookmark, FaEye } from "react-icons/fa";
-import { HiOutlineChatBubbleOvalLeft } from "react-icons/hi2";
-
+import apply from "../../assets/apply.png";
 import { getDraftById } from '../../api/recruit';
 
 export default function RecruitmentViewPage() {
@@ -73,7 +72,7 @@ export default function RecruitmentViewPage() {
                     <div className="meta-info">
                         <div className="meta-items">
                             <span><FaEye /> {post.views}</span>
-                            <span><HiOutlineChatBubbleOvalLeft /> {post.comments}</span>
+            <img src={apply} alt="지원자수"/>
                         </div>
                         <span className="date">{post.date}</span>
                     </div>

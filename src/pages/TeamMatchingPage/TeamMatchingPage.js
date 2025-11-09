@@ -5,8 +5,8 @@ import Header from "../../components/TeamMatching/Header/Header";
 import recruit_write from "../../assets/recruit_write.png";
 import bookmark from "../../assets/bookmark.png";
 import bookmark_active from "../../assets/bookmark_active.png";
-import { IoEyeOutline } from "react-icons/io5";
-import { HiOutlineChatBubbleOvalLeft } from "react-icons/hi2";
+import view from "../../assets/view.png";
+import apply from "../../assets/apply.png";
 import { Link, useNavigate } from 'react-router-dom';
 
 // recruit API만 임포트합니다.
@@ -42,8 +42,10 @@ const HotTopicCard = ({ item, onBookmarkToggle }) => {
             <div className="hot-topic-card-title">{item.title}</div>
             <div className="hot-topic-card-desc">{item.description}</div>
             <div className="hot-topic-card-info">
-                <span><IoEyeOutline /> {item.views}</span>
-                <span><HiOutlineChatBubbleOvalLeft /> {item.comments}</span>
+                <div className="twoicons">
+            <div className="view-icon"><img src={view} alt="조회수"/> {item.views}</div>
+            <div className="apply-icon"><img src={apply} alt="지원자수"/> {item.comments} </div>
+            </div>
             </div>
         </div>
     );
@@ -59,11 +61,11 @@ const MatchingCard = ({ item }) => {
             </div>
             <div className="matching-card-content">
                 <div className="matching-card-title">{item.title}</div>
-                <div className="matching-card-info">
-                    <span><IoEyeOutline /> {item.views}</span>
-                    <span><HiOutlineChatBubbleOvalLeft /> {item.comments}</span>
-                    <span>{item.date}</span>
-                </div>
+            <div className="twoicons">
+            <div className="view-icon"><img src={view} alt="조회수"/> {item.views}</div>
+            <div className="apply-icon"><img src={apply} alt="지원자수"/> {item.comments} </div>
+                </div >
+                    <div className="date-icon">{item.date}</div>
             </div>
         </div>
     );
@@ -108,7 +110,7 @@ export default function TeamMatchingPage() {
                     isBest: true,
                     title: '[김혜현 교수님] 비주얼 마케터 디자인팀 프로젝트 인원 구합니다!',
                     views: 580,
-                    comments: 79,
+                    comments: 33,
                     date: '25.03.24',
                     tags: ['마케팅', '디자인'],
                     period: '2025.09.01 ~ 2025.12.20',

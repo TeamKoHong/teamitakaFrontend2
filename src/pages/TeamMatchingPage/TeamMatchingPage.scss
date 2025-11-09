@@ -100,6 +100,25 @@
         opacity: 0.95;
     }
 }
+.twoicons {
+    display: flex;
+    gap: 20px;
+    font-size: 8px;
+    color: #999;  
+}
+.view-icon {
+    display: flex;
+    width: 15px;
+    height: 9px;
+    gap: 3px;
+    }    
+.apply-icon {
+    display: flex;
+    width: 14px;
+    height: 8px;
+    gap: 3px;
+
+    }
 
 // 홍익 HOT 교내 공고 카드
 .hot-topic-card {
@@ -134,7 +153,7 @@
         }
         width: 16px;
         height: 24px;
-    }
+    }    
     .hot-topic-card-title {
         font-size: 15px;
         font-weight: 700;
@@ -150,12 +169,6 @@
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
-    }
-    .hot-topic-card-info {
-        font-size: 8px;
-        color: #999;
-        display: flex;
-        gap: 12px;
     }
 }
 
@@ -246,14 +259,10 @@
         color: #000000;
         font-weight: 600;
     }
-    .matching-card-info {
-        grid-area: info;
-        display: flex;
-        gap: 8px;
-        align-items: center;
-        font-size: 8px;
-        color: #aaa;
-    }
+    .date-icon {
+    font-size: 8px;
+    color: #999;
+    }   
 }
 
 // --- FAB (Floating Action Button) ---
