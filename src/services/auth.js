@@ -410,6 +410,7 @@ export const loginUser = async (loginData) => {
         if (result.token) {
             // 백엔드가 user 정보를 반환하지 않으면 JWT에서 추출
             let user = result.user;
+
             if (!user) {
                 const decoded = decodeJWT(result.token);
                 if (decoded) {
