@@ -1,7 +1,7 @@
 // src/components/TeamMatching/Header/Header.js
 import React from 'react';
 import './Header.scss';
-import { CiSearch, CiBellOn } from 'react-icons/ci';
+import { CiSearch } from 'react-icons/ci';
 import { useNavigate } from 'react-router-dom';
 
 function Header({ title }) {

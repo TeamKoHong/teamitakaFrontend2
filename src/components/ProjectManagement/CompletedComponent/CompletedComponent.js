@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import "./CompletedComponent.scss";
 import SectionHeader from "../Common/SectionHeader";
 import { FaStar } from "react-icons/fa"; // 즐겨찾기 아이콘
@@ -16,7 +16,7 @@ const CompletedComponent = () => {
   const [error, setError] = React.useState(null);
 
   const [isModalOpen, setModalOpen] = React.useState(false);
-  const [modalProject, setModalProject] = React.useState(null);
+  const [modalProject] = React.useState(null);
 
   const handleCompletedItemClick = (project) => {
     // 평가 완료 프로젝트는 평가 결과 조회 페이지로 이동

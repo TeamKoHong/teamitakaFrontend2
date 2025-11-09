@@ -1,5 +1,5 @@
 // src/Pages/ProjectRecruitImage/ProjectRecruitImage.js
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import './ProjectRecruitImage.scss';
 import { loadRecruitDraft, saveRecruitDraft } from '../../../api/recruit';
 import { useNavigate } from 'react-router-dom';

@@ -14,7 +14,6 @@ const CategorySlider = ({
   showDescription = true,
   showThumb = true,
 }) => {
-  const [isDragging, setIsDragging] = useState(false);
   const [isPressed, setIsPressed] = useState(false);
   const pointerIdRef = useRef(null);
   const startXRef = useRef(0);
@@ -56,7 +55,6 @@ const CategorySlider = ({
     pointerIdRef.current = null;
     thresholdExceededRef.current = false;
     downOnThumbRef.current = false;
-    setIsDragging(false);
     setIsPressed(false);
   }, []);
 
@@ -74,7 +72,6 @@ const CategorySlider = ({
       const verticalLock = dy >= DRAG_THRESHOLD_PX && dy > dx * DIRECTION_RATIO;
       if (horizontalLock) {
         thresholdExceededRef.current = true;
-        setIsDragging(true);
       } else if (verticalLock) {
         // 스크롤 우선: 아무것도 하지 않음
         return;

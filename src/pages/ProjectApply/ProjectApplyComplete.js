@@ -9,8 +9,6 @@ import closeIcon from "../../assets/close.png";
 
 export default function ProjectApplyComplete() {
   const nav = useNavigate();
-  const { state } = useLocation();
-  const selected = state?.selected || [];
 
   const [showModal, setShowModal] = useState(false);
   const [showToast, setShowToast] = useState(false);
