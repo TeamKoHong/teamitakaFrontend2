@@ -45,20 +45,44 @@ export const sendVerificationCode = async (email, retryCount = 0) => {
         });
         
         if (!response.ok) {
-            const errorData = await response.json().catch(() => ({ 
+            const errorData = await response.json().catch(() => ({
                 error: 'UNKNOWN_ERROR',
-                message: '응답을 파싱할 수 없습니다.' 
+                message: '응답을 파싱할 수 없습니다.'
             }));
-            
+
             console.error('Backend error details:', errorData);
-            
+
+            // 409 Conflict: 중복 이메일 에러 처리
+            if (response.status === 409) {
+                const error = new Error('이미 가입된 이메일입니다. 다른 이메일을 사용하거나 로그인해주세요.');
+                error.code = 'DUPLICATE_EMAIL';
+                error.statusCode = 409;
+                throw error;
+            }
+
+            // 429 Too Many Requests: Rate Limiting 초과
+            if (response.status === 429) {
+                const error = new Error('요청 횟수가 너무 많습니다. 잠시 후 다시 시도해주세요.');
+                error.code = 'RATE_LIMITED';
+                error.statusCode = 429;
+                throw error;
+            }
+
+            // 400 Bad Request: 이메일 형식 오류
+            if (response.status === 400) {
+                const error = new Error(errorData.message || '유효하지 않은 이메일 형식입니다.');
+                error.code = errorData.error || 'INVALID_EMAIL';
+                error.statusCode = 400;
+                throw error;
+            }
+
             // 재시도 가능한 에러인지 확인
             if (shouldRetry(response.status, retryCount)) {
                 console.log(`🔄 재시도 중... (${retryCount + 1}/3)`);
                 await new Promise(resolve => setTimeout(resolve, 1000 * (retryCount + 1))); // 지수 백오프
                 return sendVerificationCode(email, retryCount + 1);
             }
-            
+
             throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
         }
 

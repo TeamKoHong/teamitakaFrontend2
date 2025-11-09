@@ -38,7 +38,7 @@ const dummySchedule = {
 export default function SlideContentSchedule() {
   // today를 한 번만 생성하여 참조 고정
   const today = useMemo(() => new Date("2025-05-16"), []);
-  const [weekOffset, setWeekOffset] = useState(0);
+  const [weekOffset] = useState(0);
   const [selectedIdx, setSelectedIdx] = useState(0);
 
   // 이번 주 월요일(weekOffset 주차)~일요일 날짜 배열 생성
