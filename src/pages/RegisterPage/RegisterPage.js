@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect } from 'react';
 import './RegisterPage.scss';
 import './RegisterPage.step2.scss';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { sendVerificationCode, verifyCode, registerUser } from '../../services/auth.js';
 import VerificationLoading from '../../components/Common/VerificationLoading';
@@ -49,6 +49,7 @@ function RegisterPage() {
     });
     const [isVerificationLoading, setIsVerificationLoading] = useState(false);
     const [verificationError, setVerificationError] = useState('');
+    const [verificationErrorCode, setVerificationErrorCode] = useState('');
     const [verificationSuccess, setVerificationSuccess] = useState(false);
     const [isDailyLimitExceeded, setIsDailyLimitExceeded] = useState(false);
     const [isRegistrationLoading, setIsRegistrationLoading] = useState(false);
@@ -258,23 +259,34 @@ function RegisterPage() {
 
             // 409 Conflict: 중복 이메일 에러 처리
             if (error.code === 'DUPLICATE_EMAIL' || error.statusCode === 409) {
-                setVerificationError('이미 가입된 이메일입니다. 다른 이메일을 사용하거나 로그인해주세요.');
+                setVerificationError('이미 가입된 이메일입니다.');
+                setVerificationErrorCode('DUPLICATE_EMAIL');
                 // 다음 페이지로 이동하지 않음
+                return;
+            }
+
+            // 429 Too Many Requests: Rate Limiting 초과
+            if (error.code === 'RATE_LIMITED' || error.statusCode === 429) {
+                setVerificationError('요청 횟수가 너무 많습니다. 잠시 후 다시 시도해주세요.');
+                setVerificationErrorCode('RATE_LIMITED');
                 return;
             }
 
             // 400 Bad Request: 이메일 형식 오류
             if (error.code === 'INVALID_EMAIL' || error.statusCode === 400) {
                 setVerificationError(error.message || '유효하지 않은 이메일 형식입니다.');
+                setVerificationErrorCode('INVALID_EMAIL');
                 return;
             }
 
             // 일일 한도 초과 에러 처리
             if (error.message && error.message.includes('하루 최대')) {
                 setVerificationError('하루 최대 5회까지만 인증번호를 전송할 수 있습니다. 내일 다시 시도해주세요.');
+                setVerificationErrorCode('DAILY_LIMIT');
                 setIsDailyLimitExceeded(true);
             } else {
                 setVerificationError(error.message || '네트워크 오류가 발생했습니다. 다시 시도해주세요.');
+                setVerificationErrorCode('NETWORK_ERROR');
             }
         } finally {
             setIsVerificationLoading(false);
@@ -530,16 +542,30 @@ function RegisterPage() {
                                     // 이메일 입력 시 에러 메시지 초기화
                                     if (verificationError) {
                                         setVerificationError('');
+                                        setVerificationErrorCode('');
                                     }
                                 }}
                                 disabled={isVerificationLoading}
                             />
                         </div>
                         {email && !isValidEmail(email) && !verificationError && (
-                            <div className="input-error-text">올바른 이메일 형식을 입력해주세요.</div>
+                            <div className="input-error-text" role="alert">
+                                ⚠️ 올바른 이메일 형식을 입력해주세요.
+                            </div>
                         )}
                         {verificationError && (
-                            <div className="input-error-text">{verificationError}</div>
+                            <div className="input-error-text" role="alert" aria-live="polite">
+                                {verificationErrorCode === 'DUPLICATE_EMAIL' && '⚠️ '}
+                                {verificationErrorCode === 'RATE_LIMITED' && '⏱️ '}
+                                {verificationErrorCode === 'INVALID_EMAIL' && '⚠️ '}
+                                {verificationErrorCode === 'NETWORK_ERROR' && '🔌 '}
+                                {verificationError}
+                                {verificationErrorCode === 'DUPLICATE_EMAIL' && (
+                                    <div style={{ marginTop: '8px', fontSize: '14px' }}>
+                                        이미 계정이 있으신가요? <Link to="/login" style={{ color: '#F76241', textDecoration: 'underline' }}>로그인하기</Link>
+                                    </div>
+                                )}
+                            </div>
                         )}
                     </div>
                 );

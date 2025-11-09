@@ -60,6 +60,14 @@ export const sendVerificationCode = async (email, retryCount = 0) => {
                 throw error;
             }
 
+            // 429 Too Many Requests: Rate Limiting 초과
+            if (response.status === 429) {
+                const error = new Error('요청 횟수가 너무 많습니다. 잠시 후 다시 시도해주세요.');
+                error.code = 'RATE_LIMITED';
+                error.statusCode = 429;
+                throw error;
+            }
+
             // 400 Bad Request: 이메일 형식 오류
             if (response.status === 400) {
                 const error = new Error(errorData.message || '유효하지 않은 이메일 형식입니다.');
