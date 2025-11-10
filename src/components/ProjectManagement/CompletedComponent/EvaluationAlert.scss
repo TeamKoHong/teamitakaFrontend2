@@ -2,8 +2,27 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 8px 24px;
+  padding: 8px 16px;
   margin-bottom: 16px;
+  max-width: 390px;
+  margin-left: auto;
+  margin-right: auto;
+
+  // sm breakpoint (480px 이상)
+  @media (min-width: 480px) {
+    max-width: 480px;
+  }
+
+  // md breakpoint (768px 이상)
+  @media (min-width: 768px) {
+    max-width: 720px;
+    padding: 8px 24px;
+  }
+
+  // lg breakpoint (1024px 이상)
+  @media (min-width: 1024px) {
+    max-width: 880px;
+  }
 
   .alert-text {
     font-size: 15px;

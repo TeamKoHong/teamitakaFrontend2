@@ -1,11 +1,17 @@
 .completed-project-card {
   position: relative;
   background: #fff;
-  border-radius: 15px;
-  padding: 24px 16px;
+  border-radius: 16px;
+  padding: 20px 16px;
   min-height: 84px;
   cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+
+  // md breakpoint (768px 이상)
+  @media (min-width: 768px) {
+    padding: 24px 20px;
+  }
 
   &:hover {
     transform: translateY(-2px);
