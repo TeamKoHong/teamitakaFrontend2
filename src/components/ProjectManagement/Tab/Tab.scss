@@ -26,9 +26,9 @@
   align-items: center;
   justify-content: center;
   line-height: 1; // prevent font metrics from shifting vertical centering
-  font-size: 16px;
-  font-weight: 600;
-  color: #bfbdbd;
+  font-size: 15px;
+  font-weight: 500;
+  color: #C9C9C9;
   background: none;
   border: none;
   cursor: pointer;
@@ -36,8 +36,8 @@
 }
 
 .tab-item.active {
-  color: #140805;
-  font-weight: 700;
+  color: #000;
+  font-weight: 600;
 }
 
 // moving indicator

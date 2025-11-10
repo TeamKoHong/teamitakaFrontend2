@@ -2,15 +2,15 @@
   position: relative;
   background: #fff;
   border-radius: 16px;
-  padding: 20px 16px;
-  min-height: 84px;
+  padding: 16px 20px;
+  min-height: 80px;
   cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 
   // md breakpoint (768px 이상)
   @media (min-width: 768px) {
-    padding: 24px 20px;
+    padding: 18px 24px;
   }
 
   &:hover {
@@ -28,9 +28,9 @@
     left: 11px;
     background: linear-gradient(239.04deg, #f76241, #ff390d);
     color: #fff;
-    padding: 4px 9px;
+    padding: 3px 8px;
     border-radius: 2.86px;
-    font-size: 10px;
+    font-size: 9px;
     font-weight: 600;
     text-transform: capitalize;
     box-shadow: 0 2px 4px rgba(247, 98, 65, 0.2);
@@ -48,10 +48,10 @@
     min-width: 0; // Allow text truncation
 
     .project-title {
-      font-size: 16px;
+      font-size: 18px;
       font-weight: 600;
       color: #140805;
-      margin: 0 0 8px 0;
+      margin: 0 0 6px 0;
       text-transform: capitalize;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -84,15 +84,15 @@
     flex-shrink: 0;
 
     .avatar {
-      width: 35px;
-      height: 35px;
+      width: 30px;
+      height: 30px;
       border-radius: 50%;
       object-fit: cover;
       border: 2px solid #fff;
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 
       &:not(:first-child) {
-        margin-left: -8px; // 겹치기 효과
+        margin-left: -7px; // 겹치기 효과
       }
     }
   }

@@ -717,7 +717,7 @@
 .pending-projects-section,
 .completed-projects-section {
   padding: 0px 16px;
-  margin-top: 16px;
+  margin-top: 12px;
   max-width: 390px;
   margin-left: auto;
   margin-right: auto;
@@ -742,14 +742,14 @@
     font-size: 15px;
     font-weight: 600;
     color: #140805;
-    margin: 0 0 16px 0;
+    margin: 0 0 8px 0;
     text-transform: capitalize;
   }
 
   .project-list-new {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 16px;
+    gap: 12px;
 
     // md breakpoint (768px 이상) - 2열 레이아웃
     @media (min-width: 768px) {
@@ -760,5 +760,5 @@
 
 // 평가 대기 섹션 - 하단 간격 추가
 .pending-projects-section {
-  margin-bottom: 32px;
+  margin-bottom: 24px;
 }
