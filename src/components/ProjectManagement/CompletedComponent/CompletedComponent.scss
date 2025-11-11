@@ -716,11 +716,9 @@
 // 공통 섹션 스타일
 .pending-projects-section,
 .completed-projects-section {
-  padding: 0px 16px;
-  margin-top: 12px;
+  padding: 0 16px;
+  margin: 16px auto 0;
   max-width: 390px;
-  margin-left: auto;
-  margin-right: auto;
 
   // sm breakpoint (480px 이상)
   @media (min-width: 480px) {
@@ -739,9 +737,9 @@
   }
 
   .section-header-title {
-    font-size: 15px;
+    font-size: 14px;
     font-weight: 600;
-    color: #140805;
+    color: #555;
     margin: 0 0 8px 0;
     text-transform: capitalize;
   }

@@ -6,7 +6,7 @@
   background-color: #fff;
   position: relative;
   padding-bottom: 0; // ensure indicator sits on bottom edge
-  margin: 0 auto; // center within parent
+  margin: 0 auto 8px; // center within parent + bottom margin
 }
 
 // full-width base track
@@ -21,14 +21,14 @@
 .tab-item {
   width: 100%;
   min-width: 0;
-  height: 44px;
+  height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
   line-height: 1; // prevent font metrics from shifting vertical centering
   font-size: 15px;
   font-weight: 500;
-  color: #C9C9C9;
+  color: #c7c7c7;
   background: none;
   border: none;
   cursor: pointer;
@@ -36,16 +36,17 @@
 }
 
 .tab-item.active {
-  color: #000;
+  color: #111;
   font-weight: 600;
 }
 
 // moving indicator
 .indicator {
   position: absolute;
-  bottom: 0;
-  width: 130px; // one column width
+  bottom: -2px;
+  width: 114px; // one column width minus 16px margins
   height: 2px;
   background: #F76241; // 브랜드 컬러
+  border-radius: 2px;
   transition: left 200ms ease;
 }
