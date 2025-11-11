@@ -1,16 +1,21 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import "./CompletedComponent.scss";
 import EvaluationAlert from "./EvaluationAlert";
 import CompletedProjectCard from "./CompletedProjectCard";
 import { useNavigate } from 'react-router-dom';
 import AlertModal from '../../Common/AlertModal';
+import DebugBadge from '../../Common/DebugBadge/DebugBadge';
 import { fetchEvaluationTargets, getNextPendingMemberId } from '../../../services/rating';
 import { getMyProjects } from '../../../services/projects';
+import { compareProjectLists, logComparisonReport } from '../../../utils/compareProjects';
+import { deriveCompletedProjects, splitByEvaluationStatus } from '../../../utils/projectFilters';
 
 const CompletedComponent = () => {
   const navigate = useNavigate();
 
-  const [items, setItems] = React.useState([]);
+  // Single source of truth: server response
+  const [serverProjects, setServerProjects] = React.useState([]);
+
   const [page, setPage] = React.useState({ total: 0, limit: 10, offset: 0 });
   const [isLoading, setIsLoading] = React.useState(true);
   const [error, setError] = React.useState(null);
@@ -18,6 +23,36 @@ const CompletedComponent = () => {
 
   const [isModalOpen, setModalOpen] = React.useState(false);
   const [modalProject] = React.useState(null);
+
+  // Comparison report for debugging
+  const [comparisonReport, setComparisonReport] = React.useState(null);
+
+  // Use ref to track if we've logged initial load
+  const hasLoggedRef = useRef(false);
+
+  // SINGLE PIPELINE: Derive UI list from server data
+  const completedProjects = deriveCompletedProjects(serverProjects, { sortOrder: sortBy });
+
+  // Split for display sections
+  const { pending: pendingProjects, completed: completedProjectsDisplay } = splitByEvaluationStatus(completedProjects);
+
+  // Verify consistency whenever server data or UI list changes
+  useEffect(() => {
+    if (!serverProjects || serverProjects.length === 0) return;
+
+    const report = compareProjectLists(serverProjects, completedProjects, {
+      key: "project_id",
+      fields: ["title", "status", "start_date", "end_date", "description"]
+    });
+
+    // Log report
+    const label = hasLoggedRef.current ? "Data Update" : "Initial Load";
+    logComparisonReport(report, label);
+    hasLoggedRef.current = true;
+
+    // Update debug badge
+    setComparisonReport(report);
+  }, [serverProjects, completedProjects]);
 
   const handleCompletedItemClick = (project) => {
     // 평가 완료 프로젝트는 평가 결과 조회 페이지로 이동
@@ -54,9 +89,23 @@ const CompletedComponent = () => {
     try {
       setIsLoading(true);
       setError(null);
-      const res = await getMyProjects({ status: 'completed', limit: page.limit || 10, offset: nextOffset });
+
+      const res = await getMyProjects({
+        status: 'completed',
+        limit: page.limit || 10,
+        offset: nextOffset
+      });
+
       if (res?.success) {
-        setItems(nextOffset === 0 ? res.items : [...items, ...res.items]);
+        const newItems = res.items || [];
+
+        // Update server projects (single source of truth)
+        if (nextOffset === 0) {
+          setServerProjects(newItems);
+        } else {
+          setServerProjects(prev => [...prev, ...newItems]);
+        }
+
         setPage(res.page || { total: 0, limit: 10, offset: nextOffset });
       } else {
         throw new Error('SERVER_ERROR');
@@ -74,14 +123,11 @@ const CompletedComponent = () => {
     }
   };
 
-  useEffect(() => { load(0); /* 초기 로드 */ // eslint-disable-next-line
-  }, []);
+  useEffect(() => {
+    load(0); // eslint-disable-next-line
+  }, [sortBy]); // Re-load when sort changes
 
-  const canLoadMore = items.length < (page.total || 0);
-
-  // evaluation_status별로 프로젝트 분리
-  const pendingProjects = items.filter(p => p.evaluation_status === 'PENDING');
-  const completedProjects = items.filter(p => p.evaluation_status === 'COMPLETED' || p.evaluation_status === 'NOT_REQUIRED');
+  const canLoadMore = serverProjects.length < (page.total || 0);
 
   return (
     <div className="completed-container">
@@ -93,8 +139,14 @@ const CompletedComponent = () => {
       />
 
       {/* 로딩 및 에러 상태 */}
-      {isLoading && items.length === 0 && <div style={{ padding: '20px', textAlign: 'center' }}>불러오는 중...</div>}
-      {error && <div style={{ color: '#F76241', padding: '20px', textAlign: 'center' }}>{error} <button onClick={() => load(page.offset || 0)}>다시 시도</button></div>}
+      {isLoading && serverProjects.length === 0 && (
+        <div style={{ padding: '20px', textAlign: 'center' }}>불러오는 중...</div>
+      )}
+      {error && (
+        <div style={{ color: '#F76241', padding: '20px', textAlign: 'center' }}>
+          {error} <button onClick={() => load(page.offset || 0)}>다시 시도</button>
+        </div>
+      )}
 
       {/* 평가 대기 프로젝트 섹션 */}
       {pendingProjects.length > 0 && (
@@ -114,12 +166,12 @@ const CompletedComponent = () => {
       )}
 
       {/* 완료 프로젝트 섹션 */}
-      {completedProjects.length > 0 && (
+      {completedProjectsDisplay.length > 0 && (
         <div className="completed-projects-section">
           <h4 className="section-header-title">완료 프로젝트</h4>
 
           <div className="project-list-new">
-            {completedProjects.map((project) => (
+            {completedProjectsDisplay.map((project) => (
               <CompletedProjectCard
                 key={project.project_id}
                 project={project}
@@ -132,9 +184,14 @@ const CompletedComponent = () => {
 
       {canLoadMore && !isLoading && (
         <div style={{ textAlign: 'center', margin: '16px 0' }}>
-          <button onClick={() => load((page.offset || 0) + (page.limit || 10))}>더 보기</button>
+          <button onClick={() => load((page.offset || 0) + (page.limit || 10))}>
+            더 보기
+          </button>
         </div>
       )}
+
+      {/* Debug Badge - Development only */}
+      <DebugBadge report={comparisonReport} />
 
       <AlertModal
         isOpen={isModalOpen}
