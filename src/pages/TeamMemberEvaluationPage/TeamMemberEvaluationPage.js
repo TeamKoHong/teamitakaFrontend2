@@ -39,7 +39,7 @@ function TeamMemberEvaluationPage() {
       try {
         // 실제 API 호출로 대체 예정
         const dummyProject = {
-          id: parseInt(projectId),
+          id: projectId,  // UUID는 문자열 그대로 사용
           name: '연합동아리 부스전 기획 프로젝트',
           description: '서울 디자인 전시 부스를 위한 기획 프로젝트',
           period: '2024.01.01 ~ 2024.02.01',
