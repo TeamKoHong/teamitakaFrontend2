@@ -1,53 +1,57 @@
 import React from 'react';
-import './DebugBadge.scss';
 
 /**
  * DebugBadge Component
- *
- * Shows server/UI project counts and sync status in development mode.
- * Useful for verifying data consistency during development.
+ * Displays server/UI sync status in development mode
  *
  * @param {Object} props
- * @param {number} props.serverCount - Number of projects from server
- * @param {number} props.uiCount - Number of projects displayed in UI
- * @param {boolean} props.isConsistent - Whether server and UI are in sync
- * @param {Function} props.onClick - Optional click handler to view details
+ * @param {Object} props.report - Comparison report from compareProjectLists
  */
-const DebugBadge = ({ serverCount, uiCount, isConsistent, onClick }) => {
+export default function DebugBadge({ report }) {
   // Only show in development
   if (process.env.NODE_ENV !== 'development') {
     return null;
   }
 
-  const statusIcon = isConsistent ? '✓' : '⚠';
-  const statusText = isConsistent ? 'in-sync' : 'mismatch';
-  const statusClass = isConsistent ? 'status-ok' : 'status-warning';
+  if (!report) return null;
+
+  // Check if there are any warnings
+  const warn =
+    report.missingInUI.length ||
+    report.extraInUI.length ||
+    report.fieldMismatches.length ||
+    report.duplicatesUI.length;
 
   return (
     <div
-      className={`debug-badge ${statusClass}`}
-      onClick={onClick}
-      role={onClick ? 'button' : 'status'}
-      tabIndex={onClick ? 0 : undefined}
+      style={{
+        position: 'fixed',
+        right: 12,
+        bottom: 72,
+        zIndex: 9999,
+        background: warn ? '#FDECEC' : '#EEFDF3',
+        color: '#333',
+        border: '1px solid #ddd',
+        borderRadius: 8,
+        padding: '6px 8px',
+        fontSize: 12,
+        fontFamily: 'monospace',
+        cursor: 'pointer',
+        boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+      }}
+      onClick={() => {
+        console.group('📊 Debug Badge - Full Report');
+        console.table(report.counts);
+        if (report.duplicatesUI.length) console.warn('duplicatesUI', report.duplicatesUI);
+        if (report.missingInUI.length) console.warn('missingInUI', report.missingInUI);
+        if (report.extraInUI.length) console.warn('extraInUI', report.extraInUI);
+        if (report.fieldMismatches.length) console.warn('fieldMismatches', report.fieldMismatches);
+        console.groupEnd();
+      }}
+      title="Click to log full report to console"
     >
-      <div className="badge-header">
-        <span className="badge-icon">{statusIcon}</span>
-        <span className="badge-label">Data Sync</span>
-      </div>
-      <div className="badge-counts">
-        <span className="count-item">
-          <span className="count-label">S:</span>
-          <span className="count-value">{serverCount}</span>
-        </span>
-        <span className="count-divider">/</span>
-        <span className="count-item">
-          <span className="count-label">UI:</span>
-          <span className="count-value">{uiCount}</span>
-        </span>
-      </div>
-      <div className="badge-status">{statusText}</div>
+      {`S:${report.counts.server} / UI:${report.counts.ui}`}{' '}
+      {warn ? '⚠︎ mismatch' : '✓ in-sync'}
     </div>
   );
-};
-
-export default DebugBadge;
+}
