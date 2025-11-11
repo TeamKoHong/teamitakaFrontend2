@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect } from "react";
 import "./CompletedComponent.scss";
 import EvaluationAlert from "./EvaluationAlert";
 import CompletedProjectCard from "./CompletedProjectCard";
@@ -7,7 +7,7 @@ import AlertModal from '../../Common/AlertModal';
 import DebugBadge from '../../Common/DebugBadge/DebugBadge';
 import { fetchEvaluationTargets, getNextPendingMemberId } from '../../../services/rating';
 import { getMyProjects } from '../../../services/projects';
-import { compareProjectLists, logComparisonReport } from '../../../utils/compareProjects';
+import { compareProjectLists } from '../../../utils/compareProjects';
 import { deriveCompletedProjects, splitByEvaluationStatus } from '../../../utils/projectFilters';
 
 const CompletedComponent = () => {
@@ -27,9 +27,6 @@ const CompletedComponent = () => {
   // Comparison report for debugging
   const [comparisonReport, setComparisonReport] = React.useState(null);
 
-  // Use ref to track if we've logged initial load
-  const hasLoggedRef = useRef(false);
-
   // SINGLE PIPELINE: Derive UI list from server data
   const completedProjects = deriveCompletedProjects(serverProjects, { sortOrder: sortBy });
 
@@ -46,12 +43,7 @@ const CompletedComponent = () => {
       fields: ["title", "status", "start_date", "end_date", "description"]
     });
 
-    // Log report
-    const label = hasLoggedRef.current ? "Data Update" : "Initial Load";
-    logComparisonReport(report, label);
-    hasLoggedRef.current = true;
-
-    // Update debug badge
+    // Update debug badge (log disabled for performance)
     setComparisonReport(report);
   }, [serverProjects, completedProjects]);
 
@@ -64,33 +56,24 @@ const CompletedComponent = () => {
 
   const handleEvaluateClick = async (project) => {
     // 평가 대기 프로젝트는 팀원 평가 페이지로 이동
-    console.log('🔍 Click event - project object:', project);
-    console.log('🔍 Click event - project.project_id:', project.project_id);
-
     try {
       const { targets } = await fetchEvaluationTargets(project.project_id);
       const nextId = getNextPendingMemberId(targets);
 
       if (nextId) {
-        const url = `/evaluation/team-member/${project.project_id}/${nextId}`;
-        console.log('🔀 Navigating to:', url);
-        navigate(url, {
+        navigate(`/evaluation/team-member/${project.project_id}/${nextId}`, {
           state: { projectSummary: project, from: { path: '/project-management', tab: 'completed' } },
         });
       } else {
         // 평가할 팀원이 없으면 프로젝트 평가 페이지로
-        const url = `/evaluation/project/${project.project_id}`;
-        console.log('🔀 Navigating to:', url);
-        navigate(url, {
+        navigate(`/evaluation/project/${project.project_id}`, {
           state: { projectSummary: project, from: { path: '/project-management', tab: 'completed' } },
         });
       }
     } catch (error) {
       console.error('❌ 평가 대상 조회 실패:', error);
       // 에러 발생 시에도 프로젝트 평가 페이지로 이동
-      const url = `/evaluation/project/${project.project_id}`;
-      console.log('🔀 Navigating to (fallback):', url);
-      navigate(url, {
+      navigate(`/evaluation/project/${project.project_id}`, {
         state: { projectSummary: project, from: { path: '/project-management', tab: 'completed' } },
       });
     }
