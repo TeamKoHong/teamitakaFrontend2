@@ -4,8 +4,11 @@ import EvaluationAlert from "./EvaluationAlert";
 import CompletedProjectCard from "./CompletedProjectCard";
 import { useNavigate } from 'react-router-dom';
 import AlertModal from '../../Common/AlertModal';
+import DebugBadge from '../../Common/DebugBadge/DebugBadge';
 import { fetchEvaluationTargets, getNextPendingMemberId } from '../../../services/rating';
 import { getMyProjects } from '../../../services/projects';
+import { compareProjectLists, logComparisonReport } from '../../../utils/compareProjects';
+import { processCompletedProjects, getFilterRuleDescription } from '../../../utils/projectFilters';
 
 const CompletedComponent = () => {
   const navigate = useNavigate();
@@ -18,6 +21,9 @@ const CompletedComponent = () => {
 
   const [isModalOpen, setModalOpen] = React.useState(false);
   const [modalProject] = React.useState(null);
+
+  // Debug state for tracking server/UI consistency
+  const [debugReport, setDebugReport] = React.useState(null);
 
   const handleCompletedItemClick = (project) => {
     // 평가 완료 프로젝트는 평가 결과 조회 페이지로 이동
@@ -50,14 +56,43 @@ const CompletedComponent = () => {
     }
   };
 
+  /**
+   * Verify data consistency between server and UI
+   */
+  const verifyDataConsistency = (serverProjects, uiProjects, label = 'Initial Load') => {
+    const report = compareProjectLists(serverProjects, uiProjects, {
+      filterRule: getFilterRuleDescription('completed')
+    });
+
+    // Log to console
+    logComparisonReport(report, label);
+
+    // Update debug state
+    setDebugReport(report);
+
+    return report;
+  };
+
   const load = async (nextOffset = 0) => {
     try {
       setIsLoading(true);
       setError(null);
       const res = await getMyProjects({ status: 'completed', limit: page.limit || 10, offset: nextOffset });
       if (res?.success) {
-        setItems(nextOffset === 0 ? res.items : [...items, ...res.items]);
+        const serverProjects = res.items || [];
+
+        // Apply standardized filtering and sorting
+        const processed = processCompletedProjects(serverProjects, {
+          sortOrder: sortBy === 'latest' ? 'desc' : 'asc'
+        });
+
+        // Update state with processed data
+        const newItems = nextOffset === 0 ? processed.all : [...items, ...processed.all];
+        setItems(newItems);
         setPage(res.page || { total: 0, limit: 10, offset: nextOffset });
+
+        // Verify consistency after load
+        verifyDataConsistency(serverProjects, newItems, `Load (offset: ${nextOffset})`);
       } else {
         throw new Error('SERVER_ERROR');
       }
@@ -75,13 +110,35 @@ const CompletedComponent = () => {
   };
 
   useEffect(() => { load(0); /* 초기 로드 */ // eslint-disable-next-line
-  }, []);
+  }, [sortBy]); // Re-load when sort changes
 
   const canLoadMore = items.length < (page.total || 0);
 
-  // evaluation_status별로 프로젝트 분리
-  const pendingProjects = items.filter(p => p.evaluation_status === 'PENDING');
-  const completedProjects = items.filter(p => p.evaluation_status === 'COMPLETED' || p.evaluation_status === 'NOT_REQUIRED');
+  // Use standardized filter functions instead of inline filters
+  const processed = processCompletedProjects(items, {
+    sortOrder: sortBy === 'latest' ? 'desc' : 'asc'
+  });
+
+  const pendingProjects = processed.pending;
+  const completedProjects = processed.completed;
+
+  // Handle debug badge click
+  const handleDebugClick = () => {
+    if (debugReport) {
+      console.group('📊 Detailed Debug Report');
+      console.log('Full Report:', debugReport);
+      console.table({
+        'Server Count': debugReport.serverCount,
+        'UI Count': debugReport.uiCount,
+        'Consistent': debugReport.isConsistent ? 'Yes' : 'No',
+        'Duplicates': debugReport.mismatches.duplicateIds.length,
+        'Missing': debugReport.mismatches.missingFromUI.length,
+        'Extra': debugReport.mismatches.extraInUI.length,
+        'Mismatches': debugReport.mismatches.fieldMismatches.length
+      });
+      console.groupEnd();
+    }
+  };
 
   return (
     <div className="completed-container">
@@ -134,6 +191,16 @@ const CompletedComponent = () => {
         <div style={{ textAlign: 'center', margin: '16px 0' }}>
           <button onClick={() => load((page.offset || 0) + (page.limit || 10))}>더 보기</button>
         </div>
+      )}
+
+      {/* Debug Badge - Development only */}
+      {debugReport && (
+        <DebugBadge
+          serverCount={debugReport.serverCount}
+          uiCount={debugReport.uiCount}
+          isConsistent={debugReport.isConsistent}
+          onClick={handleDebugClick}
+        />
       )}
 
       <AlertModal
