@@ -37,18 +37,16 @@ npm -v
 npm ci
 ```
 
-2) 환경변수 파일 생성 (`.env.local`)
+2) 환경변수 파일 생성
 
 ```bash
-# Supabase Edge Function 혹은 백엔드 API Base URL
-REACT_APP_API_BASE_URL=https://<your-project>.supabase.co/functions/v1/teamitaka-api
-
-# Supabase anon key (Edge Functions 호출 시 사용)
-REACT_APP_SUPABASE_ANON_KEY=your_anon_key_here
-
-# 선택: 환경 플래그
-REACT_APP_ENV=development
+# .env.example을 .env.local로 복사
+cp .env.example .env.local
 ```
+
+기본값으로 배포된 백엔드 서버(`https://teamitakabackend.onrender.com`)가 설정됩니다.
+
+**자세한 환경 설정 가이드**: [DEVELOPMENT_SETUP.md](./DEVELOPMENT_SETUP.md) 참고
 
 3) 로컬 서버 시작
 
@@ -57,6 +55,8 @@ npm start
 ```
 
 기본 주소: `http://localhost:3000`
+
+화면 상단에 **개발 모드 배너**가 표시되면 정상 작동입니다.
 
 ## Scripts
 
@@ -87,11 +87,18 @@ src/
 
 ## 환경 변수
 
-- `REACT_APP_API_BASE_URL`: API Base URL (Supabase Functions 예: `https://<project>.supabase.co/functions/v1/teamitaka-api`)
-- `REACT_APP_SUPABASE_ANON_KEY`: Supabase anon key (Functions 호출 시 `Authorization`, `apikey` 헤더로 사용)
+- `REACT_APP_API_BASE_URL`: 백엔드 API 서버 주소
+  - 배포된 백엔드 (권장): `https://teamitakabackend.onrender.com`
+  - 로컬 백엔드 (개발 시): `http://localhost:8080`
+- `SASS_DEPRECATION_WARNINGS`: SASS 경고 메시지 비활성화 (`false`)
 - `REACT_APP_ENV`: `development` | `production`
 
-`.env*` 파일은 커밋하지 않습니다 (gitignored).
+**중요:**
+- `.env*` 파일은 gitignore됨 (커밋 금지)
+- 환경 변수 변경 후 `npm start` 재시작 필요
+- 템플릿은 `.env.example` 참고
+
+자세한 설정: [DEVELOPMENT_SETUP.md](./DEVELOPMENT_SETUP.md)
 
 ## API 사용 예시 (이메일 인증)
 
@@ -113,6 +120,9 @@ await resendVerificationCode('user@example.com');
 
 ## 개발 가이드
 
+**환경 설정**: [DEVELOPMENT_SETUP.md](./DEVELOPMENT_SETUP.md) - 로컬 개발 환경 구축 가이드
+
+**코딩 원칙**:
 - TDD 지향: 기능 추가 전 테스트부터 작성, 실패 → 구현 → 통과
 - 구조 원칙: SRP 중심으로 컴포넌트/서비스 분리, 재사용·가독성 우선
 - 라우팅/상태는 `pages/`·`components/`·`services/` 레이어 간 단방향 의존 추구
@@ -132,20 +142,28 @@ await resendVerificationCode('user@example.com');
 
 ## 배포 (Vercel)
 
+**프론트엔드 배포 설정**:
 - Install Command: `npm ci`
 - Build Command: `npm run build`
 - Output Directory: `build`
 - Node: `20`
-- 필수 환경변수: `REACT_APP_API_BASE_URL`, `REACT_APP_SUPABASE_ANON_KEY`
+- 필수 환경변수: `REACT_APP_API_BASE_URL=https://teamitakabackend.onrender.com`
 
-Supabase Edge Functions 코드는 Supabase에 배포됩니다. 프론트 배포 전 Functions 가용 여부를 확인하세요. 추가 상세는 `docs/deployment/SUPABASE_MIGRATION_GUIDE.md` 참고.
+**백엔드 배포**:
+- 플랫폼: Render (https://teamitakabackend.onrender.com)
+- 레포지토리: https://github.com/TeamKoHong/teamitakaBackend
+- 환경변수: `CORS_ORIGIN`에 프론트엔드 도메인 설정 필요
+
+**마이그레이션 히스토리**: Vercel → Supabase Edge Functions → Render (2025-01-09 완료)
+상세 내용은 `SUPABASE_MIGRATION_GUIDE.md` 참고.
 
 ## 문제 해결 (FAQ)
 
-- CORS 오류: Functions가 `OPTIONS` 처리 및 `Access-Control-Allow-*` 헤더 반환하는지 확인
-- 401/인증 오류: `REACT_APP_SUPABASE_ANON_KEY` 설정 및 빌드 노출 여부 확인
-- 이메일 미수신: Supabase Functions 로그, SendGrid 설정(SENDER, API KEY) 확인
-- Node 엔진 에러: Node 20 사용, 필요시 잠금 파일 초기화 후 재설치
+- **CORS 오류**: 백엔드 Render 환경변수 `CORS_ORIGIN`에 프론트엔드 도메인 추가 확인
+- **401 인증 오류**: JWT 토큰 유효성, `localStorage`의 `authToken` 확인
+- **이메일 미수신**: 백엔드 로그, SendGrid API 키 및 발신자 이메일 설정 확인
+- **로컬 개발 연결 실패**: [DEVELOPMENT_SETUP.md](./DEVELOPMENT_SETUP.md) 문제 해결 섹션 참고
+- **Node 엔진 에러**: Node 20 사용, 필요시 `node_modules` 삭제 후 재설치
 
 ## Git 워크플로우
 
