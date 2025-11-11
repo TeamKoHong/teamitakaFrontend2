@@ -36,6 +36,25 @@ const CompletedComponent = () => {
   // Split for display sections
   const { pending: pendingProjects, completed: completedProjectsDisplay } = splitByEvaluationStatus(completedProjects);
 
+  // Debug: Log filtered results
+  React.useEffect(() => {
+    if (serverProjects.length > 0) {
+      console.group('🎯 Filtering Debug');
+      console.log('Server projects:', serverProjects.length);
+      console.log('After deriveCompletedProjects:', completedProjects.length);
+      console.log('Pending (평가 대기):', pendingProjects.length);
+      console.log('Completed (완료):', completedProjectsDisplay.length);
+      if (pendingProjects.length > 0) {
+        console.log('First pending project:', {
+          id: pendingProjects[0].project_id,
+          title: pendingProjects[0].title,
+          evaluation_status: pendingProjects[0].evaluation_status
+        });
+      }
+      console.groupEnd();
+    }
+  }, [serverProjects, completedProjects, pendingProjects, completedProjectsDisplay]);
+
   // Verify consistency whenever server data or UI list changes
   useEffect(() => {
     if (!serverProjects || serverProjects.length === 0) return;
@@ -62,23 +81,36 @@ const CompletedComponent = () => {
   };
 
   const handleEvaluateClick = async (project) => {
+    console.log('🎯 handleEvaluateClick called:', {
+      project_id: project.project_id,
+      title: project.title,
+      evaluation_status: project.evaluation_status
+    });
+
     // 평가 대기 프로젝트는 팀원 평가 페이지로 이동
     try {
       const { targets } = await fetchEvaluationTargets(project.project_id);
+      console.log('📋 Evaluation targets:', targets);
+
       const nextId = getNextPendingMemberId(targets);
+      console.log('➡️ Next pending member ID:', nextId);
+
       if (nextId) {
+        console.log('🔀 Navigating to team-member evaluation:', `/evaluation/team-member/${project.project_id}/${nextId}`);
         navigate(`/evaluation/team-member/${project.project_id}/${nextId}`, {
           state: { projectSummary: project, from: { path: '/project-management', tab: 'completed' } },
         });
       } else {
         // 평가할 팀원이 없으면 프로젝트 평가 페이지로
+        console.log('🔀 Navigating to project evaluation:', `/evaluation/project/${project.project_id}`);
         navigate(`/evaluation/project/${project.project_id}`, {
           state: { projectSummary: project, from: { path: '/project-management', tab: 'completed' } },
         });
       }
     } catch (error) {
-      console.error('평가 대상 조회 실패:', error);
+      console.error('❌ 평가 대상 조회 실패:', error);
       // 에러 발생 시에도 프로젝트 평가 페이지로 이동
+      console.log('🔀 Navigating to project evaluation (error fallback):', `/evaluation/project/${project.project_id}`);
       navigate(`/evaluation/project/${project.project_id}`, {
         state: { projectSummary: project, from: { path: '/project-management', tab: 'completed' } },
       });
@@ -98,6 +130,20 @@ const CompletedComponent = () => {
 
       if (res?.success) {
         const newItems = res.items || [];
+
+        // Debug: Log server response
+        console.group('🔍 Server Response Debug');
+        console.log('Raw items:', newItems);
+        console.log('Item count:', newItems.length);
+        if (newItems.length > 0) {
+          console.log('First item sample:', {
+            project_id: newItems[0].project_id,
+            title: newItems[0].title,
+            status: newItems[0].status,
+            evaluation_status: newItems[0].evaluation_status
+          });
+        }
+        console.groupEnd();
 
         // Update server projects (single source of truth)
         if (nextOffset === 0) {
