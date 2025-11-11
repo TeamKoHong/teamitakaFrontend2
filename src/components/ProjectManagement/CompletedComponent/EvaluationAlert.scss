@@ -2,7 +2,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 6px 16px;
+  padding: 12px 14px;
   margin-bottom: 12px;
   max-width: 390px;
   margin-left: auto;
@@ -16,7 +16,6 @@
   // md breakpoint (768px 이상)
   @media (min-width: 768px) {
     max-width: 720px;
-    padding: 8px 24px;
   }
 
   // lg breakpoint (1024px 이상)
@@ -34,7 +33,10 @@
 
   .sort-dropdown-wrapper {
     position: relative;
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    transform: translateY(1px);
 
     .sort-dropdown {
       appearance: none;

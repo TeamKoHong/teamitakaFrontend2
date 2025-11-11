@@ -34,18 +34,19 @@ const CompletedComponent = () => {
   const { pending: pendingProjects, completed: completedProjectsDisplay } = splitByEvaluationStatus(completedProjects);
 
 
-  // Verify consistency whenever server data or UI list changes
+  // Verify consistency in development mode only
   useEffect(() => {
+    if (process.env.NODE_ENV !== 'development') return;
     if (!serverProjects || serverProjects.length === 0) return;
 
-    const report = compareProjectLists(serverProjects, completedProjects, {
+    const derived = deriveCompletedProjects(serverProjects, { sortOrder: sortBy });
+    const report = compareProjectLists(serverProjects, derived, {
       key: "project_id",
       fields: ["title", "status", "start_date", "end_date", "description"]
     });
 
-    // Update debug badge (log disabled for performance)
     setComparisonReport(report);
-  }, [serverProjects, completedProjects]);
+  }, [serverProjects, sortBy]);
 
   const handleCompletedItemClick = (project) => {
     // 평가 완료 프로젝트는 평가 결과 조회 페이지로 이동

@@ -39,7 +39,7 @@ function Tab({ onTabChange, activeTabIndex = 0, labels = ["진행 중", "모집�
       <span
         className="indicator"
         aria-hidden="true"
-        style={{ left: `${130 * activeTab}px` }}
+        style={{ left: `${130 * activeTab + 8}px` }}
       />
     </div>
   );
