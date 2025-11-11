@@ -60,12 +60,12 @@ const CompletedComponent = () => {
   const handleEvaluateClick = async (project) => {
     // 평가 대기 프로젝트는 팀원 평가 페이지로 이동
     try {
-      if (!user || !user.user_id) {
+      if (!user || !user.userId) {
         console.error('사용자 정보 없음');
         return;
       }
 
-      const evalData = await fetchEvaluationTargets(project.project_id, user.user_id);
+      const evalData = await fetchEvaluationTargets(project.project_id, user.userId);
 
       if (evalData.nextPendingMember) {
         navigate(`/evaluation/team-member/${project.project_id}/${evalData.nextPendingMember.id}`, {
@@ -206,9 +206,9 @@ const CompletedComponent = () => {
         primaryLabel="작성하기"
         secondaryLabel="나중에 하기"
         onPrimary={async () => {
-          if (!modalProject || !user || !user.user_id) return;
+          if (!modalProject || !user || !user.userId) return;
           try {
-            const evalData = await fetchEvaluationTargets(modalProject.id, user.user_id);
+            const evalData = await fetchEvaluationTargets(modalProject.id, user.userId);
             if (evalData.nextPendingMember) {
               navigate(`/evaluation/team-member/${modalProject.id}/${evalData.nextPendingMember.id}`, {
                 state: { projectSummary: modalProject, from: { path: '/project-management', tab: 'completed' } },

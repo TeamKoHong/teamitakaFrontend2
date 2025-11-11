@@ -43,14 +43,14 @@ function TeamMemberEvaluationPage() {
       setLoading(true);
       setError(null);
       try {
-        if (!user || !user.user_id) {
+        if (!user || !user.userId) {
           throw new Error('사용자 정보를 찾을 수 없습니다.');
         }
 
         // Fetch project members and evaluation targets
         const [members, evalTargets] = await Promise.all([
           fetchProjectMembers(projectId),
-          fetchEvaluationTargets(projectId, user.user_id)
+          fetchEvaluationTargets(projectId, user.userId)
         ]);
 
         // Create project data structure (dummy for now - can be enhanced with project API)
@@ -79,7 +79,7 @@ function TeamMemberEvaluationPage() {
 
         if (!targetMember && projectData.members.length > 0) {
           // Fallback to first member who is not current user
-          targetMember = projectData.members.find(m => m.id !== user.user_id) || projectData.members[0];
+          targetMember = projectData.members.find(m => m.id !== user.userId) || projectData.members[0];
         }
 
         if (!targetMember) {
@@ -157,7 +157,7 @@ function TeamMemberEvaluationPage() {
   };
 
   const handleSubmitEvaluation = async () => {
-    if (!user || !user.user_id) {
+    if (!user || !user.userId) {
       setError('사용자 정보를 찾을 수 없습니다.');
       return;
     }
@@ -185,12 +185,12 @@ function TeamMemberEvaluationPage() {
 
       console.log('평가 데이터 제출:', {
         projectId,
-        reviewerId: user.user_id,
+        reviewerId: user.userId,
         revieweeId: memberData.id,
         evaluationData
       });
 
-      await submitEvaluation(projectId, user.user_id, memberData.id, evaluationData);
+      await submitEvaluation(projectId, user.userId, memberData.id, evaluationData);
 
       console.log('평가 제출 성공');
 
