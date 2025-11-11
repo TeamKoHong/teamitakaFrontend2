@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect } from "react";
 import "./CompletedComponent.scss";
 import EvaluationAlert from "./EvaluationAlert";
 import CompletedProjectCard from "./CompletedProjectCard";
@@ -7,7 +7,7 @@ import AlertModal from '../../Common/AlertModal';
 import DebugBadge from '../../Common/DebugBadge/DebugBadge';
 import { fetchEvaluationTargets, getNextPendingMemberId } from '../../../services/rating';
 import { getMyProjects } from '../../../services/projects';
-import { compareProjectLists, logComparisonReport } from '../../../utils/compareProjects';
+import { compareProjectLists } from '../../../utils/compareProjects';
 import { deriveCompletedProjects, splitByEvaluationStatus } from '../../../utils/projectFilters';
 
 const CompletedComponent = () => {
@@ -27,9 +27,6 @@ const CompletedComponent = () => {
   // Comparison report for debugging
   const [comparisonReport, setComparisonReport] = React.useState(null);
 
-  // Use ref to track if we've logged initial load
-  const hasLoggedRef = useRef(false);
-
   // SINGLE PIPELINE: Derive UI list from server data
   const completedProjects = deriveCompletedProjects(serverProjects, { sortOrder: sortBy });
 
@@ -46,12 +43,7 @@ const CompletedComponent = () => {
       fields: ["title", "status", "start_date", "end_date", "description"]
     });
 
-    // Log report
-    const label = hasLoggedRef.current ? "Data Update" : "Initial Load";
-    logComparisonReport(report, label);
-    hasLoggedRef.current = true;
-
-    // Update debug badge
+    // Update debug badge (log disabled for performance)
     setComparisonReport(report);
   }, [serverProjects, completedProjects]);
 
