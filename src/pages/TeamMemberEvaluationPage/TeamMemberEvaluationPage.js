@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useAuth } from '../../contexts/AuthContext';
+import { submitEvaluation, fetchProjectMembers, fetchEvaluationTargets } from '../../services/evaluation';
 import styles from './TeamMemberEvaluationPage.module.scss';
 import avatar1 from '../../assets/icons/avatar1.png';
 import avatar2 from '../../assets/icons/avatar2.png';
@@ -14,18 +16,23 @@ import EvaluationStep3 from './components/EvaluationStep3';
 function TeamMemberEvaluationPage() {
   const { projectId, memberId } = useParams();
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [currentStep, setCurrentStep] = useState(1); // 1: 카테고리, 2: 전체/역할, 3: 완료
   const [loading, setLoading] = useState(true);
+  // eslint-disable-next-line no-unused-vars
+  const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState(null);
   const [projectData, setProjectData] = useState(null);
   const [memberData, setMemberData] = useState(null);
+  const [nextPendingMemberAfterSubmit, setNextPendingMemberAfterSubmit] = useState(null);
+  const [remainingCount, setRemainingCount] = useState(0);
   const [evaluationData, setEvaluationData] = useState({
     categoryRatings: {
-      participation: 4,
-      communication: 2,
-      responsibility: 4,
-      collaboration: 3,
-      individualAbility: 5
+      participation: 0,
+      communication: 0,
+      responsibility: 0,
+      collaboration: 0,
+      individualAbility: 0
     },
     overallRating: 0,
     roleDescription: '',
@@ -36,57 +43,69 @@ function TeamMemberEvaluationPage() {
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
+      setError(null);
       try {
-        // 실제 API 호출로 대체 예정
-        const dummyProject = {
-          id: projectId,  // UUID는 문자열 그대로 사용
-          name: '연합동아리 부스전 기획 프로젝트',
-          description: '서울 디자인 전시 부스를 위한 기획 프로젝트',
-          period: '2024.01.01 ~ 2024.02.01',
-          members: [
-            {
-              id: 101,
-              name: '김재원',
-              position: '프론트엔드 개발자',
-              avatar: avatar1
-            },
-            {
-              id: 102,
-              name: '이영희',
-              position: '백엔드 개발자',
-              avatar: avatar2
-            },
-            {
-              id: 103,
-              name: '박철수',
-              position: '디자이너',
-              avatar: avatar3
-            }
-          ]
+        if (!user || !user.userId) {
+          throw new Error('사용자 정보를 찾을 수 없습니다.');
+        }
+
+        // Fetch project members and evaluation targets
+        const [members, evalTargets] = await Promise.all([
+          fetchProjectMembers(projectId),
+          fetchEvaluationTargets(projectId, user.userId)
+        ]);
+
+        // Create project data structure (dummy for now - can be enhanced with project API)
+        const projectData = {
+          id: projectId,
+          name: '프로젝트', // TODO: Fetch from project API
+          members: members.map((member, index) => ({
+            id: member.user_id,
+            name: member.User?.username || '알 수 없음',
+            position: member.role || '팀원',
+            avatar: [avatar1, avatar2, avatar3][index % 3] // Cycle through avatars
+          }))
         };
 
-        // memberId가 없거나 유효하지 않은 경우 기본값 사용
-        const targetMemberId = memberId ? parseInt(memberId) : 101;
-        const dummyMember = dummyProject.members.find(m => m.id === targetMemberId) || dummyProject.members[0];
-        
-        console.log('Project Data:', dummyProject);
-        console.log('Member Data:', dummyMember);
-        console.log('Target Member ID:', targetMemberId);
-        
-        setProjectData(dummyProject);
-        setMemberData(dummyMember);
+        // Find the member to evaluate
+        let targetMember;
+        if (memberId) {
+          // Specific member requested
+          targetMember = projectData.members.find(m => m.id === memberId);
+        } else {
+          // No specific member - use next pending from evaluation targets
+          if (evalTargets.nextPendingMember) {
+            targetMember = projectData.members.find(m => m.id === evalTargets.nextPendingMember.id);
+          }
+        }
+
+        if (!targetMember && projectData.members.length > 0) {
+          // Fallback to first member who is not current user
+          targetMember = projectData.members.find(m => m.id !== user.userId) || projectData.members[0];
+        }
+
+        if (!targetMember) {
+          throw new Error('평가할 팀원을 찾을 수 없습니다.');
+        }
+
+        console.log('Project Data:', projectData);
+        console.log('Target Member:', targetMember);
+        console.log('Next Pending:', evalTargets.nextPendingMember);
+
+        setProjectData(projectData);
+        setMemberData(targetMember);
       } catch (err) {
         console.error('Failed to fetch data:', err);
-        setError('데이터를 불러오는데 실패했습니다.');
+        setError(err.message || '데이터를 불러오는데 실패했습니다.');
       } finally {
         setLoading(false);
       }
     };
 
-    if (projectId) {
+    if (projectId && user) {
       fetchData();
     }
-  }, [projectId, memberId]);
+  }, [projectId, memberId, user]);
 
   const handleNextStep = () => {
     if (currentStep < 3) {
@@ -139,28 +158,79 @@ function TeamMemberEvaluationPage() {
   };
 
   const handleSubmitEvaluation = async () => {
+    if (!user || !user.userId) {
+      setError('사용자 정보를 찾을 수 없습니다.');
+      return;
+    }
+
+    if (!memberData || !memberData.id) {
+      setError('평가 대상을 찾을 수 없습니다.');
+      return;
+    }
+
+    // Validate all category ratings are set
+    const hasAllRatings = Object.values(evaluationData.categoryRatings).every(rating => rating > 0);
+    if (!hasAllRatings) {
+      setError('모든 항목에 대해 평가를 입력해주세요.');
+      return;
+    }
+
+    if (evaluationData.overallRating === 0) {
+      setError('전체 평가를 입력해주세요.');
+      return;
+    }
+
     try {
-      // 실제 API 호출로 대체 예정
-      console.log('평가 데이터 제출:', evaluationData);
-      // Step3 완료 페이지로 이동
+      setSubmitting(true);
+      setError(null);
+
+      console.log('평가 데이터 제출:', {
+        projectId,
+        reviewerId: user.userId,
+        revieweeId: memberData.id,
+        evaluationData
+      });
+
+      await submitEvaluation(projectId, user.userId, memberData.id, evaluationData);
+
+      console.log('평가 제출 성공');
+
+      // Fetch updated evaluation targets after submission
+      try {
+        const updatedTargets = await fetchEvaluationTargets(projectId, user.userId);
+        setNextPendingMemberAfterSubmit(updatedTargets.nextPendingMember);
+
+        // Calculate remaining count (pending targets excluding current user)
+        const pendingTargets = updatedTargets.targets?.filter(t => t.status === 'pending') || [];
+        setRemainingCount(pendingTargets.length);
+
+        console.log('다음 평가 대상:', updatedTargets.nextPendingMember);
+        console.log('남은 평가 대상:', pendingTargets.length);
+      } catch (targetErr) {
+        console.error('평가 대상 조회 오류:', targetErr);
+        // Continue even if fetching targets fails
+      }
+
+      // Move to completion step
       setCurrentStep(3);
     } catch (err) {
-      setError('평가 제출에 실패했습니다.');
+      console.error('평가 제출 오류:', err);
+      setError(err.message || '평가 제출에 실패했습니다.');
+    } finally {
+      setSubmitting(false);
     }
   };
 
-  const handleComplete = async () => {
-    try {
-      // 실제 API 호출로 대체 예정
-      console.log('평가 완료:', evaluationData);
-      // 완료 화면(2단계)이므로 그대로 유지
-      // 잠시 후 평가 관리 페이지로 이동
-      setTimeout(() => {
-        navigate(`/evaluation/project/${projectId}`);
-      }, 2000);
-    } catch (err) {
-      setError('평가 완료 처리에 실패했습니다.');
+  const handleGoNext = () => {
+    if (nextPendingMemberAfterSubmit) {
+      console.log('다음 팀원 평가로 이동:', nextPendingMemberAfterSubmit);
+      navigate(`/evaluation/team-member/${projectId}/${nextPendingMemberAfterSubmit.id}`);
     }
+  };
+
+  const handleGoHome = () => {
+    console.log('프로젝트 관리로 돌아가기');
+    navigate('/project-management?tab=completed');
   };
 
   if (loading) {
@@ -187,8 +257,7 @@ function TeamMemberEvaluationPage() {
       onRoleDescriptionChange: handleRoleDescriptionChange,
       onEncouragementMessageChange: handleEncouragementMessageChange,
       onKeywordsChange: handleKeywordsChange,
-      onSubmit: handleSubmitEvaluation,
-      onComplete: handleComplete
+      onSubmit: handleSubmitEvaluation
     };
 
     switch (currentStep) {
@@ -211,8 +280,10 @@ function TeamMemberEvaluationPage() {
           <EvaluationStep3
             memberData={memberData}
             evaluationData={evaluationData}
-            onGoProject={() => navigate('/project-management?tab=completed')}
-            onGoHome={() => navigate('/project-management?tab=completed')}
+            nextPendingMember={nextPendingMemberAfterSubmit}
+            remainingCount={remainingCount}
+            onGoNext={handleGoNext}
+            onGoHome={handleGoHome}
           />
         );
       default:
