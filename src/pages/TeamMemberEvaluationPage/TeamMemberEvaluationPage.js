@@ -23,7 +23,8 @@ function TeamMemberEvaluationPage() {
   const [error, setError] = useState(null);
   const [projectData, setProjectData] = useState(null);
   const [memberData, setMemberData] = useState(null);
-  const [nextPendingMember, setNextPendingMember] = useState(null);
+  const [nextPendingMemberAfterSubmit, setNextPendingMemberAfterSubmit] = useState(null);
+  const [remainingCount, setRemainingCount] = useState(0);
   const [evaluationData, setEvaluationData] = useState({
     categoryRatings: {
       participation: 0,
@@ -92,7 +93,6 @@ function TeamMemberEvaluationPage() {
 
         setProjectData(projectData);
         setMemberData(targetMember);
-        setNextPendingMember(evalTargets.nextPendingMember);
       } catch (err) {
         console.error('Failed to fetch data:', err);
         setError(err.message || '데이터를 불러오는데 실패했습니다.');
@@ -194,6 +194,22 @@ function TeamMemberEvaluationPage() {
 
       console.log('평가 제출 성공');
 
+      // Fetch updated evaluation targets after submission
+      try {
+        const updatedTargets = await fetchEvaluationTargets(projectId, user.userId);
+        setNextPendingMemberAfterSubmit(updatedTargets.nextPendingMember);
+
+        // Calculate remaining count (pending targets excluding current user)
+        const pendingTargets = updatedTargets.targets?.filter(t => t.status === 'pending') || [];
+        setRemainingCount(pendingTargets.length);
+
+        console.log('다음 평가 대상:', updatedTargets.nextPendingMember);
+        console.log('남은 평가 대상:', pendingTargets.length);
+      } catch (targetErr) {
+        console.error('평가 대상 조회 오류:', targetErr);
+        // Continue even if fetching targets fails
+      }
+
       // Move to completion step
       setCurrentStep(3);
     } catch (err) {
@@ -204,36 +220,16 @@ function TeamMemberEvaluationPage() {
     }
   };
 
-  const handleComplete = () => {
-    // Check if there are more members to evaluate
-    if (nextPendingMember && nextPendingMember.id !== memberData?.id) {
-      // Navigate to next pending member evaluation
-      console.log('다음 평가 대상으로 이동:', nextPendingMember);
-      setTimeout(() => {
-        navigate(`/evaluation/team-member/${projectId}/${nextPendingMember.id}`);
-        // Reset for next evaluation
-        setCurrentStep(1);
-        setEvaluationData({
-          categoryRatings: {
-            participation: 0,
-            communication: 0,
-            responsibility: 0,
-            collaboration: 0,
-            individualAbility: 0
-          },
-          overallRating: 0,
-          roleDescription: '',
-          extractedKeywords: [],
-          encouragementMessage: ''
-        });
-      }, 2000);
-    } else {
-      // All evaluations complete - go back to project management
-      console.log('모든 평가 완료 - 프로젝트 관리로 이동');
-      setTimeout(() => {
-        navigate('/project-management?tab=completed');
-      }, 2000);
+  const handleGoNext = () => {
+    if (nextPendingMemberAfterSubmit) {
+      console.log('다음 팀원 평가로 이동:', nextPendingMemberAfterSubmit);
+      navigate(`/evaluation/team-member/${projectId}/${nextPendingMemberAfterSubmit.id}`);
     }
+  };
+
+  const handleGoHome = () => {
+    console.log('프로젝트 관리로 돌아가기');
+    navigate('/project-management?tab=completed');
   };
 
   if (loading) {
@@ -260,8 +256,7 @@ function TeamMemberEvaluationPage() {
       onRoleDescriptionChange: handleRoleDescriptionChange,
       onEncouragementMessageChange: handleEncouragementMessageChange,
       onKeywordsChange: handleKeywordsChange,
-      onSubmit: handleSubmitEvaluation,
-      onComplete: handleComplete
+      onSubmit: handleSubmitEvaluation
     };
 
     switch (currentStep) {
@@ -284,8 +279,10 @@ function TeamMemberEvaluationPage() {
           <EvaluationStep3
             memberData={memberData}
             evaluationData={evaluationData}
-            onGoProject={() => navigate('/project-management?tab=completed')}
-            onGoHome={() => navigate('/project-management?tab=completed')}
+            nextPendingMember={nextPendingMemberAfterSubmit}
+            remainingCount={remainingCount}
+            onGoNext={handleGoNext}
+            onGoHome={handleGoHome}
           />
         );
       default:
