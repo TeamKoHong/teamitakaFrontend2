@@ -19,6 +19,7 @@ function TeamMemberEvaluationPage() {
   const { user } = useAuth();
   const [currentStep, setCurrentStep] = useState(1); // 1: 카테고리, 2: 전체/역할, 3: 완료
   const [loading, setLoading] = useState(true);
+  // eslint-disable-next-line no-unused-vars
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState(null);
   const [projectData, setProjectData] = useState(null);
