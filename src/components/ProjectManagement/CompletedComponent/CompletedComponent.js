@@ -5,13 +5,15 @@ import CompletedProjectCard from "./CompletedProjectCard";
 import { useNavigate } from 'react-router-dom';
 import AlertModal from '../../Common/AlertModal';
 import DebugBadge from '../../Common/DebugBadge/DebugBadge';
-import { fetchEvaluationTargets, getNextPendingMemberId } from '../../../services/rating';
+import { fetchEvaluationTargets } from '../../../services/rating';
+import { useAuth } from '../../../contexts/AuthContext';
 import { getMyProjects } from '../../../services/projects';
 import { compareProjectLists } from '../../../utils/compareProjects';
 import { deriveCompletedProjects, splitByEvaluationStatus } from '../../../utils/projectFilters';
 
 const CompletedComponent = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   // Single source of truth: server response
   const [serverProjects, setServerProjects] = React.useState([]);
@@ -61,13 +63,20 @@ const CompletedComponent = () => {
     console.log('🔍 Click event - project.project_id:', project.project_id);
 
     try {
-      const { targets } = await fetchEvaluationTargets(project.project_id);
-      const nextId = getNextPendingMemberId(targets);
+      if (!user || !user.userId) {
+        console.error('사용자 정보 없음');
+        return;
+      }
 
-      if (nextId) {
-        const url = `/evaluation/team-member/${project.project_id}/${nextId}`;
-        console.log('🔀 Navigating to:', url);
-        navigate(url, {
+      const evalData = await fetchEvaluationTargets(project.project_id, user.userId);
+
+      if (evalData.nextPendingMember) {
+        navigate(`/evaluation/team-member/${project.project_id}/${evalData.nextPendingMember.id}`, {
+          state: { projectSummary: project, from: { path: '/project-management', tab: 'completed' } },
+        });
+      } else if (evalData.allCompleted) {
+        // 모든 평가 완료 - 프로젝트 평가 결과 페이지로
+        navigate(`/evaluation/project/${project.project_id}`, {
           state: { projectSummary: project, from: { path: '/project-management', tab: 'completed' } },
         });
       } else {
@@ -204,12 +213,11 @@ const CompletedComponent = () => {
         primaryLabel="작성하기"
         secondaryLabel="나중에 하기"
         onPrimary={async () => {
-          if (!modalProject) return;
+          if (!modalProject || !user || !user.userId) return;
           try {
-            const { targets } = await fetchEvaluationTargets(modalProject.id);
-            const nextId = getNextPendingMemberId(targets);
-            if (nextId) {
-              navigate(`/evaluation/team-member/${modalProject.id}/${nextId}`, {
+            const evalData = await fetchEvaluationTargets(modalProject.id, user.userId);
+            if (evalData.nextPendingMember) {
+              navigate(`/evaluation/team-member/${modalProject.id}/${evalData.nextPendingMember.id}`, {
                 state: { projectSummary: modalProject, from: { path: '/project-management', tab: 'completed' } },
               });
             } else {

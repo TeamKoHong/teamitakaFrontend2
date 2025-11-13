@@ -2,7 +2,14 @@ import React from 'react';
 import styles from '../TeamMemberEvaluationPage.module.scss';
 import RatingInputStars from '../../../components/RatingManagement/RatingInputStars/RatingInputStars';
 
-const EvaluationStep3 = ({ memberData, evaluationData, onGoProject, onGoHome }) => {
+const EvaluationStep3 = ({
+  memberData,
+  evaluationData,
+  nextPendingMember,
+  remainingCount,
+  onGoNext,
+  onGoHome
+}) => {
   return (
     <div className={styles.stepContainer}>
 
@@ -29,11 +36,32 @@ const EvaluationStep3 = ({ memberData, evaluationData, onGoProject, onGoHome }) 
           </>
         )}
 
-        <div className={styles.buttonBlock}>
-          <button className={`${styles.button} ${styles.primary}`} onClick={onGoProject}>완료</button>
-        </div>
+        {/* 남은 평가 대상 수 표시 */}
+        {remainingCount > 0 && (
+          <div className={styles.remainingInfo}>
+            남은 평가 대상: {remainingCount}명
+          </div>
+        )}
 
-        <div className={styles.centerLink} role="button" tabIndex={0} onClick={onGoHome}>프로젝트 관리 홈으로</div>
+        <div className={styles.buttonBlock}>
+          {/* 다음 팀원 평가하기 버튼 (nextPendingMember가 있을 때만) */}
+          {nextPendingMember && (
+            <button
+              className={`${styles.button} ${styles.primary}`}
+              onClick={onGoNext}
+            >
+              다음 팀원 평가하기
+            </button>
+          )}
+
+          {/* 프로젝트 관리로 돌아가기 버튼 */}
+          <button
+            className={`${styles.button} ${nextPendingMember ? styles.secondary : styles.primary}`}
+            onClick={onGoHome}
+          >
+            프로젝트 관리로 돌아가기
+          </button>
+        </div>
       </div>
     </div>
   );
