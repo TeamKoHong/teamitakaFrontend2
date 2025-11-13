@@ -59,6 +59,9 @@ const CompletedComponent = () => {
 
   const handleEvaluateClick = async (project) => {
     // 평가 대기 프로젝트는 팀원 평가 페이지로 이동
+    console.log('🔍 Click event - project object:', project);
+    console.log('🔍 Click event - project.project_id:', project.project_id);
+
     try {
       if (!user || !user.userId) {
         console.error('사용자 정보 없음');
@@ -78,14 +81,18 @@ const CompletedComponent = () => {
         });
       } else {
         // 평가할 팀원이 없으면 프로젝트 평가 페이지로
-        navigate(`/evaluation/project/${project.project_id}`, {
+        const url = `/evaluation/project/${project.project_id}`;
+        console.log('🔀 Navigating to:', url);
+        navigate(url, {
           state: { projectSummary: project, from: { path: '/project-management', tab: 'completed' } },
         });
       }
     } catch (error) {
       console.error('❌ 평가 대상 조회 실패:', error);
       // 에러 발생 시에도 프로젝트 평가 페이지로 이동
-      navigate(`/evaluation/project/${project.project_id}`, {
+      const url = `/evaluation/project/${project.project_id}`;
+      console.log('🔀 Navigating to (fallback):', url);
+      navigate(url, {
         state: { projectSummary: project, from: { path: '/project-management', tab: 'completed' } },
       });
     }
