@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { submitEvaluation, fetchProjectMembers, fetchEvaluationTargets } from '../../services/evaluation';
+import { getTeamMemberEvaluationUrl } from '../../constants/routes';
 import styles from './TeamMemberEvaluationPage.module.scss';
 import avatar1 from '../../assets/icons/avatar1.png';
 import avatar2 from '../../assets/icons/avatar2.png';
@@ -224,7 +225,7 @@ function TeamMemberEvaluationPage() {
   const handleGoNext = () => {
     if (nextPendingMemberAfterSubmit) {
       console.log('다음 팀원 평가로 이동:', nextPendingMemberAfterSubmit);
-      navigate(`/evaluation/team-member/${projectId}/${nextPendingMemberAfterSubmit.id}`);
+      navigate(getTeamMemberEvaluationUrl(projectId, nextPendingMemberAfterSubmit.id));
     }
   };
 

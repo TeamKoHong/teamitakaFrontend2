@@ -10,6 +10,7 @@ import { useAuth } from '../../../contexts/AuthContext';
 import { getMyProjects } from '../../../services/projects';
 import { compareProjectLists } from '../../../utils/compareProjects';
 import { deriveCompletedProjects, splitByEvaluationStatus } from '../../../utils/projectFilters';
+import { getTeamMemberEvaluationUrl } from '../../../constants/routes';
 
 const CompletedComponent = () => {
   const navigate = useNavigate();
@@ -68,7 +69,7 @@ const CompletedComponent = () => {
       const evalData = await fetchEvaluationTargets(project.project_id, user.userId);
 
       if (evalData.nextPendingMember) {
-        navigate(`/evaluation/team-member/${project.project_id}/${evalData.nextPendingMember.id}`, {
+        navigate(getTeamMemberEvaluationUrl(project.project_id, evalData.nextPendingMember.id), {
           state: { projectSummary: project, from: { path: '/project-management', tab: 'completed' } },
         });
       } else if (evalData.allCompleted) {
@@ -210,7 +211,7 @@ const CompletedComponent = () => {
           try {
             const evalData = await fetchEvaluationTargets(modalProject.id, user.userId);
             if (evalData.nextPendingMember) {
-              navigate(`/evaluation/team-member/${modalProject.id}/${evalData.nextPendingMember.id}`, {
+              navigate(getTeamMemberEvaluationUrl(modalProject.id, evalData.nextPendingMember.id), {
                 state: { projectSummary: modalProject, from: { path: '/project-management', tab: 'completed' } },
               });
             } else {
