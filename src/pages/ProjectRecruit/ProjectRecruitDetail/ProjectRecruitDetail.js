@@ -77,6 +77,20 @@ export default function ProjectRecruitDetail() {
     }
   }, [location.state]);
 
+  // Auto-save on page unload
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      if (detail || keywords.length > 0) {
+        const base = loadRecruitDraft() || {};
+        const single = { ...base, detail, keywords };
+        saveRecruitDraft(single);
+      }
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [detail, keywords]);
+
   const maxLen = 400;
   const canNext = detail.length > 0;
 
@@ -85,12 +99,12 @@ export default function ProjectRecruitDetail() {
     const single = { ...base, detail, keywords };
     saveRecruitDraft(single);
 
-    const all = { detail, keywords };
+    // Save complete data to draft list (not just detail/keywords)
     saveDraftToList({
       id: getCurrentDraftId(),
-      title: all.basic?.title || (detail.split('\n')[0] || '제목 없음'),
-      type: all.basic?.type || '',
-      data: all,
+      title: base.title || (detail.split('\n')[0] || '제목 없음'),
+      type: base.type || '',
+      data: single,  // Save complete data, not partial
     });
 
     alert('임시 저장되었어요.');
@@ -98,6 +112,9 @@ export default function ProjectRecruitDetail() {
 
   const goNext = () => {
     if (!canNext) return;
+    const base = loadRecruitDraft() || {};
+    const single = { ...base, detail, keywords };
+    saveRecruitDraft(single);
     nav('/recruit/image');
   };
 

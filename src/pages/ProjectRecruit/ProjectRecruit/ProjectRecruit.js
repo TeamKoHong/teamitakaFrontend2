@@ -1,9 +1,11 @@
 // src/Pages/ProjectRecruit/ProjectRecruit.js
 import { useEffect, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './ProjectRecruit.scss';
 import { loadRecruitDraft, saveRecruitDraft } from '../../../api/recruit';
 
 export default function ProjectRecruit() {
+  const nav = useNavigate();
   const [title, setTitle] = useState('');
   const [desc, setDesc]   = useState('');
   const [type, setType]   = useState(null);  // 'course' | 'side'
@@ -20,6 +22,18 @@ export default function ProjectRecruit() {
       setEnd(draft.end || '');
     }
   }, []);
+
+  // Auto-save on page unload
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      if (title || desc || type || start || end) {
+        saveRecruitDraft({ title, desc, type, start, end });
+      }
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [title, desc, type, start, end]);
 
   const isValidRange = useMemo(() => {
     if (!start || !end) return false;
@@ -114,7 +128,10 @@ export default function ProjectRecruit() {
         <button
           className={`next-btn ${isReady ? 'on' : 'off'}`}
           disabled={!isReady}
-          onClick={() => window.location.assign('/recruit/detail')}
+          onClick={() => {
+            saveRecruitDraft({ title, desc, type, start, end });
+            nav('/recruit/detail');
+          }}
         >
           다음
         </button>

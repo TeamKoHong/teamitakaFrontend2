@@ -1,5 +1,5 @@
 // src/Pages/ProjectRecruitImage/ProjectRecruitImage.js
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import './ProjectRecruitImage.scss';
 import { loadRecruitDraft, saveRecruitDraft } from '../../../api/recruit';
 import { useNavigate } from 'react-router-dom';
@@ -11,13 +11,27 @@ export default function ProjectRecruitImage() {
     const [imageDataUrl, setImageDataUrl] = useState(null);
     const [sheetOpen, setSheetOpen] = useState(false);
 
-    // 초안 불러오기 (coverImage.dataUrl 있으면 미리보기)
-    // useEffect(() => {
-    //     const d = loadRecruitDraft();
-    //     if (d && d.coverImage && d.coverImage.dataUrl) {
-    //         setImageDataUrl(d.coverImage.dataUrl);
-    //     }
-    // }, []);
+    // Auto-load previously selected image
+    useEffect(() => {
+        const d = loadRecruitDraft();
+        if (d?.coverImage?.dataUrl) {
+            setImageDataUrl(d.coverImage.dataUrl);
+        }
+    }, []);
+
+    // Auto-save on page unload
+    useEffect(() => {
+        const handleBeforeUnload = () => {
+            const base = loadRecruitDraft() || {};
+            saveRecruitDraft({
+                ...base,
+                coverImage: imageDataUrl ? { dataUrl: imageDataUrl } : null,
+            });
+        };
+
+        window.addEventListener('beforeunload', handleBeforeUnload);
+        return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+    }, [imageDataUrl]);
 
     const openSheet = () => setSheetOpen(true);
     const closeSheet = () => setSheetOpen(false);
@@ -64,8 +78,12 @@ export default function ProjectRecruitImage() {
     };
 
     const goNext = () => {
-        // 필요 시 여기서 서버 업로드 → url 저장 로직 추가 가능
-        nav('/recruit/preview'); // 다음 단계 라우트로 이동(없으면 임시로 알럿)
+        const base = loadRecruitDraft() || {};
+        saveRecruitDraft({
+            ...base,
+            coverImage: imageDataUrl ? { dataUrl: imageDataUrl } : null,
+        });
+        nav('/recruit/preview');
     };
 
     return (
