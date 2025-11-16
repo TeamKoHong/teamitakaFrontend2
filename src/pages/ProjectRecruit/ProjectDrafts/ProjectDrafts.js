@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './ProjectDrafts.scss';
-import { loadDrafts, deleteDrafts, getDraftById } from '../../../api/recruit';
+import { loadDrafts, deleteDrafts, getDraftById, saveRecruitDraft } from '../../../api/recruit';
 
 import iconInactive from '../../../assets/draft_inactive.png';
 import iconActive   from '../../../assets/draft_active.png';
 import iconChecked  from '../../../assets/checkbox_checked.png';
 
 export default function RecruitDrafts() {
+  const nav = useNavigate();
   const [list, setList] = useState([]);
   const [selectedId, setSelectedId] = useState(null);
 
@@ -22,9 +24,19 @@ export default function RecruitDrafts() {
 
   const onLoad = () => {
     if (!canAct) return;
-    // TODO: 선택된 초안 로드 동작(상세 페이지로 이동 등)
     const draft = getDraftById(selectedId);
-    console.log('LOAD:', draft);
+    if (draft && draft.data) {
+      // Load draft data to current recruit draft
+      saveRecruitDraft(draft.data);
+      // Navigate to appropriate step based on what's filled
+      if (draft.data.detail || draft.data.keywords) {
+        // Has detail/keywords, go to detail page
+        nav('/recruit/detail');
+      } else {
+        // Only has basic info, start from beginning
+        nav('/recruit');
+      }
+    }
   };
 
   const onDelete = () => {
