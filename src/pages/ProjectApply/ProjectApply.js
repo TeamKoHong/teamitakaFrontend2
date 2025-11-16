@@ -1,11 +1,15 @@
 // src/Pages/ProjectApply/ProjectApply.js
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import "./ProjectApply.scss";
 
 export default function ProjectApply() {
   const nav = useNavigate();
+  const location = useLocation();
   const [text, setText] = useState("");
+
+  // Get recruitmentId from RecruitmentViewPage
+  const recruitmentId = location.state?.projectId;
 
   const MAX = 300;
   const len = text.trim().length;
@@ -13,7 +17,12 @@ export default function ProjectApply() {
 
   const handleNext = () => {
     if (!isValid) return;
-    nav('/apply2/select');
+    nav('/apply2/select', {
+      state: {
+        recruitmentId,
+        introduction: text.trim()
+      }
+    });
   };
 
   return (

@@ -214,6 +214,45 @@ export const approveApplicant = async (applicationId) => {
 };
 
 /**
+ * Submits an application to a recruitment
+ * @param {string} recruitmentId - Recruitment UUID
+ * @param {Object} applicationData - Application data
+ * @param {string} applicationData.introduction - Self-introduction (required, 1-500 chars)
+ * @param {Array<string>} [applicationData.portfolio_project_ids] - Portfolio project IDs (optional)
+ * @returns {Promise<Object>} Created application
+ */
+export const submitApplication = async (recruitmentId, applicationData) => {
+    const { API_BASE_URL, headers } = getApiConfig();
+    const token = localStorage.getItem('authToken');
+
+    if (!token) {
+        const err = new Error('로그인이 필요합니다.');
+        err.code = 'UNAUTHORIZED';
+        throw err;
+    }
+
+    const res = await fetch(`${API_BASE_URL}/api/applications/${recruitmentId}`, {
+        method: 'POST',
+        headers: {
+            ...headers,
+            Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(applicationData),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+        const err = new Error(data.message || '지원서 제출에 실패했습니다.');
+        err.code = data.error || 'SERVER_ERROR';
+        err.statusCode = res.status;
+        throw err;
+    }
+
+    return data.data;
+};
+
+/**
  * Converts recruitment to project
  * @param {string} recruitmentId - Recruitment UUID
  * @returns {Promise<Object>} Created project
