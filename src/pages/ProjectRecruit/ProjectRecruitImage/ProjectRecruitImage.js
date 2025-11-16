@@ -36,9 +36,9 @@ export default function ProjectRecruitImage() {
             alert('이미지 파일만 업로드할 수 있어요.');
             return;
         }
-        const MAX = 10 * 1024 * 1024; // 10MB
+        const MAX = 5 * 1024 * 1024; // 5MB (백엔드 제한)
         if (file.size > MAX) {
-            alert('10MB 이하 이미지만 업로드할 수 있어요.');
+            alert('5MB 이하 이미지만 업로드할 수 있어요.');
             return;
         }
 
