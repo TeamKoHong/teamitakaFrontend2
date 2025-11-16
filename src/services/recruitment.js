@@ -107,6 +107,35 @@ export const uploadRecruitmentImage = async (imageFile) => {
 };
 
 /**
+ * Gets a recruitment by ID
+ * @param {string} recruitmentId - Recruitment UUID
+ * @returns {Promise<Object>} Recruitment data
+ */
+export const getRecruitment = async (recruitmentId) => {
+    const { API_BASE_URL, headers } = getApiConfig();
+
+    const res = await fetch(`${API_BASE_URL}/api/recruitments/${recruitmentId}`, {
+        method: 'GET',
+        headers,
+    });
+
+    if (res.status === 404) {
+        const err = new Error('모집글을 찾을 수 없습니다.');
+        err.code = 'NOT_FOUND';
+        throw err;
+    }
+
+    if (!res.ok) {
+        const errorData = await res.json();
+        const err = new Error(errorData.message || 'Failed to fetch recruitment');
+        err.code = 'SERVER_ERROR';
+        throw err;
+    }
+
+    return res.json();
+};
+
+/**
  * Gets applicants for a recruitment
  * @param {string} recruitmentId - Recruitment UUID
  * @returns {Promise<Object>} Applicants data
