@@ -20,6 +20,10 @@
   - 1단계: 기본 정보 (제목, 기간, 유형)
   - 2단계: 상세 정보 (설명, 키워드)
   - 3단계: 대표 이미지 업로드
+- **지원서 제출**: 3단계 플로우로 간편한 지원
+  - 1단계: 자기소개 작성 (300자)
+  - 2단계: 포트폴리오 프로젝트 선택 (완료된 프로젝트)
+  - 3단계: 제출 완료
 - **지원 관리**: 지원자 확인 및 승인/거절
 - **팀 매칭**: 관심사 기반 팀원 추천 및 매칭
 
@@ -171,6 +175,10 @@ src/
 │   ├── RegisterPage/
 │   ├── RecruitmentPage/
 │   ├── RecruitmentViewPage/
+│   ├── ProjectApply/       # 지원서 제출 플로우
+│   │   ├── ProjectApply.js          # 1단계: 자기소개
+│   │   ├── ProjectApplySelect.js    # 2단계: 포트폴리오 선택
+│   │   └── ProjectApplyComplete.js  # 3단계: 완료
 │   ├── ProjectDetailPage/
 │   └── ...
 ├── services/         # API 호출 로직
@@ -207,7 +215,9 @@ src/
 - `/recruitment/:id` - 모집글 상세
 
 ### 지원
-- `/apply2` - 지원서 작성
+- `/apply2` - 지원서 작성 (1단계: 자기소개)
+- `/apply2/select` - 지원서 작성 (2단계: 포트폴리오 선택)
+- `/apply2/complete` - 지원서 제출 완료
 
 ### 프로젝트
 - `/project-management` - 프로젝트 관리 목록
@@ -363,6 +373,86 @@ try {
     console.error('파일 크기는 5MB를 초과할 수 없습니다.');
   } else if (error.code === 'INVALID_FILE_TYPE') {
     console.error('허용되지 않는 파일 형식입니다. (jpeg, png, webp만 가능)');
+  }
+}
+```
+
+### 지원서 제출
+
+```javascript
+import {
+  submitApplication,
+  getMyProjects
+} from './services/recruitment';
+
+// 1. 나의 프로젝트 목록 가져오기 (포트폴리오용)
+try {
+  const result = await getMyProjects({
+    status: 'completed',  // 완료된 프로젝트만
+    limit: 20,
+    offset: 0
+  });
+
+  const projects = result.projects.map(p => ({
+    id: p.project_id,        // UUID 형식
+    title: p.title,
+    thumb: p.photo_url || null,
+    description: p.description
+  }));
+
+  console.log('완료된 프로젝트:', projects.length);
+} catch (error) {
+  if (error.code === 'UNAUTHORIZED') {
+    console.error('로그인이 필요합니다.');
+  }
+}
+
+// 2. 지원서 제출
+try {
+  const application = await submitApplication(recruitmentId, {
+    introduction: '저는 프론트엔드 개발에 열정이 있습니다...',
+    portfolio_project_ids: [
+      'uuid-1234-5678-...',  // 선택한 프로젝트 ID들
+      'uuid-abcd-efgh-...'
+    ]
+  });
+
+  console.log('지원 성공:', application.application_id);
+  // 완료 페이지로 이동
+  navigate('/apply2/complete', {
+    state: {
+      applicationId: application.application_id,
+      recruitmentId: application.recruitment_id
+    }
+  });
+
+} catch (error) {
+  // 8가지 에러 케이스 처리
+  switch (error.code) {
+    case 'ALREADY_APPLIED':
+      console.error('이미 지원한 모집글입니다.');
+      break;
+    case 'SELF_APPLICATION':
+      console.error('본인이 작성한 모집글에는 지원할 수 없습니다.');
+      break;
+    case 'RECRUITMENT_CLOSED':
+      console.error('마감된 모집글입니다.');
+      break;
+    case 'INVALID_PORTFOLIO':
+      console.error('유효하지 않은 포트폴리오 프로젝트가 포함되어 있습니다.');
+      break;
+    case 'UNAUTHORIZED':
+      console.error('로그인이 필요합니다.');
+      navigate('/login');
+      break;
+    case 'RECRUITMENT_NOT_FOUND':
+      console.error('모집글을 찾을 수 없습니다.');
+      break;
+    case 'INVALID_INPUT':
+      console.error(error.message || '입력 정보가 올바르지 않습니다.');
+      break;
+    default:
+      console.error('지원서 제출에 실패했습니다.');
   }
 }
 ```
@@ -871,7 +961,7 @@ error <package>: The engine "node" is incompatible with this module
 
 | 브랜치 | 담당자 | 작업 내용 | 상태 | 최근 업데이트 |
 |--------|--------|-----------|------|---------------|
-| `woo` | @woo | 모집글 백엔드 API 연동 | 🚀 진행중 | 2025-11-16 |
+| `woo` | @woo | 지원서 제출 API 통합 완료 | ✅ 완료 | 2025-01-16 |
 | `yeye` | @yeye | 날짜 & 아이콘 컨텍스트 | 🔄 진행중 | 2025-11-09 |
 
 ### 아카이브된 브랜치
@@ -1041,8 +1131,8 @@ main              # 프로덕션 브랜치 (Vercel 자동 배포)
 
 ---
 
-**문서 버전**: 2.0
-**마지막 업데이트**: 2025-11-16
+**문서 버전**: 2.1 (지원서 제출 기능 추가)
+**마지막 업데이트**: 2025-01-16
 **관리자**: Teamitaka 개발팀
 
 **Made with ❤️ by Teamitaka Team**
