@@ -2,7 +2,20 @@ import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import "./ProjectRecruitPublish.scss";
 import { loadRecruitDraft, clearRecruitDraft } from "../../../api/recruit";
-import { createProject } from "../../../services/projects";
+import { createRecruitment, uploadRecruitmentImage } from "../../../services/recruitment";
+
+// Helper function to convert dataURL to File
+const dataURLtoFile = (dataurl, filename) => {
+  const arr = dataurl.split(',');
+  const mime = arr[0].match(/:(.*?);/)[1];
+  const bstr = atob(arr[1]);
+  let n = bstr.length;
+  const u8arr = new Uint8Array(n);
+  while (n--) {
+    u8arr[n] = bstr.charCodeAt(n);
+  }
+  return new File([u8arr], filename, { type: mime });
+};
 
 export default function ProjectRecruitPublish() {
   const nav = useNavigate();
@@ -16,41 +29,56 @@ export default function ProjectRecruitPublish() {
         // 1. localStorage에서 draft 읽기
         const draft = loadRecruitDraft();
         if (!draft || !draft.title) {
-          throw new Error("프로젝트 정보가 없습니다. 다시 시도해주세요.");
+          throw new Error("모집 정보가 없습니다. 다시 시도해주세요.");
         }
 
-        // 2. 백엔드 API 형식으로 변환
-        const projectData = {
+        // 2. 이미지가 있으면 먼저 업로드
+        let photo_url = null;
+        if (draft.coverImage?.dataUrl) {
+          try {
+            const imageFile = dataURLtoFile(draft.coverImage.dataUrl, 'recruitment-image.jpg');
+            photo_url = await uploadRecruitmentImage(imageFile);
+            console.log("✅ Image uploaded:", photo_url);
+          } catch (imgErr) {
+            console.warn("⚠️ Image upload failed, continuing without image:", imgErr);
+            // 이미지 업로드 실패해도 모집공고는 생성 (이미지는 선택사항)
+          }
+        }
+
+        // 3. 백엔드 API 형식으로 변환
+        const recruitmentData = {
           title: draft.title,
           description: draft.desc || "",
-          start_date: draft.start || undefined,
-          end_date: draft.end || undefined,
-          status: "예정", // 기본값
+          project_type: draft.type || undefined,
+          recruitment_start: draft.start || undefined,
+          recruitment_end: draft.end || undefined,
+          photo_url: photo_url || undefined,
+          max_applicants: 10, // 기본값
         };
 
-        // 3. API 호출
-        const result = await createProject(projectData);
-        console.log("✅ Project created:", result);
+        // 4. API 호출
+        const result = await createRecruitment(recruitmentData);
+        console.log("✅ Recruitment created:", result);
 
-        // 4. localStorage draft 삭제
+        // 5. localStorage draft 삭제
         clearRecruitDraft();
 
-        // 5. 완료 페이지로 이동
+        // 6. 완료 페이지로 이동
         nav("/recruit/publish/done", {
           state: {
             redirectTo,
-            projectId: result.project_id
+            recruitmentId: result.recruitment_id
           }
         });
       } catch (err) {
-        console.error("🚨 Project creation error:", err);
+        console.error("🚨 Recruitment creation error:", err);
 
         // 에러 처리
         if (err.code === "UNAUTHORIZED") {
           alert("로그인이 필요합니다.");
           nav("/login", { state: { from: "/recruit/publish" } });
         } else {
-          setError(err.message || "프로젝트 생성에 실패했습니다.");
+          setError(err.message || "모집글 생성에 실패했습니다.");
         }
       }
     };
