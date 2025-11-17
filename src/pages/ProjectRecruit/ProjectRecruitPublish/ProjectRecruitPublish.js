@@ -54,6 +54,7 @@ export default function ProjectRecruitPublish() {
           recruitment_end: draft.end || undefined,
           photo_url: photo_url || undefined,
           max_applicants: 10, // 기본값
+          hashtags: draft.keywords || [], // 해시태그 (백엔드가 # 자동 제거)
         };
 
         // 4. API 호출
