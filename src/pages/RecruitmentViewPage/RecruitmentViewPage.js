@@ -42,9 +42,7 @@ export default function RecruitmentViewPage() {
                     views: data.views || 0,
                     comments: 0, // Backend doesn't provide comments yet
                     date: data.created_at ? new Date(data.created_at).toLocaleDateString('ko-KR') : '',
-                    keywords: data.Hashtags?.map(h => h.name) || [],
-                    weWant: [], // Parse from description if needed
-                    weDo: [], // Parse from description if needed
+                    keywords: data.Hashtags?.map(h => h.name) || []
                 };
 
                 setPost(formattedPost);
@@ -174,21 +172,7 @@ export default function RecruitmentViewPage() {
 
                 <section className="post-body">
                     <p>{post.description}</p>
-                    
-                    <div className="detail-section">
-                        <h3>🙋‍♀️ 우리가 원하는 사람</h3>
-                        <ul>
-                            {(post.weWant || []).map((item, index) => <li key={index}>{item}</li>)}
-                        </ul>
-                    </div>
 
-                    <div className="detail-section">
-                        <h3>🙌 함께 할 내용</h3>
-                        <ul>
-                            {(post.weDo || []).map((item, index) => <li key={index}>{item}</li>)}
-                        </ul>
-                    </div>
-                    
                     {post.recruitmentInfo?.count &&
                         <div className="detail-section">
                             <h3>📝 모집 인원: {post.recruitmentInfo.count}</h3>
