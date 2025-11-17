@@ -340,7 +340,8 @@ try {
     project_type: 'side',  // 'course' or 'side'
     recruitment_start: '2025-01-20',
     recruitment_end: '2025-02-20',
-    max_applicants: 5  // 선택사항
+    max_applicants: 5,  // 선택사항
+    hashtags: ['React', 'TypeScript', 'Node.js']  // ✨ 해시태그 (선택사항, 최대 5개)
   });
 
   console.log('모집글 생성 성공:', recruitment.recruitment_id);
@@ -351,6 +352,11 @@ try {
     console.error('생성 실패:', error.message);
   }
 }
+
+// 💡 해시태그 처리 규칙 (2025-01-17 추가):
+// - # 기호는 자동으로 제거됨 ('#React' → 'React')
+// - 중복 제거 및 최대 5개로 제한
+// - 백엔드 commit ae37e1f에서 구현됨
 
 // 2. 모집글 조회 (인증 불필요)
 try {
