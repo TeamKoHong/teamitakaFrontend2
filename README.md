@@ -1044,14 +1044,77 @@ git branch -d feature/기능명  # 로컬 브랜치 삭제
 
 ### 브랜치 전략
 
+이 프로젝트는 **자동화된 브랜치 전략**을 사용합니다:
+
 ```
+woo               # 개인 작업 브랜치
+  ↓ (PR 자동 생성 & 머지)
+develop           # 개발 통합 브랜치 (스테이징)
+  ↓ (PR 자동 생성 & 머지)
 main              # 프로덕션 브랜치 (Vercel 자동 배포)
-  ├── develop     # 개발 통합 브랜치 (스테이징)
-  │   ├── feature/login-page
-  │   ├── feature/recruitment-flow
-  │   ├── bugfix/navigation-issue
-  │   └── refactor/api-services
 ```
+
+**브랜치별 역할**:
+- `main`: 프로덕션 배포 브랜치 (Vercel 자동 배포)
+- `develop`: 개발 통합 브랜치 (스테이징 환경)
+- `woo`: 개인 작업 브랜치 (개발자: @woo)
+- `yeye`: 개인 작업 브랜치 (개발자: @yeye)
+- `feature/*`, `bugfix/*`, `refactor/*`: 기능별 브랜치 (필요 시)
+
+### 일반 작업 플로우
+
+```bash
+# 1. 작업 시작 전 동기화
+git checkout woo
+git pull origin woo
+
+# 2. 작업 진행
+# 파일 수정...
+
+# 3. 커밋 & 푸시
+git add .
+git commit -m "feat: 기능 설명"
+git push origin woo
+
+# 4. GitHub에서 PR 자동 생성 & 머지 (1-2분)
+# woo → develop → main 자동 머지됨
+
+# 5. 다음 작업 전 필수 동기화
+git pull origin woo
+```
+
+### ⚠️ 주의사항
+
+**작업 전 필수 체크**:
+```bash
+# 매일 작업 시작 전 실행
+git checkout develop
+git pull origin develop
+
+git checkout main
+git pull origin main
+
+git checkout woo
+git pull origin woo
+```
+
+**브랜치 상태 확인**:
+```bash
+# 현재 브랜치와 origin 동기화 상태 확인
+git branch -vv
+
+# behind/ahead 상태가 보이면 즉시 동기화
+git pull origin <branch>
+```
+
+### 🔧 문제 해결
+
+브랜치 동기화 문제 발생 시 **[Git 워크플로우 문제 해결 가이드](./GIT_WORKFLOW_TROUBLESHOOTING.md)**를 참고하세요.
+
+**흔한 문제**:
+- 로컬 브랜치가 origin보다 뒤처진 경우 ([behind X])
+- PR 자동 머지 후 로컬 업데이트 누락
+- Git 충돌 해결 방법
 
 ### Commit 컨벤션
 
@@ -1138,6 +1201,8 @@ main              # 프로덕션 브랜치 (Vercel 자동 배포)
 - [개발 환경 설정 가이드](./DEVELOPMENT_SETUP.md)
 - [README 작성 가이드라인](./README_GUIDELINES.md)
 - [Supabase 마이그레이션 가이드](./SUPABASE_MIGRATION_GUIDE.md)
+- [Git 워크플로우 문제 해결 가이드](./GIT_WORKFLOW_TROUBLESHOOTING.md) ⭐ NEW
+- [지원서 제출 기능 테스트 보고서](./TEST_REPORT.md)
 
 ## 🙋 문의 및 지원
 
