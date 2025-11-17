@@ -42,7 +42,7 @@ export default function RecruitmentViewPage() {
                     views: data.views || 0,
                     comments: 0, // Backend doesn't provide comments yet
                     date: data.created_at ? new Date(data.created_at).toLocaleDateString('ko-KR') : '',
-                    keywords: data.Hashtags?.map(h => h.content) || [],
+                    keywords: data.Hashtags?.map(h => h.name) || [],
                     weWant: [], // Parse from description if needed
                     weDo: [], // Parse from description if needed
                 };
