@@ -7,12 +7,53 @@ import { loadRecruitDraft } from '../../../api/recruit';
 import viewIcon from '../../../assets/view.png';
 import applyIcon from '../../../assets/apply.png';
 
+// 평면 구조 draft를 중첩 구조로 변환
+const transformDraft = (raw) => {
+  if (!raw) return {};
+
+  // 이미 변환된 구조라면 그대로 반환
+  if (raw.basic) return raw;
+
+  // 날짜 포맷팅
+  let periodText = '연결 예정';
+  if (raw.start && raw.end) {
+    periodText = `${raw.start} ~ ${raw.end}`;
+  }
+
+  // 타입 변환
+  const typeText = raw.type === 'course'
+    ? '수업 프로젝트'
+    : raw.type === 'side'
+    ? '사이드 프로젝트'
+    : '연결 예정';
+
+  return {
+    basic: {
+      title: raw.title || '팀프로젝트 제목',
+      periodText,
+      info: raw.desc || '강의정보 없음',
+      typeText,
+      type: raw.type,
+      timeText: '방금 전'
+    },
+    detail: raw.detail,
+    keywords: raw.keywords || [],
+    metrics: {
+      views: 0,
+      applicants: 0
+    },
+    coverImage: raw.coverImage
+  };
+};
+
 export default function ProjectRecruitPreview() {
   const nav = useNavigate();
   const [draft, setDraft] = useState(null);
 
   useEffect(() => {
-    setDraft(loadRecruitDraft() || {});
+    const rawDraft = loadRecruitDraft();
+    const transformed = transformDraft(rawDraft);
+    setDraft(transformed);
   }, []);
 
   // 안전한 값(없으면 디폴트)

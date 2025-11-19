@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import RatingInputStars from '../../../components/RatingManagement/RatingInputStars/RatingInputStars';
 import styles from '../TeamMemberEvaluationPage.module.scss';
 import ProgressIndicator from './ProgressIndicator';
@@ -13,16 +13,12 @@ const EvaluationStep2 = ({
   onRoleDescriptionChange,
   onSubmit
 }) => {
-  
-  
+
+
   // CTA 라벨/활성 상태 결정
   const hasRating = (evaluationData.overallRating || 0) > 0;
-  const hasDescription = evaluationData.roleDescription.trim().length > 0;
-  const bothEmpty = !hasRating && !hasDescription;
-  const isDisabled = bothEmpty || (!hasRating && hasDescription);
-  const ctaLabel = bothEmpty
-    ? '평가 보내기'
-    : (!hasDescription && hasRating ? '나중에 할게요' : '평가 보내기');
+  const isDisabled = !hasRating;  // 별점이 없으면 비활성화
+  const ctaLabel = '평가 보내기';  // 항상 동일한 텍스트
 
   // 키워드 입력 기능 제거
 
@@ -112,7 +108,7 @@ const EvaluationStep2 = ({
       <div className={styles.buttonContainer}>
         <button
           className={`${styles.button} ${styles.primary}`}
-          onClick={hasRating && hasDescription ? onSubmit : onNext}
+          onClick={onSubmit}
           disabled={isDisabled}
         >
           {ctaLabel}

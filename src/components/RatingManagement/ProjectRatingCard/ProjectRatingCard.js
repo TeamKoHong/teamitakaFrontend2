@@ -8,7 +8,7 @@ import { PiCalendarBlankDuotone } from "react-icons/pi"; // 달력 아이콘 임
 // import RatingStatusDisplay from './RatingStatusDisplay/RatingStatusDisplay';
 
 const ProjectRatingCard = ({ project, onClick }) => {
-  const { id, name, description, period, imageUrl, myRatingStatus, myScore } = project;
+  const { name, period, imageUrl, myRatingStatus, myScore } = project;
 
   const handleCardClick = () => {
     if (onClick) {

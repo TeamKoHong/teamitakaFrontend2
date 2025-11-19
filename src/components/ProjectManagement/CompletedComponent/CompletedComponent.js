@@ -1,37 +1,125 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import "./CompletedComponent.scss";
-import SectionHeader from "../Common/SectionHeader";
-import { FaStar } from "react-icons/fa"; // 즐겨찾기 아이콘
+import EvaluationAlert from "./EvaluationAlert";
+import CompletedProjectCard from "./CompletedProjectCard";
 import { useNavigate } from 'react-router-dom';
 import AlertModal from '../../Common/AlertModal';
-import { fetchEvaluationTargets, getNextPendingMemberId } from '../../../services/rating';
+import DebugBadge from '../../Common/DebugBadge/DebugBadge';
+import { fetchEvaluationTargets } from '../../../services/rating';
+import { useAuth } from '../../../contexts/AuthContext';
 import { getMyProjects } from '../../../services/projects';
+import { compareProjectLists } from '../../../utils/compareProjects';
+import { deriveCompletedProjects, splitByEvaluationStatus } from '../../../utils/projectFilters';
+import { getTeamMemberEvaluationUrl } from '../../../constants/routes';
 
 const CompletedComponent = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
 
-  const [items, setItems] = React.useState([]);
+  // Single source of truth: server response
+  const [serverProjects, setServerProjects] = React.useState([]);
+
   const [page, setPage] = React.useState({ total: 0, limit: 10, offset: 0 });
   const [isLoading, setIsLoading] = React.useState(true);
   const [error, setError] = React.useState(null);
+  const [sortBy, setSortBy] = React.useState('latest');
 
   const [isModalOpen, setModalOpen] = React.useState(false);
-  const [modalProject, setModalProject] = React.useState(null);
+  const [modalProject] = React.useState(null);
+
+  // Comparison report for debugging
+  const [comparisonReport, setComparisonReport] = React.useState(null);
+
+  // SINGLE PIPELINE: Derive UI list from server data
+  const completedProjects = deriveCompletedProjects(serverProjects, { sortOrder: sortBy });
+
+  // Split for display sections
+  const { pending: pendingProjects, completed: completedProjectsDisplay } = splitByEvaluationStatus(completedProjects);
+
+
+  // Verify consistency in development mode only
+  useEffect(() => {
+    if (process.env.NODE_ENV !== 'development') return;
+    if (!serverProjects || serverProjects.length === 0) return;
+
+    const derived = deriveCompletedProjects(serverProjects, { sortOrder: sortBy });
+    const report = compareProjectLists(serverProjects, derived, {
+      key: "project_id",
+      fields: ["title", "status", "start_date", "end_date", "description"]
+    });
+
+    setComparisonReport(report);
+  }, [serverProjects, sortBy]);
 
   const handleCompletedItemClick = (project) => {
-    // 완료된 프로젝트는 evaluation/project/:projectId로 이동
+    // 평가 완료 프로젝트는 평가 결과 조회 페이지로 이동
     navigate(`/evaluation/project/${project.project_id}`, {
       state: { projectSummary: project, from: { path: '/project-management', tab: 'completed' } },
     });
+  };
+
+  const handleEvaluateClick = async (project) => {
+    // 평가 대기 프로젝트는 팀원 평가 페이지로 이동
+    console.log('🔍 Click event - project object:', project);
+    console.log('🔍 Click event - project.project_id:', project.project_id);
+
+    try {
+      if (!user || !user.userId) {
+        console.error('사용자 정보 없음');
+        return;
+      }
+
+      const evalData = await fetchEvaluationTargets(project.project_id, user.userId);
+
+      if (evalData.nextPendingMember) {
+        navigate(getTeamMemberEvaluationUrl(project.project_id, evalData.nextPendingMember.id), {
+          state: { projectSummary: project, from: { path: '/project-management', tab: 'completed' } },
+        });
+      } else if (evalData.allCompleted) {
+        // 모든 평가 완료 - 프로젝트 평가 결과 페이지로
+        navigate(`/evaluation/project/${project.project_id}`, {
+          state: { projectSummary: project, from: { path: '/project-management', tab: 'completed' } },
+        });
+      } else {
+        // 평가할 팀원이 없으면 프로젝트 평가 페이지로
+        const url = `/evaluation/project/${project.project_id}`;
+        console.log('🔀 Navigating to:', url);
+        navigate(url, {
+          state: { projectSummary: project, from: { path: '/project-management', tab: 'completed' } },
+        });
+      }
+    } catch (error) {
+      console.error('❌ 평가 대상 조회 실패:', error);
+      // 에러 발생 시에도 프로젝트 평가 페이지로 이동
+      const url = `/evaluation/project/${project.project_id}`;
+      console.log('🔀 Navigating to (fallback):', url);
+      navigate(url, {
+        state: { projectSummary: project, from: { path: '/project-management', tab: 'completed' } },
+      });
+    }
   };
 
   const load = async (nextOffset = 0) => {
     try {
       setIsLoading(true);
       setError(null);
-      const res = await getMyProjects({ status: 'completed', limit: page.limit || 10, offset: nextOffset });
+
+      const res = await getMyProjects({
+        status: 'completed',
+        limit: page.limit || 10,
+        offset: nextOffset
+      });
+
       if (res?.success) {
-        setItems(nextOffset === 0 ? res.items : [...items, ...res.items]);
+        const newItems = res.items || [];
+
+        // Update server projects (single source of truth)
+        if (nextOffset === 0) {
+          setServerProjects(newItems);
+        } else {
+          setServerProjects(prev => [...prev, ...newItems]);
+        }
+
         setPage(res.page || { total: 0, limit: 10, offset: nextOffset });
       } else {
         throw new Error('SERVER_ERROR');
@@ -49,65 +137,75 @@ const CompletedComponent = () => {
     }
   };
 
-  useEffect(() => { load(0); /* 초기 로드 */ // eslint-disable-next-line
-  }, []);
+  useEffect(() => {
+    load(0); // eslint-disable-next-line
+  }, [sortBy]); // Re-load when sort changes
 
-  const canLoadMore = items.length < (page.total || 0);
+  const canLoadMore = serverProjects.length < (page.total || 0);
 
   return (
     <div className="completed-container">
-      <div className="completed-top">
-        <SectionHeader
-          explainText={`완료된 프로젝트 내역을 확인해보세요`}
-          highlightText="완료"
-          filterOptions={[
-            { value: "latest", label: "최신순" },
-            { value: "date", label: "완료 날짜순" },
-            { value: "rating", label: "평점순" },
-          ]}
-          onFilterChange={(e) => console.log(e.target.value)}
-        />
-      </div>
+      {/* EvaluationAlert - 평가 대기 프로젝트가 있을 때만 표시 */}
+      <EvaluationAlert
+        pendingCount={pendingProjects.length}
+        sortBy={sortBy}
+        onSortChange={(e) => setSortBy(e.target.value)}
+      />
 
-      <hr />
-
-      <div className="completed-section">
-        <div className="completed-header">
-          <h4 className="completed-section-title">완료 프로젝트</h4>
+      {/* 로딩 및 에러 상태 */}
+      {isLoading && serverProjects.length === 0 && (
+        <div style={{ padding: '20px', textAlign: 'center' }}>불러오는 중...</div>
+      )}
+      {error && (
+        <div style={{ color: '#F76241', padding: '20px', textAlign: 'center' }}>
+          {error} <button onClick={() => load(page.offset || 0)}>다시 시도</button>
         </div>
+      )}
 
-        <div className="completed-list">
-          {isLoading && items.length === 0 && <div>불러오는 중...</div>}
-          {error && <div style={{ color: '#F76241' }}>{error} <button onClick={() => load(page.offset || 0)}>다시 시도</button></div>}
-          {items.map((proj) => (
-            <div
-              key={proj.project_id}
-              role="button"
-              tabIndex={0}
-              className="completed-item"
-              onClick={() => handleCompletedItemClick(proj)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  e.preventDefault();
-                  handleCompletedItemClick(proj);
-                }
-              }}
-            >
-              <div className="completed-item-left">
-                <h3>{proj.title}</h3>
-                <p className="description">마지막 업데이트: {proj.updated_at}</p>
-              </div>
-              <FaStar className="favorite-icon" />
-            </div>
-          ))}
-        </div>
+      {/* 평가 대기 프로젝트 섹션 */}
+      {pendingProjects.length > 0 && (
+        <div className="pending-projects-section">
+          <h4 className="section-header-title">평가 대기 프로젝트</h4>
 
-        {canLoadMore && !isLoading && (
-          <div style={{ textAlign: 'center', margin: '16px 0' }}>
-            <button onClick={() => load((page.offset || 0) + (page.limit || 10))}>더 보기</button>
+          <div className="project-list-new">
+            {pendingProjects.map((project) => (
+              <CompletedProjectCard
+                key={project.project_id}
+                project={project}
+                onClick={() => handleEvaluateClick(project)}
+              />
+            ))}
           </div>
-        )}
-      </div>
+        </div>
+      )}
+
+      {/* 완료 프로젝트 섹션 */}
+      {completedProjectsDisplay.length > 0 && (
+        <div className="completed-projects-section">
+          <h4 className="section-header-title">완료 프로젝트</h4>
+
+          <div className="project-list-new">
+            {completedProjectsDisplay.map((project) => (
+              <CompletedProjectCard
+                key={project.project_id}
+                project={project}
+                onClick={() => handleCompletedItemClick(project)}
+              />
+            ))}
+          </div>
+        </div>
+      )}
+
+      {canLoadMore && !isLoading && (
+        <div style={{ textAlign: 'center', margin: '16px 0' }}>
+          <button onClick={() => load((page.offset || 0) + (page.limit || 10))}>
+            더 보기
+          </button>
+        </div>
+      )}
+
+      {/* Debug Badge - Development only */}
+      <DebugBadge report={comparisonReport} />
 
       <AlertModal
         isOpen={isModalOpen}
@@ -116,12 +214,11 @@ const CompletedComponent = () => {
         primaryLabel="작성하기"
         secondaryLabel="나중에 하기"
         onPrimary={async () => {
-          if (!modalProject) return;
+          if (!modalProject || !user || !user.userId) return;
           try {
-            const { targets } = await fetchEvaluationTargets(modalProject.id);
-            const nextId = getNextPendingMemberId(targets);
-            if (nextId) {
-              navigate(`/evaluation/team-member/${modalProject.id}/${nextId}`, {
+            const evalData = await fetchEvaluationTargets(modalProject.id, user.userId);
+            if (evalData.nextPendingMember) {
+              navigate(getTeamMemberEvaluationUrl(modalProject.id, evalData.nextPendingMember.id), {
                 state: { projectSummary: modalProject, from: { path: '/project-management', tab: 'completed' } },
               });
             } else {

@@ -15,6 +15,7 @@ export const PROJECT_ROUTES = {
   DETAIL: '/project/:id',
   MEMBER: '/project/:id/member',
   PROCEEDINGS: '/project/:id/proceedings',
+  CREATE_MEETING: '/project/:id/proceedings/create',
   CALENDAR: '/project/:id/calender',
 };
 
@@ -44,6 +45,7 @@ export const OTHER_ROUTES = {
   RECRUITMENT: '/recruitment',
   SEARCH: '/search',
   TEAM: '/team',
+  BOOKMARK: '/bookmark',
 };
 
 // ===== 데모 및 개발 도구 라우트 =====

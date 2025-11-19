@@ -5,7 +5,7 @@ import doneIcon from "../../../assets/done.png";
 export default function ProjectRecruitPublishDone() {
   const nav = useNavigate();
   const { state } = useLocation();
-  const redirectTo = state?.redirectTo || "/recruit";
+  const recruitmentId = state?.recruitmentId;
 
   return (
     <div className="publish-page">
@@ -28,7 +28,7 @@ export default function ProjectRecruitPublishDone() {
         <button
           type="button"
           className="cta"
-          onClick={() => nav(redirectTo)}
+          onClick={() => nav(`/recruitment/${recruitmentId}`)}
         >
           확인하러 가기
         </button>

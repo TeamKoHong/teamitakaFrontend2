@@ -1,25 +1,25 @@
 import BackArrow from "../Common/UI/BackArrow";
-import GroupChatIcon from "../Common/UI/GroupChatIcon";
 import { useNavigate } from "react-router-dom";
 import "./ProjectDetailHeader.scss";
 import React, { useState } from "react";
-import { ReactComponent as Triangle } from "../../assets/icons/Polygon.svg";
-import { ReactComponent as Circle } from "../../assets/icons/Ellipse.svg";
-import { ReactComponent as Square } from "../../assets/icons/Rectangle.svg";
 import BottomSheet from "../Common/BottomSheet";
+
 function ProjectDetailHeader({ projectName }) {
-  const [sheetOpen, setSheetOpen] = useState(false);
   const navigate = useNavigate();
+  const [sheetOpen, setSheetOpen] = useState(false);
+  
+  const handleBack = () => {
+    navigate("/project-management");
+  };
+
   const handleSelectLibrary = () => {
     // TODO: 라이브러리 열기
     setSheetOpen(false);
   };
+
   const handleDeletePhoto = () => {
     // TODO: 삭제 로직
     setSheetOpen(false);
-  };
-  const handleBack = () => {
-    navigate("/project-management");
   };
 
   return (
@@ -31,23 +31,18 @@ function ProjectDetailHeader({ projectName }) {
         </div>
 
         <p>{projectName}</p>
-        <GroupChatIcon />
+        <div className="header-spacer"></div>
       </div>
-      {/* 배경 도형들 */}
-      <div className="shape-container" onClick={() => setSheetOpen(true)}>
-        <Triangle className="triangle" />
-        <div className="shape-two">
-          <Circle className="circle" />
-          <Square className="square" />
-        </div>
-      </div>
+
+      {/* 이미지 클릭 영역 */}
+      <div className="image-click-area" onClick={() => setSheetOpen(true)}></div>
 
       <BottomSheet
         open={sheetOpen}
         onDismiss={() => setSheetOpen(false)}
         blocking={true}
-        snapPoints={({ maxHeight }) => [215]} // 높이 고정값
-        className="offset-sheet" // root 에 offset-sheet 클래스가 붙습니다
+        snapPoints={({ maxHeight }) => [215]}
+        className="offset-sheet"
       >
         <div className="sheet-body">
           <ul className="option-list">

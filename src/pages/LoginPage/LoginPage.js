@@ -66,7 +66,7 @@ function LoginPage() {
             if (result.success && result.token && result.user) {
                 // AuthContext를 통해 로그인 상태 업데이트
                 const success = login(result.user, result.token);
-                
+
                 if (success) {
                     console.log('로그인 성공, 메인 페이지로 이동');
                     navigate('/main');

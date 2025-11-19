@@ -8,22 +8,58 @@ import { IoChevronBack } from "react-icons/io5";
 import { FaBookmark, FaEye } from "react-icons/fa";
 import apply from "../../assets/apply.png";
 import { getDraftById } from '../../api/recruit';
+import { HiOutlineChatBubbleOvalLeft } from "react-icons/hi2";
+
+import { getRecruitment } from '../../services/recruitment';
 
 export default function RecruitmentViewPage() {
     const { id } = useParams();
     const navigate = useNavigate();
-    
+
     const [post, setPost] = useState(null);
     const [isScrapped, setIsScrapped] = useState(false);
     const [showScrapToast, setShowScrapToast] = useState(false);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
-        const draft = getDraftById(id);
-        if (draft) {
-            const formattedPost = { ...draft.data, id: draft.id, title: draft.title };
-            setPost(formattedPost);
-        }
-    }, [id]);
+        const fetchRecruitment = async () => {
+            try {
+                const data = await getRecruitment(id);
+
+                // Transform backend response to component format
+                const formattedPost = {
+                    id: data.recruitment_id,
+                    title: data.title,
+                    description: data.description || '',
+                    period: data.recruitment_start && data.recruitment_end
+                        ? `${data.recruitment_start} ~ ${data.recruitment_end}`
+                        : '모집 기간 미정',
+                    projectInfo: data.description || '',
+                    projectType: data.project_type === 'course'
+                        ? '수업 프로젝트'
+                        : data.project_type === 'side'
+                        ? '사이드 프로젝트'
+                        : '프로젝트',
+                    imageUrl: data.photo_url,
+                    views: data.views || 0,
+                    comments: 0, // Backend doesn't provide comments yet
+                    date: data.created_at ? new Date(data.created_at).toLocaleDateString('ko-KR') : '',
+                    keywords: data.Hashtags?.map(h => h.name) || []
+                };
+
+                setPost(formattedPost);
+            } catch (err) {
+                console.error('Failed to fetch recruitment:', err);
+                setError(err.message);
+
+                if (err.code === 'NOT_FOUND') {
+                    setTimeout(() => navigate(-1), 2000);
+                }
+            }
+        };
+
+        fetchRecruitment();
+    }, [id, navigate]);
     
     const handleScrapToggle = () => {
         const newState = !isScrapped;
@@ -49,8 +85,47 @@ export default function RecruitmentViewPage() {
         });
     };
     
+    if (error) {
+        return (
+            <div className="view-page">
+                <header className="topbar">
+                    <button onClick={() => navigate(-1)} className="back-button" aria-label="뒤로가기">
+                        <IoChevronBack size={24} />
+                    </button>
+                    <h1 className="title">모집글</h1>
+                </header>
+                <main className="content" style={{ padding: '40px 20px', textAlign: 'center' }}>
+                    <p style={{ fontSize: '16px', color: '#666' }}>{error}</p>
+                    <button
+                        onClick={() => navigate(-1)}
+                        style={{
+                            marginTop: '20px',
+                            padding: '12px 24px',
+                            background: '#FF6442',
+                            color: 'white',
+                            border: 'none',
+                            borderRadius: '8px',
+                            cursor: 'pointer',
+                        }}
+                    >
+                        뒤로 가기
+                    </button>
+                </main>
+            </div>
+        );
+    }
+
     if (!post) {
-        return <div>게시물을 불러오는 중입니다...</div>;
+        return (
+            <div className="view-page">
+                <header className="topbar">
+                    <h1 className="title">모집글</h1>
+                </header>
+                <main className="content" style={{ padding: '40px 20px', textAlign: 'center' }}>
+                    <p>게시물을 불러오는 중입니다...</p>
+                </main>
+            </div>
+        );
     }
 
     return (
@@ -99,21 +174,7 @@ export default function RecruitmentViewPage() {
 
                 <section className="post-body">
                     <p>{post.description}</p>
-                    
-                    <div className="detail-section">
-                        <h3>🙋‍♀️ 우리가 원하는 사람</h3>
-                        <ul>
-                            {(post.weWant || []).map((item, index) => <li key={index}>{item}</li>)}
-                        </ul>
-                    </div>
 
-                    <div className="detail-section">
-                        <h3>🙌 함께 할 내용</h3>
-                        <ul>
-                            {(post.weDo || []).map((item, index) => <li key={index}>{item}</li>)}
-                        </ul>
-                    </div>
-                    
                     {post.recruitmentInfo?.count &&
                         <div className="detail-section">
                             <h3>📝 모집 인원: {post.recruitmentInfo.count}</h3>

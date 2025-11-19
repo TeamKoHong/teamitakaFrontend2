@@ -7,6 +7,7 @@ import ProjectDetailPage from "./pages/ProjectDetailPage/ProjectDetailPage";
 import "react-spring-bottom-sheet/dist/style.css";
 import ProjectMemberPage from "./pages/ProjectMemberPage/ProjectMemberPage";
 import ProceedingsPage from "./pages/ProceedingsPage/ProceedingsPage";
+import CreateMeetingPage from "./pages/CreateMeetingPage/CreateMeetingPage";
 // import ProjectVotePage from "./pages/ProjectVotePage/ProjectVotePage";
 import ProjectCalender from "./pages/ProjectCalendar/ProjectCalendar";
 
@@ -23,6 +24,7 @@ import TeamMatchingPage from './pages/TeamMatchingPage/TeamMatchingPage';
 import RecruitmentPage from './pages/RecruitmentPage/RecruitmentPage';
 import SearchPage from './pages/SearchPage/SearchPage';
 import ProfilePage from './pages/Profile/ProfilePage';
+import BookmarkPage from './pages/BookmarkPage/BookmarkPage';
 import RecruitmentViewPage from './pages/RecruitmentViewPage/RecruitmentViewPage';
 
 // 메인 페이지 임포트
@@ -246,6 +248,27 @@ const App = () => {
       <AuthProvider>
         <ToastHost />
         <AuthEventBridge />
+
+        {/* 개발 모드 표시 */}
+        {process.env.NODE_ENV === 'development' && (
+          <div style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            background: '#FFA500',
+            color: '#000',
+            padding: '8px',
+            textAlign: 'center',
+            fontSize: '13px',
+            fontWeight: '600',
+            zIndex: 999999,
+            borderBottom: '2px solid #FF8C00'
+          }}>
+            ⚠️ 개발 모드 - 실제 서버 데이터 사용 중 (localhost:3000)
+          </div>
+        )}
+
         <Routes>
           {/* ===== 공개 페이지 (로그인하지 않은 사용자만) ===== */}
           <Route path={MAIN_ROUTES.HOME} element={<PublicRoute><OnboardingPage /></PublicRoute>} />
@@ -265,6 +288,7 @@ const App = () => {
           <Route path={PROJECT_ROUTES.DETAIL} element={<ProjectDetailPage />} />
           <Route path={PROJECT_ROUTES.MEMBER} element={<ProjectMemberPage />} />
           <Route path={PROJECT_ROUTES.PROCEEDINGS} element={<ProceedingsPage />} />
+          <Route path={PROJECT_ROUTES.CREATE_MEETING} element={<CreateMeetingPage />} />
           <Route path={PROJECT_ROUTES.CALENDAR} element={<ProjectCalender />} />
 
           {/* ===== 평가 시스템 라우트 (로그인 제한 없음) ===== */}
@@ -287,6 +311,7 @@ const App = () => {
           <Route path={OTHER_ROUTES.TEAM_MATCHING} element={<TeamMatchingPage />} />
           <Route path={OTHER_ROUTES.RECRUITMENT} element={<RecruitmentPage />} />
           <Route path={OTHER_ROUTES.SEARCH} element={<SearchPage />} />
+          <Route path={OTHER_ROUTES.BOOKMARK} element={<BookmarkPage />} />
           <Route path={OTHER_ROUTES.TEAM} element={<Navigate to={OTHER_ROUTES.TEAM_MATCHING} replace />} />
           <Route path="/recruitment/:id" element={<RecruitmentViewPage />} />
           {/* ===== 데모 및 개발 도구 라우트 (개발용) ===== */}

@@ -11,13 +11,27 @@ export default function ProjectRecruitImage() {
     const [imageDataUrl, setImageDataUrl] = useState(null);
     const [sheetOpen, setSheetOpen] = useState(false);
 
-    // 초안 불러오기 (coverImage.dataUrl 있으면 미리보기)
-    // useEffect(() => {
-    //     const d = loadRecruitDraft();
-    //     if (d && d.coverImage && d.coverImage.dataUrl) {
-    //         setImageDataUrl(d.coverImage.dataUrl);
-    //     }
-    // }, []);
+    // Auto-load previously selected image
+    useEffect(() => {
+        const d = loadRecruitDraft();
+        if (d?.coverImage?.dataUrl) {
+            setImageDataUrl(d.coverImage.dataUrl);
+        }
+    }, []);
+
+    // Auto-save on page unload
+    useEffect(() => {
+        const handleBeforeUnload = () => {
+            const base = loadRecruitDraft() || {};
+            saveRecruitDraft({
+                ...base,
+                coverImage: imageDataUrl ? { dataUrl: imageDataUrl } : null,
+            });
+        };
+
+        window.addEventListener('beforeunload', handleBeforeUnload);
+        return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+    }, [imageDataUrl]);
 
     const openSheet = () => setSheetOpen(true);
     const closeSheet = () => setSheetOpen(false);
@@ -36,9 +50,9 @@ export default function ProjectRecruitImage() {
             alert('이미지 파일만 업로드할 수 있어요.');
             return;
         }
-        const MAX = 10 * 1024 * 1024; // 10MB
+        const MAX = 5 * 1024 * 1024; // 5MB (백엔드 제한)
         if (file.size > MAX) {
-            alert('10MB 이하 이미지만 업로드할 수 있어요.');
+            alert('5MB 이하 이미지만 업로드할 수 있어요.');
             return;
         }
 
@@ -64,8 +78,12 @@ export default function ProjectRecruitImage() {
     };
 
     const goNext = () => {
-        // 필요 시 여기서 서버 업로드 → url 저장 로직 추가 가능
-        nav('/recruit/preview'); // 다음 단계 라우트로 이동(없으면 임시로 알럿)
+        const base = loadRecruitDraft() || {};
+        saveRecruitDraft({
+            ...base,
+            coverImage: imageDataUrl ? { dataUrl: imageDataUrl } : null,
+        });
+        nav('/recruit/preview');
     };
 
     return (

@@ -45,20 +45,44 @@ export const sendVerificationCode = async (email, retryCount = 0) => {
         });
         
         if (!response.ok) {
-            const errorData = await response.json().catch(() => ({ 
+            const errorData = await response.json().catch(() => ({
                 error: 'UNKNOWN_ERROR',
-                message: '응답을 파싱할 수 없습니다.' 
+                message: '응답을 파싱할 수 없습니다.'
             }));
-            
+
             console.error('Backend error details:', errorData);
-            
+
+            // 409 Conflict: 중복 이메일 에러 처리
+            if (response.status === 409) {
+                const error = new Error('이미 가입된 이메일입니다. 다른 이메일을 사용하거나 로그인해주세요.');
+                error.code = 'DUPLICATE_EMAIL';
+                error.statusCode = 409;
+                throw error;
+            }
+
+            // 429 Too Many Requests: Rate Limiting 초과
+            if (response.status === 429) {
+                const error = new Error('요청 횟수가 너무 많습니다. 잠시 후 다시 시도해주세요.');
+                error.code = 'RATE_LIMITED';
+                error.statusCode = 429;
+                throw error;
+            }
+
+            // 400 Bad Request: 이메일 형식 오류
+            if (response.status === 400) {
+                const error = new Error(errorData.message || '유효하지 않은 이메일 형식입니다.');
+                error.code = errorData.error || 'INVALID_EMAIL';
+                error.statusCode = 400;
+                throw error;
+            }
+
             // 재시도 가능한 에러인지 확인
             if (shouldRetry(response.status, retryCount)) {
                 console.log(`🔄 재시도 중... (${retryCount + 1}/3)`);
                 await new Promise(resolve => setTimeout(resolve, 1000 * (retryCount + 1))); // 지수 백오프
                 return sendVerificationCode(email, retryCount + 1);
             }
-            
+
             throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
         }
 
@@ -343,7 +367,7 @@ const mapLoginErrorMessage = (status, errorData) => {
 export const loginUser = async (loginData) => {
     try {
         const { API_BASE_URL, headers } = getApiConfig();
-        
+
         const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
             method: 'POST',
             headers,
@@ -360,15 +384,16 @@ export const loginUser = async (loginData) => {
         }
 
         const result = await response.json();
-        
+
         // 성공인데 토큰이 없는 경우 명시적 오류 처리
         if (result && result.success && !result.token) {
             const err = new Error('로그인 토큰을 받지 못했습니다. 잠시 후 다시 시도하거나 문의해주세요.');
             err.code = 'MISSING_TOKEN';
             throw err;
         }
-        
-        if (result.token) {
+
+        // 백엔드가 success: true, token, user를 반환
+        if (result.token && result.user) {
             localStorage.setItem('authToken', result.token);
             localStorage.setItem('user', JSON.stringify(result.user));
         }

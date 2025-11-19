@@ -3,36 +3,42 @@
   flex-direction: column;
   justify-content: space-between;
   align-items: stretch; // ensure children stretch full width
-  height: 160px;
+  height: 110px; // 160px → 110px (감소)
   width: 100%;
   box-sizing: border-box;
 
   background-color: #fff;
 
   .header-first {
-    padding: 31px 22px;
+    padding: 20px 22px 16px; // 31px → 20px (상단 패딩 감소)
     display: flex;
     justify-content: space-between;
 
     .header-right {
       display: flex;
+      gap: 16px; // 아이콘 간격
 
-      .icon-mark {
-        width: 1.5rem;
-        height: 1.5rem;
-      }
-
-      .icon-day {
-        width: 1.5rem;
-        height: 1.5rem;
+      .btn-calendar,
+      .btn-bookmark {
+        background: none;
+        border: none;
+        padding: 0;
         cursor: pointer;
-        margin-left: 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        img {
+          width: 24px; // 통일된 크기
+          height: 24px;
+          display: block;
+        }
       }
     }
   }
 
   .title {
-    font-size: 1.75rem; // 16px -> 1rem
+    font-size: 1.25rem; // 1.75rem → 1.25rem (감소)
     font-weight: 600;
     color: #f76241;
   }

@@ -2,13 +2,13 @@
   position: relative;
   background: #fff;
   border-radius: 20px;
-  padding-top: 44px;
+  padding: 24px; // 전체 패딩 24px
   box-shadow: 0px 1px 1px 0px rgba(0, 0, 0, 0.15);
 
   .edit-btn {
     position: absolute;
-    top: 21px;
-    right: 22px;
+    top: 24px; // 패딩과 맞춤
+    right: 24px; // 패딩과 맞춤
     background: none;
     border: none;
     cursor: pointer;
@@ -17,7 +17,7 @@
   .avatar-wrapper {
     display: flex;
     justify-content: center;
-    margin-bottom: 16px;
+    margin-bottom: 8px;
 
     .avatar-large {
       width: 98px;
@@ -37,14 +37,14 @@
   .member-name {
     text-align: center;
     line-height: normal;
-    font-size: 17px;
+    font-size: 18px;
     font-weight: 700;
-    color: #f76241;
+    color: #140805;
   }
   .member-role {
     text-align: center;
 
-    font-size: 12px;
+    font-size: 14px;
     color: #403e3e;
     font-size: 10px;
     font-style: normal;
@@ -55,13 +55,15 @@
 
   .member-meta {
     list-style: none;
-    padding-left: 16px;
-    margin-bottom: 52px;
+
+    padding-left: 0; // 브라우저 기본 padding-left 제거
 
     li {
       display: flex;
+      justify-content: space-between;
       align-items: center;
-      margin-bottom: 10px;
+      margin-bottom: 8px !important; // 다른 파일의 margin-bottom 강제 적용
+      padding-left: 0 !important; // 다른 파일의 18px padding-left 강제 제거
 
       .meta-label {
         color: #403e3e;
@@ -70,13 +72,25 @@
         text-transform: capitalize;
         font-style: normal;
         font-weight: 400;
-        margin-right: 21px;
+        
       }
       .meta-value {
         font-size: 14px;
         font-weight: 600;
         line-height: normal;
         text-transform: capitalize;
+        
+        &.editable {
+          cursor: text;
+          outline: none;
+          
+          &:focus {
+            background-color: rgba(247, 98, 65, 0.05);
+            border-radius: 4px;
+            padding: 2px 4px;
+            margin: -2px -4px;
+          }
+        }
       }
     }
   }

@@ -2,6 +2,7 @@
 import React from 'react';
 import './Header.scss';
 import search_icon from "../../../assets/search_icon.png";
+import { CiSearch } from 'react-icons/ci';
 import { useNavigate } from 'react-router-dom';
 
 function Header({ title }) {
