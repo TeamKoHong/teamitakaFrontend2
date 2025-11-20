@@ -42,6 +42,7 @@ const MainPage = () => {
 
   const ongoingCount = summary?.projects?.ongoing ?? 'N';
   const unreadCount = summary?.notifications?.unread ?? '0';
+  const teamExperience = user?.teamExperience ?? 0;
 
   return (
     <div className="main-page">
@@ -63,16 +64,16 @@ const MainPage = () => {
 
         {/* 프로필 카드 */}
         <section className="profile-card" aria-label="프로필 요약">
-          <div className="profile-left">
-            <div className="profile-img" aria-hidden>🧍</div>
-          </div>
-
-          {/* 왼쪽: 텍스트 정보 */}
+          {/* 좌측: 텍스트 정보 */}
           <div className="profile-middle">
             <div className="name">
               {isLoading && <span>불러오는 중...</span>}
               {!isLoading && user && (
-                <>사용자명 <span className="emph">{user.username || user.email}</span>님</>
+                <>
+                  <span className="name-regular">사용자명</span>{' '}
+                  <span className="name-strong">{user.username || user.email}</span>
+                  <span className="name-regular">님</span>
+                </>
               )}
               {!isLoading && !user && !error && <span>사용자 정보를 불러올 수 없습니다.</span>}
             </div>
@@ -85,16 +86,23 @@ const MainPage = () => {
             </div>
 
             <div className="stats">
-<span className="stats-strong">현재 진행중인 프로젝트</span>{' '}
-<span className="count">총 {ongoingCount}건</span>
-<span className="divider" aria-hidden="true"></span>
+              <span className="stats-strong">현재 진행중인 프로젝트</span>{' '}
+              <span className="count">총 {ongoingCount}건</span>
               <br />
-              협업 경험 <span className="muted">00회</span>
+              팀플 경험 <span className="count">{teamExperience}회</span>
             </div>
 
             <div className="tags">
-              <span className="tag pill">키워드1</span>
-              <span className="tag pill">키워드2</span>
+              {user?.keywords && user.keywords.length > 0 ? (
+                user.keywords.map((keyword, idx) => (
+                  <span key={idx} className="tag pill">{keyword}</span>
+                ))
+              ) : (
+                <>
+                  <span className="tag pill">키워드1</span>
+                  <span className="tag pill">키워드2</span>
+                </>
+              )}
             </div>
 
             {error && (
@@ -102,6 +110,11 @@ const MainPage = () => {
                 {error} <button onClick={() => window.location.reload()}>다시 시도</button>
               </div>
             )}
+          </div>
+
+          {/* 우측: 프로필 이미지 */}
+          <div className="profile-right">
+            <div className="profile-img" aria-hidden>🧍</div>
           </div>
         </section>
       </div>
