@@ -85,27 +85,6 @@ export default function RecruitmentViewPage() {
                 };
 
                 setPost(formattedPost);
-
-                // Check if current user is the owner
-                console.log('🔐 [Owner Check] Starting owner validation');
-                console.log('👤 [Owner Check] currentUser:', currentUser);
-                console.log('🆔 [Owner Check] currentUser.userId:', currentUser?.userId, 'Type:', typeof currentUser?.userId);
-                console.log('📝 [Owner Check] Post user_id:', data.user_id, 'Type:', typeof data.user_id);
-                console.log('❓ [Owner Check] Are they equal?', currentUser?.userId === data.user_id);
-                console.log('❓ [Owner Check] Loose equality?', currentUser?.userId == data.user_id);
-
-                if (currentUser && data.user_id && currentUser.userId === data.user_id) {
-                    console.log('✅ [Owner Check] User IS the owner');
-                    setIsOwner(true);
-                } else {
-                    console.log('❌ [Owner Check] User is NOT the owner');
-                    console.log('   Reasons:', {
-                        hasCurrentUser: !!currentUser,
-                        hasPostUserId: !!data.user_id,
-                        idsMatch: currentUser?.userId === data.user_id
-                    });
-                    setIsOwner(false);
-                }
             } catch (err) {
                 console.error('Failed to fetch recruitment:', err);
                 setError(err.message);
@@ -117,8 +96,27 @@ export default function RecruitmentViewPage() {
         };
 
         fetchRecruitment();
-    }, [id, navigate, currentUser]);
-    
+    }, [id, navigate]);
+
+    // Separate effect to check ownership when both post and currentUser are ready
+    useEffect(() => {
+        console.log('🔐 [Owner Check] Separate useEffect triggered');
+        console.log('👤 [Owner Check] currentUser:', currentUser);
+        console.log('📝 [Owner Check] post?.createdBy:', post?.createdBy);
+
+        if (post && currentUser) {
+            const isPostOwner = currentUser.userId === post.createdBy;
+            console.log('🆔 [Owner Check] currentUser.userId:', currentUser.userId, 'Type:', typeof currentUser.userId);
+            console.log('📝 [Owner Check] post.createdBy:', post.createdBy, 'Type:', typeof post.createdBy);
+            console.log('❓ [Owner Check] Are they equal?', isPostOwner);
+            console.log(isPostOwner ? '✅ [Owner Check] User IS the owner' : '❌ [Owner Check] User is NOT the owner');
+            setIsOwner(isPostOwner);
+        } else {
+            console.log('⏳ [Owner Check] Waiting for data...', { hasPost: !!post, hasCurrentUser: !!currentUser });
+            setIsOwner(false);
+        }
+    }, [post, currentUser]);
+
     const handleScrapToggle = () => {
         const newState = !isScrapped;
         setIsScrapped(newState);
