@@ -161,6 +161,39 @@ $keywords-bottom-space: 24px;
     padding: 16px;
     margin-bottom: 16px;
 
+    /* 프로젝트 목록 */
+    .project-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    /* 로딩/에러 상태 */
+    .loading-state,
+    .error-state {
+      padding: 40px 16px;
+      text-align: center;
+      font-size: 14px;
+      color: $ink-3;
+
+      button {
+        margin-top: 12px;
+        padding: 8px 16px;
+        background: $brand;
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: transform 0.06s ease;
+
+        &:active {
+          transform: translateY(1px);
+        }
+      }
+    }
+
     .empty-card {
       border-radius: $radius-lg;
       padding: 24px 16px;
