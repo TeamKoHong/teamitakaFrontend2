@@ -3,6 +3,7 @@ import "./ProjectCard.scss";
 import { useNavigate } from "react-router-dom";
 import { IoCalendarOutline, IoTimeOutline } from "react-icons/io5";
 import CircularProgress from "../../Common/CircularProgress";
+import { formatDateRange } from "../../../utils/dateFormat";
 
 const ProjectCard = ({ project }) => {
   const navigate = useNavigate();
@@ -25,8 +26,11 @@ const ProjectCard = ({ project }) => {
   // Use recruitment dates if available, otherwise use project dates
   const startDate = recruitment_start || start_date;
   const endDate = recruitment_end || end_date;
-  const period = startDate && endDate ? `${startDate} ~ ${endDate}` :
-                 isRecruitment ? "모집 기간 미정" : "프로젝트 기간 미정";
+
+  // Format dates for display
+  const formattedPeriod = formatDateRange(startDate, endDate);
+  const period = formattedPeriod ||
+                 (isRecruitment ? "모집 기간 미정" : "프로젝트 기간 미정");
   const meetingTimeDisplay = meeting_time || "회의 시간 미정";
   const progressValue = Number(progress_percent) || 0;
 
