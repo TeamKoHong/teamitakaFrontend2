@@ -10,6 +10,8 @@ import schoolIcon from '../../assets/icons/school.png';
 import mascotImg from '../../assets/icons/project_empty.png';
 import { getMe } from '../../services/user';
 import { getSummary } from '../../services/dashboard';
+import { getMyProjects } from '../../services/projects';
+import ProjectCard from '../ProjectManagement/Common/ProjectCard';
 
 const MainPage = () => {
   const navigate = useNavigate();
@@ -18,6 +20,10 @@ const MainPage = () => {
   const [summary, setSummary] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  const [projects, setProjects] = useState([]);
+  const [isLoadingProjects, setIsLoadingProjects] = useState(false);
+  const [projectError, setProjectError] = useState(null);
 
   useEffect(() => {
     let mounted = true;
@@ -39,6 +45,41 @@ const MainPage = () => {
     load();
     return () => { mounted = false; };
   }, [navigate]);
+
+  // 프로젝트 목록 로딩
+  useEffect(() => {
+    let mounted = true;
+    const loadProjects = async () => {
+      try {
+        setIsLoadingProjects(true);
+        setProjectError(null);
+
+        const res = await getMyProjects({
+          status: 'ongoing',
+          limit: 5,
+          offset: 0
+        });
+
+        if (!mounted) return;
+
+        if (res?.success) {
+          setProjects(res.items || []);
+        }
+      } catch (e) {
+        if (!mounted) return;
+        // 401/403은 전역 에러 처리에 맡김
+        if (e?.code === 'UNAUTHORIZED') {
+          return;
+        }
+        setProjectError('프로젝트 목록을 불러오는데 실패했습니다.');
+      } finally {
+        if (mounted) setIsLoadingProjects(false);
+      }
+    };
+
+    loadProjects();
+    return () => { mounted = false; };
+  }, []);
 
   const ongoingCount = summary?.projects?.ongoing ?? 'N';
   const unreadCount = summary?.notifications?.unread ?? '0';
@@ -121,20 +162,48 @@ const MainPage = () => {
 
       <h2 className="section-title">내가 참여 중인 프로젝트</h2>
       <section className="my-projects">
-        <div className="empty-card" role="status" aria-live="polite">
-          <img src={mascotImg} alt="" className="empty-img" />
-          <p className="empty-text">
-            진행 중인 프로젝트가 없어요.
-            <br />
-            지금 바로 프로젝트를 시작해보세요!
-          </p>
-          <button className="primary-btn" 
-          type="button"
-            onClick={() => navigate('/recruit')}
-          >
-            팀 프로젝트 시작하기
-          </button>
-        </div>
+        {/* 로딩 중 */}
+        {isLoadingProjects && (
+          <div className="loading-state">
+            프로젝트를 불러오는 중...
+          </div>
+        )}
+
+        {/* 에러 발생 */}
+        {projectError && !isLoadingProjects && (
+          <div className="error-state">
+            <p style={{ color: '#F76241', marginBottom: '12px' }}>{projectError}</p>
+            <button onClick={() => window.location.reload()}>다시 시도</button>
+          </div>
+        )}
+
+        {/* 프로젝트 없음 */}
+        {!isLoadingProjects && !projectError && projects.length === 0 && (
+          <div className="empty-card" role="status" aria-live="polite">
+            <img src={mascotImg} alt="" className="empty-img" />
+            <p className="empty-text">
+              진행 중인 프로젝트가 없어요.
+              <br />
+              지금 바로 프로젝트를 시작해보세요!
+            </p>
+            <button
+              className="primary-btn"
+              type="button"
+              onClick={() => navigate('/recruit')}
+            >
+              팀 프로젝트 시작하기
+            </button>
+          </div>
+        )}
+
+        {/* 프로젝트 목록 */}
+        {!isLoadingProjects && projects.length > 0 && (
+          <div className="project-list">
+            {projects.map((project) => (
+              <ProjectCard key={project.project_id} project={project} />
+            ))}
+          </div>
+        )}
       </section>
 
       <div className="bottom-spacer" />
