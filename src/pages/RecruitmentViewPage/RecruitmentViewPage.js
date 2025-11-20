@@ -35,7 +35,7 @@ export default function RecruitmentViewPage() {
         console.log('🔍 [Auth Debug] getCurrentUser() result:', userData);
         if (userData && userData.user) {
             console.log('✅ [Auth Debug] Setting currentUser:', userData.user);
-            console.log('🆔 [Auth Debug] Current user_id:', userData.user.user_id, 'Type:', typeof userData.user.user_id);
+            console.log('🆔 [Auth Debug] Current userId:', userData.user.userId, 'Type:', typeof userData.user.userId);
             setCurrentUser(userData.user);
         } else {
             console.log('❌ [Auth Debug] No user data found');
@@ -89,12 +89,12 @@ export default function RecruitmentViewPage() {
                 // Check if current user is the owner
                 console.log('🔐 [Owner Check] Starting owner validation');
                 console.log('👤 [Owner Check] currentUser:', currentUser);
-                console.log('🆔 [Owner Check] currentUser.user_id:', currentUser?.user_id, 'Type:', typeof currentUser?.user_id);
+                console.log('🆔 [Owner Check] currentUser.userId:', currentUser?.userId, 'Type:', typeof currentUser?.userId);
                 console.log('📝 [Owner Check] Post user_id:', data.user_id, 'Type:', typeof data.user_id);
-                console.log('❓ [Owner Check] Are they equal?', currentUser?.user_id === data.user_id);
-                console.log('❓ [Owner Check] Loose equality?', currentUser?.user_id == data.user_id);
+                console.log('❓ [Owner Check] Are they equal?', currentUser?.userId === data.user_id);
+                console.log('❓ [Owner Check] Loose equality?', currentUser?.userId == data.user_id);
 
-                if (currentUser && data.user_id && currentUser.user_id === data.user_id) {
+                if (currentUser && data.user_id && currentUser.userId === data.user_id) {
                     console.log('✅ [Owner Check] User IS the owner');
                     setIsOwner(true);
                 } else {
@@ -102,7 +102,7 @@ export default function RecruitmentViewPage() {
                     console.log('   Reasons:', {
                         hasCurrentUser: !!currentUser,
                         hasPostUserId: !!data.user_id,
-                        idsMatch: currentUser?.user_id === data.user_id
+                        idsMatch: currentUser?.userId === data.user_id
                     });
                     setIsOwner(false);
                 }
