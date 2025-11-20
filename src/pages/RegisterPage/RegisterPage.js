@@ -438,15 +438,11 @@ function RegisterPage() {
                         </div>
                         {email && !isValidEmail(email) && !verificationError && (
                             <div className="input-error-text" role="alert">
-                                ⚠️ 올바른 이메일 형식을 입력해주세요.
+                                올바른 이메일 형식을 입력해주세요.
                             </div>
                         )}
                         {verificationError && (
                             <div className="input-error-text" role="alert" aria-live="polite">
-                                {verificationErrorCode === 'DUPLICATE_EMAIL' && '⚠️ '}
-                                {verificationErrorCode === 'RATE_LIMITED' && '⏱️ '}
-                                {verificationErrorCode === 'INVALID_EMAIL' && '⚠️ '}
-                                {verificationErrorCode === 'NETWORK_ERROR' && '🔌 '}
                                 {verificationError}
                                 {verificationErrorCode === 'DUPLICATE_EMAIL' && (
                                     <div style={{ marginTop: '8px', fontSize: '14px' }}>
