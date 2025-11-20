@@ -325,7 +325,6 @@ $page-background: #F8F8F8;
         border-top: 1px solid $border-color;
 
         display: flex;
-        gap: 12px;
         align-items: center;
 
         // 하단 스크랩 버튼 스타일
@@ -363,6 +362,7 @@ $page-background: #F8F8F8;
             display: flex;
             gap: 10px;
             flex: 1;
+            width: 100%;
         }
 
         // 지원하기 버튼 (전체 너비)
