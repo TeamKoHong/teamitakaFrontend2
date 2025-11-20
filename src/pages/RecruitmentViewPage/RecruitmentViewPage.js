@@ -318,9 +318,6 @@ export default function RecruitmentViewPage() {
             </main>
 
             <footer className="footer">
-                <button onClick={handleScrapToggle} className="scrap-button-footer" aria-label="스크랩">
-            <img src={bookmark_active} alt="북마크" className="bookmark-icon" />
-                </button>
                 <div className="footer-buttons">
                     {console.log('🎨 [Render Debug] isOwner state at render time:', isOwner)}
                     {isOwner ? (
