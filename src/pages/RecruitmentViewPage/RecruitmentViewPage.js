@@ -3,9 +3,11 @@ import { useParams, useNavigate } from 'react-router-dom';
 import './RecruitmentViewPage.scss';
 
 // 아이콘 임포트
+import bookmark_active from "../../assets/bookmark_active.png";
 import { IoChevronBack } from "react-icons/io5";
-import { CiBookmark } from "react-icons/ci";
 import { FaBookmark, FaEye } from "react-icons/fa";
+import apply from "../../assets/apply.png";
+import { getDraftById } from '../../api/recruit';
 import { HiOutlineChatBubbleOvalLeft } from "react-icons/hi2";
 
 import { getRecruitment } from '../../services/recruitment';
@@ -146,7 +148,7 @@ export default function RecruitmentViewPage() {
                     <div className="meta-info">
                         <div className="meta-items">
                             <span><FaEye /> {post.views}</span>
-                            <span><HiOutlineChatBubbleOvalLeft /> {post.comments}</span>
+            <img src={apply} alt="지원자수"/>
                         </div>
                         <span className="date">{post.date}</span>
                     </div>
@@ -203,7 +205,7 @@ export default function RecruitmentViewPage() {
 
             <footer className="footer">
                 <button onClick={handleScrapToggle} className="scrap-button-footer" aria-label="스크랩">
-                    {isScrapped ? <FaBookmark size={22} color="#FF6442"/> : <CiBookmark size={22} />}
+            <img src={bookmark_active} alt="북마크" className="bookmark-icon" />
                 </button>
                 <div className="footer-buttons">
                     <button onClick={handleApply} className="apply-button-full">

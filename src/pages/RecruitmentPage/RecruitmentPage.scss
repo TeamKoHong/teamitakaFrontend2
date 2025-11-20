@@ -54,8 +54,8 @@
     border-bottom: 1px solid #f2f2f2;
     .thumbnail-wrapper {
       position: relative;
-      width: 72px;
-      height: 72px;
+      width: 84px;
+      height: 79px;
       margin-right: 12px;
       .thumbnail-image,
       .thumbnail-placeholder {
@@ -67,14 +67,17 @@
       }
     .best-badge {
         position: absolute;
-        top: 8px;
-        left: 8px;
+        top: 6px;
+        left: 4px;
         background-color: #F79341;
         color: white;
-        padding: 2px 5px;
+        padding: 0px 5px;
         font-size: 9px;
-        font-weight: 700;
+        font-weight: 600;
         border-radius: 3px;
+        width: 30px;
+        height: 15px;
+        font-style: SemiBold;
 
     }}
     .item-content {
