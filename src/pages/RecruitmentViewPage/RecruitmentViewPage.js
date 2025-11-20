@@ -59,13 +59,13 @@ export default function RecruitmentViewPage() {
                     comments: 0, // Backend doesn't provide comments yet
                     date: data.created_at ? new Date(data.created_at).toLocaleDateString('ko-KR') : '',
                     keywords: data.Hashtags?.map(h => h.name) || [],
-                    createdBy: data.created_by // Store creator ID for ownership check
+                    createdBy: data.user_id // Store creator ID for ownership check
                 };
 
                 setPost(formattedPost);
 
                 // Check if current user is the owner
-                if (currentUser && data.created_by && currentUser.user_id === data.created_by) {
+                if (currentUser && data.user_id && currentUser.user_id === data.user_id) {
                     setIsOwner(true);
                 } else {
                     setIsOwner(false);
