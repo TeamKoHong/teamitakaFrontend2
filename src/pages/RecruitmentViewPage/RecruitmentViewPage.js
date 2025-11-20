@@ -32,8 +32,13 @@ export default function RecruitmentViewPage() {
     // Get current user on component mount
     useEffect(() => {
         const userData = getCurrentUser();
+        console.log('🔍 [Auth Debug] getCurrentUser() result:', userData);
         if (userData && userData.user) {
+            console.log('✅ [Auth Debug] Setting currentUser:', userData.user);
+            console.log('🆔 [Auth Debug] Current user_id:', userData.user.user_id, 'Type:', typeof userData.user.user_id);
             setCurrentUser(userData.user);
+        } else {
+            console.log('❌ [Auth Debug] No user data found');
         }
     }, []);
 
@@ -53,6 +58,8 @@ export default function RecruitmentViewPage() {
         const fetchRecruitment = async () => {
             try {
                 const data = await getRecruitment(id);
+                console.log('📡 [API Debug] Recruitment API response:', data);
+                console.log('🆔 [API Debug] Post user_id:', data.user_id, 'Type:', typeof data.user_id);
 
                 // Transform backend response to component format
                 const formattedPost = {
@@ -80,9 +87,23 @@ export default function RecruitmentViewPage() {
                 setPost(formattedPost);
 
                 // Check if current user is the owner
+                console.log('🔐 [Owner Check] Starting owner validation');
+                console.log('👤 [Owner Check] currentUser:', currentUser);
+                console.log('🆔 [Owner Check] currentUser.user_id:', currentUser?.user_id, 'Type:', typeof currentUser?.user_id);
+                console.log('📝 [Owner Check] Post user_id:', data.user_id, 'Type:', typeof data.user_id);
+                console.log('❓ [Owner Check] Are they equal?', currentUser?.user_id === data.user_id);
+                console.log('❓ [Owner Check] Loose equality?', currentUser?.user_id == data.user_id);
+
                 if (currentUser && data.user_id && currentUser.user_id === data.user_id) {
+                    console.log('✅ [Owner Check] User IS the owner');
                     setIsOwner(true);
                 } else {
+                    console.log('❌ [Owner Check] User is NOT the owner');
+                    console.log('   Reasons:', {
+                        hasCurrentUser: !!currentUser,
+                        hasPostUserId: !!data.user_id,
+                        idsMatch: currentUser?.user_id === data.user_id
+                    });
                     setIsOwner(false);
                 }
             } catch (err) {
@@ -303,6 +324,7 @@ export default function RecruitmentViewPage() {
             <img src={bookmark_active} alt="북마크" className="bookmark-icon" />
                 </button>
                 <div className="footer-buttons">
+                    {console.log('🎨 [Render Debug] isOwner state at render time:', isOwner)}
                     {isOwner ? (
                         // 작성자: 지원자 보기 버튼 표시
                         <button onClick={handleViewApplicants} className="apply-button-full">
