@@ -87,6 +87,119 @@ function LoginPage() {
 
     const isFormValid = email.trim() && password.trim();
 
+    if (showLoginForm) {
+        return (
+            <div className="login-page-container">
+                <div className="login-form-content">
+                    <div className="login-header">
+                        <button 
+                            onClick={handleBackToMain}
+                            className="back-button"
+                            style={{
+                                background: 'none',
+                                border: 'none',
+                                padding: '4px',
+                                cursor: 'pointer',
+                                marginBottom: '24px'
+                            }}
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" width="10" height="17" viewBox="0 0 10 17" fill="none">
+                                <path d="M8.81641 1L1.99822 8.5L8.81641 16" stroke="#140805" strokeWidth="2"/>
+                            </svg>
+                        </button>
+                        <h1 style={{
+                            color: '#000',
+                            fontFamily: 'Pretendard',
+                            fontSize: '24px',
+                            fontWeight: '600',
+                            lineHeight: '36px',
+                            marginBottom: '32px'
+                        }}>
+                            로그인
+                        </h1>
+                    </div>
+
+                    <form onSubmit={handleLogin} autoComplete="on">
+                        <div className="input-field" style={{ marginBottom: '16px' }}>
+                            <input
+                                type="email"
+                                placeholder="학교 이메일"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                autoComplete="email"
+                                style={{
+                                    width: '100%',
+                                    padding: '16px',
+                                    borderRadius: '8px',
+                                    border: '1px solid #E0E0E0',
+                                    fontSize: '16px',
+                                    outline: 'none'
+                                }}
+                            />
+                        </div>
+                        
+                        <div className="input-field" style={{ marginBottom: '8px' }}>
+                            <input
+                                type="password"
+                                placeholder="비밀번호"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                autoComplete="current-password"
+                                style={{
+                                    width: '100%',
+                                    padding: '16px',
+                                    borderRadius: '8px',
+                                    border: '1px solid #E0E0E0',
+                                    fontSize: '16px',
+                                    outline: 'none'
+                                }}
+                            />
+                        </div>
+
+                        <div className="find-links" style={{ textAlign: 'center', marginBottom: '24px' }}>
+                            <span style={{
+                                color: '#807C7C',
+                                fontSize: '12px',
+                                cursor: 'pointer'
+                            }}>
+                                비밀번호를 잊어버리셨나요?
+                            </span>
+                        </div>
+
+                        {(loginError || authError) && (
+                            <div style={{
+                                color: '#F76241',
+                                fontSize: '14px',
+                                marginBottom: '16px',
+                                textAlign: 'center'
+                            }}>
+                                {loginError || authError}
+                            </div>
+                        )}
+
+                        <button 
+                            type="submit"
+                            disabled={!isFormValid || isLoginLoading || isLoading}
+                            style={{
+                                width: '100%',
+                                padding: '16px',
+                                borderRadius: '8px',
+                                border: 'none',
+                                fontSize: '16px',
+                                fontWeight: '600',
+                                cursor: (isFormValid && !isLoginLoading && !isLoading) ? 'pointer' : 'not-allowed',
+                                backgroundColor: (isFormValid && !isLoginLoading && !isLoading) ? '#F76241' : '#E0E0E0',
+                                color: (isFormValid && !isLoginLoading && !isLoading) ? 'white' : '#999'
+                            }}
+                        >
+                            {isLoginLoading || isLoading ? '로그인 중...' : '로그인'}
+                        </button>
+                    </form>
+                </div>
+            </div>
+        );
+    }
+
     return (
         <div className="login-page-container">
             <div className="login-content">
