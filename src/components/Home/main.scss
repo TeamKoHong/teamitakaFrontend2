@@ -18,9 +18,9 @@ $avatar-offset: 102px;     // 기본
 $avatar-offset-sm: 106px;  // 360px 이하
 
 /* 헤더 아래 흰 공백(카드와 헤더 사이 간격) 조절 */
-$card-gap-top: -40px;
-/* 56 - (-40) = 96px 만큼 프로필 카드 위로 당김 */
-$pull-up: $header-h - $card-gap-top;
+$card-gap-top: 0px;
+/* 56px 만큼 프로필 카드 위로 당김 (헤더 바로 아래 정렬) */
+$pull-up: $header-h;
 
 /* ✅ 키워드(.tags) 아래 흰색 공백 크기 */
 $keywords-bottom-space: 24px;
@@ -71,8 +71,8 @@ $keywords-bottom-space: 24px;
     position: relative;
     background: $card;
     border-radius: 0 0 $radius-lg $radius-lg; // 상단 0: 헤더와 한 장처럼
-    box-shadow: none; 
-    padding: 16px;
+    box-shadow: none;
+    padding: 64px 16px 16px 16px; // 상단 패딩 증가: 헤더와 겹침 방지
     /* 기존: margin: 0 -16px 20px;  -> 헤더 아래 흰 공백 제거 */
     margin: -$pull-up -16px 20px;
 
