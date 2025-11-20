@@ -36,7 +36,7 @@ const ProjectCard = ({ project }) => {
 
   const handleClick = () => {
     if (isRecruitment) {
-      navigate(`/recruit/${id}`);
+      navigate(`/recruitment/${id}`);
     } else {
       navigate(`/project/${id}`);
     }
