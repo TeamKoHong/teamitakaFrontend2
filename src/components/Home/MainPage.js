@@ -137,17 +137,6 @@ const MainPage = () => {
         </div>
       </section>
 
-      {/* ===== 프로젝트 지원하기 버튼 ===== */}
-      <div className="support-btn-wrap">
-        <button
-          className="support-btn"
-          type="button"
-          onClick={() => navigate("/apply2")}
-        >
-          프로젝트 지원하기
-        </button>
-      </div>
-
       <div className="bottom-spacer" />
       <BottomNav />
     </div>
