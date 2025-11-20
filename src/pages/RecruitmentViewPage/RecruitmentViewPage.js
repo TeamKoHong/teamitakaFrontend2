@@ -9,6 +9,7 @@ import { FaBookmark, FaEye } from "react-icons/fa";
 import { HiOutlineChatBubbleOvalLeft } from "react-icons/hi2";
 
 import { getRecruitment } from '../../services/recruitment';
+import { formatDateRange } from '../../utils/dateUtils';
 
 export default function RecruitmentViewPage() {
     const { id } = useParams();
@@ -30,7 +31,7 @@ export default function RecruitmentViewPage() {
                     title: data.title,
                     description: data.description || '',
                     period: data.recruitment_start && data.recruitment_end
-                        ? `${data.recruitment_start} ~ ${data.recruitment_end}`
+                        ? formatDateRange(data.recruitment_start, data.recruitment_end)
                         : '모집 기간 미정',
                     projectInfo: data.description || '',
                     projectType: data.project_type === 'course'
