@@ -25,7 +25,7 @@ function LoginPage() {
     };
 
     const handleGuestMode = () => {
-        navigate('/main');
+        navigate('/guest');
     };
 
     // 단일 화면 사용: 별도의 폼 전환 없이 동일 화면에서 제출 처리
