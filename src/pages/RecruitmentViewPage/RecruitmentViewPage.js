@@ -9,7 +9,7 @@ import { FaBookmark, FaEye } from "react-icons/fa";
 import { HiOutlineChatBubbleOvalLeft } from "react-icons/hi2";
 
 import { getRecruitment } from '../../services/recruitment';
-import { formatDateRange } from '../../utils/dateUtils';
+import { formatKoreanDateRange } from '../../utils/dateUtils';
 
 export default function RecruitmentViewPage() {
     const { id } = useParams();
@@ -31,7 +31,7 @@ export default function RecruitmentViewPage() {
                     title: data.title,
                     description: data.description || '',
                     period: data.recruitment_start && data.recruitment_end
-                        ? formatDateRange(data.recruitment_start, data.recruitment_end)
+                        ? formatKoreanDateRange(data.recruitment_start, data.recruitment_end)
                         : '모집 기간 미정',
                     projectInfo: data.description || '',
                     projectType: data.project_type === 'course'
@@ -192,20 +192,26 @@ export default function RecruitmentViewPage() {
                 </section>
 
                 <section className="keywords-section">
-                    {(post.keywords || []).map((tag, index) => (
-                        <span key={index} className="keyword-tag">{tag}</span>
-                    ))}
+                    <h3 className="keywords-label">키워드</h3>
+                    <div className="keywords-tags">
+                        {(post.keywords || []).map((tag, index) => (
+                            <span key={index} className="keyword-tag">#{tag}</span>
+                        ))}
+                    </div>
                 </section>
             </main>
 
             <footer className="footer">
-                <div className="footer-section">
                 <button onClick={handleScrapToggle} className="scrap-button-footer" aria-label="스크랩">
                     {isScrapped ? <FaBookmark size={22} color="#FF6442"/> : <CiBookmark size={22} />}
                 </button>
-                <button onClick={handleApply} className="apply-button">
-                    지원하기
-                </button>
+                <div className="footer-buttons">
+                    <button onClick={handleApply} className="apply-button-full">
+                        지원하기
+                    </button>
+                    <button onClick={() => navigate(-1)} className="close-button">
+                        닫기
+                    </button>
                 </div>
             </footer>
         </div>
