@@ -6,13 +6,14 @@ import './RecruitmentViewPage.scss';
 import bookmark_active from "../../assets/bookmark_active.png";
 import { IoChevronBack } from "react-icons/io5";
 import { FaBookmark, FaEye } from "react-icons/fa";
+import { BsThreeDotsVertical } from "react-icons/bs";
 import apply from "../../assets/apply.png";
 import { getDraftById } from '../../api/recruit';
 import { HiOutlineChatBubbleOvalLeft } from "react-icons/hi2";
 
 import { getRecruitment } from '../../services/recruitment';
 import { getCurrentUser } from '../../services/auth';
-import { formatKoreanDateRange } from '../../utils/dateUtils';
+import { formatKoreanDateRange, formatRelativeTime } from '../../utils/dateUtils';
 import ApplicantListSlide from '../../components/ApplicantListSlide';
 
 export default function RecruitmentViewPage() {
@@ -25,6 +26,7 @@ export default function RecruitmentViewPage() {
     const [showApplicantList, setShowApplicantList] = useState(false);
     const [isScrapped, setIsScrapped] = useState(false);
     const [showScrapToast, setShowScrapToast] = useState(false);
+    const [showMoreMenu, setShowMoreMenu] = useState(false);
     const [error, setError] = useState(null);
 
     // Get current user on component mount
@@ -34,6 +36,18 @@ export default function RecruitmentViewPage() {
             setCurrentUser(userData.user);
         }
     }, []);
+
+    // Close more menu when clicking outside
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (showMoreMenu && !event.target.closest('.more-menu-container')) {
+                setShowMoreMenu(false);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, [showMoreMenu]);
 
     useEffect(() => {
         const fetchRecruitment = async () => {
@@ -56,8 +70,9 @@ export default function RecruitmentViewPage() {
                         : '프로젝트',
                     imageUrl: data.photo_url,
                     views: data.views || 0,
+                    applicantCount: data.applicant_count || 0,
                     comments: 0, // Backend doesn't provide comments yet
-                    date: data.created_at ? new Date(data.created_at).toLocaleDateString('ko-KR') : '',
+                    date: data.created_at ? formatRelativeTime(data.created_at) : '',
                     keywords: data.Hashtags?.map(h => h.name) || [],
                     createdBy: data.user_id // Store creator ID for ownership check
                 };
@@ -181,6 +196,43 @@ export default function RecruitmentViewPage() {
                     <IoChevronBack size={24} />
                 </button>
                 <h1 className="title">모집글</h1>
+                {isOwner && (
+                    <div className="more-menu-container">
+                        <button
+                            onClick={() => setShowMoreMenu(!showMoreMenu)}
+                            className="more-button"
+                            aria-label="더보기"
+                        >
+                            <BsThreeDotsVertical size={20} />
+                        </button>
+                        {showMoreMenu && (
+                            <div className="more-menu">
+                                <button
+                                    onClick={() => {
+                                        setShowMoreMenu(false);
+                                        // TODO: 수정 기능 구현
+                                        alert('게시글 수정 기능은 준비 중입니다.');
+                                    }}
+                                    className="menu-item"
+                                >
+                                    게시글 수정하기
+                                </button>
+                                <button
+                                    onClick={() => {
+                                        setShowMoreMenu(false);
+                                        if (window.confirm('정말 삭제하시겠습니까?')) {
+                                            // TODO: 삭제 API 연동
+                                            alert('게시글 삭제 기능은 준비 중입니다.');
+                                        }
+                                    }}
+                                    className="menu-item"
+                                >
+                                    게시글 삭제하기
+                                </button>
+                            </div>
+                        )}
+                    </div>
+                )}
             </header>
 
             <main className="content">
@@ -191,7 +243,7 @@ export default function RecruitmentViewPage() {
                     <div className="meta-info">
                         <div className="meta-items">
                             <span><FaEye /> {post.views}</span>
-            <img src={apply} alt="지원자수"/>
+                            <span><img src={apply} alt="지원자" style={{width: '16px', height: '16px', marginRight: '4px', verticalAlign: 'middle'}} />{post.applicantCount}</span>
                         </div>
                         <span className="date">{post.date}</span>
                     </div>
