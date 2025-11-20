@@ -85,7 +85,7 @@ $keywords-bottom-space: 24px;
     align-items: start;
 
     /* 오른쪽: 프로필 이미지  */
-    .profile-left {
+    .profile-right {
       grid-column: 2;
       display: grid;
       align-items: start;
@@ -217,8 +217,8 @@ $keywords-bottom-space: 24px;
       column-gap: 12px;
 
       /* 모바일에서도 아바타 더 내려서 정렬 */
-      .profile-left { transform: translateY($avatar-offset-sm) !important; }
-      .profile-left .profile-img { width: 76px; height: 76px; font-size: 26px; margin-bottom: 0; }
+      .profile-right { transform: translateY($avatar-offset-sm) !important; }
+      .profile-right .profile-img { width: 76px; height: 76px; font-size: 26px; margin-bottom: 0; }
     }
 
     .my-projects .empty-card .empty-img { width: 112px; }
