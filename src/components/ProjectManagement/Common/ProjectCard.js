@@ -17,7 +17,9 @@ const ProjectCard = ({ project }) => {
     progress_percent
   } = project;
 
-  const period = start_date && end_date ? `${start_date} ~ ${end_date}` : "프로젝트 기간";
+  const period = start_date && end_date ? `${start_date} ~ ${end_date}` : "프로젝트 기간 미정";
+  const meetingTimeDisplay = meeting_time || "회의 시간 미정";
+  const progressValue = Number(progress_percent) || 0;
 
   return (
     <div
@@ -35,7 +37,7 @@ const ProjectCard = ({ project }) => {
             <IoCalendarOutline className="details-icon" /> {period}
           </p>
           <p>
-            <IoTimeOutline className="details-icon" /> {meeting_time || '고정 회의 시간'}
+            <IoTimeOutline className="details-icon" /> {meetingTimeDisplay}
           </p>
         </div>
 
@@ -49,7 +51,7 @@ const ProjectCard = ({ project }) => {
         <p className="time-ago">
           {updated_at ? '업데이트됨' : ''} <span className="dot" />
         </p>
-        <CircularProgress percentage={Number(progress_percent || 0)} />
+        <CircularProgress percentage={progressValue} />
       </div>
     </div>
   );
