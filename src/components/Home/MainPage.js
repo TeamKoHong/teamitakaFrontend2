@@ -55,7 +55,7 @@ const MainPage = () => {
         setProjectError(null);
 
         const res = await getMyProjects({
-          status: 'ongoing',
+          status: 'ACTIVE',
           limit: 5,
           offset: 0
         });
