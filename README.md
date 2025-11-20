@@ -958,6 +958,24 @@ error <package>: The engine "node" is incompatible with this module
 }
 ```
 
+### 메인 페이지 헤더 겹침 문제
+
+**증상**: 메인 페이지에서 프로필 카드의 텍스트가 헤더에 가려져 일부만 보임 (예: "진행중" → "중"만 표시)
+
+**원인**: 개발 모드 배너(35px) + 고정 헤더(56px) 높이를 고려하지 않은 프로필 카드 상단 패딩
+
+**해결**: [src/components/Home/main.scss:75](src/components/Home/main.scss#L75)에서 프로필 카드 상단 패딩 조정
+```scss
+.profile-card {
+  padding: 64px 16px 16px 16px;  // 기존: padding: 16px;
+}
+```
+
+**설명**:
+- 프로필 카드는 `margin-top: -56px`로 헤더 위치까지 올라감
+- 상단 패딩 64px을 설정하여 콘텐츠가 헤더(56px) 아래 8px 간격으로 시작
+- 계산: 64px 패딩 - 56px 위로 당김 = 8px 여백
+
 ### Hot Reload 작동 안 함
 
 **증상**: 코드 변경 시 자동 새로고침 안 됨
@@ -1218,8 +1236,8 @@ git pull origin <branch>
 
 ---
 
-**문서 버전**: 2.2 (해시태그 API 연동 완료)
-**마지막 업데이트**: 2025-01-17
+**문서 버전**: 2.3 (메인 페이지 레이아웃 수정)
+**마지막 업데이트**: 2025-11-20
 **관리자**: Teamitaka 개발팀
 
 **Made with ❤️ by Teamitaka Team**
