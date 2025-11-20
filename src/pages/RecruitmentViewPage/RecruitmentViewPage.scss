@@ -169,19 +169,20 @@ $page-background: #F8F8F8;
             margin-bottom: 4px;
 
             .post-title {
-                font-size: 28px;
+                font-size: 20px;
                 font-weight: 800;
                 margin-bottom: 16px;
                 line-height: 1.3;
                 letter-spacing: -0.3px;
-                color: #1a1a1a;
+                color: #1C1C1C;
+                text-transform: capitalize;
             }
 
             .meta-info {
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
-                color: #444444;
+                color: #807C7C;
                 font-size: 14px;
 
                 .meta-items {
@@ -217,7 +218,7 @@ $page-background: #F8F8F8;
         .project-details {
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 8px;
             font-size: 16px;
             background-color: #FAFAFA;
             padding: 20px;
@@ -228,13 +229,13 @@ $page-background: #F8F8F8;
                 display: flex;
                 .label {
                     width: 120px;
-                    color: #666666;
+                    color: #403E3E;
                     font-weight: 700;
                     flex-shrink: 0;
                     letter-spacing: -0.1px;
                 }
                 .value {
-                    color: #2a2a2a;
+                    color: #140805;
                     font-weight: 500;
                     line-height: 1.6;
                 }
@@ -244,7 +245,7 @@ $page-background: #F8F8F8;
         .post-body {
             line-height: 1.8;
             font-size: 16px;
-            color: #2a2a2a;
+            color: #140805;
             font-weight: 400;
 
             p {
@@ -258,7 +259,7 @@ $page-background: #F8F8F8;
                     font-size: 18px;
                     font-weight: 700;
                     margin-bottom: 14px;
-                    color: #1a1a1a;
+                    color: #1C1C1C;
                     letter-spacing: -0.2px;
                 }
 
@@ -281,7 +282,7 @@ $page-background: #F8F8F8;
             .keywords-label {
                 font-size: 17px;
                 font-weight: 700;
-                color: #1a1a1a;
+                color: #1C1C1C;
                 margin-bottom: 16px;
                 letter-spacing: -0.2px;
             }
@@ -295,8 +296,8 @@ $page-background: #F8F8F8;
             .keyword-tag {
                 background: linear-gradient(135deg, #FFF5F2 0%, #FFE8E1 100%);
                 color: $primary-color;
-                padding: 9px 16px;
-                border-radius: 18px;
+                padding: 5px 10px;
+                border-radius: 34px;
                 font-size: 14px;
                 font-weight: 600;
                 letter-spacing: -0.1px;
@@ -329,12 +330,12 @@ $page-background: #F8F8F8;
 
         // 하단 스크랩 버튼 스타일
         .scrap-button-footer {
-            width: 50px;
-            height: 50px;
+            width: 59px;
+            height: 59px;
             padding: 0;
             border: 1.5px solid #DDDDDD;
             background-color: $background-color;
-            border-radius: 12px;
+            border-radius: 8px;
             cursor: pointer;
             display: flex;
             align-items: center;
@@ -367,11 +368,11 @@ $page-background: #F8F8F8;
         // 지원하기 버튼 (전체 너비)
         .apply-button-full {
             flex: 1;
-            height: 50px;
+            height: 59px;
             background: linear-gradient(135deg, #FF6442 0%, #FF4521 100%);
             color: white;
             border: none;
-            border-radius: 12px;
+            border-radius: 8px;
             font-size: 15px;
             font-weight: 700;
             cursor: pointer;
@@ -391,11 +392,11 @@ $page-background: #F8F8F8;
         // 닫기 버튼 (테두리만)
         .close-button {
             flex: 1;
-            height: 50px;
+            height: 59px;
             background-color: transparent;
             color: #333333;
             border: 1.5px solid #DDDDDD;
-            border-radius: 12px;
+            border-radius: 8px;
             font-size: 15px;
             font-weight: 700;
             cursor: pointer;
@@ -438,7 +439,7 @@ $page-background: #F8F8F8;
 
         .post-header {
             .post-title {
-                font-size: 24px;
+                font-size: 18px;
                 margin-bottom: 12px;
             }
 
@@ -480,7 +481,7 @@ $page-background: #F8F8F8;
 
             .keyword-tag {
                 font-size: 13px;
-                padding: 8px 14px;
+                padding: 5px 10px;
             }
         }
 
@@ -489,13 +490,13 @@ $page-background: #F8F8F8;
             gap: 8px;
 
             .scrap-button-footer {
-                width: 46px;
-                height: 46px;
+                width: 52px;
+                height: 52px;
             }
 
             .apply-button-full,
             .close-button {
-                height: 46px;
+                height: 52px;
                 font-size: 14px;
             }
         }
@@ -504,7 +505,7 @@ $page-background: #F8F8F8;
     // Medium mobile devices (361px - 480px)
     @media (min-width: 361px) and (max-width: 480px) {
         .post-header .post-title {
-            font-size: 26px;
+            font-size: 20px;
         }
 
         .cover-image {
