@@ -242,8 +242,8 @@ export default function RecruitmentViewPage() {
                     <h2 className="post-title">{post.title}</h2>
                     <div className="meta-info">
                         <div className="meta-items">
-                            <span><FaEye /> {post.views}</span>
-                            <span><img src={apply} alt="지원자" style={{width: '16px', height: '16px', marginRight: '4px', verticalAlign: 'middle'}} />{post.applicantCount}</span>
+                            <span><FaEye size={18} /> {post.views}</span>
+                            <span><img src={apply} alt="지원자" style={{width: '18px', height: '18px', marginRight: '4px', verticalAlign: 'middle'}} />{post.applicantCount}</span>
                         </div>
                         <span className="date">{post.date}</span>
                     </div>
