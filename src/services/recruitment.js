@@ -290,3 +290,47 @@ export const convertToProject = async (recruitmentId) => {
 
     return res.json();
 };
+
+/**
+ * Gets user's own recruitments
+ * @param {Object} options - Query options
+ * @param {number} [options.limit=10] - Maximum number of results
+ * @param {number} [options.offset=0] - Pagination offset
+ * @returns {Promise<Object>} User's recruitments { success, items, page }
+ */
+export const getMyRecruitments = async ({ limit = 10, offset = 0 } = {}) => {
+    const { API_BASE_URL, headers } = getApiConfig();
+    const token = localStorage.getItem('authToken');
+
+    if (!token) {
+        const err = new Error('UNAUTHORIZED');
+        err.code = 'UNAUTHORIZED';
+        throw err;
+    }
+
+    const qs = new URLSearchParams({
+        limit: String(limit),
+        offset: String(offset)
+    }).toString();
+
+    const res = await fetch(`${API_BASE_URL}/api/recruitments/mine?${qs}`, {
+        headers: {
+            ...headers,
+            Authorization: `Bearer ${token}`
+        },
+    });
+
+    if (res.status === 401 || res.status === 403) {
+        const err = new Error('UNAUTHORIZED');
+        err.code = 'UNAUTHORIZED';
+        throw err;
+    }
+
+    if (!res.ok) {
+        const err = new Error('SERVER_ERROR');
+        err.code = 'SERVER_ERROR';
+        throw err;
+    }
+
+    return res.json(); // { success, items, page }
+};
