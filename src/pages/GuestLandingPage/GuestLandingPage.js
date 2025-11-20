@@ -14,12 +14,6 @@ const GuestLandingPage = () => {
             {/* Fixed header matching MainPage */}
             <header className="header">
                 <h1 className="logo">Teamitaka</h1>
-                <button
-                    className="login-btn"
-                    onClick={() => navigate('/login')}
-                >
-                    로그인
-                </button>
             </header>
 
             {/* Welcome card matching MainPage profile-card structure */}
