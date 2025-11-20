@@ -63,6 +63,9 @@ const MainPage = () => {
         if (!mounted) return;
 
         if (res?.success) {
+          console.log('🔍 [Debug] API 응답:', res);
+          console.log('🔍 [Debug] Projects 배열:', res.items);
+          console.log('🔍 [Debug] 프로젝트 개수:', res.items?.length);
           setProjects(res.items || []);
         }
       } catch (e) {
