@@ -1,16 +1,19 @@
+
+import { useNavigate } from "react-router-dom";
 import React, { useEffect, useState } from 'react';
+
 import './main.scss';
 import BottomNav from '../Common/BottomNav/BottomNav';
+
 import bellIcon from '../../assets/icons/bell.png';
 import schoolIcon from '../../assets/icons/school.png';
-import qrIcon from '../../assets/icons/qrCode.png';
 import mascotImg from '../../assets/icons/project_empty.png';
-import { useNavigate } from 'react-router-dom';
 import { getMe } from '../../services/user';
 import { getSummary } from '../../services/dashboard';
 
 const MainPage = () => {
   const navigate = useNavigate();
+
   const [user, setUser] = useState(null);
   const [summary, setSummary] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -45,7 +48,11 @@ const MainPage = () => {
       <div className="top-card">
         <header className="header">
           <h1 className="logo">Teamitaka</h1>
-          <button className="icon-btn" aria-label="알림">
+          <button
+            className="icon-btn"
+            aria-label="알림"
+            onClick={() => navigate('/notifications')}
+          >
             <img src={bellIcon} alt="알림" className="alarm-icon" />
             {unreadCount !== '0' && (
               <span className="badge" aria-label={`안 읽은 알림 ${unreadCount}건`}>{unreadCount}</span>
@@ -53,14 +60,14 @@ const MainPage = () => {
           </button>
         </header>
 
-        <section className="profile-card">
+
+        {/* 프로필 카드 */}
+        <section className="profile-card" aria-label="프로필 요약">
           <div className="profile-left">
             <div className="profile-img" aria-hidden>🧍</div>
-            <button className="qr-btn" aria-label="내 QR">
-              <img src={qrIcon} alt="QR" className="qr-icon" />
-            </button>
           </div>
 
+          {/* 왼쪽: 텍스트 정보 */}
           <div className="profile-middle">
             <div className="name">
               {isLoading && <span>불러오는 중...</span>}
@@ -78,10 +85,11 @@ const MainPage = () => {
             </div>
 
             <div className="stats">
-              현재 진행중인 프로젝트 <span className="count">총 {ongoingCount}건</span>
-              <span className="divider"></span>
+<span className="stats-strong">현재 진행중인 프로젝트</span>{' '}
+<span className="count">총 {ongoingCount}건</span>
+<span className="divider" aria-hidden="true"></span>
               <br />
-              팀플 경험 <span className="muted">00회</span>
+              협업 경험 <span className="muted">00회</span>
             </div>
 
             <div className="tags">
@@ -100,15 +108,32 @@ const MainPage = () => {
 
       <h2 className="section-title">내가 참여 중인 프로젝트</h2>
       <section className="my-projects">
-        <div className="empty-card">
+        <div className="empty-card" role="status" aria-live="polite">
           <img src={mascotImg} alt="" className="empty-img" />
           <p className="empty-text">
-            진행 중인 프로젝트가 없어요.<br />
+            진행 중인 프로젝트가 없어요.
+            <br />
             지금 바로 프로젝트를 시작해보세요!
           </p>
-          <button className="primary-btn">팀 프로젝트 시작하기</button>
+          <button className="primary-btn" 
+          type="button"
+            onClick={() => navigate('/recruit')}
+          >
+            팀 프로젝트 시작하기
+          </button>
         </div>
       </section>
+
+      {/* ===== 프로젝트 지원하기 버튼 ===== */}
+      <div className="support-btn-wrap">
+        <button
+          className="support-btn"
+          type="button"
+          onClick={() => navigate("/apply2")}
+        >
+          프로젝트 지원하기
+        </button>
+      </div>
 
       <div className="bottom-spacer" />
       <BottomNav />

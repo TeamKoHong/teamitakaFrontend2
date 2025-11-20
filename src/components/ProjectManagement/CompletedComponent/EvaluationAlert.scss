@@ -1,0 +1,68 @@
+.evaluation-alert {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 14px;
+  margin-bottom: 12px;
+  max-width: 390px;
+  margin-left: auto;
+  margin-right: auto;
+
+  // sm breakpoint (480px 이상)
+  @media (min-width: 480px) {
+    max-width: 480px;
+  }
+
+  // md breakpoint (768px 이상)
+  @media (min-width: 768px) {
+    max-width: 720px;
+  }
+
+  // lg breakpoint (1024px 이상)
+  @media (min-width: 1024px) {
+    max-width: 880px;
+  }
+
+  .alert-text {
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 143.63%;
+    color: #000;
+    margin: 0;
+  }
+
+  .sort-dropdown-wrapper {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    transform: translateY(1px);
+
+    .sort-dropdown {
+      appearance: none;
+      padding: 0px 28px 0px 8px;
+      font-size: 12px;
+      color: #403E3E;
+      border: none;
+      border-radius: 4px;
+      background: transparent;
+      cursor: pointer;
+      font-family: Pretendard, sans-serif;
+
+      &:focus {
+        outline: none;
+      }
+    }
+
+    .dropdown-icon {
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 7px;
+      height: 3.5px;
+      color: #403E3E;
+      pointer-events: none;
+    }
+  }
+}

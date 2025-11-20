@@ -1,0 +1,233 @@
+// 변수 정의 (필요에 따라 색상, 폰트 등 조정)
+$primary-color: #FF6442;
+$text-color: #333;
+$secondary-text-color: #767676;
+$border-color: #EAEAEA;
+$background-color: #FFFFFF;
+$page-background: #F8F8F8;
+
+.view-page {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    background-color: $background-color;
+    position: relative;
+    overflow: hidden;
+
+    // 스크랩 완료 시 나타나는 토스트 메시지
+    .scrap-toast {
+        position: fixed;
+        bottom: 100px;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: rgba(0, 0, 0, 0.7);
+        color: white;
+        padding: 12px 20px;
+        border-radius: 20px;
+        font-size: 14px;
+        z-index: 100;
+        animation: fadeInOut 2s ease-in-out;
+    }
+
+    @keyframes fadeInOut {
+        0%, 100% { opacity: 0; }
+        15%, 85% { opacity: 1; }
+    }
+
+    .topbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 16px;
+        border-bottom: 1px solid $border-color;
+        background-color: $background-color;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+
+        .title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .back-button, .scrap-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 4px;
+            display: flex;
+            align-items: center;
+        }
+    }
+
+    .content {
+        flex: 1;
+        overflow-y: auto;
+        padding: 20px 16px 100px 16px; // footer 높이만큼 패딩 추가
+
+        .cover-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+
+        .post-header {
+            .post-title {
+                font-size: 22px;
+                font-weight: 700;
+                margin-bottom: 12px;
+                line-height: 1.4;
+            }
+
+            .meta-info {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                color: $secondary-text-color;
+                font-size: 14px;
+
+                .meta-items {
+                    display: flex;
+                    gap: 12px;
+                    
+                    span {
+                        display: flex;
+                        align-items: center;
+                        gap: 4px;
+                    }
+                }
+            }
+        }
+
+        .divider {
+            border: none;
+            border-top: 1px solid $border-color;
+            margin: 20px 0;
+        }
+
+        .project-details {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            font-size: 15px;
+
+            .detail-item {
+                display: flex;
+                .label {
+                    width: 100px;
+                    color: $secondary-text-color;
+                    font-weight: 500;
+                }
+                .value {
+                    color: $text-color;
+                }
+            }
+        }
+
+        .post-body {
+            line-height: 1.6;
+            font-size: 16px;
+            color: $text-color;
+
+            .detail-section {
+                margin-top: 24px;
+                
+                h3 {
+                    font-size: 16px;
+                    font-weight: 600;
+                    margin-bottom: 10px;
+                }
+
+                ul {
+                    list-style-type: '• ';
+                    padding-left: 20px;
+                    
+                    li {
+                        margin-bottom: 8px;
+                        color: $secondary-text-color;
+                    }
+                }
+            }
+        }
+
+        .keywords-section {
+            margin-top: 30px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+
+            .keyword-tag {
+                background-color: #FFF2EF;
+                color: $primary-color;
+                padding: 6px 12px;
+                border-radius: 16px;
+                font-size: 13px;
+                font-weight: 500;
+            }
+        }
+    }
+
+    .footer-section{
+        display: flex;;
+    }
+    
+    .footer {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        padding: 12px 16px 20px 16px; // 시안과 유사하게 패딩 조정
+        background-color: $background-color;
+        border-top: 1px solid $border-color;
+        
+        display: flex;
+        gap: 12px; // 버튼 사이 간격
+        align-items: center;
+
+        // 하단 스크랩 버튼 스타일
+        .scrap-button-footer {
+            width: 50px; // 시안처럼 아이콘 크기 고정
+            height: 50px; // 시안처럼 아이콘 크기 고정
+            padding: 0; // 패딩 제거
+            border: 1px solid $border-color;
+            background-color: $background-color;
+            border-radius: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #555; // 아이콘 기본 색상
+            transition: background-color 0.2s;
+            flex-shrink: 0; // 줄어들지 않도록 설정
+
+            &:hover {
+                background-color: #f9f9f9;
+            }
+        }
+
+        // 지원하기 버튼 스타일
+        .apply-button {
+            padding: 19px 60px;
+            gap: 10px;
+            flex-grow: 1; // 남은 공간을 모두 차지
+            height: 59px; // 스크랩 버튼과 높이 맞춤
+            width:326px;
+            background-color: $primary-color;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 700;
+            display: flex; // 텍스트 중앙 정렬을 위해 추가
+            align-items: center; // 텍스트 수직 중앙 정렬
+            justify-content: center; // 텍스트 수평 중앙 정렬
+            text-transform: capitalize;
+
+            &:hover {
+                opacity: 0.9;
+            }
+        }
+    }
+}

@@ -15,14 +15,10 @@ const ProfilePage = () => {
   const navigate = useNavigate();
   const { logout } = useAuth();
   const [user, setUser] = React.useState(null);
-  const [isLoading, setIsLoading] = React.useState(true);
-  const [error, setError] = React.useState(null);
 
   React.useEffect(() => {
     const load = async () => {
       try {
-        setIsLoading(true);
-        setError(null);
         const res = await getMe();
         if (res?.success && res.user) {
           setUser(res.user);
@@ -36,9 +32,7 @@ const ProfilePage = () => {
           navigate("/login", { replace: true });
           return;
         }
-        setError("일시적인 오류가 발생했습니다. 다시 시도해주세요.");
-      } finally {
-        setIsLoading(false);
+        // Error silently handled - user will see empty state
       }
     };
     load();

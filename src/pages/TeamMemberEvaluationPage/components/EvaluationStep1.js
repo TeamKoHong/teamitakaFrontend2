@@ -128,7 +128,7 @@ const EvaluationStep1 = ({
           onClick={onNext}
           disabled={!isAllCategoriesRated}
         >
-          다음으로 넘어가기
+          다음
         </button>
       </div>
     </div>

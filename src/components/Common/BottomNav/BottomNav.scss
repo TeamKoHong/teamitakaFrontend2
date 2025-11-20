@@ -5,9 +5,8 @@
   left: 0;
   width: 100%;
   display: flex;
-  height: 100%;
+  height: 88px;
   background-color: #ffffff;
-  height: 6rem;
   border-top: 0.0625rem solid #eaeaea;
   z-index: 100;
 
@@ -23,12 +22,12 @@
     color: #aaa;
 
     .nav-icon {
-      width: 1.75rem; // 24px -> 1.5rem
-      height: 1.75rem; // 24px -> 1.5rem
+      width: 20px;
+      height: 20px;
       margin-bottom: 0.25rem;
 
       &.active {
-        color: #ff4d4f;
+        color: #F76241;
       }
     }
 
@@ -38,7 +37,7 @@
 
     &.active,
     &.active span {
-      color: #ff4d4f;
+      color: #F76241;
     }
   }
 }

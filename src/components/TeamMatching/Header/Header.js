@@ -1,7 +1,8 @@
 // src/components/TeamMatching/Header/Header.js
 import React from 'react';
 import './Header.scss';
-import { CiSearch, CiBellOn } from 'react-icons/ci';
+import search_icon from "../../../assets/search_icon.png";
+import { CiSearch } from 'react-icons/ci';
 import { useNavigate } from 'react-router-dom';
 
 function Header({ title }) {
@@ -19,15 +20,9 @@ function Header({ title }) {
             onClick={() => navigate('/search')}
             type="button"
           >
-            <CiSearch className="icon-search" />
+            <img src={search_icon} alt="알림" className="icon-search" />
           </button>
-          <button
-            className="btn-bell"
-            onClick={() => {/* 알림 클릭 로직 */}}
-            type="button"
-          >
-            <CiBellOn className="icon-bell" />
-          </button>
+          
         </div>
       </div>
     </header>

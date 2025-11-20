@@ -704,9 +704,59 @@
     .completed-item {
       border: 2px solid currentColor;
     }
-    
+
     .review-badge {
       border: 2px solid currentColor !important;
     }
   }
+}
+
+// ===== Figma 디자인 스타일 (새 컴포넌트) =====
+
+// 공통 섹션 스타일
+.pending-projects-section,
+.completed-projects-section {
+  padding: 0 16px;
+  margin: 16px auto 0;
+  max-width: 390px;
+
+  // sm breakpoint (480px 이상)
+  @media (min-width: 480px) {
+    max-width: 480px;
+  }
+
+  // md breakpoint (768px 이상)
+  @media (min-width: 768px) {
+    max-width: 720px;
+    padding: 0px 24px;
+  }
+
+  // lg breakpoint (1024px 이상)
+  @media (min-width: 1024px) {
+    max-width: 880px;
+  }
+
+  .section-header-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #555;
+    margin: 0 0 8px 0;
+    text-transform: capitalize;
+  }
+
+  .project-list-new {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+
+    // md breakpoint (768px 이상) - 2열 레이아웃
+    @media (min-width: 768px) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+}
+
+// 평가 대기 섹션 - 하단 간격 추가
+.pending-projects-section {
+  margin-bottom: 24px;
 }

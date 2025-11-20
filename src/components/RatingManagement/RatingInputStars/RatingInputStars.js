@@ -29,7 +29,7 @@ const RatingInputStars = ({ initialRating = 0, onRatingChange, maxStars = 5, rea
   };
 
   return (
-    <div className={styles.starsContainer}>
+    <div className={styles.starRating}>
       {[...Array(maxStars)].map((_, index) => {
         const starValue = index + 1;
         return (

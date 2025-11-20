@@ -1,8 +1,8 @@
 // src/components/RatingManagement/RatingInputStars/RatingInputStars.module.scss
 
-// RatingInputStars를 위한 변수 (필요시 RatingInputStars.module.scss 파일 자체에 정의)
-$star-color-active: #FFC531; // 활성 별 색상 (황금색)
-$star-color-inactive: #D7D1CF; // 비활성 별 윤곽에 가까운 연한 회색
+// 별점 전용 색상 변수 (디자인 시스템의 일반 변수와 구분되는 별점 UI 특화 색상)
+$star-color-active: #FFC531; // 활성 별: 황금색 (디자인 시스템의 $accent-color #FFC107과 유사하지만 별점 전용)
+$star-color-inactive: #D7D1CF; // 비활성 별: 베이지 회색 (디자인 시스템에 해당 색상 없음, 별점 UI 전용)
 
 .starRating {
   display: flex;

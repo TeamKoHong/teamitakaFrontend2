@@ -11,7 +11,7 @@ import {
 import { Pagination } from "swiper/modules";
 import "swiper/css/pagination";
 import SlideContentSchedule from "./SlideContentSchedule";
-import NotificationBox from "./NotificationBox";
+// import NotificationBox from "./NotificationBox"; // 현재 사용 안 함 (주석 처리된 슬라이드)
 function ProjectDetailSlideBox() {
   // 예시로 사용한 날짜
   // 시작일, 목표일에 날짜를 받아 퍼센트로 전환
@@ -78,9 +78,10 @@ function ProjectDetailSlideBox() {
         <SwiperSlide className="slide-wrapper">
           <SlideContentSchedule />
         </SwiperSlide>
-        <SwiperSlide className="slide-wrapper">
+        {/* 3번째 슬라이드 (알림) - 기능적으로 제외 */}
+        {/* <SwiperSlide className="slide-wrapper">
           <NotificationBox />
-        </SwiperSlide>
+        </SwiperSlide> */}
         <div className="custom-swiper-pagination" />
       </Swiper>
     </div>

@@ -38,9 +38,8 @@
     font-size: 14px;
     cursor: pointer;
     &.active {
-      background-color: #ff6b3c;
+      background-color: #000000;
       color: #fff;
-      border-color: #ff6b3c;
     }
   }
 }
@@ -55,8 +54,8 @@
     border-bottom: 1px solid #f2f2f2;
     .thumbnail-wrapper {
       position: relative;
-      width: 72px;
-      height: 72px;
+      width: 84px;
+      height: 79px;
       margin-right: 12px;
       .thumbnail-image,
       .thumbnail-placeholder {
@@ -66,17 +65,21 @@
         background: #f0f0f0;
         object-fit: cover;
       }
-      .best-badge {
+    .best-badge {
         position: absolute;
-        top: 4px;
+        top: 6px;
         left: 4px;
-        padding: 2px 6px;
-        background: #3466f2;
-        color: #fff;
-        font-size: 10px;
-        border-radius: 2px;
-      }
-    }
+        background-color: #F79341;
+        color: white;
+        padding: 0px 5px;
+        font-size: 9px;
+        font-weight: 600;
+        border-radius: 3px;
+        width: 30px;
+        height: 15px;
+        font-style: SemiBold;
+
+    }}
     .item-content {
       flex: 1;
       .item-title {

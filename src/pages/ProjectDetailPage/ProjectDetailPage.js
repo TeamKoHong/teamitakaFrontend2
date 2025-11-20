@@ -3,7 +3,7 @@ import ProjectDetailHeader from "../../components/ProjectDetailPage/ProjectDetai
 import TodoBox from "../../components/ProjectDetailPage/TodoBox";
 import ProjectDetailSlideBox from "../../components/ProjectDetailPage/ProjectDetailSlideBox";
 import "./ProjectDetailPage.scss";
-import TimeLineBox from "../../components/ProjectDetailPage/TimeLineBox";
+
 function ProjectDetailPage() {
   return (
     <div className="project-detail-page-container">
@@ -11,7 +11,6 @@ function ProjectDetailPage() {
       <MainFloatingBox />
       <ProjectDetailSlideBox />
       <TodoBox />
-      <TimeLineBox />
     </div>
   );
 }

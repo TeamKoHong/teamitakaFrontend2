@@ -1,0 +1,89 @@
+/* ===== Vars ===== */
+$gray-1: #111;
+$gray-2: #4b5563;
+$gray-3: #6b7280;
+$gray-4: #9ca3af;
+$line:   #e5e5ea;
+$bg:     #fff;
+$primary: #ef4423;
+
+/* Base */
+.page { min-height: 100vh; background: $bg; }
+
+/* Topbar (기존 톤) */
+.topbar{
+  position: sticky; top:0; z-index:10;
+  height:56px; display:flex; align-items:center; justify-content:center; background:#fff;
+  .back{ position:absolute; left:12px; width:44px; height:44px; display:flex; align-items:center; justify-content:center; background:none; border:0; cursor:pointer;
+    .chevron{ width:9px; height:9px; border-left:2px solid #2b2b2b; border-bottom:2px solid #2b2b2b; transform:rotate(45deg); opacity:.9; }
+  }
+  .title{ font-size:16px; font-weight:700; color:$gray-1; }
+}
+
+/* Layout */
+.container{ padding:16px 16px 120px; }
+
+/* Cover image (있을 때만) */
+.cover{ margin-bottom:12px;
+  img{ width:100%; display:block; border-radius:12px; }
+}
+
+/* Title */
+.post-title{ font-size:18px; font-weight:800; color:$gray-1; margin:4px 0 6px; }
+
+/* Meta (조회/지원 ← | → 시간) */
+.meta{
+  display:flex; align-items:center; justify-content:space-between;
+  margin-bottom:10px;
+
+  .left{ display:flex; align-items:center; gap:12px; }
+  .meta-item{
+    display:inline-flex; align-items:center; gap:6px; font-size:12px; color:$gray-4;
+    img{ width:14px; height:14px; display:block; opacity:.7; }
+    .num{ color:$gray-4; }
+  }
+  .right{ font-size:12px; color:$gray-4; }
+}
+
+/* Key-Value rows (no box) */
+.kv{
+  .row{
+    display:flex; align-items:flex-start; justify-content:space-between;
+    gap:16px; padding:6px 0;
+    .k{ font-size:13px; color:$gray-3; flex:0 0 auto; }
+    .v{ font-size:13px; color:$gray-1; text-align:right; flex:1 1 auto; }
+  }
+}
+
+/* Divider */
+.divider{ border:0; border-top:1px solid $line; margin:12px 0 14px; }
+
+/* Detail */
+.detail{
+  .detail-label{ font-size:12px; color:$gray-4; margin-bottom:6px; }
+  .detail-body{
+    white-space:pre-wrap; font-size:14px; color:$gray-1; line-height:1.6;
+    margin:0 0 14px;
+  }
+}
+
+/* Keywords */
+.keywords{
+  .label{ font-size:13px; color:$gray-3; margin-bottom:8px; }
+  .chips{ display:flex; flex-wrap:wrap; gap:8px; }
+  .chip{
+    display:inline-flex; align-items:center; padding:6px 10px; border-radius:999px; font-size:12px;
+    &.chip-orange{ background:#ffe8e1; color:$primary; }
+  }
+}
+
+/* Footer (그대로) */
+.footer{
+  position:fixed; left:0; right:0; bottom:0; background:#fff; border-top:none;
+  padding:8px 12px calc(24px + env(safe-area-inset-bottom));
+}
+.submit-btn{
+  width:100%; height:48px; border:none; border-radius:12px; font-weight:700; font-size:16px;
+  background:$primary; color:#fff; cursor:pointer;
+  &:focus,&:active{ outline:none; box-shadow:none; }
+}
