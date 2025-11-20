@@ -119,7 +119,7 @@ function LoginPage() {
 
                     {(loginError || authError) && (
                         <div style={{ color: '#F76241', fontSize: '14px', textAlign: 'center' }}>
-                            ❌ {loginError || authError}
+                            {loginError || authError}
                         </div>
                     )}
 
