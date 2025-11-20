@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import './RegisterPage.scss';
 import './RegisterPage.step2.scss';
 import { useNavigate, Link } from 'react-router-dom';
