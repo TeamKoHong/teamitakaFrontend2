@@ -16,15 +16,8 @@
       display: flex;
 
       .icon-search {
-        width: 1.5rem;
-        height: 1.5rem;
-      }
-
-      .icon-bell {
-        width: 1.5rem;
-        height: 1.5rem;
-        cursor: pointer;
-        margin-left: 1rem;
+        width: 17px;
+        height: 17px;
       }
     }
   }
@@ -33,5 +26,6 @@
     font-size: 1.75rem; // 16px -> 1rem
     font-weight: 600;
     color: #f76241;
+
   }
 }

@@ -81,6 +81,8 @@
     .banner-icon {
         font-size: 20px;
         margin-left: 20px;
+        width: 25px;
+        height: 25px;
     }
     .banner-text {
         display: flex;
@@ -98,40 +100,25 @@
         opacity: 0.95;
     }
 }
-
-// 오늘의 추천 카드 (배너용)
-.recommend-card {
-    flex: 0 0 320px;
-    background: #5D80E5;
-    color: white;
-    padding: 20px;
-    border-radius: 12px;
-    margin-right: 12px;
+.twoicons {
     display: flex;
-    flex-direction: column;
-
-    .recommend-card-title {
-        font-size: 20px;
-        font-weight: 700;
-        margin: 0 0 8px 0;
-    }
-    .recommend-card-desc {
-        font-size: 10px;
-        margin: 0 0 8px 0;
-        opacity: 0.9;
-    }
-    .recommend-card-info {
-        display: flex;
-        justify-content: space-between;
-        font-size: 10px;
-        opacity: 0.9;
-        margin-top: auto;
-        .info-group {
-            display: flex;
-            gap: 12px;
-        }
-    }
+    gap: 20px;
+    font-size: 8px;
+    color: #999;  
 }
+.view-icon {
+    display: flex;
+    width: 15px;
+    height: 9px;
+    gap: 3px;
+    }    
+.apply-icon {
+    display: flex;
+    width: 14px;
+    height: 8px;
+    gap: 3px;
+
+    }
 
 // 홍익 HOT 교내 공고 카드
 .hot-topic-card {
@@ -164,7 +151,9 @@
         &.bookmarked {
             color: #FF6B00;
         }
-    }
+        width: 16px;
+        height: 24px;
+    }    
     .hot-topic-card-title {
         font-size: 15px;
         font-weight: 700;
@@ -180,12 +169,6 @@
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
-    }
-    .hot-topic-card-info {
-        font-size: 8px;
-        color: #999;
-        display: flex;
-        gap: 12px;
     }
 }
 
@@ -276,14 +259,10 @@
         color: #000000;
         font-weight: 600;
     }
-    .matching-card-info {
-        grid-area: info;
-        display: flex;
-        gap: 8px;
-        align-items: center;
-        font-size: 8px;
-        color: #aaa;
-    }
+    .date-icon {
+    font-size: 8px;
+    color: #999;
+    }   
 }
 
 // --- FAB (Floating Action Button) ---

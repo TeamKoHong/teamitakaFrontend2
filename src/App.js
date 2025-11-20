@@ -29,6 +29,7 @@ import RecruitmentViewPage from './pages/RecruitmentViewPage/RecruitmentViewPage
 
 // 메인 페이지 임포트
 import MainPage from './components/Home/MainPage';
+import GuestLandingPage from './pages/GuestLandingPage/GuestLandingPage';
 
 // 프로젝트 지원하기 임포트
 import ProjectApply from "./pages/ProjectApply/ProjectApply";
@@ -275,13 +276,12 @@ const App = () => {
           <Route path={MAIN_ROUTES.LOGIN} element={<PublicRoute><LoginPage /></PublicRoute>} />
           <Route path={MAIN_ROUTES.REGISTER} element={<PublicRoute><RegisterPage /></PublicRoute>} />
 
-          {/* 테스트 중에 메인 페이지지 보호 해제*/}
-          <Route path={MAIN_ROUTES.MAIN} element={<MainPage />} />
-          <Route path={MAIN_ROUTES.MY} element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
-          
-          {/* ===== 메인/프로필 (인증 필요) =====
+          {/* ===== 게스트 랜딩 페이지 (로그인 불필요) ===== */}
+          <Route path="/guest" element={<GuestLandingPage />} />
+
+          {/* ===== 메인/프로필 (인증 필요) ===== */}
           <Route path={MAIN_ROUTES.MAIN} element={<ProtectedRoute><MainPage /></ProtectedRoute>} />
-          <Route path={MAIN_ROUTES.MY} element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} /> */}
+          <Route path={MAIN_ROUTES.MY} element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
 
           {/* ===== 프로젝트 관리 라우트 (로그인 제한 없음) ===== */}
           <Route path={PROJECT_ROUTES.MANAGEMENT} element={<ProjectManagement />} />
