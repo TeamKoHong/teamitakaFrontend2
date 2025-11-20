@@ -3,7 +3,7 @@ import "./RecruitingComponent.scss";
 import SectionHeader from "../Common/SectionHeader";
 import ProjectCard from "../Common/ProjectCard";
 import { useNavigate } from "react-router-dom";
-import { getMyProjects } from "../../../services/projects";
+import { getMyRecruitments } from "../../../services/recruitment";
 
 const RecruitingComponent = () => {
   const navigate = useNavigate();
@@ -17,7 +17,12 @@ const RecruitingComponent = () => {
     try {
       setIsLoading(true);
       setError(null);
-      const res = await getMyProjects({ status: 'recruiting', limit: page.limit || 10, offset: nextOffset });
+      const res = await getMyRecruitments({ limit: page.limit || 10, offset: nextOffset });
+
+      console.log('🔍 [Debug] Recruitment API 응답:', res);
+      console.log('🔍 [Debug] Recruitments 배열:', res.items);
+      console.log('🔍 [Debug] 모집글 개수:', res.items?.length);
+
       if (res?.success) {
         setItems(nextOffset === 0 ? res.items : [...items, ...res.items]);
         setPage(res.page || { total: 0, limit: 10, offset: nextOffset });
@@ -25,6 +30,7 @@ const RecruitingComponent = () => {
         throw new Error('SERVER_ERROR');
       }
     } catch (e) {
+      console.error('❌ [Error] Recruitment 로딩 실패:', e);
       if (e?.code === 'UNAUTHORIZED') {
         localStorage.removeItem('authToken');
         localStorage.removeItem('user');
@@ -70,8 +76,8 @@ const RecruitingComponent = () => {
             {error} <button onClick={() => load(page.offset || 0)}>다시 시도</button>
           </div>
         )}
-        {items.map((p) => (
-          <ProjectCard key={p.project_id} project={p} />
+        {items.map((recruitment) => (
+          <ProjectCard key={recruitment.recruitment_id} project={recruitment} />
         ))}
       </div>
 
