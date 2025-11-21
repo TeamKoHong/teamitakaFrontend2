@@ -1,9 +1,11 @@
 import React from 'react';
 import SessionExpiredModal from './SessionExpiredModal';
+import './ToastHost.scss';
 
 /**
  * 간단한 전역 토스트/알림 호스트
  * - 이벤트 기반으로 로그인 만료 알림 표시
+ * - 일반 토스트 메시지 표시
  */
 export const toastBus = new EventTarget();
 
@@ -21,6 +23,11 @@ export default function ToastHost() {
   const [open, setOpen] = React.useState(false);
   const [msg, setMsg] = React.useState('');
 
+  // Toast notification state
+  const [toast, setToast] = React.useState(null);
+  const timeoutRef = React.useRef(null);
+
+  // Session expired modal handler
   React.useEffect(() => {
     const handler = (e) => {
       setMsg(e.detail?.message || '로그인이 만료되었습니다. 다시 로그인해주세요.');
@@ -30,10 +37,47 @@ export default function ToastHost() {
     return () => toastBus.removeEventListener('login-expired', handler);
   }, []);
 
+  // Generic toast handler
+  React.useEffect(() => {
+    const handler = (e) => {
+      const { message, type = 'info', duration = 3000 } = e.detail || {};
+
+      // Clear existing timeout
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+
+      // Show toast
+      setToast({ message, type });
+
+      // Auto-dismiss
+      timeoutRef.current = setTimeout(() => {
+        setToast(null);
+      }, duration);
+    };
+
+    window.addEventListener('show-toast', handler);
+    return () => {
+      window.removeEventListener('show-toast', handler);
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, []);
+
   const close = () => setOpen(false);
 
   return (
-    <SessionExpiredModal isOpen={open} message={msg} onClose={close} />
+    <>
+      <SessionExpiredModal isOpen={open} message={msg} onClose={close} />
+
+      {toast && (
+        <div className={`toast-notification toast-${toast.type}`}>
+          <div className="toast-icon">ℹ️</div>
+          <div className="toast-message">{toast.message}</div>
+        </div>
+      )}
+    </>
   );
 }
 

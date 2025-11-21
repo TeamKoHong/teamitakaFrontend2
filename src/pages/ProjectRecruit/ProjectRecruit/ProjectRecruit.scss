@@ -65,6 +65,22 @@ $primary: #ef4423;
   }
   .field--active { background: $bg-input-active; }
 
+  /* Date picker button */
+  .date-picker-btn {
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+
+    .date-picker-text {
+      font-size: 14px;
+      color: $gray-4;
+    }
+
+    &.field--active .date-picker-text {
+      color: $gray-1;
+    }
+  }
+
   /* 프로젝트 타입 (라벨 제거 전제, 간격만 정리) */
   .radio-row {
     display:flex; gap:18px; margin-top: 8px;

@@ -374,7 +374,7 @@ $footer-h: 74px; /* 버튼48 + 패딩 */
   background: rgba(0,0,0,.35) !important;
   z-index: 1000 !important;
 }
-:where(.ReactModal__Content, .MuiDialog-paper, .headlessui-dialog-panel, [role="dialog"]) {
+:where(.ReactModal__Content, .MuiDialog-paper, .headlessui-dialog-panel, [role="dialog"]:not([data-rsbs-overlay])) {
   position: fixed !important;
   top: 342px !important;
   left: 52px !important;

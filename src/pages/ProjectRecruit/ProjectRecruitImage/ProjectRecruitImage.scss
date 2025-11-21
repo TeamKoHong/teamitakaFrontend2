@@ -57,10 +57,15 @@ $primary: #ef4423;
 
 /* 화면 전체를 덮고 '항상 하단'으로 붙임 */
 .sheet {
-  position: fixed; inset: 0;
-  display: flex; flex-direction: column; justify-content: flex-end;
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
   padding: 0 16px calc(16px + env(safe-area-inset-bottom));
-  gap: 8px; background: transparent;
+  gap: 8px;
+  background: transparent;
   z-index: 1000;
   pointer-events: none;                 /* 배경 클릭 안 되게 */
 }
