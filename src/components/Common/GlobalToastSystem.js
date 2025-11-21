@@ -74,8 +74,10 @@ export default function GlobalToastSystem() {
         clearTimeout(timeoutRef.current);
       }
 
-      // Show toast
-      setToast({ message, type });
+      // Show toast with stable timestamp for React key
+      const newToast = { message, type, timestamp: Date.now() };
+      console.log('🔔 [DEBUG] Setting toast:', newToast);
+      setToast(newToast);
 
       // Auto-dismiss
       timeoutRef.current = setTimeout(() => {
@@ -103,13 +105,19 @@ export default function GlobalToastSystem() {
 
       {toast && toast.message && (
         <div
-          key={`${toast.message}-${Date.now()}`}
+          key="global-toast"
           className={`toast-notification-v2 toast-${toast.type}`}
+          ref={(el) => {
+            if (el) {
+              const allToasts = document.querySelectorAll('.toast-notification-v2');
+              console.log(`🎯 [DEBUG] Toast rendered. Total in DOM: ${allToasts.length}`, { toast, allToasts });
+            }
+          }}
         >
           <div className="toast-icon">
             {toast.type === 'warning' && (
               <svg width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="10.5" cy="10.5" r="10.5" fill="#FF3B30" />
+                <circle cx="10.5" cy="10.5" r="10.5" fill="#C01616" />
                 <path d="M10.5 5.25V11.55" stroke="white" strokeWidth="2" strokeLinecap="round" />
                 <path d="M10.5 14.7V14.7105" stroke="white" strokeWidth="2" strokeLinecap="round" />
               </svg>

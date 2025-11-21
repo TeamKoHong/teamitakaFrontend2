@@ -1,5 +1,5 @@
 // src/components/ProjectRecruit/DateRangePicker/DateRangePicker.js
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
 import dayjs from 'dayjs';
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
@@ -21,6 +21,9 @@ export default function DateRangePicker({
   const [currentMonth, setCurrentMonth] = useState(dayjs());
   const [tempStart, setTempStart] = useState(startDate ? dayjs(startDate) : null);
   const [tempEnd, setTempEnd] = useState(endDate ? dayjs(endDate) : null);
+
+  // Prevent duplicate clicks
+  const lastClickRef = useRef(0);
 
   // Sync with props
   useEffect(() => {
@@ -54,6 +57,13 @@ export default function DateRangePicker({
 
   // Date selection logic
   const handleDayClick = (day) => {
+    // Prevent duplicate clicks within 300ms
+    const now = Date.now();
+    if (now - lastClickRef.current < 300) {
+      return;
+    }
+    lastClickRef.current = now;
+
     // Can't select past dates
     if (day.isBefore(minDate, 'day')) {
       return;

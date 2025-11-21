@@ -682,7 +682,7 @@
     cursor: pointer;
 }
 
-.toast-message {
+.register-toast-message {
     width: 350px;
     position: fixed;
     bottom: 100px;
@@ -696,8 +696,8 @@
     border-radius: 8px;
     z-index: 1000;
     animation: slideUp 0.3s ease-out;
-    
-    .toast-icon {
+
+    .register-toast-icon {
         display: flex;
         width: 21px;
         height: 21px;
@@ -709,14 +709,14 @@
         flex-shrink: 0;
         border-radius: 10.5px;
         background: #16C07E;
-        
+
         svg {
             width: 22px;
             height: 17px;
         }
     }
-    
-    .toast-text {
+
+    .register-toast-text {
         color: #FFF;
         text-align: center;
         font-family: Pretendard;
