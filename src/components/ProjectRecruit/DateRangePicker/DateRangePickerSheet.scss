@@ -1,13 +1,18 @@
 // src/components/ProjectRecruit/DateRangePicker/DateRangePickerSheet.scss
 
 // Figma 디자인 시스템 (정확한 컬러 매칭)
-$primary-orange: #f76241;      // Figma 기준
-$dark-text: #140805;           // Figma 제목
-$gray-text: #807c7c;           // Figma 부제목
+$primary-orange: #f76241; // Figma 기준
+$dark-text: #140805; // Figma 제목
+$gray-text: #807c7c; // Figma 부제목
 $gray-light: #d1d5db;
 
 .date-range-picker-sheet {
   .picker-sheet-container {
+    width: 100%;
+    position: relative;
+    border-radius: 22px;
+    background-color: #fff;
+    min-height: 469px;
     padding-bottom: calc(24px + env(safe-area-inset-bottom));
   }
 
@@ -60,6 +65,11 @@ $gray-light: #d1d5db;
 [data-rsbs-overlay] {
   .date-range-picker-sheet {
     background: #fff;
-    border-radius: 22px 22px 0 0;  // Figma exact
+    border-radius: 22px 22px 0 0; // Figma exact
+
+    // 기본 헤더 숨기기
+    [data-rsbs-header] {
+      display: none;
+    }
   }
 }

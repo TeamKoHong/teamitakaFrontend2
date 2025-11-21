@@ -1,17 +1,17 @@
 // src/components/ProjectRecruit/DateRangePicker/DateRangePicker.scss
 
 // Figma 디자인 시스템 (정확한 컬러 매칭)
-$primary-orange: #f76241;      // Figma 기준
-$light-gray-range: #ececec;    // Figma 범위 배경
-$dark-text: #140805;           // Figma 제목
-$gray-text: #807c7c;           // Figma 부제목
+$primary-orange: #f76241; // Figma 기준
+$light-gray-range: #ececec; // Figma 범위 배경
+$dark-text: #140805; // Figma 제목
+$gray-text: #807c7c; // Figma 부제목
 $gray-light: #d1d5db;
-$white: #fffdfc;               // Figma 선택된 날짜 텍스트
+$white: #fffdfc; // Figma 선택된 날짜 텍스트
 
 // 반응형 breakpoints
-$mobile-sm: 375px;   // iPhone SE
-$mobile: 390px;      // iPhone 13 (Figma 기준)
-$mobile-lg: 428px;   // iPhone Pro Max
+$mobile-sm: 375px; // iPhone SE
+$mobile: 390px; // iPhone 13 (Figma 기준)
+$mobile-lg: 428px; // iPhone Pro Max
 
 // 간격 시스템
 $spacing-xs: 4px;
@@ -116,7 +116,7 @@ $spacing-lg: 24px;
   .dates-grid {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    gap: 0;
+    gap: 0; // No gap between cells for seamless connection
 
     .day-cell {
       aspect-ratio: 1;
@@ -127,17 +127,19 @@ $spacing-lg: 24px;
       border: none;
       cursor: pointer;
       position: relative;
-      border-radius: 50%;
+      // Remove border-radius from container to allow background to flow
+      border-radius: 0;
       transition: background 0.2s;
       min-width: 44px;
       min-height: 44px;
-      margin: 2px;
+      margin: 2px 0; // Vertical margin only
+      padding: 0; // Reset padding
       overflow: visible;
 
       @media (max-width: $mobile-sm) {
         min-width: 40px;
         min-height: 40px;
-        margin: 1px;
+        margin: 1px 0;
       }
 
       .day-number {
@@ -146,9 +148,19 @@ $spacing-lg: 24px;
         color: $dark-text;
         position: relative;
         z-index: 2;
+        // Ensure the number is in a circle for hover effects if needed, 
+        // or just centered. Here we keep it simple.
+        width: 44px;
+        height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
 
         @media (max-width: $mobile-sm) {
           font-size: 13px;
+          width: 40px;
+          height: 40px;
         }
       }
 
@@ -174,7 +186,7 @@ $spacing-lg: 24px;
           font-weight: 700;
         }
 
-        &:not(.start-date):not(.end-date):not(.in-range)::before {
+        &:not(.start-date):not(.end-date):not(.in-range) .day-number::before {
           content: '';
           position: absolute;
           bottom: 4px;
@@ -189,20 +201,13 @@ $spacing-lg: 24px;
       // In range (between start and end)
       &.in-range {
         background: none;
-        border-radius: 0;
-        margin: 2px 0;
-        overflow: visible;
 
-        @media (max-width: $mobile-sm) {
-          margin: 1px 0;
-        }
-
-        // 44px height gray background centered vertically
+        // Full width gray background
         &::before {
           content: '';
           position: absolute;
-          left: -2px;
-          right: -2px;
+          left: 0;
+          right: 0;
           top: 50%;
           height: 44px;
           transform: translateY(-50%);
@@ -210,78 +215,58 @@ $spacing-lg: 24px;
           z-index: 0;
 
           @media (max-width: $mobile-sm) {
-            left: -1px;
-            right: -1px;
             height: 40px;
           }
         }
 
-        .day-number {
-          color: $dark-text;
-          position: relative;
-          z-index: 2;
-        }
-
-        // 주의 마지막 날(일요일): 오른쪽 회색 제거
-        &.row-end::before {
-          right: 0;
-
-          @media (max-width: $mobile-sm) {
-            right: 0;
-          }
-        }
-
-        // 주의 첫 번째 날(월요일): 왼쪽 회색 제거
-        &.row-start::before {
-          left: 0;
-
-          @media (max-width: $mobile-sm) {
-            left: 0;
-          }
-        }
+        // Week boundary handling is automatic with full width, 
+        // but we might need to trim if margins are involved.
+        // Since we removed horizontal margins, left:0 right:0 works perfectly.
       }
 
       // Start date
       &.start-date {
         background: none;
-        margin: 2px;
 
-        @media (max-width: $mobile-sm) {
-          margin: 1px;
-        }
-
-        // 주황색 원 (위에)
-        &::before {
+        // Orange circle for the date itself
+        &::after {
           content: '';
           position: absolute;
-          inset: 0;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          width: 44px;
+          height: 44px;
           background: $primary-orange;
           border-radius: 50%;
           z-index: 1;
+
+          @media (max-width: $mobile-sm) {
+            width: 40px;
+            height: 40px;
+          }
         }
 
         .day-number {
           color: $white;
           font-weight: 700;
-          position: relative;
           z-index: 2;
         }
 
-        // 시작일과 종료일이 다른 경우 - 오른쪽 회색 연결 (뒤에)
-        &:not(.end-date):not(.row-end)::after {
+        // Right connector (gray background)
+        // Only if NOT end date and NOT end of row
+        &:not(.end-date):not(.row-end)::before {
           content: '';
           position: absolute;
-          left: 0;
-          right: -4px;
+          left: 50%; // Start from center
+          right: 0; // Go to right edge
           top: 50%;
           height: 44px;
           transform: translateY(-50%);
           background: $light-gray-range;
           z-index: 0;
-          clip-path: polygon(50% 0, 100% 0, 100% 100%, 50% 100%);
 
           @media (max-width: $mobile-sm) {
-            right: -2px;
             height: 40px;
           }
         }
@@ -290,56 +275,62 @@ $spacing-lg: 24px;
       // End date
       &.end-date {
         background: none;
-        margin: 2px;
 
-        @media (max-width: $mobile-sm) {
-          margin: 1px;
-        }
-
-        // 종료일이 시작일과 다른 경우 - 왼쪽 회색 연결 (뒤에)
-        &:not(.start-date):not(.row-start)::before {
-          content: '';
-          position: absolute;
-          right: 0;
-          left: -4px;
-          top: 50%;
-          height: 44px;
-          transform: translateY(-50%);
-          background: $light-gray-range;
-          z-index: 0;
-          clip-path: polygon(0 0, 50% 0, 50% 100%, 0 100%);
-
-          @media (max-width: $mobile-sm) {
-            left: -2px;
-            height: 40px;
-          }
-        }
-
-        // 주황색 원 (위에)
+        // Orange circle for the date itself
         &::after {
           content: '';
           position: absolute;
-          inset: 0;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          width: 44px;
+          height: 44px;
           background: $primary-orange;
           border-radius: 50%;
           z-index: 1;
+
+          @media (max-width: $mobile-sm) {
+            width: 40px;
+            height: 40px;
+          }
         }
 
         .day-number {
           color: $white;
           font-weight: 700;
-          position: relative;
           z-index: 2;
+        }
+
+        // Left connector (gray background)
+        // Only if NOT start date and NOT start of row
+        &:not(.start-date):not(.row-start)::before {
+          content: '';
+          position: absolute;
+          left: 0; // Start from left edge
+          right: 50%; // Go to center
+          top: 50%;
+          height: 44px;
+          transform: translateY(-50%);
+          background: $light-gray-range;
+          z-index: 0;
+
+          @media (max-width: $mobile-sm) {
+            height: 40px;
+          }
         }
       }
 
       // Hover effect (only for enabled dates, excluding start/end)
       &:not(.disabled):not(.out-of-month):not(.start-date):not(.end-date):hover {
-        background: rgba(247, 98, 65, 0.1);
+        .day-number {
+          background: rgba(247, 98, 65, 0.1);
+        }
       }
 
       &:not(.disabled):not(.out-of-month):not(.start-date):not(.end-date):active {
-        background: rgba(247, 98, 65, 0.2);
+        .day-number {
+          background: rgba(247, 98, 65, 0.2);
+        }
       }
 
       // Disabled state overrides
@@ -348,6 +339,10 @@ $spacing-lg: 24px;
 
         &:hover {
           background: none;
+
+          .day-number {
+            background: none;
+          }
         }
       }
     }
