@@ -18,7 +18,7 @@ export const ToastType = {
  * @param {number} duration - Duration in milliseconds (default: 3000)
  */
 export const showToast = (message, type = ToastType.INFO, duration = 3000) => {
-  const event = new CustomEvent('show-toast', {
+  const event = new CustomEvent('show-global-toast', {
     detail: {
       message,
       type,
