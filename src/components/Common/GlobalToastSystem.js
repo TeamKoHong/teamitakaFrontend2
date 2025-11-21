@@ -102,7 +102,10 @@ export default function GlobalToastSystem() {
       <SessionExpiredModal isOpen={open} message={msg} onClose={close} />
 
       {toast && toast.message && (
-        <div className={`toast-notification-v2 toast-${toast.type}`}>
+        <div
+          key={`${toast.message}-${Date.now()}`}
+          className={`toast-notification-v2 toast-${toast.type}`}
+        >
           <div className="toast-icon">
             {toast.type === 'warning' && (
               <svg width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
