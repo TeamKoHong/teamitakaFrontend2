@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import './ProjectRecruitImage.scss';
 import { loadRecruitDraft, saveRecruitDraft } from '../../../api/recruit';
 import { useNavigate } from 'react-router-dom';
+import imgIcon from '../../../assets/img_icon.svg';
 
 export default function ProjectRecruitImage() {
     const nav = useNavigate();
@@ -109,7 +110,7 @@ export default function ProjectRecruitImage() {
                     {imageDataUrl ? (
                         <img src={imageDataUrl} alt="대표 이미지 미리보기" />
                     ) : (
-                        <span className="plus" aria-hidden="true" />
+                        <img src={imgIcon} alt="이미지 업로드" className="upload-icon" />
                     )}
                 </button>
 
