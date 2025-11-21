@@ -70,11 +70,17 @@ $primary: #ef4423;
   background: #fff; border-radius: 16px; overflow: hidden;
 }
 
-/* 항목(구분선은 ‘사이’에만 들어가도록) */
+/* 항목(구분선은 '사이'에만 들어가도록) */
 .sheet .sheet-panel .item {
   height: 52px;
   display:flex; align-items:center; justify-content:center;
   font-size: 15px;
+  cursor: pointer;
+
+  &.disabled {
+    color: #d1d5db;
+    cursor: not-allowed;
+  }
 }
 .sheet .sheet-panel .item + .item { border-top: 1px solid $line; }  /* ← 이 줄만 경계선 */
 

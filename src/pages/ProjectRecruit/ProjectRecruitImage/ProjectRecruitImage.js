@@ -124,25 +124,27 @@ export default function ProjectRecruitImage() {
             </div>
 
             {/* 하단 CTA */}
-            <div className="footer">
-                {imageDataUrl ? (
-                    <button
-                        type="button"
-                        className="next-btn on"
-                        onClick={goNext}
-                    >
-                        다음
-                    </button>
-                ) : (
-                    <button
-                        type="button"
-                        className="skip-btn"
-                        onClick={goNext}
-                    >
-                        건너뛰기
-                    </button>
-                )}
-            </div>
+            {!sheetOpen && (
+                <div className="footer">
+                    {imageDataUrl ? (
+                        <button
+                            type="button"
+                            className="next-btn on"
+                            onClick={goNext}
+                        >
+                            다음
+                        </button>
+                    ) : (
+                        <button
+                            type="button"
+                            className="skip-btn"
+                            onClick={goNext}
+                        >
+                            건너뛰기
+                        </button>
+                    )}
+                </div>
+            )}
 
             {/* 바텀시트 */}
             {sheetOpen && (
@@ -153,11 +155,13 @@ export default function ProjectRecruitImage() {
                             <div className="item" role="button" onClick={triggerPick}>
                                 라이브러리에서 선택
                             </div>
-                            {imageDataUrl && (
-                                <div className="item" role="button" onClick={removeImage}>
-                                    현재 사진 삭제
-                                </div>
-                            )}
+                            <div
+                                className={`item ${!imageDataUrl ? 'disabled' : ''}`}
+                                role="button"
+                                onClick={imageDataUrl ? removeImage : undefined}
+                            >
+                                현재 사진 삭제
+                            </div>
                         </div>
                         <div className="cancel" role="button" onClick={closeSheet}>
                             취소
