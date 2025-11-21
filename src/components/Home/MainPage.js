@@ -36,7 +36,7 @@ const MainPage = () => {
         if (meRes && meRes.success && meRes.user) setUser(meRes.user);
         if (sumRes && sumRes.success) setSummary(sumRes.data || sumRes.summary || null);
       } catch (e) {
-        // 401/403은 전역 AuthEventBridge/ToastHost에서 처리하므로 여기서는 중복 네비게이션을 하지 않음
+        // 401/403은 전역 AuthEventBridge/GlobalToastSystem에서 처리하므로 여기서는 중복 네비게이션을 하지 않음
         setError('일시적인 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
       } finally {
         if (mounted) setIsLoading(false);
