@@ -42,8 +42,8 @@ import NotificationsPage from './pages/NotificationsPage/NotificationsPage';
 
 //프로젝트 생성하기 임포트
 import ProjectRecruit from './pages/ProjectRecruit/ProjectRecruit/ProjectRecruit';
-import ProjectRecruitDetail from './pages/ProjectRecruit/ProjectRecruitDetail/ProjectRecruitDetail'; 
-import ProjectRecruitImage from './pages/ProjectRecruit/ProjectRecruitImage/ProjectRecruitImage'; 
+import ProjectRecruitDetail from './pages/ProjectRecruit/ProjectRecruitDetail/ProjectRecruitDetail';
+import ProjectRecruitImage from './pages/ProjectRecruit/ProjectRecruitImage/ProjectRecruitImage';
 import ProjectDrafts from './pages/ProjectRecruit/ProjectDrafts/ProjectDrafts';
 import ProjectRecruitPreview from './pages/ProjectRecruit/ProjectRecruitPreview/ProjectRecruitPreview';
 import ProjectRecruitPublish from "./pages/ProjectRecruit/ProjectRecruitPublish/ProjectRecruitPublish";
@@ -52,19 +52,19 @@ import ProjectRecruitPublishDone from "./pages/ProjectRecruit/ProjectRecruitPubl
 
 // 인증 관련 임포트
 import { AuthProvider } from './contexts/AuthContext';
-import ToastHost from './components/Common/ToastHost';
+import GlobalToastSystem from './components/Common/GlobalToastSystem';
 import AuthEventBridge from './components/Common/AuthEventBridge';
 import ProtectedRoute, { PublicRoute } from './components/ProtectedRoute';
 
 // 라우팅 상수 임포트
-import { 
-  MAIN_ROUTES, 
-  PROJECT_ROUTES, 
-  EVALUATION_ROUTES, 
-  LEGACY_EVALUATION_ROUTES, 
-  OTHER_ROUTES, 
+import {
+  MAIN_ROUTES,
+  PROJECT_ROUTES,
+  EVALUATION_ROUTES,
+  LEGACY_EVALUATION_ROUTES,
+  OTHER_ROUTES,
   DEMO_ROUTES,
-  isEvaluationRoute 
+  isEvaluationRoute
 } from './constants/routes';
 
 // ===== 네비게이션 가드 컴포넌트 =====
@@ -72,7 +72,7 @@ import {
 // 평가 플로우 가드
 const EvaluationGuard = ({ children, projectId, memberId }) => {
   const location = useLocation();
-  
+
   React.useEffect(() => {
     // 평가 플로우에서 뒤로가기 시 경고
     const handleBeforeUnload = (e) => {
@@ -95,7 +95,7 @@ const EvaluationGuard = ({ children, projectId, memberId }) => {
 
     window.addEventListener('beforeunload', handleBeforeUnload);
     window.addEventListener('popstate', handlePopState);
-    
+
     return () => {
       window.removeEventListener('beforeunload', handleBeforeUnload);
       window.removeEventListener('popstate', handlePopState);
@@ -118,7 +118,7 @@ const ProjectPermissionGuard = ({ children, projectId }) => {
         // 실제 구현에서는 API 호출로 프로젝트 접근 권한 확인
         // const response = await api.checkProjectPermission(projectId);
         // setHasPermission(response.hasPermission);
-        
+
         // 임시로 true 반환 (실제로는 권한 검증 로직 구현)
         setHasPermission(true);
       } catch (err) {
@@ -136,10 +136,10 @@ const ProjectPermissionGuard = ({ children, projectId }) => {
 
   if (isLoading) {
     return (
-      <div style={{ 
-        display: 'flex', 
-        justifyContent: 'center', 
-        alignItems: 'center', 
+      <div style={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
         height: '100vh',
         fontSize: '16px',
         color: '#666'
@@ -151,16 +151,16 @@ const ProjectPermissionGuard = ({ children, projectId }) => {
 
   if (error) {
     return (
-      <div style={{ 
-        display: 'flex', 
+      <div style={{
+        display: 'flex',
         flexDirection: 'column',
-        justifyContent: 'center', 
-        alignItems: 'center', 
+        justifyContent: 'center',
+        alignItems: 'center',
         height: '100vh',
         gap: '16px'
       }}>
         <div style={{ fontSize: '16px', color: '#666' }}>{error}</div>
-        <button 
+        <button
           onClick={() => window.location.href = PROJECT_ROUTES.MANAGEMENT}
           style={{
             padding: '12px 24px',
@@ -212,7 +212,7 @@ const TeamMemberEvaluationGuard = () => {
 const EvaluationStatusGuard = () => {
   const { projectId } = useParams();
   const location = useLocation();
-  
+
   if (location.pathname.includes('/given')) {
     return (
       <ProjectPermissionGuard projectId={projectId}>
@@ -247,7 +247,7 @@ const App = () => {
   return (
     <Router>
       <AuthProvider>
-        <ToastHost />
+        <GlobalToastSystem />
         <AuthEventBridge />
 
         <Routes>
@@ -278,7 +278,7 @@ const App = () => {
           <Route path={EVALUATION_ROUTES.STATUS_GIVEN} element={<EvaluationStatusGuard />} />
           <Route path={EVALUATION_ROUTES.STATUS_RECEIVED} element={<EvaluationStatusGuard />} />
           <Route path={EVALUATION_ROUTES.STATUS} element={<EvaluationStatusGuard />} />
-          
+
           {/* ===== 기존 URL 호환성 리다이렉트 ===== */}
           <Route path={LEGACY_EVALUATION_ROUTES.RATING_MANAGEMENT} element={<Navigate to={EVALUATION_ROUTES.MANAGEMENT} replace />} />
           <Route path={LEGACY_EVALUATION_ROUTES.RATING_PROJECT} element={<Navigate to={EVALUATION_ROUTES.PROJECT} replace />} />
@@ -296,26 +296,26 @@ const App = () => {
           <Route path="/recruitment/:id" element={<RecruitmentViewPage />} />
           {/* ===== 데모 및 개발 도구 라우트 (개발용) ===== */}
           <Route path={DEMO_ROUTES.CATEGORY_SLIDER} element={<CategorySliderDemo />} />
-          
+
           {/* ===== 기본 리다이렉트 ===== */}
           <Route path="/" element={<Navigate to={MAIN_ROUTES.HOME} replace />} />
           <Route path="*" element={<Navigate to={MAIN_ROUTES.HOME} replace />} />
 
           <Route path="/apply2" element={<ProjectApply />} />
-          <Route path="/apply2/select" element={<ProjectApplySelect />} /> 
+          <Route path="/apply2/select" element={<ProjectApplySelect />} />
           <Route path="/apply2/complete" element={<ProjectApplyComplete />} />
 
           <Route path="/notifications" element={<NotificationsPage />} />
           <Route path="/notifications/settings" element={<NotificationSettings />} />
 
-        {/* 프로젝트 생성하기 */}
-        <Route path="/recruit" element={<ProjectRecruit />} />
-        <Route path="/recruit/detail" element={<ProjectRecruitDetail />} /> 
-        <Route path="/recruit/image" element={<ProjectRecruitImage />} /> 
-        <Route path="/recruit/drafts" element={<ProjectDrafts />} />
-        <Route path="/recruit/preview" element={<ProjectRecruitPreview />} />
-        <Route path="/recruit/publish" element={<ProjectRecruitPublish />} />
-        <Route path="/recruit/publish/done" element={<ProjectRecruitPublishDone />} />
+          {/* 프로젝트 생성하기 */}
+          <Route path="/recruit" element={<ProjectRecruit />} />
+          <Route path="/recruit/detail" element={<ProjectRecruitDetail />} />
+          <Route path="/recruit/image" element={<ProjectRecruitImage />} />
+          <Route path="/recruit/drafts" element={<ProjectDrafts />} />
+          <Route path="/recruit/preview" element={<ProjectRecruitPreview />} />
+          <Route path="/recruit/publish" element={<ProjectRecruitPublish />} />
+          <Route path="/recruit/publish/done" element={<ProjectRecruitPublishDone />} />
 
 
         </Routes>

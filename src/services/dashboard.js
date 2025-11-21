@@ -1,5 +1,5 @@
 import { getApiConfig } from './auth';
-import { notifyLoginExpired } from '../components/Common/ToastHost';
+import { notifyLoginExpired } from '../components/Common/GlobalToastSystem';
 
 const authHeaders = () => {
     const { API_BASE_URL, headers } = getApiConfig();
