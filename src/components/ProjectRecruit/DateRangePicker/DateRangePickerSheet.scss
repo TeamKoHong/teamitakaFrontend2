@@ -1,0 +1,65 @@
+// src/components/ProjectRecruit/DateRangePicker/DateRangePickerSheet.scss
+
+// Figma 디자인 시스템 (정확한 컬러 매칭)
+$primary-orange: #f76241;      // Figma 기준
+$dark-text: #140805;           // Figma 제목
+$gray-text: #807c7c;           // Figma 부제목
+$gray-light: #d1d5db;
+
+.date-range-picker-sheet {
+  .picker-sheet-container {
+    padding-bottom: calc(24px + env(safe-area-inset-bottom));
+  }
+
+  // Header with title and checkmark
+  .picker-sheet-header {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px 16px 12px;
+    border-bottom: 1px solid #f3f4f6;
+
+    .picker-sheet-title {
+      text-align: center;
+      font-size: 16px;
+      font-weight: 700;
+      color: $dark-text;
+      margin: 0;
+    }
+
+    .complete-btn {
+      position: absolute;
+      right: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+
+      padding: 0;
+      background: none;
+      border: none;
+
+      font-size: 15px;
+      font-weight: 600;
+      color: $primary-orange;
+      cursor: pointer;
+      transition: opacity 0.2s;
+
+      &.disabled {
+        color: $gray-light;
+        cursor: not-allowed;
+      }
+
+      &:not(.disabled):active {
+        opacity: 0.7;
+      }
+    }
+  }
+}
+
+// Override react-spring-bottom-sheet default styles
+[data-rsbs-overlay] {
+  .date-range-picker-sheet {
+    background: #fff;
+    border-radius: 22px 22px 0 0;  // Figma exact
+  }
+}

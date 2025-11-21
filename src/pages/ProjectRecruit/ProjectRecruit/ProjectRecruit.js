@@ -1,8 +1,10 @@
 // src/Pages/ProjectRecruit/ProjectRecruit.js
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import dayjs from 'dayjs';
 import './ProjectRecruit.scss';
 import { loadRecruitDraft, saveRecruitDraft } from '../../../api/recruit';
+import DateRangePickerSheet from '../../../components/ProjectRecruit/DateRangePicker/DateRangePickerSheet';
 
 export default function ProjectRecruit() {
   const nav = useNavigate();
@@ -11,6 +13,7 @@ export default function ProjectRecruit() {
   const [type, setType]   = useState(null);  // 'course' | 'side'
   const [start, setStart] = useState('');
   const [end, setEnd]     = useState('');
+  const [datePickerOpen, setDatePickerOpen] = useState(false);
 
   useEffect(() => {
     const draft = loadRecruitDraft();
@@ -41,6 +44,19 @@ export default function ProjectRecruit() {
   }, [start, end]);
 
   const isReady = Boolean(title.trim()) && Boolean(type) && isValidRange;
+
+  // Format dates for display
+  const formattedDateRange = useMemo(() => {
+    if (!start || !end) return '';
+    const startFormatted = dayjs(start).format('YYYY.MM.DD');
+    const endFormatted = dayjs(end).format('YYYY.MM.DD');
+    return `${startFormatted} - ${endFormatted}`;
+  }, [start, end]);
+
+  const handleDateRangeSelect = (startDate, endDate) => {
+    setStart(dayjs(startDate).format('YYYY-MM-DD'));
+    setEnd(dayjs(endDate).format('YYYY-MM-DD'));
+  };
 
   const handleSaveDraft = () => {
     saveRecruitDraft({ title, desc, type, start, end });
@@ -109,16 +125,28 @@ export default function ProjectRecruit() {
 
         {/* 모집 기간 */}
         <div className="label">모집 기간</div>
-        <div className={`field ${start && end ? 'field--active' : ''}`}>
-          <div className="date-row">
-            <input type="date" value={start} onChange={(e)=>setStart(e.target.value)} />
-            <span className="dash">-</span>
-            <input type="date" value={end} onChange={(e)=>setEnd(e.target.value)} />
-          </div>
-        </div>
+        <button
+          type="button"
+          className={`field date-picker-btn ${start && end ? 'field--active' : ''}`}
+          onClick={() => setDatePickerOpen(true)}
+        >
+          <span className="date-picker-text">
+            {formattedDateRange || '기간 선택'}
+          </span>
+        </button>
         {(!start || !end) && <div className="error">모집 기간을 선택해주세요.</div>}
         {(start && end && !isValidRange) && <div className="error">종료일이 시작일보다 빠를 수 없어요.</div>}
       </div>
+
+      {/* Date Range Picker Bottom Sheet */}
+      <DateRangePickerSheet
+        open={datePickerOpen}
+        onDismiss={() => setDatePickerOpen(false)}
+        onComplete={handleDateRangeSelect}
+        initialStart={start ? new Date(start) : null}
+        initialEnd={end ? new Date(end) : null}
+        maxRangeWeeks={2}
+      />
 
       {/* 하단 */}
       <div className="footer">

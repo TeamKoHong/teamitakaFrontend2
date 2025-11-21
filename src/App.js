@@ -250,26 +250,6 @@ const App = () => {
         <ToastHost />
         <AuthEventBridge />
 
-        {/* 개발 모드 표시 */}
-        {process.env.NODE_ENV === 'development' && (
-          <div style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            right: 0,
-            background: '#FFA500',
-            color: '#000',
-            padding: '8px',
-            textAlign: 'center',
-            fontSize: '13px',
-            fontWeight: '600',
-            zIndex: 999999,
-            borderBottom: '2px solid #FF8C00'
-          }}>
-            ⚠️ 개발 모드 - 실제 서버 데이터 사용 중 (localhost:3000)
-          </div>
-        )}
-
         <Routes>
           {/* ===== 공개 페이지 (로그인하지 않은 사용자만) ===== */}
           <Route path={MAIN_ROUTES.HOME} element={<PublicRoute><OnboardingPage /></PublicRoute>} />
