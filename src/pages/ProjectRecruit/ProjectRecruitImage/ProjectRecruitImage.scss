@@ -55,11 +55,11 @@ $primary: #ef4423;
   z-index: 999;
 }
 
-/* 화면 전체를 덮고 ‘항상 하단’으로 붙임 */
+/* 화면 전체를 덮고 '항상 하단'으로 붙임 */
 .sheet {
   position: fixed; inset: 0;
-  display: flex; flex-direction: column; justify-content: flex-end; 
-  padding: 0 16px calc(8px + env(safe-area-inset-bottom));
+  display: flex; flex-direction: column; justify-content: flex-end;
+  padding: 0 16px calc(16px + env(safe-area-inset-bottom));
   gap: 8px; background: transparent;
   z-index: 1000;
   pointer-events: none;                 /* 배경 클릭 안 되게 */
