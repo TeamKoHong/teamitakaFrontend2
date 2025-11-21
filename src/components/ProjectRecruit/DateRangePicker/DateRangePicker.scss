@@ -1,17 +1,17 @@
 // src/components/ProjectRecruit/DateRangePicker/DateRangePicker.scss
 
 // Figma 디자인 시스템 (정확한 컬러 매칭)
-$primary-orange: #f76241;      // Figma 기준
-$light-gray-range: #ececec;    // Figma 범위 배경
-$dark-text: #140805;           // Figma 제목
-$gray-text: #807c7c;           // Figma 부제목
+$primary-orange: #f76241; // Figma 기준
+$light-gray-range: #ececec; // Figma 범위 배경
+$dark-text: #140805; // Figma 제목
+$gray-text: #807c7c; // Figma 부제목
 $gray-light: #d1d5db;
-$white: #fffdfc;               // Figma 선택된 날짜 텍스트
+$white: #fffdfc; // Figma 선택된 날짜 텍스트
 
 // 반응형 breakpoints
-$mobile-sm: 375px;   // iPhone SE
-$mobile: 390px;      // iPhone 13 (Figma 기준)
-$mobile-lg: 428px;   // iPhone Pro Max
+$mobile-sm: 375px; // iPhone SE
+$mobile: 390px; // iPhone 13 (Figma 기준)
+$mobile-lg: 428px; // iPhone Pro Max
 
 // 간격 시스템
 $spacing-xs: 4px;
@@ -128,7 +128,7 @@ $spacing-lg: 24px;
       cursor: pointer;
       position: relative;
       // Remove border-radius from container to allow background to flow
-      border-radius: 0; 
+      border-radius: 0;
       transition: background 0.2s;
       min-width: 44px;
       min-height: 44px;
@@ -201,7 +201,7 @@ $spacing-lg: 24px;
       // In range (between start and end)
       &.in-range {
         background: none;
-        
+
         // Full width gray background
         &::before {
           content: '';
@@ -259,7 +259,7 @@ $spacing-lg: 24px;
           content: '';
           position: absolute;
           left: 50%; // Start from center
-          right: 0;  // Go to right edge
+          right: 0; // Go to right edge
           top: 50%;
           height: 44px;
           transform: translateY(-50%);
@@ -306,7 +306,7 @@ $spacing-lg: 24px;
         &:not(.start-date):not(.row-start)::before {
           content: '';
           position: absolute;
-          left: 0;    // Start from left edge
+          left: 0; // Start from left edge
           right: 50%; // Go to center
           top: 50%;
           height: 44px;
@@ -339,6 +339,7 @@ $spacing-lg: 24px;
 
         &:hover {
           background: none;
+
           .day-number {
             background: none;
           }
