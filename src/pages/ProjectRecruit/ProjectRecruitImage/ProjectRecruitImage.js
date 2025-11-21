@@ -150,7 +150,7 @@ export default function ProjectRecruitImage() {
             {sheetOpen && (
                 <>
                     <div className="sheet-backdrop" onClick={closeSheet} />
-                    <div className="sheet" role="dialog" aria-modal="true">
+                    <div className="sheet" aria-modal="true">
                         <div className="sheet-panel">
                             <div className="item" role="button" onClick={triggerPick}>
                                 라이브러리에서 선택

@@ -1,0 +1,355 @@
+// src/components/ProjectRecruit/DateRangePicker/DateRangePicker.scss
+
+// Figma 디자인 시스템 (정확한 컬러 매칭)
+$primary-orange: #f76241;      // Figma 기준
+$light-gray-range: #ececec;    // Figma 범위 배경
+$dark-text: #140805;           // Figma 제목
+$gray-text: #807c7c;           // Figma 부제목
+$gray-light: #d1d5db;
+$white: #fffdfc;               // Figma 선택된 날짜 텍스트
+
+// 반응형 breakpoints
+$mobile-sm: 375px;   // iPhone SE
+$mobile: 390px;      // iPhone 13 (Figma 기준)
+$mobile-lg: 428px;   // iPhone Pro Max
+
+// 간격 시스템
+$spacing-xs: 4px;
+$spacing-sm: 8px;
+$spacing-md: 16px;
+$spacing-lg: 24px;
+
+.date-range-picker {
+  padding: 0 $spacing-md $spacing-lg;
+  max-width: $mobile-lg;
+  margin: 0 auto;
+
+  // 작은 화면 대응
+  @media (max-width: $mobile-sm) {
+    padding: 0 12px 20px;
+  }
+
+  // Header with month navigation
+  .picker-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 0;
+
+    @media (max-width: $mobile-sm) {
+      padding: 12px 0;
+    }
+
+    .month-label {
+      font-size: 16px;
+      font-weight: 700;
+      color: $dark-text;
+
+      @media (max-width: $mobile-sm) {
+        font-size: 15px;
+      }
+    }
+
+    .nav-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .nav-btn {
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: none;
+      border: none;
+      font-size: 24px;
+      color: $dark-text;
+      cursor: pointer;
+      border-radius: 50%;
+      transition: background 0.2s;
+
+      &:hover {
+        background: rgba(0, 0, 0, 0.05);
+      }
+
+      &:active {
+        background: rgba(0, 0, 0, 0.1);
+      }
+
+      @media (max-width: $mobile-sm) {
+        width: 28px;
+        height: 28px;
+        font-size: 20px;
+      }
+    }
+  }
+
+  // Weekday row
+  .weekday-row {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+    margin-bottom: 8px;
+
+    @media (max-width: $mobile-sm) {
+      gap: 2px;
+      margin-bottom: 6px;
+    }
+
+    .weekday {
+      font-size: 11px;
+      font-weight: 600;
+      color: $gray-text;
+      text-align: center;
+      padding: 8px 0;
+
+      @media (max-width: $mobile-sm) {
+        font-size: 10px;
+        padding: 6px 0;
+      }
+    }
+  }
+
+  // Dates grid
+  .dates-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 0;
+
+    .day-cell {
+      aspect-ratio: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: none;
+      border: none;
+      cursor: pointer;
+      position: relative;
+      border-radius: 50%;
+      transition: background 0.2s;
+      min-width: 44px;
+      min-height: 44px;
+      margin: 2px;
+      overflow: visible;
+
+      @media (max-width: $mobile-sm) {
+        min-width: 40px;
+        min-height: 40px;
+        margin: 1px;
+      }
+
+      .day-number {
+        font-size: 14px;
+        font-weight: 500;
+        color: $dark-text;
+        position: relative;
+        z-index: 2;
+
+        @media (max-width: $mobile-sm) {
+          font-size: 13px;
+        }
+      }
+
+      // Out of current month
+      &.out-of-month {
+        .day-number {
+          color: $gray-light;
+        }
+      }
+
+      // Disabled (past dates)
+      &.disabled {
+        cursor: not-allowed;
+
+        .day-number {
+          color: $gray-light;
+        }
+      }
+
+      // Today indicator
+      &.today {
+        .day-number {
+          font-weight: 700;
+        }
+
+        &:not(.start-date):not(.end-date):not(.in-range)::before {
+          content: '';
+          position: absolute;
+          bottom: 4px;
+          width: 4px;
+          height: 4px;
+          border-radius: 50%;
+          background: $primary-orange;
+          z-index: 1;
+        }
+      }
+
+      // In range (between start and end)
+      &.in-range {
+        background: none;
+        border-radius: 0;
+        margin: 2px 0;
+        overflow: visible;
+
+        @media (max-width: $mobile-sm) {
+          margin: 1px 0;
+        }
+
+        // 44px height gray background centered vertically
+        &::before {
+          content: '';
+          position: absolute;
+          left: -2px;
+          right: -2px;
+          top: 50%;
+          height: 44px;
+          transform: translateY(-50%);
+          background: $light-gray-range;
+          z-index: 0;
+
+          @media (max-width: $mobile-sm) {
+            left: -1px;
+            right: -1px;
+            height: 40px;
+          }
+        }
+
+        .day-number {
+          color: $dark-text;
+          position: relative;
+          z-index: 2;
+        }
+
+        // 주의 마지막 날(일요일): 오른쪽 회색 제거
+        &.row-end::before {
+          right: 0;
+
+          @media (max-width: $mobile-sm) {
+            right: 0;
+          }
+        }
+
+        // 주의 첫 번째 날(월요일): 왼쪽 회색 제거
+        &.row-start::before {
+          left: 0;
+
+          @media (max-width: $mobile-sm) {
+            left: 0;
+          }
+        }
+      }
+
+      // Start date
+      &.start-date {
+        background: none;
+        margin: 2px;
+
+        @media (max-width: $mobile-sm) {
+          margin: 1px;
+        }
+
+        // 주황색 원 (위에)
+        &::before {
+          content: '';
+          position: absolute;
+          inset: 0;
+          background: $primary-orange;
+          border-radius: 50%;
+          z-index: 1;
+        }
+
+        .day-number {
+          color: $white;
+          font-weight: 700;
+          position: relative;
+          z-index: 2;
+        }
+
+        // 시작일과 종료일이 다른 경우 - 오른쪽 회색 연결 (뒤에)
+        &:not(.end-date):not(.row-end)::after {
+          content: '';
+          position: absolute;
+          left: 0;
+          right: -4px;
+          top: 50%;
+          height: 44px;
+          transform: translateY(-50%);
+          background: $light-gray-range;
+          z-index: 0;
+          clip-path: polygon(50% 0, 100% 0, 100% 100%, 50% 100%);
+
+          @media (max-width: $mobile-sm) {
+            right: -2px;
+            height: 40px;
+          }
+        }
+      }
+
+      // End date
+      &.end-date {
+        background: none;
+        margin: 2px;
+
+        @media (max-width: $mobile-sm) {
+          margin: 1px;
+        }
+
+        // 종료일이 시작일과 다른 경우 - 왼쪽 회색 연결 (뒤에)
+        &:not(.start-date):not(.row-start)::before {
+          content: '';
+          position: absolute;
+          right: 0;
+          left: -4px;
+          top: 50%;
+          height: 44px;
+          transform: translateY(-50%);
+          background: $light-gray-range;
+          z-index: 0;
+          clip-path: polygon(0 0, 50% 0, 50% 100%, 0 100%);
+
+          @media (max-width: $mobile-sm) {
+            left: -2px;
+            height: 40px;
+          }
+        }
+
+        // 주황색 원 (위에)
+        &::after {
+          content: '';
+          position: absolute;
+          inset: 0;
+          background: $primary-orange;
+          border-radius: 50%;
+          z-index: 1;
+        }
+
+        .day-number {
+          color: $white;
+          font-weight: 700;
+          position: relative;
+          z-index: 2;
+        }
+      }
+
+      // Hover effect (only for enabled dates, excluding start/end)
+      &:not(.disabled):not(.out-of-month):not(.start-date):not(.end-date):hover {
+        background: rgba(247, 98, 65, 0.1);
+      }
+
+      &:not(.disabled):not(.out-of-month):not(.start-date):not(.end-date):active {
+        background: rgba(247, 98, 65, 0.2);
+      }
+
+      // Disabled state overrides
+      &:disabled {
+        cursor: not-allowed;
+
+        &:hover {
+          background: none;
+        }
+      }
+    }
+  }
+}
