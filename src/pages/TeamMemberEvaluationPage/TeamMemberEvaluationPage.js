@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { submitEvaluation, fetchEvaluationTargets } from '../../services/evaluation';
 import { fetchProjectDetails } from '../../services/projects';
@@ -16,6 +16,7 @@ import EvaluationStep3 from './components/EvaluationStep3';
 function TeamMemberEvaluationPage() {
   const { projectId, memberId } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const { user } = useAuth();
   const [currentStep, setCurrentStep] = useState(1); // 1: 카테고리, 2: 전체/역할, 3: 완료
   const [loading, setLoading] = useState(true);
@@ -41,6 +42,14 @@ function TeamMemberEvaluationPage() {
   });
 
   useEffect(() => {
+    // skipFetch 플래그 확인 - 팀원 전환 시 불필요한 데이터 fetch 방지
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    if (location.state?.skipFetch) {
+      // 브라우저 히스토리 state 정리
+      window.history.replaceState({}, document.title);
+      return;
+    }
+
     const fetchData = async () => {
       setLoading(true);
       setError(null);
@@ -244,6 +253,41 @@ function TeamMemberEvaluationPage() {
     return <div className={styles.noData}>데이터를 찾을 수 없습니다.</div>;
   }
 
+  const handleMemberSelect = (targetMemberId) => {
+    if (targetMemberId !== memberId) {
+      // Optimistic UI: 즉시 로컬 state 업데이트
+      const targetMember = projectData.members.find(m => m.id === targetMemberId);
+
+      if (targetMember) {
+        // 즉시 UI 업데이트
+        setMemberData(targetMember);
+      }
+
+      // Reset current step to 1 when switching members
+      setCurrentStep(1);
+
+      // Reset evaluation data
+      setEvaluationData({
+        categoryRatings: {
+          participation: 0,
+          communication: 0,
+          responsibility: 0,
+          collaboration: 0,
+          individualAbility: 0
+        },
+        overallRating: 0,
+        roleDescription: '',
+        extractedKeywords: [],
+        encouragementMessage: ''
+      });
+
+      // URL 변경 (skipFetch 플래그로 불필요한 데이터 fetch 방지)
+      navigate(getTeamMemberEvaluationUrl(projectId, targetMemberId), {
+        state: { skipFetch: true }
+      });
+    }
+  };
+
   const renderCurrentStep = () => {
     const commonProps = {
       projectData,
@@ -254,7 +298,8 @@ function TeamMemberEvaluationPage() {
       onCategoryRatingChange: handleCategoryRatingChange,
       onOverallRatingChange: handleOverallRatingChange,
       onRoleDescriptionChange: handleRoleDescriptionChange,
-      onSubmit: handleSubmitEvaluation
+      onSubmit: handleSubmitEvaluation,
+      onMemberSelect: handleMemberSelect
     };
 
     switch (currentStep) {

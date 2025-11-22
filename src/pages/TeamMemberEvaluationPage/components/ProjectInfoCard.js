@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from './ProjectInfoCard.module.scss';
 
-const ProjectInfoCard = ({ projectData, memberData }) => {
+const ProjectInfoCard = ({ projectData, memberData, onMemberSelect }) => {
     if (!projectData) return null;
 
     const calculateDDay = (startDate) => {
@@ -58,6 +58,7 @@ const ProjectInfoCard = ({ projectData, memberData }) => {
                             <div
                                 key={member.id}
                                 className={`${styles.avatarWrapper} ${isCompleted ? styles.disabled : ''}`}
+                                onClick={() => onMemberSelect && onMemberSelect(member.id)}
                             >
                                 <div className={`${styles.avatar} ${isCurrent ? styles.current : ''} ${isCompleted ? styles.completed : ''}`}>
                                     <img src={member.avatar} alt={member.name} />

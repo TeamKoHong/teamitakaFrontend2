@@ -13,13 +13,14 @@ const EvaluationStep2 = ({
   evaluationData,
   onOverallRatingChange,
   onRoleDescriptionChange,
-  onSubmit
+  onSubmit,
+  onMemberSelect
 }) => {
-  const isValid = evaluationData.overallRating > 0 && evaluationData.roleDescription.length > 0;
+  const isFormValid = evaluationData.overallRating > 0;
 
   return (
     <>
-      <ProjectInfoCard projectData={projectData} memberData={memberData} />
+      <ProjectInfoCard projectData={projectData} memberData={memberData} onMemberSelect={onMemberSelect} />
 
       <div style={{ margin: '20px 0', display: 'flex', justifyContent: 'center' }}>
         <StepIndicator currentStep={2} totalSteps={2} />
@@ -54,7 +55,7 @@ const EvaluationStep2 = ({
         <Button
           variant="primary"
           fullWidth
-          disabled={!isValid}
+          disabled={!isFormValid}
           onClick={onSubmit}
         >
           평가 보내기

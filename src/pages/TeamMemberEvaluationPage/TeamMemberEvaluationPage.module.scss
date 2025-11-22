@@ -148,18 +148,34 @@ $track-bg: #ececec;
         border-radius: 50%;
         overflow: hidden;
         position: relative;
+        border: none;
+        transition: all 0.3s ease;
+        cursor: pointer;
 
         img {
           width: 100%;
           height: 100%;
           object-fit: cover;
+          transition: transform 0.3s ease;
+        }
+
+        // Hover 효과 (완료되지 않은 팀원만)
+        &:not(.completedAvatar):hover {
+          transform: scale(1.05);
+
+          img {
+            transform: scale(1.1);
+          }
         }
 
         &.currentAvatar {
           border: 2px solid $primary-orange;
+          box-shadow: 0 0 0 2px rgba(247, 98, 65, 0.2);
         }
 
         &.completedAvatar {
+          cursor: default;
+
           img {
             opacity: 0.5;
           }
