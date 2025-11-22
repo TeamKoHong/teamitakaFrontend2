@@ -10,6 +10,7 @@ export default function DefaultHeader({
   onChatClick,
   backPath = -1, // useNavigate() 에 넘길 값을 기본으로
   onBack, // 슬라이드 닫기
+  rightElement, // Custom right element (e.g., Close button)
 }) {
   const navigate = useNavigate();
 
@@ -31,7 +32,9 @@ export default function DefaultHeader({
         <BackArrow />
       </button>
       <h1 className="member-header-title">{title}</h1>
-      {showChat ? (
+      {rightElement ? (
+        rightElement
+      ) : showChat ? (
         <button
           className="member-header-chat"
           onClick={onChatClick}
