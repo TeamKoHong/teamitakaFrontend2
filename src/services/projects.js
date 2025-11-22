@@ -66,3 +66,38 @@ export const getMyProjects = async ({ status = 'ongoing', limit = 10, offset = 0
     }
     return res.json(); // { success, items, page }
 };
+
+/**
+ * Fetches project details by ID
+ * @param {string} projectId - Project UUID
+ * @returns {Promise<Object>} Project details
+ */
+export const fetchProjectDetails = async (projectId) => {
+    const { API_BASE_URL, headers } = getApiConfig();
+    const token = localStorage.getItem('authToken');
+
+    if (!token) {
+        const err = new Error('UNAUTHORIZED');
+        err.code = 'UNAUTHORIZED';
+        throw err;
+    }
+
+    const res = await fetch(`${API_BASE_URL}/api/projects/${projectId}`, {
+        headers: { ...headers, Authorization: `Bearer ${token}` },
+    });
+
+    if (res.status === 401 || res.status === 403) {
+        const err = new Error('UNAUTHORIZED');
+        err.code = 'UNAUTHORIZED';
+        throw err;
+    }
+
+    if (!res.ok) {
+        const errorData = await res.json();
+        const err = new Error(errorData.error || 'Failed to fetch project details');
+        err.code = 'SERVER_ERROR';
+        throw err;
+    }
+
+    return res.json();
+};

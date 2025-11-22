@@ -9,12 +9,18 @@
 
   main {
     width: 100%;
+    flex: 1;
+    overflow: hidden; // 자식 요소에서 스크롤 처리하도록
+    display: flex;
+    flex-direction: column;
   }
+
   /* 프로젝트 리스트 */
   .project-info {
     padding: 0px 22px;
     width: 100%;
     margin-top: 1rem;
+
     ma .project-explain {
       font-size: 0.875rem; // 14px -> 0.875rem
       line-height: 1.4;
@@ -27,6 +33,7 @@
     display: flex;
     justify-content: flex-end;
     margin-bottom: 0.5rem;
+
     .project-select {
       width: fit-content;
       border: none;
