@@ -15,10 +15,17 @@ function ProjectManagement() {
     return 0; // default: progress
   })();
   const [tabIndex, setTabIndex] = useState(initialTab); // 0: 진행 중, 1: 모집중, 2: 완료된
+  const [, setSearchParams] = useSearchParams();
+
+  const handleTabChange = (index) => {
+    setTabIndex(index);
+    const tabName = index === 2 ? 'completed' : index === 1 ? 'recruiting' : 'progress';
+    setSearchParams({ tab: tabName });
+  };
 
   return (
     <div className="project-management-container">
-      <Header onTabChange={setTabIndex} activeTabIndex={tabIndex} /> {/* Tab 변경 시 setTabIndex 실행 */}
+      <Header onTabChange={handleTabChange} activeTabIndex={tabIndex} /> {/* Tab 변경 시 setTabIndex 실행 */}
       <main>
         {tabIndex === 0 && <ProgressComponent />}
         {tabIndex === 1 && <RecruitingComponent />}
