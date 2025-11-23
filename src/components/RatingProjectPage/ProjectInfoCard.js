@@ -11,7 +11,9 @@ export default function ProjectInfoCard({ name, period, meetingTime, avatars, dd
           <div className={styles.projectName}>{name}</div>
           <div className={styles.infoRow}>
             <span className={styles.iconText}><CalendarIcon className={styles.icon} aria-hidden="true" /> {period}</span>
-            <span className={styles.iconText}><ClockIcon className={styles.icon} aria-hidden="true" /> {meetingTime}</span>
+            {meetingTime && (
+              <span className={styles.iconText}><ClockIcon className={styles.icon} aria-hidden="true" /> {meetingTime}</span>
+            )}
           </div>
           <div className={styles.avatars}>
             {avatars.map((src, i) => (
