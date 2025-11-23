@@ -11,6 +11,7 @@ import { getMyProjects } from '../../../services/projects';
 import { compareProjectLists } from '../../../utils/compareProjects';
 import { deriveCompletedProjects, splitByEvaluationStatus } from '../../../utils/projectFilters';
 import { getTeamMemberEvaluationUrl } from '../../../constants/routes';
+import { transformProjectForEvaluation } from '../../../utils/projectTransform';
 
 const CompletedComponent = () => {
   const navigate = useNavigate();
@@ -33,8 +34,14 @@ const CompletedComponent = () => {
   // SINGLE PIPELINE: Derive UI list from server data
   const completedProjects = deriveCompletedProjects(serverProjects, { sortOrder: sortBy });
 
+  console.log('🔍 [DEBUG] serverProjects:', serverProjects);
+  console.log('🔍 [DEBUG] completedProjects after derive:', completedProjects);
+
   // Split for display sections
   const { pending: pendingProjects, completed: completedProjectsDisplay } = splitByEvaluationStatus(completedProjects);
+
+  console.log('🔍 [DEBUG] pendingProjects:', pendingProjects);
+  console.log('🔍 [DEBUG] completedProjectsDisplay:', completedProjectsDisplay);
 
 
   // Verify consistency in development mode only
@@ -53,8 +60,11 @@ const CompletedComponent = () => {
 
   const handleCompletedItemClick = (project) => {
     // 평가 완료 프로젝트는 평가 결과 조회 페이지로 이동
+    // API 데이터를 UI 형식으로 변환
+    const transformedProject = transformProjectForEvaluation(project);
+
     navigate(`/evaluation/project/${project.project_id}`, {
-      state: { projectSummary: project, from: { path: '/project-management', tab: 'completed' } },
+      state: { projectSummary: transformedProject, from: { path: '/project-management', tab: 'completed' } },
     });
   };
 
@@ -104,14 +114,22 @@ const CompletedComponent = () => {
       setIsLoading(true);
       setError(null);
 
+      console.log('🔍 [DEBUG] Fetching completed projects...', { status: 'completed', limit: page.limit || 10, offset: nextOffset });
+
       const res = await getMyProjects({
         status: 'completed',
         limit: page.limit || 10,
         offset: nextOffset
       });
 
+      console.log('🔍 [DEBUG] API Response:', res);
+      console.log('🔍 [DEBUG] Response items:', res?.items);
+      console.log('🔍 [DEBUG] Items length:', res?.items?.length);
+
       if (res?.success) {
         const newItems = res.items || [];
+
+        console.log('🔍 [DEBUG] New items to add:', newItems);
 
         // Update server projects (single source of truth)
         if (nextOffset === 0) {
@@ -121,7 +139,9 @@ const CompletedComponent = () => {
         }
 
         setPage(res.page || { total: 0, limit: 10, offset: nextOffset });
+        console.log('🔍 [DEBUG] Updated serverProjects, length:', newItems.length);
       } else {
+        console.error('❌ [DEBUG] API response missing success flag:', res);
         throw new Error('SERVER_ERROR');
       }
     } catch (e) {

@@ -39,6 +39,8 @@ $primary: #ef4423;
 
   img { width:100%; height:100%; object-fit: cover; display:block; }
 
+  .upload-icon { width:23.2px; height:29px; opacity:.7; object-fit: contain; }
+
   .plus { width:30px; height:30px; border-radius:8px; border:2px solid #8e8e93; position:relative; opacity:.85; }
   .plus::before, .plus::after { content:""; position:absolute; background:#8e8e93; border-radius:2px; }
   .plus::before { width:2px; height:18px; top:6px; left:14px; }
@@ -53,12 +55,17 @@ $primary: #ef4423;
   z-index: 999;
 }
 
-/* 화면 전체를 덮고 ‘항상 하단’으로 붙임 */
+/* 화면 전체를 덮고 '항상 하단'으로 붙임 */
 .sheet {
-  position: fixed; inset: 0;
-  display: flex; flex-direction: column; justify-content: flex-end; 
-  padding: 0 16px calc(8px + env(safe-area-inset-bottom));
-  gap: 8px; background: transparent;
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 0 16px calc(16px + env(safe-area-inset-bottom));
+  gap: 8px;
+  background: transparent;
   z-index: 1000;
   pointer-events: none;                 /* 배경 클릭 안 되게 */
 }
@@ -68,11 +75,17 @@ $primary: #ef4423;
   background: #fff; border-radius: 16px; overflow: hidden;
 }
 
-/* 항목(구분선은 ‘사이’에만 들어가도록) */
+/* 항목(구분선은 '사이'에만 들어가도록) */
 .sheet .sheet-panel .item {
   height: 52px;
   display:flex; align-items:center; justify-content:center;
   font-size: 15px;
+  cursor: pointer;
+
+  &.disabled {
+    color: #d1d5db;
+    cursor: not-allowed;
+  }
 }
 .sheet .sheet-panel .item + .item { border-top: 1px solid $line; }  /* ← 이 줄만 경계선 */
 

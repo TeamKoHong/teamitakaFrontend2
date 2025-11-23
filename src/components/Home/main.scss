@@ -18,9 +18,9 @@ $avatar-offset: 102px;     // 기본
 $avatar-offset-sm: 106px;  // 360px 이하
 
 /* 헤더 아래 흰 공백(카드와 헤더 사이 간격) 조절 */
-$card-gap-top: -40px;
-/* 56 - (-40) = 96px 만큼 프로필 카드 위로 당김 */
-$pull-up: $header-h - $card-gap-top;
+$card-gap-top: 0px;
+/* 56px 만큼 프로필 카드 위로 당김 (헤더 바로 아래 정렬) */
+$pull-up: $header-h;
 
 /* ✅ 키워드(.tags) 아래 흰색 공백 크기 */
 $keywords-bottom-space: 24px;
@@ -71,8 +71,8 @@ $keywords-bottom-space: 24px;
     position: relative;
     background: $card;
     border-radius: 0 0 $radius-lg $radius-lg; // 상단 0: 헤더와 한 장처럼
-    box-shadow: none; 
-    padding: 16px;
+    box-shadow: none;
+    padding: 64px 16px 16px 16px; // 상단 패딩 증가: 헤더와 겹침 방지
     /* 기존: margin: 0 -16px 20px;  -> 헤더 아래 흰 공백 제거 */
     margin: -$pull-up -16px 20px;
 
@@ -85,7 +85,7 @@ $keywords-bottom-space: 24px;
     align-items: start;
 
     /* 오른쪽: 프로필 이미지  */
-    .profile-left {
+    .profile-right {
       grid-column: 2;
       display: grid;
       align-items: start;
@@ -161,6 +161,39 @@ $keywords-bottom-space: 24px;
     padding: 16px;
     margin-bottom: 16px;
 
+    /* 프로젝트 목록 */
+    .project-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    /* 로딩/에러 상태 */
+    .loading-state,
+    .error-state {
+      padding: 40px 16px;
+      text-align: center;
+      font-size: 14px;
+      color: $ink-3;
+
+      button {
+        margin-top: 12px;
+        padding: 8px 16px;
+        background: $brand;
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: transform 0.06s ease;
+
+        &:active {
+          transform: translateY(1px);
+        }
+      }
+    }
+
     .empty-card {
       border-radius: $radius-lg;
       padding: 24px 16px;
@@ -217,8 +250,8 @@ $keywords-bottom-space: 24px;
       column-gap: 12px;
 
       /* 모바일에서도 아바타 더 내려서 정렬 */
-      .profile-left { transform: translateY($avatar-offset-sm) !important; }
-      .profile-left .profile-img { width: 76px; height: 76px; font-size: 26px; margin-bottom: 0; }
+      .profile-right { transform: translateY($avatar-offset-sm) !important; }
+      .profile-right .profile-img { width: 76px; height: 76px; font-size: 26px; margin-bottom: 0; }
     }
 
     .my-projects .empty-card .empty-img { width: 112px; }

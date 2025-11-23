@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import './RegisterPage.scss';
 import './RegisterPage.step2.scss';
 import { useNavigate, Link } from 'react-router-dom';
@@ -438,15 +438,11 @@ function RegisterPage() {
                         </div>
                         {email && !isValidEmail(email) && !verificationError && (
                             <div className="input-error-text" role="alert">
-                                ⚠️ 올바른 이메일 형식을 입력해주세요.
+                                올바른 이메일 형식을 입력해주세요.
                             </div>
                         )}
                         {verificationError && (
                             <div className="input-error-text" role="alert" aria-live="polite">
-                                {verificationErrorCode === 'DUPLICATE_EMAIL' && '⚠️ '}
-                                {verificationErrorCode === 'RATE_LIMITED' && '⏱️ '}
-                                {verificationErrorCode === 'INVALID_EMAIL' && '⚠️ '}
-                                {verificationErrorCode === 'NETWORK_ERROR' && '🔌 '}
                                 {verificationError}
                                 {verificationErrorCode === 'DUPLICATE_EMAIL' && (
                                     <div style={{ marginTop: '8px', fontSize: '14px' }}>
@@ -495,13 +491,13 @@ function RegisterPage() {
                         </div>
                         <div className="resend-code-link" onClick={handleResendCode}>코드 다시 받기</div>
                         {showToast && (
-                            <div className="toast-message">
-                                <div className="toast-icon">
+                            <div className="register-toast-message">
+                                <div className="register-toast-icon">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="22" height="17" viewBox="0 0 22 17" fill="none">
                                         <path d="M19.4501 0.978472C19.9877 0.420763 20.8752 0.40458 21.4332 0.941933C21.9913 1.47951 22.0083 2.36787 21.4707 2.92597L8.85762 16.0213C8.59314 16.2959 8.22765 16.4507 7.84641 16.4507C7.46536 16.4506 7.10053 16.2957 6.83613 16.0213L0.529591 9.47366C-0.00787739 8.91566 0.00834407 8.02723 0.56613 7.48962C1.12413 6.95215 2.01256 6.96837 2.55017 7.52616L7.84641 13.0243L19.4501 0.978472Z" fill="#FFFDFC"/>
                                     </svg>
                                 </div>
-                                <span className="toast-text">인증 코드를 전송했습니다.</span>
+                                <span className="register-toast-text">인증 코드를 전송했습니다.</span>
                             </div>
                         )}
                     </div>

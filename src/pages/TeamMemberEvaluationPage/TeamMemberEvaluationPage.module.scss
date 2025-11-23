@@ -1,1300 +1,560 @@
 @use '../../styles/variables' as *;
 @use 'sass:color';
-@use 'sass:math';
 
-// CSS Custom Properties 시스템 - 반응형 디자인을 위한 동적 변수
-:root {
-  // 반응형 간격 시스템
-  --spacing-xs: 4px;
-  --spacing-sm: 8px;
-  --spacing-md: 12px;
-  --spacing-lg: 16px;
-  --spacing-xl: 20px;
-  --spacing-xxl: 24px;
-  --spacing-xxxl: 32px;
-  
-  // 반응형 패딩 시스템
-  --padding-xs: 8px;
-  --padding-sm: 12px;
-  --padding-md: 16px;
-  --padding-lg: 20px;
-  --padding-xl: 24px;
-  
-  // 반응형 폰트 크기 시스템
-  --font-size-xs: 11px;
-  --font-size-sm: 13px;
-  --font-size-md: 15px;
-  --font-size-lg: 16px;
-  --font-size-xl: 18px;
-  --font-size-xxl: 20px;
-  
-  // 반응형 테두리 반경 시스템
-  --border-radius-sm: 8px;
-  --border-radius-md: 10px;
-  --border-radius-lg: 12px;
-  --border-radius-xl: 16px;
-  --border-radius-xxl: 20px;
-  
-  // 반응형 높이 시스템
-  --button-height-sm: 48px;
-  --button-height-md: 52px;
-  --button-height-lg: 56px;
-  
-  --input-height-sm: 80px;
-  --input-height-md: 100px;
-  --input-height-lg: 120px;
-  
-  // 반응형 간격 시스템
-  --gap-xs: 8px;
-  --gap-sm: 12px;
-  --gap-md: 16px;
-  --gap-lg: 20px;
-  --gap-xl: 24px;
-  
-  // 반응형 아이콘 크기 시스템
-  --icon-size-sm: 20px;
-  --icon-size-md: 24px;
-  --icon-size-lg: 28px;
-  --icon-size-xl: 32px;
-}
+// Figma Design Colors
+$bg-color: #f2f2f2;
+$card-bg: #ffffff;
+$primary-orange: #f76241;
+$text-dark: #140805;
+$text-gray: #807c7c;
+$track-bg: #ececec;
 
-// 카드 기본 스타일
-.card {
-  background: $white;
-  border-radius: 12px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-  padding: 20px;
-  margin-bottom: 16px;
-  width: 100%; // 명시적 너비 설정
-  box-sizing: border-box; // 패딩과 보더를 너비에 포함
-}
-
-// 페이지 컨테이너
 .pageContainer {
   min-height: 100vh;
+  background-color: $bg-color;
+  font-family: 'Pretendard', sans-serif;
   display: flex;
   flex-direction: column;
-  // 중성 회색 배경
-  background: $gray-light;
+  align-items: center;
+  padding-bottom: 80px; // BottomNav space
 }
 
-// 콘텐츠 영역
 .content {
-  flex: 1;
-  // 하단 여유 공간: 6rem (BottomNav 높이) + 56px (CTA 버튼 영역) = 스크롤 시 콘텐츠가 BottomNav에 가려지지 않도록
-  padding: var(--padding-xl) var(--padding-lg) calc(6rem + 56px) var(--padding-lg);
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
-  overscroll-behavior-y: contain;
-  max-width: 100%; // 480px에서 100%로 변경하여 전체 너비 활용
-  margin: 0 auto;
-  width: 100%; // 명시적 너비 설정
+  width: 100%;
+  max-width: 390px; // Mobile width
+  padding: 0 16px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-// 로딩, 에러, 데이터 없음 상태
-.loading, .error, .noData {
+// Header
+.customHeader {
+  width: 100%;
+  max-width: 390px;
+  height: 47px;
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 200px;
-  font-size: $font-size-md;
-  color: $gray;
-}
+  position: relative;
+  margin-bottom: 20px;
 
-.error {
-  color: $error-color;
-}
-
-// 페이지 배경
-.pageBg {
-  min-height: 100vh;
-  background: #F0F2F5;
-  padding-bottom: 80px;
-}
-
-// 스크롤 영역
-.scrollArea {
-  padding: var(--padding-lg);
-  max-width: 100%; // 480px에서 100%로 변경
-  margin: 0 auto;
-  width: 100%; // 명시적 너비 설정
-}
-
-// 헤더
-.header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: var(--spacing-xxl);
-  
-  .title {
-    font-size: $font-size-xl;
-    font-weight: $font-weight-bold;
-    color: $gray-dark;
+  .headerTitle {
+    font-size: 17px;
+    font-weight: 600;
+    color: $text-dark;
   }
-  
-  .backButton {
+
+  .closeButton {
+    position: absolute;
+    right: 16px;
     background: none;
     border: none;
-    font-size: $font-size-lg;
-    color: $gray-dark;
+    font-size: 20px;
     cursor: pointer;
-    padding: var(--spacing-sm);
-    border-radius: 50%;
-    transition: background-color 0.2s ease;
-    
-    &:hover {
-      background: rgba(0, 0, 0, 0.05);
-    }
+    color: $text-dark;
   }
 }
 
-// 프로젝트 정보 카드
+// Project Info Card
 .projectInfoCard {
-  @extend .card;
-  margin-bottom: var(--spacing-xl);
-  // 카드 라운드/패딩/섀도우 보정
-  border-radius: var(--border-radius-xxl);
-  padding: var(--padding-xl);
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
-  width: 100%; // 명시적 너비 설정
-  box-sizing: border-box; // 패딩과 보더를 너비에 포함
-  
-  .projectName {
-    font-size: 16px;
-    font-weight: $font-weight-bold;
-    color: $gray-dark;
-    margin-bottom: 4px;
-    word-break: break-word; // 긴 텍스트 줄바꿈
-  }
-  
-  .projectDescription {
-    font-size: 12px;
-    color: $gray;
-    margin-bottom: 20px;
-    word-break: break-word; // 긴 텍스트 줄바꿈
-  }
-  
-  .memberProfiles {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap; // 모바일에서 줄바꿈 허용
-    gap: 12px; // 간격 추가
-    
-    .currentMember {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      flex: 1; // 유연한 너비
-      min-width: 0; // flex 아이템 축소 허용
-      
-      .profileImage {
-        width: 48px;
-        height: 48px;
-        border-radius: 50%;
-        border: 2px solid $gray-light;
-        object-fit: cover;
-        flex-shrink: 0; // 이미지 크기 고정
-      }
-      
-      .memberInfo {
-        display: flex;
-        flex-direction: column;
-        gap: 4px;
-        min-width: 0; // flex 아이템 축소 허용
-        
-        .currentLabel {
-          font-size: 12px;
-          color: $gray;
-          margin-bottom: 2px;
-        }
-        
-        .memberName {
-          font-size: 16px;
-          font-weight: $font-weight-bold;
-          color: $primary-color;
-          word-break: break-word; // 긴 이름 줄바꿈
-        }
-      }
-    }
-    
-    .otherMembers {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap; // 모바일에서 줄바꿈 허용
-      justify-content: flex-end; // 우측 정렬
-      
-      .profileItem {
-        position: relative;
-        flex-shrink: 0; // 크기 고정
-        
-        .profileImage {
-          width: 35px;
-          height: 35px;
-          border-radius: 50%;
-          border: 2px solid $gray-light;
-          object-fit: cover;
-          
-          &.completed {
-            border-color: $primary-color;
-          }
-        }
-        
-        .statusIcon {
-          position: absolute;
-          top: -2px;
-          right: -2px;
-          width: 12px;
-          height: 12px;
-          border-radius: 50%;
-          background: $primary-color;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          
-          .checkmark {
-            color: $white;
-            font-size: 8px;
-          }
-        }
-      }
-    }
-  }
-}
-
-// 질문 텍스트
-.questionText {
-  font-size: 18px;
-  line-height: 140.98%;
-  font-weight: $font-weight-bold; // 700
-  color: $gray-dark;
-  margin: 12px 0;
-  text-align: left;
-}
-
-// 카테고리 섹션
-.categorySection {
+  width: 100%;
+  background-color: $card-bg;
+  border-radius: 20px;
+  padding: 12px 26px;
+  box-sizing: border-box;
+  margin-bottom: 16px;
   display: flex;
   flex-direction: column;
-  gap: 12px; // 카드 간격 소폭 축소
-}
+  align-items: center;
+  box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.05);
 
-// 슬라이더 컨테이너
-.sliderContainer {
-  margin-bottom: 24px;
-  
-  .sliderLabel {
+  .projectHeaderRow {
+    width: 100%;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 12px;
-    
-    .labelText {
-      font-size: $font-size-md;
-      font-weight: $font-weight-medium;
-      color: $gray-dark;
-    }
-    
-    .ratingValue {
-      font-size: $font-size-lg;
-      font-weight: $font-weight-bold;
-      color: $primary-color;
-      background: color.adjust($primary-color, $lightness: 90%);
-      padding: 4px 12px;
-      border-radius: 12px;
-      min-width: 40px;
-      text-align: center;
-    }
-  }
-  
-  .sliderTrack {
-    position: relative;
-    height: 6px;
-    background: $white;
-    border-radius: 3px;
-    margin-bottom: 8px;
-    
-    .sliderFill {
-      position: absolute;
-      top: 0;
-      left: 0;
-      height: 100%;
-      background: linear-gradient(90deg, $primary-color, color.adjust($primary-color, $lightness: 10%));
-      border-radius: 3px;
-      transition: width 0.2s ease;
-    }
-  }
-  
-  .sliderThumb {
-    position: absolute;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    width: 24px;
-    height: 24px;
-    background: $white;
-    border: 3px solid $primary-color;
-    border-radius: 50%;
-    cursor: pointer;
-    box-shadow: $shadow-lg;
-    transition: all 0.2s ease;
-    
-    &:hover {
-      transform: translate(-50%, -50%) scale(1.1);
-      box-shadow: 0 6px 12px rgba($primary-color, 0.3);
-    }
-    
-    &:active {
-      transform: translate(-50%, -50%) scale(0.95);
-    }
-  }
-  
-  .sliderMarks {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    
-    .mark {
-      font-size: $font-size-xs;
-      color: $gray;
-      font-weight: $font-weight-medium;
-      text-align: center;
-      flex: 1;
-      
-      &.active {
-        color: $primary-color;
-        font-weight: $font-weight-bold;
-      }
-    }
-  }
-}
+    margin-bottom: 16px;
 
-// 전체 평가 섹션
-.overallRatingSection {
-  @extend .card;
-  // CategorySlider와 동일한 카드 스타일 적용
-  background: $white;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-  padding: 14px 16px 12px; // CategorySlider와 동일한 패딩
-  border-radius: 12px; // CategorySlider와 동일한 라운드
-  margin: 0; // CategorySlider와 동일하게 상위에서 간격 관리
-  display: grid; // 내부 간격은 row-gap으로 관리
-  row-gap: clamp(14px, 3.5vw, 18px); // 반응형 간격
-  
-  .overallLabel {
-    font-size: clamp(16px, 4vw, 18px); // Step1 질문과 동일
-    font-weight: $font-weight-bold;
-    color: $gray-dark;
-    text-align: left;
-    margin: 0 0 clamp(14px, 3.5vw, 18px); // 반응형 여백
-  }
-  
-  .starsContainer, .starContainer {
-    display: flex;
-    justify-content: center;
-    align-items: center; // 컨테이너 기준 중앙 정렬
-    height: auto; // 자동 높이로 변경
-    gap: 0; // RatingInputStars 자체 간격 사용
-    margin: 0 0 clamp(14px, 3.5vw, 18px); // 반응형 여백
-    line-height: 1; // 줄간격으로 생기는 상하 여백 제거
-    
-    .star {
-      font-size: 28px;
-      color: $gray-light;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      display: inline-block;
-      line-height: 1;
-      
-      &.filled {
-        color: #FFC531;
-      }
-      
-      &:hover {
-        transform: scale(1.1);
-      }
+    .projectTitle {
+      font-size: 16px;
+      font-weight: 600;
+      color: $text-dark;
     }
-  }
-  
-  .ratingText {
-    text-align: center;
-    font-size: $font-size-sm;
-    color: $gray;
-    margin-bottom: 10px;
-  }
-}
 
-// 역할 설명 섹션
-.roleSection {
-  @extend .card;
-  // CategorySlider와 동일한 카드 스타일 적용
-  background: $white;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-  padding: 14px 16px 12px; // CategorySlider와 동일한 패딩
-  border-radius: 12px; // CategorySlider와 동일한 라운드
-  margin: 0; // CategorySlider와 동일하게 상위에서 간격 관리
-  
-  .roleLabel {
-    font-size: clamp(16px, 4vw, 18px); // Step1과 동일한 크기
-    font-weight: $font-weight-bold;
-    color: $gray-dark;
-    margin: 0 0 clamp(10px, 2.5vw, 12px); // 반응형 여백
+    .daysProgress {
+      font-size: 14px;
+      color: $primary-orange;
+      font-weight: 600;
+    }
   }
 
-  .subDescription {
-    font-size: 12px;
-    color: $gray; // 회색
-    line-height: 1.5;
-    margin-bottom: 12px;
-  }
-  
-  .roleInput {
+  .projectInfo {
     width: 100%;
-    min-height: 80px;
-    padding: 12px;
-    border: 1px solid $gray-light;
-    border-radius: $border-radius-base;
-    font-size: $font-size-sm;
-    resize: vertical;
-    font-family: inherit;
-    
-    &:focus {
-      outline: none;
-      border-color: $primary-color;
-      box-shadow: 0 0 0 2px color.adjust($primary-color, $alpha: -0.8);
-    }
-    
-    &::placeholder {
-      color: $gray;
-    }
-  }
-
-  // keywordPillButton는 제거됨
-
-  // 추천 키워드 칩은 제거되었습니다.
-}
-
-// 키워드 섹션
-.keywordSection {
-  @extend .card;
-  
-  .keywordLabel {
-    font-size: $font-size-md;
-    font-weight: $font-weight-bold;
-    color: $gray-dark;
-    margin-bottom: 12px;
-  }
-  
-  .keywordInput {
-    width: 100%;
-    padding: 12px;
-    border: 1px solid $gray-light;
-    border-radius: $border-radius-base;
-    font-size: $font-size-sm;
-    margin-bottom: 12px;
-    font-family: inherit;
-    
-    &:focus {
-      outline: none;
-      border-color: $primary-color;
-      box-shadow: 0 0 0 2px color.adjust($primary-color, $alpha: -0.8);
-    }
-    
-    &::placeholder {
-      color: $gray;
-    }
-  }
-  
-  .keywordTags {
     display: flex;
-    flex-wrap: wrap;
+    flex-direction: column;
     gap: 8px;
-    margin-bottom: 12px;
-    
-    .keywordTag {
-      background: color.adjust($primary-color, $lightness: 90%);
-      color: $primary-color;
-      padding: 6px 12px;
-      border-radius: 16px;
-      font-size: $font-size-xs;
-      font-weight: $font-weight-medium;
+    margin-bottom: 20px;
+
+    .infoRow {
       display: flex;
       align-items: center;
-      gap: 6px;
-      
-      .removeButton {
-        background: none;
-        border: none;
-        color: $primary-color;
-        font-size: 14px;
-        cursor: pointer;
-        padding: 0;
+      gap: 8px;
+      font-size: 11px;
+      color: #403e3e;
+
+      .iconWrapper {
         width: 16px;
         height: 16px;
+        position: relative;
         display: flex;
         align-items: center;
         justify-content: center;
-        border-radius: 50%;
-        
-        &:hover {
-          background: color.adjust($primary-color, $alpha: -0.8);
+
+        .iconBox {
+          position: absolute;
+          width: 16px;
+          height: 16px;
+          background-color: #403e3e;
+          border-radius: 5px;
+          opacity: 0.1;
+          display: none;
+        }
+
+        .icon {
+          font-size: 12px;
+          z-index: 1;
         }
       }
     }
   }
-  
-  .addKeywordButton {
-    background: $primary-color;
-    color: $white;
-    border: none;
-    padding: 8px 16px;
-    border-radius: $border-radius-base;
-    font-size: $font-size-sm;
-    font-weight: $font-weight-medium;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    
-    &:hover {
-      background: color.adjust($primary-color, $lightness: -10%);
-    }
-    
-    &:disabled {
-      background: $gray-light;
-      color: $gray;
-      cursor: not-allowed;
-    }
-  }
-}
 
-// 응원 메시지 섹션
-.encouragementSection {
-  @extend .card;
-  
-  .encouragementLabel {
-    font-size: $font-size-md;
-    font-weight: $font-weight-bold;
-    color: $gray-dark;
-    margin-bottom: 8px;
-  }
-  
-  .encouragementWarning {
-    font-size: $font-size-xs;
-    color: $error-color;
-    margin-bottom: 12px;
-  }
-  
-  .encouragementInput {
+  .teamAvatars {
     width: 100%;
-    min-height: 60px;
-    padding: 12px;
-    border: 1px solid $gray-light;
-    border-radius: $border-radius-base;
-    font-size: $font-size-sm;
-    resize: vertical;
-    font-family: inherit;
-    
-    &:focus {
-      outline: none;
-      border-color: $primary-color;
-      box-shadow: 0 0 0 2px color.adjust($primary-color, $alpha: -0.8);
-    }
-  }
-}
-
-// 전송 완료 섹션
-.successSection {
-  @extend .card;
-  text-align: center;
-  padding: 32px 20px;
-  
-  .successIcon {
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    background: $primary-color;
     display: flex;
-    align-items: center;
     justify-content: center;
-    margin: 0 auto 24px;
-    
-    .checkmark {
-      color: $white;
-      font-size: 40px;
-      font-weight: $font-weight-bold;
-    }
-  }
-  
-  .successMessage {
-    font-size: 18px;
-    font-weight: $font-weight-bold;
-    color: $gray-dark;
-    margin-bottom: 16px;
-  }
-  
-  .successDescription {
-    font-size: 14px;
-    color: $gray;
-    line-height: 1.5;
-    margin-bottom: 8px;
-  }
-}
+    gap: 16px;
 
-// Step3 상단 요약 스타일
-.successTop {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
-  padding: 24px 0 12px;
-}
-.checkIconCircle {
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  background: $primary-color;
-  color: $white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: $font-weight-bold;
-}
-.title {
-  font-size: 18px;
-  font-weight: $font-weight-bold;
-  color: $gray-dark;
-}
-.memberRow {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 0;
-}
-.plainAvatar { width: 44px; height: 44px; border-radius: 50%; display: block; }
-.memberMeta { display: flex; flex-direction: column; gap: 6px; }
-.memberName { font-weight: $font-weight-bold; color: $gray-dark; }
-.starRow { transform: translateY(-2px); }
-.caption { font-size: 12px; color: $gray; margin: 4px 0 12px; }
-.buttonBlock { margin-top: 8px; }
+    .avatarWrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
 
+      .avatar {
+        width: 55px;
+        height: 55px;
+        border-radius: 50%;
+        overflow: hidden;
+        position: relative;
+        border: none;
+        transition: all 0.3s ease;
+        cursor: pointer;
 
+        img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          transition: transform 0.3s ease;
+        }
 
-// 버튼 스타일
-.button {
-  width: 100%;
-  padding: 16px;
-  border: none;
-  border-radius: 12px;
-  font-size: 15px;
-  font-weight: $font-weight-bold;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  
-  &.primary {
-    background: $primary-color;
-    color: $white;
-    
-    &:hover {
-      background: color.adjust($primary-color, $lightness: -10%);
-    }
-    
-    &:disabled {
-      background: $gray-light;
-      color: $gray;
-      cursor: not-allowed;
-    }
-  }
-  
-  &.secondary {
-    background: $white;
-    color: $gray-dark;
-    border: 1px solid $gray-light;
-    
-    &:hover {
-      background: $gray-light;
+        // Hover 효과 (완료되지 않은 팀원만)
+        &:not(.completedAvatar):hover {
+          transform: scale(1.05);
+
+          img {
+            transform: scale(1.1);
+          }
+        }
+
+        &.currentAvatar {
+          border: 2px solid $primary-orange;
+          box-shadow: 0 0 0 2px rgba(247, 98, 65, 0.2);
+        }
+
+        &.completedAvatar {
+          cursor: default;
+
+          img {
+            opacity: 0.5;
+          }
+        }
+
+        .completedBadge {
+          position: absolute;
+          bottom: 0;
+          right: 0;
+          width: 16px;
+          height: 16px;
+          background-color: $primary-orange;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: white;
+          font-size: 10px;
+          border: 1px solid white;
+          z-index: 1;
+        }
+      }
+
+      .memberInfo {
+        text-align: center;
+
+        .memberName {
+          font-size: 14px;
+          font-weight: 600;
+          color: $text-dark;
+        }
+
+        .memberRole {
+          font-size: 12px;
+          color: #403e3e;
+        }
+      }
     }
   }
 }
 
-// 입력 완료 상태 피드백
-.completionFeedback {
-  text-align: center;
-  color: $error-color;
-  font-size: $font-size-sm;
-  margin-bottom: 12px;
-  padding: 8px 12px;
-  background: color.adjust($error-color, $lightness: 95%);
-  border-radius: $border-radius-base;
-  border: 1px solid color.adjust($error-color, $lightness: 70%);
-}
-
-// 에러 컨테이너 스타일
-.errorContainer {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: var(--spacing-xxl);
-  text-align: center;
-}
-
-.errorText {
-  font-size: var(--font-size-md);
-  color: #666;
-  margin-bottom: var(--spacing-md);
-}
-
-// 다음 버튼 스타일
-.nextButton {
-  width: 100%;
-  padding: var(--spacing-lg) var(--spacing-xl);
-  background-color: #f76241;
-  color: white;
-  border: none;
-  border-radius: var(--border-radius-lg);
-  font-size: var(--font-size-md);
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-
-  &:hover:not(:disabled) {
-    background-color: #e55a3a;
-    transform: translateY(-1px);
-  }
-
-  &:active:not(:disabled) {
-    transform: translateY(0);
-  }
-
-  &.disabled {
-    background-color: #ccc;
-    cursor: not-allowed;
-    transform: none;
-  }
-}
-
-// 버튼 컨테이너 스타일
-.buttonContainer {
-  margin-top: var(--spacing-xxl);
-  padding: 0 var(--spacing-md);
-}
-
-.centerLink {
-  text-align: center;
-  margin-top: 12px;
-  color: $gray-dark;
-  text-decoration: underline;
-  cursor: pointer;
-}
-
-// 단계별 컨테이너
+// Step Container
 .stepContainer {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+// Question Text
+.questionText {
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 140.98%;
+  color: $text-dark;
+  margin: 20px 0 10px;
+  text-align: left;
+  width: 100%;
+}
+
+// Category Section
+.categorySection {
+  width: 100%;
   display: flex;
   flex-direction: column;
   gap: 16px;
-  min-height: calc(100vh - 56px); // 헤더 없는 상태에서도 전체 높이 확보
-}
-.successWrap {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: center; // y축 중앙 정렬
+  margin-bottom: 30px;
 }
 
-// 진행 표시기
-.progressIndicator {
+// Category Item (Card)
+.categoryItem {
+  background-color: $card-bg;
+  border-radius: 20px;
+  padding: 12px 26px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.05);
+
+  .categoryHeader {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    .categoryName {
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      color: $text-dark;
+    }
+
+    .categoryDescription {
+      font-size: 10px;
+      letter-spacing: -0.01em;
+      color: $text-gray;
+    }
+  }
+}
+
+// Rating Input (Custom Slider)
+.ratingInputContainer {
+  width: 100%;
+  position: relative;
+  height: 35px;
+
+  .ratingTrackArea {
+    position: relative;
+    width: 100%;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    touch-action: none;
+  }
+
+  .ratingTrackBackground {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 7px;
+    background-color: $track-bg;
+    border-radius: 50px;
+  }
+
+  .ratingTrackFill {
+    position: absolute;
+    left: 0;
+    height: 7px;
+    background-color: $primary-orange;
+    border-radius: 50px;
+    pointer-events: none;
+  }
+
+  .ratingKnob {
+    position: absolute;
+    width: 17px;
+    height: 17px;
+    background-color: $primary-orange;
+    border-radius: 50%;
+    box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.25);
+    transform: translateX(-50%);
+    pointer-events: none;
+    top: 1.5px;
+  }
+
+  .ratingLabels {
+    position: absolute;
+    top: 20px;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 2px;
+
+    .ratingLabel {
+      font-size: 10px;
+      color: $text-gray;
+      cursor: pointer;
+      width: 20px;
+      text-align: center;
+
+      &.active {
+        color: $primary-orange;
+        font-weight: bold;
+      }
+    }
+  }
+}
+
+// Button
+.buttonContainer {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.nextButton,
+.button {
+  width: 100%;
+  height: 59px;
+  background-color: $primary-orange;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
   display: flex;
   align-items: center;
-  justify-content: flex-start; // 좌측 정렬로 시안에 맞춤
-  gap: 8px;
-  margin: 6px 0 12px;
-  
-  .progressStep {
-    width: 22px;
-    height: 22px;
+  justify-content: center;
+
+  &:disabled {
+    background-color: #d1cccb;
+    cursor: not-allowed;
+  }
+
+  &.secondary {
+    background-color: #dadada;
+    color: $text-gray;
+  }
+}
+
+// Step 2 Styles
+.overallRatingSection {
+  @extend .categoryItem;
+  align-items: center;
+  text-align: center;
+  padding: 24px 16px;
+
+  .overallLabel {
+    font-size: 18px;
+    font-weight: 600;
+    color: $text-dark;
+    margin-bottom: 4px;
+  }
+
+  .overallSubtitle {
+    font-size: 12px;
+    color: $text-gray;
+    margin-bottom: 20px;
+  }
+}
+
+.roleSection {
+  @extend .categoryItem;
+  padding: 16px;
+
+  .roleLabel {
+    font-size: 16px;
+    font-weight: 600;
+    color: $text-dark;
+    margin-bottom: 16px;
+    line-height: 1.4;
+  }
+
+  .textareaWrapper {
+    width: 100%;
+    position: relative;
+    border: 1px solid #d1cccb;
+    border-radius: 20px;
+    padding: 16px;
+    box-sizing: border-box;
+    min-height: 162px;
+    display: flex;
+    flex-direction: column;
+
+    .roleInput {
+      width: 100%;
+      border: none;
+      resize: none;
+      font-size: 14px;
+      color: $text-dark;
+      font-family: inherit;
+      flex: 1;
+      outline: none;
+
+      &::placeholder {
+        color: #d1cccb;
+      }
+    }
+
+    .charCounter {
+      align-self: flex-end;
+      font-size: 12px;
+      color: #d1cccb;
+      margin-top: 8px;
+    }
+  }
+}
+
+// Step 3 Styles
+.successWrap {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.completedMemberCard {
+  width: 360px;
+  background-color: #fffdfc;
+  border: 1px solid #d1cccb;
+  border-radius: 16px;
+  padding: 22px 24px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  .cardHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+
+    .roleTag {
+      font-size: 12px;
+      color: #807c7c;
+      text-transform: capitalize;
+    }
+
+    .evalDate {
+      font-size: 12px;
+      color: #403e3e;
+      text-align: right;
+      text-transform: capitalize;
+    }
+  }
+
+  .cardBody {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    .memberAvatar {
+      width: 55px;
+      height: 55px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .memberInfo {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+
+      .memberName {
+        font-size: 15px;
+        font-weight: 600;
+        color: $text-dark;
+      }
+    }
+  }
+}
+
+.successContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  margin: 40px 0;
+
+  .checkIconCircle {
+    width: 57px;
+    height: 57px;
     border-radius: 50%;
+    background-color: $primary-orange;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 12px;
-    font-weight: $font-weight-bold;
-    background: $white;
-    color: $gray-dark;
-    border: 2px solid $primary-color;
-    transition: all 0.3s ease;
-    
-    &.completed {
-      background: $white; // fill white
-      color: $primary-color; // checkmark color
-    }
-    
-    // Step별 스타일: 1은 오렌지 솔리드, 2는 회색 솔리드
-    &.current { // step1 현재
-      background: $primary-color;
-      color: $white;
-      border-color: transparent;
-    }
-    &.upcoming { // step2 예정
-      background: #CFCFD3;
-      color: $white;
-      border-color: transparent;
-    }
-    
-    .stepNumber {
-      font-size: 12px;
-      font-weight: $font-weight-bold;
-    }
-    .checkIcon {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      color: $primary-color; // SVG stroke uses currentColor
-      
-      // slightly smaller check mark (about 80% of circle)
-      svg {
-        width: 80%;
-        height: 80%;
-      }
-    }
+    font-size: 24px;
+    color: white;
+    margin: 20px 0;
   }
-  
-  .progressLine {
-    width: 40px;
-    height: 0;
-    border-top: 3px dotted $gray;
-    transition: border-color 0.3s ease;
-    
-    &.completed {
-      border-top-color: $primary-color;
-    }
+
+  .successMessage {
+    font-size: 18px;
+    font-weight: 600;
+    color: $text-dark;
+    line-height: 140.98%;
+    margin-bottom: 30px;
   }
 }
 
-// 반응형 미디어 쿼리 - Step1 & Step2 일관성 확보
-
-// 극소형 모바일 (320px) 대응 추가
-@media (max-width: 359px) {
-  :root {
-    --spacing-xs: 3px;
-    --spacing-sm: 6px;
-    --spacing-md: 8px;
-    --spacing-lg: 12px;
-    --spacing-xl: 16px;
-    --spacing-xxl: 20px;
-    --spacing-xxxl: 24px;
-    
-    --padding-xs: 6px;
-    --padding-sm: 8px;
-    --padding-md: 12px;
-    --padding-lg: 16px;
-    --padding-xl: 20px;
-    
-    --font-size-xs: 10px;
-    --font-size-sm: 12px;
-    --font-size-md: 13px;
-    --font-size-lg: 15px;
-    --font-size-xl: 16px;
-    --font-size-xxl: 18px;
-    
-    --border-radius-sm: 6px;
-    --border-radius-md: 8px;
-    --border-radius-lg: 10px;
-    --border-radius-xl: 12px;
-    --border-radius-xxl: 16px;
-    
-    --button-height-sm: 44px;
-    --button-height-md: 48px;
-    --button-height-lg: 52px;
-    
-    --input-height-sm: 70px;
-    --input-height-md: 90px;
-    --input-height-lg: 110px;
-    
-    --gap-xs: 6px;
-    --gap-sm: 8px;
-    --gap-md: 12px;
-    --gap-lg: 16px;
-    --gap-xl: 20px;
-    
-    --icon-size-sm: 18px;
-    --icon-size-md: 20px;
-    --icon-size-lg: 24px;
-    --icon-size-xl: 28px;
-  }
-  
-  // 극소형 모바일 최적화
-  .content {
-    padding: var(--padding-md) var(--padding-xs) calc(6rem + 56px) var(--padding-xs);
-  }
-  
-  .projectInfoCard {
-    padding: var(--padding-md);
-    border-radius: var(--border-radius-xl);
-    margin-bottom: var(--spacing-md);
-  }
-  
-  .questionText {
-    font-size: var(--font-size-lg);
-    margin: var(--spacing-md) 0 var(--spacing-lg);
-    text-align: center;
-  }
-  
-  .overallRatingSection {
-    padding: var(--padding-lg) var(--padding-xl);
-    
-    .overallLabel {
-      font-size: var(--font-size-lg);
-      margin-bottom: var(--spacing-lg);
-    }
-  }
-  
-  .roleSection {
-    padding: var(--padding-lg) var(--padding-xl);
-    
-    .roleLabel {
-      font-size: var(--font-size-lg);
-      margin-bottom: var(--spacing-md);
-    }
-    
-    .subDescription {
-      font-size: var(--font-size-sm);
-      margin-bottom: var(--spacing-lg);
-    }
-  }
-  
-  .buttonContainer {
-    gap: var(--gap-xs);
-    margin-top: var(--spacing-xxl);
-    
-    .button {
-      min-height: var(--button-height-sm);
-      font-size: var(--font-size-lg);
-      border-radius: var(--border-radius-xl);
-    }
-  }
-  
-  .roleInput, .encouragementInput, .keywordInput {
-    font-size: var(--font-size-lg);
-    border-radius: var(--border-radius-md);
-    padding: var(--padding-md);
-  }
-  
-  .roleInput {
-    min-height: var(--input-height-md);
-  }
-  
-  .encouragementInput {
-    min-height: var(--input-height-sm);
-  }
-  
-  .progressIndicator {
-    margin: var(--spacing-sm) 0 var(--spacing-lg);
-    
-    .progressStep {
-      width: var(--icon-size-sm);
-      height: var(--icon-size-sm);
-      font-size: var(--font-size-xs);
-    }
-    
-    .progressLine {
-      width: 40px;
-    }
-  }
-  
-  .starsContainer, .starContainer {
-    gap: var(--gap-md);
-    margin: 0 0 var(--spacing-xl);
-    
-    .star {
-      font-size: var(--icon-size-xl);
-    }
-  }
+.buttonBlock {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: center;
 }
 
-@media (min-width: 360px) and (max-width: 767px) {
-  :root {
-    --spacing-xs: 4px;
-    --spacing-sm: 8px;
-    --spacing-md: 12px;
-    --spacing-lg: 16px;
-    --spacing-xl: 20px;
-    --spacing-xxl: 24px;
-    --spacing-xxxl: 32px;
-    
-    --padding-xs: 8px;
-    --padding-sm: 12px;
-    --padding-md: 16px;
-    --padding-lg: 20px;
-    --padding-xl: 24px;
-    
-    --font-size-xs: 11px;
-    --font-size-sm: 13px;
-    --font-size-md: 15px;
-    --font-size-lg: 16px;
-    --font-size-xl: 18px;
-    --font-size-xxl: 20px;
-    
-    --border-radius-sm: 8px;
-    --border-radius-md: 10px;
-    --border-radius-lg: 12px;
-    --border-radius-xl: 16px;
-    --border-radius-xxl: 20px;
-    
-    --button-height-sm: 48px;
-    --button-height-md: 52px;
-    --button-height-lg: 56px;
-    
-    --input-height-sm: 80px;
-    --input-height-md: 100px;
-    --input-height-lg: 120px;
-    
-    --gap-xs: 8px;
-    --gap-sm: 12px;
-    --gap-md: 16px;
-    --gap-lg: 20px;
-    --gap-xl: 24px;
-    
-    --icon-size-sm: 20px;
-    --icon-size-md: 24px;
-    --icon-size-lg: 28px;
-    --icon-size-xl: 32px;
-  }
-  
-  // 모바일 최적화
-  .content {
-    padding: var(--padding-lg) var(--padding-md) calc(6rem + 56px) var(--padding-md);
-    width: 100%;
-    max-width: 100%;
-  }
-  
-  .scrollArea {
-    padding: var(--padding-md);
-    width: 100%;
-    max-width: 100%;
-  }
-  
-  .projectInfoCard {
-    padding: var(--padding-lg);
-    border-radius: var(--border-radius-xl);
-    margin-bottom: var(--spacing-lg);
-    width: 100%;
-    box-sizing: border-box;
-  }
-  
-  .memberProfiles {
-    flex-direction: column;
-    gap: var(--spacing-lg);
-    align-items: flex-start;
-    width: 100%;
-    
-    .currentMember {
-      align-self: stretch;
-      gap: var(--spacing-lg);
-      width: 100%;
-      
-      .memberInfo {
-        flex: 1;
-        min-width: 0;
-      }
-    }
-    
-    .otherMembers {
-      justify-content: flex-start;
-      flex-wrap: wrap;
-      gap: var(--gap-md);
-      width: 100%;
-    }
-  }
-  
-  .categorySection {
-    gap: var(--spacing-lg); // 모바일에서 카테고리 간격 증가
-    width: 100%;
-  }
-  
-  .questionText {
-    font-size: var(--font-size-lg);
-    margin: var(--spacing-lg) 0 var(--spacing-xl);
-    text-align: center; // 모바일에서 중앙 정렬
-    width: 100%;
-    word-break: keep-all; // 한글 단어 단위 줄바꿈
-  }
-  
-  // Step2 전체 평가 섹션 모바일 최적화
-  .overallRatingSection {
-    padding: var(--padding-xl) var(--spacing-xxl); // CategorySlider 모바일 패딩과 동일
-    width: 100%;
-    box-sizing: border-box;
-    
-    .overallLabel {
-      font-size: var(--font-size-lg);
-      text-align: center; // 모바일에서 중앙 정렬
-      margin-bottom: var(--spacing-xl);
-      word-break: keep-all; // 한글 단어 단위 줄바꿈
-    }
-  }
-  
-  // Step2 역할 섹션 모바일 최적화
-  .roleSection {
-    padding: var(--padding-xl) var(--spacing-xxl); // CategorySlider 모바일 패딩과 동일
-    width: 100%;
-    box-sizing: border-box;
-    
-    .roleLabel {
-      font-size: var(--font-size-lg);
-      text-align: center; // 모바일에서 중앙 정렬
-      margin-bottom: var(--spacing-lg);
-      word-break: keep-all; // 한글 단어 단위 줄바꿈
-    }
-    
-    .subDescription {
-      text-align: center;
-      margin-bottom: var(--spacing-xl);
-      word-break: keep-all; // 한글 단어 단위 줄바꿈
-    }
-  }
-  
-  .buttonContainer {
-    flex-direction: column;
-    gap: var(--gap-md);
-    margin-top: var(--spacing-xxxl);
-    position: sticky;
-    bottom: var(--spacing-lg);
-    width: 100%;
-    padding: 0 var(--padding-md);
-    box-sizing: border-box;
-    
-    .button {
-      min-height: var(--button-height-md); // 터치 최적화
-      font-size: var(--font-size-lg); // iOS 줌 방지
-      border-radius: var(--border-radius-xl);
-      width: 100%;
-    }
-  }
-  
-  .roleInput, .encouragementInput, .keywordInput {
-    font-size: var(--font-size-lg); // iOS 줌 방지
-    border-radius: var(--border-radius-xl);
-    padding: var(--padding-lg);
-    width: 100%;
-    box-sizing: border-box;
-  }
-  
-  .roleInput {
-    min-height: var(--input-height-lg); // 모바일에서 더 큰 텍스트 영역
-  }
-  
-  .encouragementInput {
-    min-height: var(--input-height-md);
-  }
-  
-  // 진행 표시기 모바일 최적화
-  .progressIndicator {
-    justify-content: center;
-    margin: var(--gap-md) 0 var(--spacing-xl);
-    width: 100%;
-    
-    .progressStep {
-      width: var(--icon-size-md);
-      height: var(--icon-size-md);
-      font-size: var(--font-size-xs);
-    }
-    
-    .progressLine {
-      width: 48px;
-    }
-  }
-  
-  // 별점 영역 모바일 최적화 (Step1용)
-  .starsContainer, .starContainer {
-    gap: var(--spacing-lg);
-    margin: 0 0 var(--spacing-xxl);
-    width: 100%;
-    
-    .star {
-      font-size: var(--icon-size-xl); // 모바일에서 더 큰 별
-    }
-  }
+.homeLink {
+  background: none;
+  border: none;
+  color: $text-gray;
+  font-size: 14px;
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 8px;
 }
-
-@media (min-width: 768px) and (max-width: 1023px) {
-  // 태블릿 최적화
-  .content {
-    max-width: 100%; // 600px에서 100%로 변경하여 더 유연하게
-    padding: 24px 20px calc(6rem + 56px) 20px;
-  }
-  
-  .scrollArea {
-    max-width: 100%;
-    padding: 20px;
-  }
-  
-  .memberProfiles {
-    .otherMembers {
-      gap: 12px;
-    }
-  }
-}
-
-@media (min-width: 1024px) {
-  // 데스크톱 최적화
-  .content {
-    max-width: 100%; // 720px에서 100%로 변경하여 더 유연하게
-    padding: 32px 24px calc(6rem + 56px) 24px;
-  }
-  
-  .scrollArea {
-    max-width: 100%;
-    padding: 24px;
-  }
-  
-  .buttonContainer {
-    max-width: 400px;
-    margin-left: auto;
-    margin-right: auto;
-  }
-}
-
-// 터치 기기 최적화
-@media (hover: none) {
-  .star {
-    font-size: clamp(28px, 7vw, 32px); // 터치 기기에서 더 큰 별
-    padding: 4px; // 터치 영역 확대
-  }
-  
-  .sliderTrack {
-    height: 8px; // 터치 기기에서 더 두꺼운 트랙
-  }
-  
-  .sliderThumb {
-    width: clamp(24px, 6vw, 28px);
-    height: clamp(24px, 6vw, 28px);
-  }
-  
-  .button:active {
-    transform: scale(0.98); // 터치 피드백
-  }
-}
-
-// 접근성 개선
-@media (prefers-reduced-motion: reduce) {
-  .sliderThumb,
-  .star,
-  .progressStep,
-  .button {
-    transition: none !important;
-    animation: none !important;
-  }
-}
-
-@media (prefers-contrast: high) {
-  .sliderTrack {
-    border: 2px solid currentColor;
-  }
-  
-  .star {
-    text-shadow: 0 0 2px currentColor;
-  }
-  
-  .button {
-    border: 2px solid currentColor !important;
-  }
-} 

@@ -20,18 +20,35 @@ $page-background: #F8F8F8;
         bottom: 100px;
         left: 50%;
         transform: translateX(-50%);
-        background-color: rgba(0, 0, 0, 0.7);
+        background: linear-gradient(135deg, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.75) 100%);
         color: white;
-        padding: 12px 20px;
-        border-radius: 20px;
+        padding: 14px 24px;
+        border-radius: 24px;
         font-size: 14px;
+        font-weight: 500;
         z-index: 100;
-        animation: fadeInOut 2s ease-in-out;
+        animation: toastSlideIn 2s ease-in-out;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+        backdrop-filter: blur(4px);
     }
 
-    @keyframes fadeInOut {
-        0%, 100% { opacity: 0; }
-        15%, 85% { opacity: 1; }
+    @keyframes toastSlideIn {
+        0% {
+            opacity: 0;
+            transform: translateX(-50%) translateY(20px);
+        }
+        15% {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+        85% {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+        100% {
+            opacity: 0;
+            transform: translateX(-50%) translateY(-10px);
+        }
     }
 
     .topbar {
@@ -54,49 +71,140 @@ $page-background: #F8F8F8;
             background: none;
             border: none;
             cursor: pointer;
-            padding: 4px;
+            padding: 8px;
             display: flex;
             align-items: center;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+
+            &:hover {
+                background-color: #F5F5F5;
+                transform: scale(1.05);
+            }
+
+            &:active {
+                transform: scale(0.95);
+            }
+        }
+
+        // 작성자 메뉴
+        .more-menu-container {
+            position: relative;
+
+            .more-button {
+                background: none;
+                border: none;
+                cursor: pointer;
+                padding: 4px;
+                display: flex;
+                align-items: center;
+                color: $text-color;
+            }
+
+            .more-menu {
+                position: absolute;
+                top: 100%;
+                right: 0;
+                margin-top: 8px;
+                background-color: $background-color;
+                border: 1px solid #E0E0E0;
+                border-radius: 12px;
+                box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+                min-width: 180px;
+                overflow: hidden;
+                z-index: 20;
+                animation: menuSlideIn 0.2s ease-out;
+
+                .menu-item {
+                    width: 100%;
+                    padding: 14px 18px;
+                    border: none;
+                    background: none;
+                    text-align: left;
+                    font-size: 14px;
+                    font-weight: 500;
+                    color: #333333;
+                    cursor: pointer;
+                    transition: all 0.2s ease;
+
+                    &:hover {
+                        background-color: #F8F8F8;
+                        padding-left: 22px;
+                    }
+
+                    &:not(:last-child) {
+                        border-bottom: 1px solid #F0F0F0;
+                    }
+                }
+            }
+
+            @keyframes menuSlideIn {
+                from {
+                    opacity: 0;
+                    transform: translateY(-8px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
         }
     }
 
     .content {
         flex: 1;
         overflow-y: auto;
-        padding: 20px 16px 100px 16px; // footer 높이만큼 패딩 추가
+        padding: 24px 20px 100px 20px; // footer 높이만큼 패딩 추가
 
         .cover-image {
             width: 100%;
-            height: 200px;
+            height: 220px;
             object-fit: cover;
-            border-radius: 12px;
-            margin-bottom: 20px;
+            border-radius: 16px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
         }
 
         .post-header {
+            margin-bottom: 4px;
+
             .post-title {
-                font-size: 22px;
-                font-weight: 700;
-                margin-bottom: 12px;
-                line-height: 1.4;
+                font-size: 20px;
+                font-weight: 800;
+                margin-bottom: 16px;
+                line-height: 1.3;
+                letter-spacing: -0.3px;
+                color: #1C1C1C;
+                text-transform: capitalize;
             }
 
             .meta-info {
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
-                color: $secondary-text-color;
+                color: #807C7C;
                 font-size: 14px;
 
                 .meta-items {
                     display: flex;
-                    gap: 12px;
-                    
+                    gap: 16px;
+
                     span {
                         display: flex;
                         align-items: center;
-                        gap: 4px;
+                        gap: 6px;
+                        font-weight: 600;
+
+                        svg {
+                            width: 20px;
+                            height: 20px;
+                        }
                     }
+                }
+
+                .date {
+                    color: #999999;
+                    font-weight: 500;
                 }
             }
         }
@@ -104,130 +212,351 @@ $page-background: #F8F8F8;
         .divider {
             border: none;
             border-top: 1px solid $border-color;
-            margin: 20px 0;
+            margin: 32px 0;
         }
 
         .project-details {
             display: flex;
             flex-direction: column;
-            gap: 16px;
-            font-size: 15px;
+            gap: 8px;
+            font-size: 16px;
+            background-color: #FAFAFA;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid #F0F0F0;
 
             .detail-item {
                 display: flex;
                 .label {
-                    width: 100px;
-                    color: $secondary-text-color;
-                    font-weight: 500;
+                    width: 120px;
+                    color: #403E3E;
+                    font-weight: 700;
+                    flex-shrink: 0;
+                    letter-spacing: -0.1px;
                 }
                 .value {
-                    color: $text-color;
+                    color: #140805;
+                    font-weight: 500;
+                    line-height: 1.6;
                 }
             }
         }
 
         .post-body {
-            line-height: 1.6;
+            line-height: 1.8;
             font-size: 16px;
-            color: $text-color;
+            color: #140805;
+            font-weight: 400;
+
+            p {
+                margin-bottom: 16px;
+            }
 
             .detail-section {
-                margin-top: 24px;
-                
+                margin-top: 32px;
+
                 h3 {
-                    font-size: 16px;
-                    font-weight: 600;
-                    margin-bottom: 10px;
+                    font-size: 18px;
+                    font-weight: 700;
+                    margin-bottom: 14px;
+                    color: #1C1C1C;
+                    letter-spacing: -0.2px;
                 }
 
                 ul {
                     list-style-type: '• ';
                     padding-left: 20px;
-                    
+
                     li {
-                        margin-bottom: 8px;
+                        margin-bottom: 10px;
                         color: $secondary-text-color;
+                        line-height: 1.6;
                     }
                 }
             }
         }
 
         .keywords-section {
-            margin-top: 30px;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
+            margin-top: 36px;
+
+            .keywords-label {
+                font-size: 17px;
+                font-weight: 700;
+                color: #1C1C1C;
+                margin-bottom: 16px;
+                letter-spacing: -0.2px;
+            }
+
+            .keywords-tags {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 10px;
+            }
 
             .keyword-tag {
-                background-color: #FFF2EF;
+                background: linear-gradient(135deg, #FFF5F2 0%, #FFE8E1 100%);
                 color: $primary-color;
-                padding: 6px 12px;
-                border-radius: 16px;
-                font-size: 13px;
-                font-weight: 500;
+                padding: 5px 10px;
+                border-radius: 34px;
+                font-size: 14px;
+                font-weight: 600;
+                letter-spacing: -0.1px;
+                border: 1px solid #FFD4C8;
+                box-shadow: 0 2px 4px rgba(255, 100, 66, 0.08);
+                transition: all 0.2s ease;
+                cursor: default;
+
+                &:hover {
+                    transform: translateY(-2px);
+                    box-shadow: 0 4px 8px rgba(255, 100, 66, 0.15);
+                    border-color: #FFBBA8;
+                }
             }
         }
     }
 
-    .footer-section{
-        display: flex;;
-    }
-    
     .footer {
         position: fixed;
         bottom: 0;
         left: 0;
         right: 0;
-        padding: 12px 16px 20px 16px; // 시안과 유사하게 패딩 조정
+        padding: 12px 12px 20px 12px;
         background-color: $background-color;
         border-top: 1px solid $border-color;
-        
+
         display: flex;
-        gap: 12px; // 버튼 사이 간격
         align-items: center;
 
         // 하단 스크랩 버튼 스타일
         .scrap-button-footer {
-            width: 50px; // 시안처럼 아이콘 크기 고정
-            height: 50px; // 시안처럼 아이콘 크기 고정
-            padding: 0; // 패딩 제거
-            border: 1px solid $border-color;
+            width: 56px;
+            height: 59px;
+            padding: 0;
+            border: 1.5px solid #DDDDDD;
             background-color: $background-color;
-            border-radius: 12px;
+            border-radius: 8px;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #555; // 아이콘 기본 색상
-            transition: background-color 0.2s;
-            flex-shrink: 0; // 줄어들지 않도록 설정
+            color: #555;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
 
             &:hover {
-                background-color: #f9f9f9;
+                background-color: #FFF5F2;
+                border-color: $primary-color;
+
+                .bookmark-icon {
+                    filter: brightness(1.1);
+                }
+            }
+
+            &:active {
+                transform: scale(0.95);
             }
         }
 
-        // 지원하기 버튼 스타일
-        .apply-button {
-            padding: 19px 60px;
+        // 버튼 2개 레이아웃
+        .footer-buttons {
+            display: flex;
             gap: 10px;
-            flex-grow: 1; // 남은 공간을 모두 차지
-            height: 59px; // 스크랩 버튼과 높이 맞춤
-            width:326px;
-            background-color: $primary-color;
+            flex: 1;
+            width: 100%;
+        }
+
+        // 지원하기 버튼 (전체 너비)
+        .apply-button-full {
+            flex: 1;
+            height: 59px;
+            background: linear-gradient(135deg, #FF6442 0%, #FF4521 100%);
             color: white;
             border: none;
-            border-radius: 12px;
+            border-radius: 8px;
             font-size: 15px;
             font-weight: 700;
-            display: flex; // 텍스트 중앙 정렬을 위해 추가
-            align-items: center; // 텍스트 수직 중앙 정렬
-            justify-content: center; // 텍스트 수평 중앙 정렬
-            text-transform: capitalize;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(255, 100, 66, 0.25);
 
             &:hover {
-                opacity: 0.9;
+                transform: translateY(-1px);
+                box-shadow: 0 6px 16px rgba(255, 100, 66, 0.35);
             }
+
+            &:active {
+                transform: translateY(0);
+            }
+        }
+
+        // 닫기 버튼 (테두리만)
+        .close-button {
+            flex: 1;
+            height: 59px;
+            background-color: transparent;
+            color: #333333;
+            border: 1.5px solid #DDDDDD;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+
+            &:hover {
+                background-color: #F5F5F5;
+                border-color: #CCCCCC;
+            }
+
+            &:active {
+                background-color: #EEEEEE;
+            }
+        }
+    }
+
+    // ===== Accessibility Improvements =====
+    // Focus states for keyboard navigation
+    button:focus-visible,
+    .back-button:focus-visible,
+    .scrap-button:focus-visible,
+    .apply-button-full:focus-visible,
+    .close-button:focus-visible,
+    .scrap-button-footer:focus-visible {
+        outline: 2px solid $primary-color;
+        outline-offset: 2px;
+    }
+
+    .keyword-tag:focus-visible {
+        outline: 2px solid $primary-color;
+        outline-offset: 2px;
+    }
+
+    // ===== Responsive Design =====
+    // Small mobile devices (360px and below)
+    @media (max-width: 360px) {
+        .content {
+            padding: 20px 16px 100px 16px;
+        }
+
+        .post-header {
+            .post-title {
+                font-size: 18px;
+                margin-bottom: 12px;
+            }
+
+            .meta-info {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+
+                .meta-items {
+                    gap: 12px;
+                }
+            }
+        }
+
+        .cover-image {
+            height: 180px;
+            margin-bottom: 20px;
+        }
+
+        .project-details {
+            padding: 16px;
+            gap: 16px;
+
+            .detail-item {
+                flex-direction: column;
+                gap: 4px;
+
+                .label {
+                    width: auto;
+                    margin-bottom: 4px;
+                }
+            }
+        }
+
+        .keywords-section {
+            .keywords-label {
+                font-size: 16px;
+            }
+
+            .keyword-tag {
+                font-size: 13px;
+                padding: 5px 10px;
+            }
+        }
+
+        .footer {
+            padding: 10px 12px 16px 12px;
+            gap: 8px;
+
+            .scrap-button-footer {
+                width: 52px;
+                height: 52px;
+            }
+
+            .footer-buttons {
+                gap: 8px;
+            }
+
+            .apply-button-full,
+            .close-button {
+                height: 52px;
+                font-size: 14px;
+            }
+        }
+    }
+
+    // Medium mobile devices (361px - 480px)
+    @media (min-width: 361px) and (max-width: 480px) {
+        .post-header .post-title {
+            font-size: 20px;
+        }
+
+        .cover-image {
+            height: 200px;
+        }
+
+    }
+
+    // Tablet and larger (481px+)
+    @media (min-width: 481px) {
+        .content {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .footer {
+            max-width: 600px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+    }
+
+    // High contrast mode support
+    @media (prefers-contrast: high) {
+        .post-title,
+        .keywords-label,
+        .project-details .label {
+            font-weight: 800;
+        }
+
+        .keyword-tag {
+            border-width: 2px;
+        }
+
+        .apply-button-full {
+            border: 2px solid darken($primary-color, 10%);
+        }
+    }
+
+    // Reduced motion support
+    @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
         }
     }
 }

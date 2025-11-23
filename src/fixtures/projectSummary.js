@@ -8,7 +8,7 @@ const byId = {
   2: {
     id: 2,
     name: '연합동아리 부스전 기획 프로젝트',
-    period: '2024-03-01 ~ 2024-06-30',
+    period: '2024.03.01 ~ 2024.06.30',
     meetingTime: '매주 수 19:00',
     avatars: [avatar1, avatar2],
     dday: { value: 47, percent: 75 },
@@ -47,7 +47,7 @@ const byId = {
   6: {
     id: 6,
     name: '예비 졸업전시 부스 준비 위원 프로젝트',
-    period: '2024-05-01 ~ 2024-11-15',
+    period: '2024.05.01 ~ 2024.11.15',
     meetingTime: '매주 토 14:00',
     avatars: [avatar1, avatar2],
     dday: { value: 30, percent: 50 },

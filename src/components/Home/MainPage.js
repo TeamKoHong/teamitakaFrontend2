@@ -10,6 +10,8 @@ import schoolIcon from '../../assets/icons/school.png';
 import mascotImg from '../../assets/icons/project_empty.png';
 import { getMe } from '../../services/user';
 import { getSummary } from '../../services/dashboard';
+import { getMyProjects } from '../../services/projects';
+import ProjectCard from '../ProjectManagement/Common/ProjectCard';
 
 const MainPage = () => {
   const navigate = useNavigate();
@@ -18,6 +20,10 @@ const MainPage = () => {
   const [summary, setSummary] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  const [projects, setProjects] = useState([]);
+  const [isLoadingProjects, setIsLoadingProjects] = useState(false);
+  const [projectError, setProjectError] = useState(null);
 
   useEffect(() => {
     let mounted = true;
@@ -30,7 +36,7 @@ const MainPage = () => {
         if (meRes && meRes.success && meRes.user) setUser(meRes.user);
         if (sumRes && sumRes.success) setSummary(sumRes.data || sumRes.summary || null);
       } catch (e) {
-        // 401/403은 전역 AuthEventBridge/ToastHost에서 처리하므로 여기서는 중복 네비게이션을 하지 않음
+        // 401/403은 전역 AuthEventBridge/GlobalToastSystem에서 처리하므로 여기서는 중복 네비게이션을 하지 않음
         setError('일시적인 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
       } finally {
         if (mounted) setIsLoading(false);
@@ -40,8 +46,47 @@ const MainPage = () => {
     return () => { mounted = false; };
   }, [navigate]);
 
+  // 프로젝트 목록 로딩
+  useEffect(() => {
+    let mounted = true;
+    const loadProjects = async () => {
+      try {
+        setIsLoadingProjects(true);
+        setProjectError(null);
+
+        const res = await getMyProjects({
+          status: 'ACTIVE',
+          limit: 5,
+          offset: 0
+        });
+
+        if (!mounted) return;
+
+        if (res?.success) {
+          console.log('🔍 [Debug] API 응답:', res);
+          console.log('🔍 [Debug] Projects 배열:', res.items);
+          console.log('🔍 [Debug] 프로젝트 개수:', res.items?.length);
+          setProjects(res.items || []);
+        }
+      } catch (e) {
+        if (!mounted) return;
+        // 401/403은 전역 에러 처리에 맡김
+        if (e?.code === 'UNAUTHORIZED') {
+          return;
+        }
+        setProjectError('프로젝트 목록을 불러오는데 실패했습니다.');
+      } finally {
+        if (mounted) setIsLoadingProjects(false);
+      }
+    };
+
+    loadProjects();
+    return () => { mounted = false; };
+  }, []);
+
   const ongoingCount = summary?.projects?.ongoing ?? 'N';
   const unreadCount = summary?.notifications?.unread ?? '0';
+  const teamExperience = user?.teamExperience ?? 0;
 
   return (
     <div className="main-page">
@@ -63,16 +108,16 @@ const MainPage = () => {
 
         {/* 프로필 카드 */}
         <section className="profile-card" aria-label="프로필 요약">
-          <div className="profile-left">
-            <div className="profile-img" aria-hidden>🧍</div>
-          </div>
-
-          {/* 왼쪽: 텍스트 정보 */}
+          {/* 좌측: 텍스트 정보 */}
           <div className="profile-middle">
             <div className="name">
               {isLoading && <span>불러오는 중...</span>}
               {!isLoading && user && (
-                <>사용자명 <span className="emph">{user.username || user.email}</span>님</>
+                <>
+                  <span className="name-regular">사용자명</span>{' '}
+                  <span className="name-strong">{user.username || user.email}</span>
+                  <span className="name-regular">님</span>
+                </>
               )}
               {!isLoading && !user && !error && <span>사용자 정보를 불러올 수 없습니다.</span>}
             </div>
@@ -85,16 +130,23 @@ const MainPage = () => {
             </div>
 
             <div className="stats">
-<span className="stats-strong">현재 진행중인 프로젝트</span>{' '}
-<span className="count">총 {ongoingCount}건</span>
-<span className="divider" aria-hidden="true"></span>
+              <span className="stats-strong">현재 진행중인 프로젝트</span>{' '}
+              <span className="count">총 {ongoingCount}건</span>
               <br />
-              협업 경험 <span className="muted">00회</span>
+              팀플 경험 <span className="count">{teamExperience}회</span>
             </div>
 
             <div className="tags">
-              <span className="tag pill">키워드1</span>
-              <span className="tag pill">키워드2</span>
+              {user?.keywords && user.keywords.length > 0 ? (
+                user.keywords.map((keyword, idx) => (
+                  <span key={idx} className="tag pill">{keyword}</span>
+                ))
+              ) : (
+                <>
+                  <span className="tag pill">키워드1</span>
+                  <span className="tag pill">키워드2</span>
+                </>
+              )}
             </div>
 
             {error && (
@@ -103,37 +155,59 @@ const MainPage = () => {
               </div>
             )}
           </div>
+
+          {/* 우측: 프로필 이미지 */}
+          <div className="profile-right">
+            <div className="profile-img" aria-hidden>🧍</div>
+          </div>
         </section>
       </div>
 
       <h2 className="section-title">내가 참여 중인 프로젝트</h2>
       <section className="my-projects">
-        <div className="empty-card" role="status" aria-live="polite">
-          <img src={mascotImg} alt="" className="empty-img" />
-          <p className="empty-text">
-            진행 중인 프로젝트가 없어요.
-            <br />
-            지금 바로 프로젝트를 시작해보세요!
-          </p>
-          <button className="primary-btn" 
-          type="button"
-            onClick={() => navigate('/recruit')}
-          >
-            팀 프로젝트 시작하기
-          </button>
-        </div>
-      </section>
+        {/* 로딩 중 */}
+        {isLoadingProjects && (
+          <div className="loading-state">
+            프로젝트를 불러오는 중...
+          </div>
+        )}
 
-      {/* ===== 프로젝트 지원하기 버튼 ===== */}
-      <div className="support-btn-wrap">
-        <button
-          className="support-btn"
-          type="button"
-          onClick={() => navigate("/apply2")}
-        >
-          프로젝트 지원하기
-        </button>
-      </div>
+        {/* 에러 발생 */}
+        {projectError && !isLoadingProjects && (
+          <div className="error-state">
+            <p style={{ color: '#F76241', marginBottom: '12px' }}>{projectError}</p>
+            <button onClick={() => window.location.reload()}>다시 시도</button>
+          </div>
+        )}
+
+        {/* 프로젝트 없음 */}
+        {!isLoadingProjects && !projectError && projects.length === 0 && (
+          <div className="empty-card" role="status" aria-live="polite">
+            <img src={mascotImg} alt="" className="empty-img" />
+            <p className="empty-text">
+              진행 중인 프로젝트가 없어요.
+              <br />
+              지금 바로 프로젝트를 시작해보세요!
+            </p>
+            <button
+              className="primary-btn"
+              type="button"
+              onClick={() => navigate('/recruit')}
+            >
+              팀 프로젝트 시작하기
+            </button>
+          </div>
+        )}
+
+        {/* 프로젝트 목록 */}
+        {!isLoadingProjects && projects.length > 0 && (
+          <div className="project-list">
+            {projects.map((project) => (
+              <ProjectCard key={project.project_id} project={project} />
+            ))}
+          </div>
+        )}
+      </section>
 
       <div className="bottom-spacer" />
       <BottomNav />

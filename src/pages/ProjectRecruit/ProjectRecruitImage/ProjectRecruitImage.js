@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import './ProjectRecruitImage.scss';
 import { loadRecruitDraft, saveRecruitDraft } from '../../../api/recruit';
 import { useNavigate } from 'react-router-dom';
+import imgIcon from '../../../assets/img_icon.svg';
 
 export default function ProjectRecruitImage() {
     const nav = useNavigate();
@@ -109,7 +110,7 @@ export default function ProjectRecruitImage() {
                     {imageDataUrl ? (
                         <img src={imageDataUrl} alt="대표 이미지 미리보기" />
                     ) : (
-                        <span className="plus" aria-hidden="true" />
+                        <img src={imgIcon} alt="이미지 업로드" className="upload-icon" />
                     )}
                 </button>
 
@@ -123,40 +124,44 @@ export default function ProjectRecruitImage() {
             </div>
 
             {/* 하단 CTA */}
-            <div className="footer">
-                {imageDataUrl ? (
-                    <button
-                        type="button"
-                        className="next-btn on"
-                        onClick={goNext}
-                    >
-                        다음
-                    </button>
-                ) : (
-                    <button
-                        type="button"
-                        className="skip-btn"
-                        onClick={goNext}
-                    >
-                        건너뛰기
-                    </button>
-                )}
-            </div>
+            {!sheetOpen && (
+                <div className="footer">
+                    {imageDataUrl ? (
+                        <button
+                            type="button"
+                            className="next-btn on"
+                            onClick={goNext}
+                        >
+                            다음
+                        </button>
+                    ) : (
+                        <button
+                            type="button"
+                            className="skip-btn"
+                            onClick={goNext}
+                        >
+                            건너뛰기
+                        </button>
+                    )}
+                </div>
+            )}
 
             {/* 바텀시트 */}
             {sheetOpen && (
                 <>
                     <div className="sheet-backdrop" onClick={closeSheet} />
-                    <div className="sheet" role="dialog" aria-modal="true">
+                    <div className="sheet" aria-modal="true">
                         <div className="sheet-panel">
                             <div className="item" role="button" onClick={triggerPick}>
                                 라이브러리에서 선택
                             </div>
-                            {imageDataUrl && (
-                                <div className="item" role="button" onClick={removeImage}>
-                                    현재 사진 삭제
-                                </div>
-                            )}
+                            <div
+                                className={`item ${!imageDataUrl ? 'disabled' : ''}`}
+                                role="button"
+                                onClick={imageDataUrl ? removeImage : undefined}
+                            >
+                                현재 사진 삭제
+                            </div>
                         </div>
                         <div className="cancel" role="button" onClick={closeSheet}>
                             취소

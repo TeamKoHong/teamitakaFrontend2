@@ -6,25 +6,60 @@ import './RecruitmentViewPage.scss';
 import bookmark_active from "../../assets/bookmark_active.png";
 import { IoChevronBack } from "react-icons/io5";
 import { FaBookmark, FaEye } from "react-icons/fa";
+import { BsThreeDotsVertical } from "react-icons/bs";
 import apply from "../../assets/apply.png";
 import { getDraftById } from '../../api/recruit';
 import { HiOutlineChatBubbleOvalLeft } from "react-icons/hi2";
 
 import { getRecruitment } from '../../services/recruitment';
+import { getCurrentUser } from '../../services/auth';
+import { formatKoreanDateRange, formatRelativeTime } from '../../utils/dateUtils';
+import ApplicantListSlide from '../../components/ApplicantListSlide';
 
 export default function RecruitmentViewPage() {
     const { id } = useParams();
     const navigate = useNavigate();
 
     const [post, setPost] = useState(null);
+    const [currentUser, setCurrentUser] = useState(null);
+    const [isOwner, setIsOwner] = useState(false);
+    const [showApplicantList, setShowApplicantList] = useState(false);
     const [isScrapped, setIsScrapped] = useState(false);
     const [showScrapToast, setShowScrapToast] = useState(false);
+    const [showMoreMenu, setShowMoreMenu] = useState(false);
     const [error, setError] = useState(null);
+
+    // Get current user on component mount
+    useEffect(() => {
+        const userData = getCurrentUser();
+        console.log('🔍 [Auth Debug] getCurrentUser() result:', userData);
+        if (userData && userData.user) {
+            console.log('✅ [Auth Debug] Setting currentUser:', userData.user);
+            console.log('🆔 [Auth Debug] Current userId:', userData.user.userId, 'Type:', typeof userData.user.userId);
+            setCurrentUser(userData.user);
+        } else {
+            console.log('❌ [Auth Debug] No user data found');
+        }
+    }, []);
+
+    // Close more menu when clicking outside
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (showMoreMenu && !event.target.closest('.more-menu-container')) {
+                setShowMoreMenu(false);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, [showMoreMenu]);
 
     useEffect(() => {
         const fetchRecruitment = async () => {
             try {
                 const data = await getRecruitment(id);
+                console.log('📡 [API Debug] Recruitment API response:', data);
+                console.log('🆔 [API Debug] Post user_id:', data.user_id, 'Type:', typeof data.user_id);
 
                 // Transform backend response to component format
                 const formattedPost = {
@@ -32,7 +67,7 @@ export default function RecruitmentViewPage() {
                     title: data.title,
                     description: data.description || '',
                     period: data.recruitment_start && data.recruitment_end
-                        ? `${data.recruitment_start} ~ ${data.recruitment_end}`
+                        ? formatKoreanDateRange(data.recruitment_start, data.recruitment_end)
                         : '모집 기간 미정',
                     projectInfo: data.description || '',
                     projectType: data.project_type === 'course'
@@ -42,9 +77,11 @@ export default function RecruitmentViewPage() {
                         : '프로젝트',
                     imageUrl: data.photo_url,
                     views: data.views || 0,
+                    applicantCount: data.applicant_count || 0,
                     comments: 0, // Backend doesn't provide comments yet
-                    date: data.created_at ? new Date(data.created_at).toLocaleDateString('ko-KR') : '',
-                    keywords: data.Hashtags?.map(h => h.name) || []
+                    date: data.created_at ? formatRelativeTime(data.created_at) : '',
+                    keywords: data.Hashtags?.map(h => h.name) || [],
+                    createdBy: data.user_id // Store creator ID for ownership check
                 };
 
                 setPost(formattedPost);
@@ -60,7 +97,26 @@ export default function RecruitmentViewPage() {
 
         fetchRecruitment();
     }, [id, navigate]);
-    
+
+    // Separate effect to check ownership when both post and currentUser are ready
+    useEffect(() => {
+        console.log('🔐 [Owner Check] Separate useEffect triggered');
+        console.log('👤 [Owner Check] currentUser:', currentUser);
+        console.log('📝 [Owner Check] post?.createdBy:', post?.createdBy);
+
+        if (post && currentUser) {
+            const isPostOwner = currentUser.userId === post.createdBy;
+            console.log('🆔 [Owner Check] currentUser.userId:', currentUser.userId, 'Type:', typeof currentUser.userId);
+            console.log('📝 [Owner Check] post.createdBy:', post.createdBy, 'Type:', typeof post.createdBy);
+            console.log('❓ [Owner Check] Are they equal?', isPostOwner);
+            console.log(isPostOwner ? '✅ [Owner Check] User IS the owner' : '❌ [Owner Check] User is NOT the owner');
+            setIsOwner(isPostOwner);
+        } else {
+            console.log('⏳ [Owner Check] Waiting for data...', { hasPost: !!post, hasCurrentUser: !!currentUser });
+            setIsOwner(false);
+        }
+    }, [post, currentUser]);
+
     const handleScrapToggle = () => {
         const newState = !isScrapped;
         setIsScrapped(newState);
@@ -75,14 +131,36 @@ export default function RecruitmentViewPage() {
      * /apply2 경로로 이동하면서, 어떤 프로젝트에 지원하는지 ID와 제목 정보를 함께 전달합니다.
      */
     const handleApply = () => {
-        if (!post) return; // 게시물 정보가 없으면 실행하지 않음
+        if (!post) return;
+
+        // 로그인 체크
+        if (!currentUser) {
+            alert("로그인이 필요합니다.");
+            navigate('/login');
+            return;
+        }
 
         navigate('/apply2', {
-            state: { 
+            state: {
                 projectId: id,
-                projectTitle: post.title 
+                projectTitle: post.title
             }
         });
+    };
+
+    /**
+     * '지원자 보기' 버튼 클릭 시 호출되는 함수 (작성자 전용)
+     * ApplicantListSlide 컴포넌트를 열어 지원자 목록을 표시합니다.
+     */
+    const handleViewApplicants = () => {
+        setShowApplicantList(true);
+    };
+
+    /**
+     * ApplicantListSlide 닫기 핸들러
+     */
+    const handleCloseApplicantList = () => {
+        setShowApplicantList(false);
     };
     
     if (error) {
@@ -137,6 +215,43 @@ export default function RecruitmentViewPage() {
                     <IoChevronBack size={24} />
                 </button>
                 <h1 className="title">모집글</h1>
+                {isOwner && (
+                    <div className="more-menu-container">
+                        <button
+                            onClick={() => setShowMoreMenu(!showMoreMenu)}
+                            className="more-button"
+                            aria-label="더보기"
+                        >
+                            <BsThreeDotsVertical size={20} />
+                        </button>
+                        {showMoreMenu && (
+                            <div className="more-menu">
+                                <button
+                                    onClick={() => {
+                                        setShowMoreMenu(false);
+                                        // TODO: 수정 기능 구현
+                                        alert('게시글 수정 기능은 준비 중입니다.');
+                                    }}
+                                    className="menu-item"
+                                >
+                                    게시글 수정하기
+                                </button>
+                                <button
+                                    onClick={() => {
+                                        setShowMoreMenu(false);
+                                        if (window.confirm('정말 삭제하시겠습니까?')) {
+                                            // TODO: 삭제 API 연동
+                                            alert('게시글 삭제 기능은 준비 중입니다.');
+                                        }
+                                    }}
+                                    className="menu-item"
+                                >
+                                    게시글 삭제하기
+                                </button>
+                            </div>
+                        )}
+                    </div>
+                )}
             </header>
 
             <main className="content">
@@ -146,8 +261,8 @@ export default function RecruitmentViewPage() {
                     <h2 className="post-title">{post.title}</h2>
                     <div className="meta-info">
                         <div className="meta-items">
-                            <span><FaEye /> {post.views}</span>
-            <img src={apply} alt="지원자수"/>
+                            <span><FaEye size={18} /> {post.views}</span>
+                            <span><img src={apply} alt="지원자" style={{width: '18px', height: '18px', marginRight: '4px', verticalAlign: 'middle'}} />{post.applicantCount}</span>
                         </div>
                         <span className="date">{post.date}</span>
                     </div>
@@ -193,22 +308,43 @@ export default function RecruitmentViewPage() {
                 </section>
 
                 <section className="keywords-section">
-                    {(post.keywords || []).map((tag, index) => (
-                        <span key={index} className="keyword-tag">{tag}</span>
-                    ))}
+                    <h3 className="keywords-label">키워드</h3>
+                    <div className="keywords-tags">
+                        {(post.keywords || []).map((tag, index) => (
+                            <span key={index} className="keyword-tag">#{tag}</span>
+                        ))}
+                    </div>
                 </section>
             </main>
 
             <footer className="footer">
-                <div className="footer-section">
-                <button onClick={handleScrapToggle} className="scrap-button-footer" aria-label="스크랩">
-            <img src={bookmark_active} alt="북마크" className="bookmark-icon" />
-                </button>
-                <button onClick={handleApply} className="apply-button">
-                    지원하기
-                </button>
+                <div className="footer-buttons">
+                    {console.log('🎨 [Render Debug] isOwner state at render time:', isOwner)}
+                    {isOwner ? (
+                        // 작성자: 지원자 보기 버튼 표시
+                        <button onClick={handleViewApplicants} className="apply-button-full">
+                            지원자 보기
+                        </button>
+                    ) : (
+                        // 일반 사용자: 지원하기 버튼 표시
+                        <button onClick={handleApply} className="apply-button-full">
+                            지원하기
+                        </button>
+                    )}
+                    <button onClick={() => navigate(-1)} className="close-button">
+                        닫기
+                    </button>
                 </div>
             </footer>
+
+            {/* 지원자 목록 슬라이드 (작성자 전용) */}
+            {showApplicantList && (
+                <ApplicantListSlide
+                    open={showApplicantList}
+                    onClose={handleCloseApplicantList}
+                    recruitmentId={id}
+                />
+            )}
         </div>
     );
 }

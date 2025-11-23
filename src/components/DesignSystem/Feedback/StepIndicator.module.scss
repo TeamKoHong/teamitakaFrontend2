@@ -1,0 +1,29 @@
+@use '../../../styles/variables' as *;
+
+.indicatorContainer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start; // 좌측 정렬
+    gap: 8px;
+    padding-left: 16px; // 첫 번째 아이콘 왼쪽 여백
+}
+
+.stepWrapper {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.stepImage {
+    width: 17px;
+    height: 17px;
+    display: block;
+    image-rendering: -webkit-optimize-contrast; // Safari
+    image-rendering: crisp-edges; // 선명한 렌더링
+}
+
+.separator {
+    display: block;
+    image-rendering: -webkit-optimize-contrast; // Safari
+    image-rendering: crisp-edges; // 선명한 렌더링
+}
