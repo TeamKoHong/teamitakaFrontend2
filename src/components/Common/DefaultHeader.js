@@ -24,13 +24,15 @@ export default function DefaultHeader({
 
   return (
     <div className="member-header-container">
-      <button
-        className="member-header-back"
-        onClick={handleBack}
-        aria-label="뒤로가기"
-      >
-        <BackArrow />
-      </button>
+      {onBack !== undefined && (
+        <button
+          className="member-header-back"
+          onClick={handleBack}
+          aria-label="뒤로가기"
+        >
+          <BackArrow />
+        </button>
+      )}
       <h1 className="member-header-title">{title}</h1>
       {rightElement ? (
         rightElement

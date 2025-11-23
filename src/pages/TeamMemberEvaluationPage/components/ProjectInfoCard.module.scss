@@ -95,6 +95,14 @@
 
     &.disabled {
         cursor: default;
+        opacity: 0.5;
+        pointer-events: none;
+    }
+
+    &.locked {
+        opacity: 0.5;
+        cursor: not-allowed;
+        pointer-events: none;
     }
 }
 
@@ -134,8 +142,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: rgba(0, 0, 0, 0.3);
-    color: $white;
+    background-color: #5E5E5E;
+    color: #F76241;
     font-size: 24px;
 }
 

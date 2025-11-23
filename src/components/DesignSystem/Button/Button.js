@@ -5,6 +5,7 @@ import styles from './Button.module.scss';
  * Button Component
  * @param {string} variant - 'primary', 'secondary', 'ghost'
  * @param {string} size - 'sm', 'md', 'lg'
+ * @param {string} layout - 'center', 'navigation'
  * @param {boolean} fullWidth - Whether to take full width
  * @param {boolean} isLoading - Loading state
  * @param {ReactNode} leftIcon - Icon on the left
@@ -14,6 +15,7 @@ const Button = ({
     children,
     variant = 'primary',
     size = 'md',
+    layout = 'center',
     fullWidth = false,
     isLoading = false,
     disabled,
@@ -26,6 +28,7 @@ const Button = ({
         styles.button,
         styles[variant],
         styles[size],
+        layout === 'navigation' ? styles.navigation : '',
         fullWidth ? styles.fullWidth : '',
         className
     ].filter(Boolean).join(' ');
@@ -37,9 +40,9 @@ const Button = ({
             {...props}
         >
             {isLoading && <div className={styles.spinner} />}
-            {!isLoading && leftIcon && <span className={styles.icon}>{leftIcon}</span>}
-            {children}
-            {!isLoading && rightIcon && <span className={styles.icon}>{rightIcon}</span>}
+            {!isLoading && leftIcon && <span className={styles.iconLeft}>{leftIcon}</span>}
+            <span className={styles.content}>{children}</span>
+            {!isLoading && rightIcon && <span className={styles.iconRight}>{rightIcon}</span>}
         </button>
     );
 };

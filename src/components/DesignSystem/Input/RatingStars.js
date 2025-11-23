@@ -1,5 +1,6 @@
 import React from 'react';
-import { FaStar } from 'react-icons/fa';
+import { ReactComponent as FilledStar } from '../../../assets/icons/star1.svg';
+import { ReactComponent as EmptyStar } from '../../../assets/icons/star2.svg';
 import styles from './RatingStars.module.scss';
 
 const RatingStars = ({
@@ -21,13 +22,14 @@ const RatingStars = ({
             {[...Array(max)].map((_, index) => {
                 const ratingValue = index + 1;
                 const isActive = ratingValue <= value;
+                const StarIcon = isActive ? FilledStar : EmptyStar;
 
                 return (
-                    <FaStar
+                    <StarIcon
                         key={index}
                         className={`
-              ${styles.starIcon} 
-              ${isActive ? styles.active : ''} 
+              ${styles.starIcon}
+              ${isActive ? styles.active : ''}
               ${readOnly ? styles.readOnly : ''}
               ${styles[size]}
             `}

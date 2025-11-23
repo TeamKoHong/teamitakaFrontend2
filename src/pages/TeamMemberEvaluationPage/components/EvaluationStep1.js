@@ -12,7 +12,8 @@ const EvaluationStep1 = ({
   evaluationData,
   onNext,
   onCategoryRatingChange,
-  onMemberSelect
+  onMemberSelect,
+  isLocked
 }) => {
   const categories = [
     { id: 'participation', label: '참여도', description: '해당 팀원의 프로젝트 내에서 참여도를 점수로 평가 해주세요' },
@@ -26,9 +27,9 @@ const EvaluationStep1 = ({
 
   return (
     <>
-      <ProjectInfoCard projectData={projectData} memberData={memberData} onMemberSelect={onMemberSelect} />
+      <ProjectInfoCard projectData={projectData} memberData={memberData} onMemberSelect={onMemberSelect} isLocked={isLocked} />
 
-      <div style={{ margin: '20px 0', display: 'flex', justifyContent: 'center' }}>
+      <div style={{ margin: '20px 0', display: 'flex', justifyContent: 'flex-start', width: '100%', alignSelf: 'flex-start' }}>
         <StepIndicator currentStep={1} totalSteps={2} />
       </div>
 

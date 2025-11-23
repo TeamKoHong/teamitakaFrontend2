@@ -11,6 +11,7 @@ import { getMyProjects } from '../../../services/projects';
 import { compareProjectLists } from '../../../utils/compareProjects';
 import { deriveCompletedProjects, splitByEvaluationStatus } from '../../../utils/projectFilters';
 import { getTeamMemberEvaluationUrl } from '../../../constants/routes';
+import { transformProjectForEvaluation } from '../../../utils/projectTransform';
 
 const CompletedComponent = () => {
   const navigate = useNavigate();
@@ -59,8 +60,11 @@ const CompletedComponent = () => {
 
   const handleCompletedItemClick = (project) => {
     // 평가 완료 프로젝트는 평가 결과 조회 페이지로 이동
+    // API 데이터를 UI 형식으로 변환
+    const transformedProject = transformProjectForEvaluation(project);
+
     navigate(`/evaluation/project/${project.project_id}`, {
-      state: { projectSummary: project, from: { path: '/project-management', tab: 'completed' } },
+      state: { projectSummary: transformedProject, from: { path: '/project-management', tab: 'completed' } },
     });
   };
 
