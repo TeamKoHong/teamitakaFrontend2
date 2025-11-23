@@ -148,6 +148,173 @@
 
 > 💡 **참고**: 상세 페이지별 기능 분석 및 파일별 TODO 주석은 개발팀 내부 이슈 트래커에서 관리 중입니다.
 
+### 🎨 디자인 구현 매칭 분석
+
+> **목적**: Figma 디자인 명세와 실제 구현된 코드를 비교하여 디자인-구현 간 불일치를 발견하고 개선 우선순위를 파악합니다.
+
+#### 페이지/컴포넌트별 구현 점수
+
+| 페이지/컴포넌트 | Layout | Functionality | Content | Interaction | Style | Overall | 상태 |
+|----------------|--------|---------------|---------|-------------|-------|---------|------|
+| **TeamMemberEvaluation** | ✅ 100% | ✅ 100% | ✅ 100% | ✅ 100% | ✅ 95% | **99%** ⭐ | 완료 |
+| **Recruitment Creation** | ✅ 100% | ✅ 100% | ✅ 100% | ✅ 100% | ✅ 100% | **100%** ⭐ | 완료 |
+| **Application Submit** | ✅ 100% | ✅ 100% | ✅ 100% | ✅ 100% | ✅ 95% | **99%** ⭐ | 완료 |
+| **DefaultHeader** | 🟢 95% | ✅ 100% | ✅ 100% | ✅ 100% | 🟡 75% | **94%** | 스타일 개선 필요 |
+| **ProjectCard** | 🟡 80% | ✅ 100% | ✅ 100% | ✅ 100% | 🟡 70% | **90%** | 스타일 개선 필요 |
+| **RecruitmentView** | ✅ 100% | 🟡 80% | ✅ 100% | 🟢 90% | ✅ 95% | **93%** | 기능 보완 필요 |
+| **ProfilePage** | ✅ 90% | 🔴 50% | 🟡 70% | 🔴 40% | 🟡 80% | **66%** | 편집 기능 미구현 |
+| **SearchPage** | ✅ 100% | 🔴 30% | ✅ 100% | 🔴 30% | ✅ 100% | **72%** | 검색 API 미연동 |
+| **CalendarPage** | ✅ 100% | 🔴 40% | 🔴 0% | 🟡 60% | ✅ 95% | **59%** | Mock 데이터 사용 |
+| **ProjectDetail** | ✅ 100% | 🔴 50% | 🔴 0% | 🔴 50% | ✅ 95% | **59%** | 기능 미구현 |
+
+**범례**: ✅ 90-100% | 🟢 80-89% | 🟡 70-79% | 🔴 <70%
+
+#### 디자인 시스템 이슈
+
+**발견된 불일치 사례** ([DESIGN_IMPLEMENTATION_ANALYSIS.md](./DESIGN_IMPLEMENTATION_ANALYSIS.md) 참조):
+
+| 컴포넌트 | 파일 위치 | 발견된 이슈 | 심각도 | Match Score |
+|----------|-----------|-------------|--------|-------------|
+| **DefaultHeader** | `src/components/Common/DefaultHeader.scss` | 3 issues (padding 비대칭, 배경색, 폰트 크기) | High | 75% |
+| **ProjectCard** | `src/components/ProjectManagement/Common/ProjectCard.scss` | 4 issues (비표준 패딩, 단위 혼용, 하드코딩) | Medium | 70% |
+| **ProjectInfoCard** | `src/pages/TeamMemberEvaluationPage/components/ProjectInfoCard.module.scss` | 1 issue (간격 불일치) | Low | 95% |
+| **ProfilePage** | `src/pages/Profile/ProfilePage.js` | 편집 기능 전체 누락 | Critical | 측정 불가 |
+
+#### 우선순위 개선 로드맵
+
+**Phase 1: Critical 불일치 해결** (즉시):
+- [ ] **ProfilePage 편집 기능** - 프로필 편집 버튼 및 기능 구현 (4-6시간)
+- [ ] **스킬 편집 기능** - 보유 스킬 추가/삭제 UI 구현 (2-4시간)
+
+**Phase 2: High 불일치 해결** (1-2주):
+- [ ] **DefaultHeader 스타일** - padding 대칭, 배경색 변수화, 폰트 크기 통일 (2-3시간)
+- [ ] **ProjectCard 표준화** - padding 표준화, rem 단위 통일, 변수 사용 (2-3시간)
+
+**Phase 3: Medium 불일치 해결** (2-3주):
+- [ ] **디자인 토큰 적용** - 하드코딩된 색상/간격 → SCSS 변수 전환 (1주)
+- [ ] **단위 표준화** - px → rem 마이그레이션 (3-4일)
+
+## 📊 프로젝트 현황 종합 분석
+
+> 💡 **업데이트**: 2025-11-23 - 디자인 vs 구현 비교 및 API 연동 상태 종합 분석 추가
+
+### 🔌 API 통합 상태 종합
+
+| Feature Category | Total Endpoints | Connected | Mock Data | Not Implemented | Completion % |
+|------------------|----------------|-----------|-----------|-----------------|--------------|
+| **Authentication** | 3 | 3 | 0 | 0 | **100%** ✅ |
+| **Recruitment** | 6 | 6 | 0 | 0 | **100%** ✅ |
+| **Projects** | 3 | 3 | 0 | 0 | **100%** ✅ |
+| **Evaluation** | 4 | 4 | 0 | 0 | **100%** ✅ |
+| **User Profile** | 1 | 1 | 0 | 0 | **100%** ✅ |
+| **Rating/Reviews** | 2 | 0 | 2 | 0 | **0%** 🔴 |
+| **Calendar** | 3 | 0 | 1 | 2 | **0%** 🔴 |
+| **Search** | 1 | 0 | 0 | 1 | **0%** 🔴 |
+| **Bookmarks** | 3 | 0 | 1 | 2 | **0%** 🔴 |
+| **Notifications** | 2 | 0 | 1 | 1 | **0%** 🔴 |
+| **TOTAL** | **28** | **17** | **5** | **6** | **61%** 🟡 |
+
+**상태별 상세 현황**:
+- ✅ **완전 연동** (17개): auth.js (3), recruitment.js (6), projects.js (3), evaluation.js (4), user.js (1)
+- 🟡 **Mock 데이터** (5개): rating.js (2), Calendar (1), Bookmarks (1), Notifications (1)
+- 🔴 **미구현** (6개): Calendar events (2), Search (1), Bookmarks API (2), Notifications sync (1)
+
+### 🚨 백엔드 API 요청 상태
+
+> 📄 **상세 문서**: [BACKEND_PROJECT_API_REQUEST.md](./BACKEND_PROJECT_API_REQUEST.md)
+
+**현재 차단 중인 이슈** - 프로젝트 상세 정보 표시 불가:
+
+| API 엔드포인트 | 현재 응답 | 필요한 필드 | 우선순위 | 영향 |
+|---------------|----------|------------|---------|------|
+| `GET /api/projects/mine` | `title`, `start_date`, `end_date`, `status` | ❌ `members[]` 배열<br>❌ `meeting_schedule` | 🔴 High | 완료된 프로젝트 평가 페이지에서 팀원 아바타, 회의 시간 표시 불가 |
+
+**필요한 `members` 필드 구조**:
+```json
+"members": [
+  {
+    "id": "user-001",
+    "name": "김철수",
+    "avatar": "https://.../avatar.jpg",
+    "position": "프론트엔드 개발자"
+  }
+]
+```
+
+**필요한 `meeting_schedule` 필드**:
+```json
+"meeting_schedule": "매주 월요일 14:00"  // 또는 null
+```
+
+**백엔드 작업 타임라인** (예상):
+- [ ] 요구사항 검토 (1일)
+- [ ] DB 구조 확인 & 수정 (1-2일)
+- [ ] API 엔드포인트 수정 (1일)
+- [ ] 테스트 & 배포 (1일)
+- **총 예상 기간**: 4-5일
+
+### 🎯 미구현 기능 우선순위 매트릭스
+
+| Feature | Design Spec | Current Implementation | Gap Type | Priority | Estimated Effort | File Location |
+|---------|-------------|------------------------|----------|----------|------------------|---------------|
+| **Profile Edit Button** | Present | Missing | Feature Gap | 🚨 Critical | 2-4 hours | `ProfilePage.js` |
+| **Skill Editing** | Present | Missing | Feature Gap | 🚨 Critical | 2-4 hours | `ProfilePage.js` |
+| **Recruitment Edit** | Present | Alert only | Implementation Gap | 🚨 Critical | 4-6 hours | `RecruitmentViewPage.js:232` |
+| **Recruitment Delete** | Present | Alert only | Implementation Gap | 🚨 Critical | 2-3 hours | `RecruitmentViewPage.js:243` |
+| **Project Members API** | Required | Missing backend field | API Gap | 🔴 High | Backend: 4-5 days | `GET /api/projects/mine` |
+| **Meeting Schedule API** | Required | Missing backend field | API Gap | ⚠️ High | Backend: 1-2 days | `GET /api/projects/mine` |
+| **Calendar Events** | Dynamic | 7 hardcoded items | Data Gap | ⚠️ High | 2-3 days | `Calendar.js:11-77` |
+| **Search Functionality** | Full search | Redirects only | Feature Gap | 🔧 Medium | 1 week | `SearchPage.js:21-24` |
+| **Bookmark CRUD** | Full CRUD | Hardcoded list | Feature Gap | 🔧 Medium | 3-4 days | `BookmarkPage.js` |
+| **Project Library** | File management | Button only | Feature Gap | 🔧 Medium | 1 week | `ProjectDetailHeader.js:16` |
+| **Project Delete** | Delete + confirm | Button only | Feature Gap | 🔧 Medium | 2-3 days | `ProjectDetailHeader.js:21` |
+
+**우선순위 범례**:
+- 🚨 **Critical**: 핵심 기능 누락, 즉시 처리 필요
+- 🔴 **High**: 주요 기능 차단, 1-2주 내 처리
+- ⚠️ **High**: 중요하지만 대체 가능, 2-3주 내 처리
+- 🔧 **Medium**: 개선 필요, 우선순위 조정 가능
+
+### 🧹 코드 품질 이슈
+
+**Debug 코드 정리 필요**:
+
+| Type | Count | Files | Impact | Action Required |
+|------|-------|-------|--------|-----------------|
+| `console.log/error/warn` | 209 | 38 files | 프로덕션 빌드 성능 저하 | 제거 또는 development 환경으로 제한 |
+| `alert()` | 36 | 11 files | Poor UX (blocking) | Toast/Modal로 교체 |
+| TODO 주석 | 50+ | - | 기술 부채 추적 | 이슈 티켓 생성 및 우선순위화 |
+
+**주요 파일별 console 사용 현황**:
+- `CompletedComponent.js` - 17개 console.log
+- `TeamMemberEvaluationPage.js` - 6개 console
+- `RecruitmentViewPage.js` - 16개 console (auth debugging)
+
+**Alert → Toast/Modal 교체 필요**:
+- `ProjectRecruit*.js` (4 files) - 7 alerts
+- `ApplicantListSlide.js` - 6 alerts
+- `ProjectApplySelect.js` - 12 alerts
+- `RecruitmentViewPage.js` - 3 alerts
+
+**개선 권장 사항**:
+```javascript
+// ❌ Before: Blocking alert
+alert('수정 기능 준비 중');
+
+// ✅ After: Non-blocking toast
+showToast('수정 기능 준비 중', 'info');
+```
+
+**ESLint 규칙 추가 권장**:
+```json
+{
+  "rules": {
+    "no-console": "warn",
+    "no-alert": "error"
+  }
+}
+```
+
 ## ✨ 주요 기능
 
 ### 🎯 프로젝트 모집 & 매칭
@@ -1370,8 +1537,9 @@ git pull origin <branch>
 - [README 작성 가이드라인](./README_GUIDELINES.md)
 - [Supabase 마이그레이션 가이드](./SUPABASE_MIGRATION_GUIDE.md)
 - [Git 워크플로우 문제 해결 가이드](./GIT_WORKFLOW_TROUBLESHOOTING.md)
-- [백엔드 API 요청서 - 프로젝트 필드](./BACKEND_PROJECT_API_REQUEST.md) ⭐ NEW
+- [백엔드 API 요청서 - 프로젝트 필드](./BACKEND_PROJECT_API_REQUEST.md)
 - [지원서 제출 기능 테스트 보고서](./TEST_REPORT.md)
+- [디자인 구현 매칭 분석 워크시트](./DESIGN_IMPLEMENTATION_ANALYSIS.md) ⭐ NEW
 
 ## 🙋 문의 및 지원
 
