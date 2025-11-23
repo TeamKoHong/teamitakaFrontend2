@@ -30,12 +30,12 @@
 
 ### 📊 전체 현황
 
-| 심각도 | 개수 | 주요 카테고리 | 상태 |
+| 우선순위 | 개수 | 주요 카테고리 | 타임라인 |
 |--------|------|---------------|------|
-| 🚨 Critical | 4 | 보안, API 미연동, 미사용 페이지 | 즉시 처리 필요 |
-| ⚠️ High | 5 | 더미 데이터, 기능 미구현 | 1-2주 내 처리 |
-| 🔧 Medium | 5 | UX 개선, 미사용 컴포넌트 | 2-3주 내 처리 |
-| 📋 Low | 4 | 코드 품질, 정리 작업 | 지속적 개선 |
+| 🚨 **Critical (P0)** | 4 | 보안, API 미연동, 미사용 페이지 | 즉시 처리 |
+| 🔴 **High (P1)** | 5 | 더미 데이터, 기능 미구현 | 1-2주 |
+| ⚠️ **Medium (P2)** | 5 | UX 개선, 미사용 컴포넌트 | 2-3주 |
+| 🔧 **Low (P3)** | 4 | 코드 품질, 정리 작업 | 지속적 |
 
 ### 🎯 우선순위 이슈 목록
 
@@ -67,29 +67,31 @@
 - [ ] 알림 시스템 활성화 or 제거 결정
 
 #### Phase 3: UX 개선 (2-3주)
-- [ ] Alert → Toast/Modal 교체 (약 20개)
+- [ ] Alert → Toast/Modal 교체 (36개 - 11개 파일)
 - [ ] 토스트 알림 추가 (복사, 공유 피드백)
 - [ ] 지원 취소 API 연동
 - [ ] 미사용 컴포넌트 정리 (StickyCTA, ProjectSummaryCard 등 6개)
 
 #### Phase 4: 코드 품질 개선 (지속적)
-- [ ] Debug console.log 제거 (약 50개)
+- [ ] Debug console.log 제거 (209개 - 38개 파일)
 - [ ] 라우트 상수 정리 (`/apply2/*`, `/recruit/*` 등 14개 경로)
 - [ ] 빈 핸들러 실제 로직 구현
 - [ ] 스타일 시스템 통일 (.module.scss 표준화)
 
 ### 📈 진행 상황
 
-- **완료된 페이지**: 39개 (인증, 프로젝트 관리, 모집/지원, 평가 등)
-- **API 연동 완료**: `auth.js`, `recruitment.js`, `projects.js`, `evaluation.js`
+- **전체 페이지**: 31개 (완전 구현 50개 기능, 부분 구현 5개 기능)
+- **API 연동 완료**: `auth.js`, `recruitment.js`, `projects.js`, `evaluation.js`, `user.js`
 - **API 연동 필요**: `rating.js` (더미 데이터 사용 중)
-- **코드 품질 개선 항목**: 약 100개 (console.log, alert, TODO 주석 등)
+- **코드 품질 개선 항목**: 약 260개 (console.log 209개, alert 36개, TODO 50+ 등)
 
 ### 📊 페이지별 구현 현황 (31개 페이지 분석)
 
 #### 카테고리별 통계
 
-| 카테고리 | 페이지 수 | ✅ 완전 구현 | 🎨 UI만 | 🔧 부분 구현 | ❌ 미구현 | 구현율 |
+> **참고**: 아래 표는 31개 페이지에 포함된 기능별 구현 현황을 집계한 것입니다.
+
+| 카테고리 | 페이지 수 | ✅ 완전 구현<br>(기능 수) | 🎨 UI만<br>(기능 수) | 🔧 부분 구현<br>(기능 수) | ❌ 미구현<br>(기능 수) | 기능 구현율 |
 |----------|----------|------------|---------|------------|---------|--------|
 | 인증/온보딩 | 4 | 9 | 0 | 1 | 2 | 75% |
 | 모집글 작성 | 6 | 14 | 0 | 0 | 0 | **100%** ⭐ |
@@ -98,7 +100,7 @@
 | 프로젝트 관리 | 7 | 6 | 14 | 1 | 0 | 29% |
 | 모집/검색 | 4 | 5 | 3 | 2 | 2 | 42% |
 | 기타 | 3 | 3 | 4 | 0 | 2 | 33% |
-| **합계** | **31** | **50** | **38** | **5** | **7** | **50%** |
+| **합계** | **31 페이지** | **50 기능** | **38 기능** | **5 기능** | **7 기능** | **50%** |
 
 **구현 상태 범례:**
 - ✅ **완전 구현**: UI + 로직 + API 연동 완료
@@ -110,12 +112,16 @@
 
 | Service 파일 | 상태 | 주요 기능 | 사용 페이지 | 비고 |
 |-------------|------|-----------|------------|------|
-| **auth.js** | ✅ 완료 | 로그인, 회원가입, 이메일 인증 | LoginPage, RegisterPage | 실제 API 연동 |
-| **user.js** | ✅ 완료 | 사용자 정보 조회 | ProfilePage | 실제 API 연동 |
-| **recruitment.js** | ✅ 완료 | 모집글 CRUD, 지원서 제출 | RecruitmentViewPage, ProjectApplySelect, ProjectRecruitPublish | 실제 API 연동 |
-| **projects.js** | ✅ 완료 | 프로젝트 목록, 상세 조회 | ProjectManagement, TeamMemberEvaluationPage | 실제 API 연동 |
-| **evaluation.js** | ✅ 완료 | 팀원 평가 제출, 평가 대상 조회 | TeamMemberEvaluationPage | 실제 API 연동 |
-| **rating.js** | ⚠️ 부분 | 평가 현황 조회 | RatingManagementPage, RatingProjectStatusPage | 일부 더미 데이터 |
+| **auth.js** | ✅ 완료 | 로그인, 회원가입, 이메일 인증 (3개) | LoginPage, RegisterPage | 실제 API 연동 |
+| **user.js** | ✅ 완료 | 사용자 정보 조회 (1개) | ProfilePage | 실제 API 연동 |
+| **recruitment.js** | ✅ 완료 | 모집글 CRUD, 지원서 제출 (6개) | RecruitmentViewPage, ProjectApplySelect, ProjectRecruitPublish | 실제 API 연동 |
+| **projects.js** | ✅ 완료 | 프로젝트 목록, 상세 조회 (3개) | ProjectManagement, TeamMemberEvaluationPage | 실제 API 연동 |
+| **evaluation.js** | ✅ 완료 | 팀원 평가 제출, 평가 대상 조회 (4개) | TeamMemberEvaluationPage | 실제 API 연동 |
+| **rating.js** | ⚠️ 부분 | 평가 현황 조회 (2개) | RatingManagementPage, RatingProjectStatusPage | 일부 더미 데이터 |
+| **calendar.js** | ❌ 미구현 | 일정 CRUD (3개) | ProjectCalendar | 하드코딩 데이터 |
+| **search.js** | ❌ 미구현 | 검색 API (1개) | SearchPage | 미연동 |
+| **bookmarks.js** | ❌ 미구현 | 북마크 CRUD (3개) | BookmarkPage | 하드코딩 데이터 |
+| **notifications.js** | ❌ 미구현 | 알림 조회, 동기화 (2개) | NotificationsPage | localStorage only |
 
 **미연동 또는 더미 데이터 사용 중인 페이지:**
 - RecruitmentPage (파일 내 하드코딩)
@@ -270,10 +276,10 @@
 | **Project Delete** | Delete + confirm | Button only | Feature Gap | 🔧 Medium | 2-3 days | `ProjectDetailHeader.js:21` |
 
 **우선순위 범례**:
-- 🚨 **Critical**: 핵심 기능 누락, 즉시 처리 필요
-- 🔴 **High**: 주요 기능 차단, 1-2주 내 처리
-- ⚠️ **High**: 중요하지만 대체 가능, 2-3주 내 처리
-- 🔧 **Medium**: 개선 필요, 우선순위 조정 가능
+- 🚨 **Critical (P0)**: 핵심 기능 누락, 즉시 처리 필요
+- 🔴 **High (P1)**: 주요 기능 차단, 1-2주 내 처리
+- ⚠️ **Medium (P2)**: 중요하지만 대체 가능, 2-3주 내 처리
+- 🔧 **Low (P3)**: 개선 필요, 우선순위 조정 가능
 
 ### 🧹 코드 품질 이슈
 
