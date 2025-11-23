@@ -5,11 +5,9 @@ import './RecruitmentViewPage.scss';
 // 아이콘 임포트
 import bookmark_active from "../../assets/bookmark_active.png";
 import { IoChevronBack } from "react-icons/io5";
-import { FaBookmark, FaEye } from "react-icons/fa";
+import { FaEye } from "react-icons/fa";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import apply from "../../assets/apply.png";
-import { getDraftById } from '../../api/recruit';
-import { HiOutlineChatBubbleOvalLeft } from "react-icons/hi2";
 
 import { getRecruitment } from '../../services/recruitment';
 import { getCurrentUser } from '../../services/auth';
