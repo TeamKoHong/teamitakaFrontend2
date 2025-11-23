@@ -1,4 +1,4 @@
-// src/api/recruit.js
+import { getApiConfig } from '../services/auth';
 
 // ───────── 단일 진행중 드래프트(기존 호환) ─────────
 const SINGLE_KEY = 'recruit.draft';
@@ -75,3 +75,335 @@ export const saveDraftToList = (partial) => {
 
 export const getCurrentDraftId = () => localStorage.getItem(CURRENT_ID_KEY);
 export const setCurrentDraftId = (id) => localStorage.setItem(CURRENT_ID_KEY, id);
+
+
+// ───────── API 요청 함수들 ─────────
+
+/**
+ * Creates a new recruitment
+ */
+export const createRecruitment = async (recruitmentData) => {
+    const { API_BASE_URL, headers } = getApiConfig();
+    const token = localStorage.getItem('authToken');
+
+    if (!token) {
+        const err = new Error('UNAUTHORIZED');
+        err.code = 'UNAUTHORIZED';
+        throw err;
+    }
+
+    const res = await fetch(`${API_BASE_URL}/api/recruitments`, {
+        method: 'POST',
+        headers: {
+            ...headers,
+            Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(recruitmentData),
+    });
+
+    if (res.status === 401 || res.status === 403) {
+        const err = new Error('UNAUTHORIZED');
+        err.code = 'UNAUTHORIZED';
+        throw err;
+    }
+
+    if (!res.ok) {
+        const errorData = await res.json();
+        const err = new Error(errorData.error || 'Failed to create recruitment');
+        err.code = 'SERVER_ERROR';
+        throw err;
+    }
+
+    return res.json();
+};
+
+/**
+ * Uploads a recruitment image
+ */
+export const uploadRecruitmentImage = async (imageFile) => {
+    const { API_BASE_URL } = getApiConfig();
+    const token = localStorage.getItem('authToken');
+
+    if (!token) {
+        const err = new Error('UNAUTHORIZED');
+        err.code = 'UNAUTHORIZED';
+        throw err;
+    }
+
+    // Validate file size (5MB max)
+    const MAX_SIZE = 5 * 1024 * 1024;
+    if (imageFile.size > MAX_SIZE) {
+        const err = new Error('파일 크기는 5MB를 초과할 수 없습니다.');
+        err.code = 'FILE_TOO_LARGE';
+        throw err;
+    }
+
+    // Validate file type
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
+    if (!allowedTypes.includes(imageFile.type)) {
+        const err = new Error('허용되지 않는 파일 형식입니다. (jpeg, png, webp만 가능)');
+        err.code = 'INVALID_FILE_TYPE';
+        throw err;
+    }
+
+    const formData = new FormData();
+    formData.append('image', imageFile);
+
+    const res = await fetch(`${API_BASE_URL}/api/upload/recruitment-image`, {
+        method: 'POST',
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+        body: formData,
+    });
+
+    if (res.status === 401 || res.status === 403) {
+        const err = new Error('UNAUTHORIZED');
+        err.code = 'UNAUTHORIZED';
+        throw err;
+    }
+
+    if (!res.ok) {
+        const errorData = await res.json();
+        const err = new Error(errorData.message || 'Failed to upload image');
+        err.code = 'SERVER_ERROR';
+        throw err;
+    }
+
+    const result = await res.json();
+    return result.data.photo_url;
+};
+
+/**
+ * Gets a recruitment by ID
+ */
+export const getRecruitment = async (recruitmentId) => {
+    const { API_BASE_URL, headers } = getApiConfig();
+
+    const res = await fetch(`${API_BASE_URL}/api/recruitments/${recruitmentId}`, {
+        method: 'GET',
+        headers,
+    });
+
+    if (res.status === 404) {
+        const err = new Error('모집글을 찾을 수 없습니다.');
+        err.code = 'NOT_FOUND';
+        throw err;
+    }
+
+    if (!res.ok) {
+        const errorData = await res.json();
+        const err = new Error(errorData.message || 'Failed to fetch recruitment');
+        err.code = 'SERVER_ERROR';
+        throw err;
+    }
+
+    return res.json();
+};
+
+/**
+ * Gets applicants for a recruitment
+ */
+export const getRecruitmentApplicants = async (recruitmentId) => {
+    const { API_BASE_URL, headers } = getApiConfig();
+    const token = localStorage.getItem('authToken');
+
+    if (!token) {
+        const err = new Error('UNAUTHORIZED');
+        err.code = 'UNAUTHORIZED';
+        throw err;
+    }
+
+    const res = await fetch(`${API_BASE_URL}/api/recruitments/${recruitmentId}/applications`, {
+        method: 'GET',
+        headers: {
+            ...headers,
+            Authorization: `Bearer ${token}`,
+        },
+    });
+
+    if (res.status === 401 || res.status === 403) {
+        const err = new Error('UNAUTHORIZED');
+        err.code = 'UNAUTHORIZED';
+        throw err;
+    }
+
+    if (!res.ok) {
+        const errorData = await res.json();
+        const err = new Error(errorData.error || 'Failed to fetch applicants');
+        err.code = 'SERVER_ERROR';
+        throw err;
+    }
+
+    return res.json();
+};
+
+/**
+ * Approves an applicant
+ */
+export const approveApplicant = async (applicationId) => {
+    const { API_BASE_URL, headers } = getApiConfig();
+    const token = localStorage.getItem('authToken');
+
+    if (!token) {
+        const err = new Error('UNAUTHORIZED');
+        err.code = 'UNAUTHORIZED';
+        throw err;
+    }
+
+    const res = await fetch(`${API_BASE_URL}/api/applications/${applicationId}/approve`, {
+        method: 'POST',
+        headers: {
+            ...headers,
+            Authorization: `Bearer ${token}`,
+        },
+    });
+
+    if (res.status === 401 || res.status === 403) {
+        const err = new Error('UNAUTHORIZED');
+        err.code = 'UNAUTHORIZED';
+        throw err;
+    }
+
+    if (!res.ok) {
+        const errorData = await res.json();
+        const err = new Error(errorData.error || 'Failed to approve applicant');
+        err.code = 'SERVER_ERROR';
+        throw err;
+    }
+
+    return res.json();
+};
+
+/**
+ * Submits an application to a recruitment
+ */
+export const submitApplication = async (recruitmentId, applicationData) => {
+    const { API_BASE_URL, headers } = getApiConfig();
+    const token = localStorage.getItem('authToken');
+
+    if (!token) {
+        const err = new Error('로그인이 필요합니다.');
+        err.code = 'UNAUTHORIZED';
+        throw err;
+    }
+
+    const res = await fetch(`${API_BASE_URL}/api/applications/${recruitmentId}`, {
+        method: 'POST',
+        headers: {
+            ...headers,
+            Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(applicationData),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+        const err = new Error(data.message || '지원서 제출에 실패했습니다.');
+        err.code = data.error || 'SERVER_ERROR';
+        err.statusCode = res.status;
+        throw err;
+    }
+
+    return data.data;
+};
+
+/**
+ * Converts recruitment to project
+ */
+export const convertToProject = async (recruitmentId) => {
+    const { API_BASE_URL, headers } = getApiConfig();
+    const token = localStorage.getItem('authToken');
+
+    if (!token) {
+        const err = new Error('UNAUTHORIZED');
+        err.code = 'UNAUTHORIZED';
+        throw err;
+    }
+
+    const res = await fetch(`${API_BASE_URL}/api/projects/from-recruitment/${recruitmentId}`, {
+        method: 'POST',
+        headers: {
+            ...headers,
+            Authorization: `Bearer ${token}`,
+        },
+    });
+
+    if (res.status === 401 || res.status === 403) {
+        const err = new Error('UNAUTHORIZED');
+        err.code = 'UNAUTHORIZED';
+        throw err;
+    }
+
+    if (!res.ok) {
+        const errorData = await res.json();
+        const err = new Error(errorData.error || 'Failed to convert to project');
+        err.code = 'SERVER_ERROR';
+        throw err;
+    }
+
+    return res.json();
+};
+
+/**
+ * Gets user's own recruitments
+ */
+export const getMyRecruitments = async ({ limit = 10, offset = 0 } = {}) => {
+    const { API_BASE_URL, headers } = getApiConfig();
+    const token = localStorage.getItem('authToken');
+
+    if (!token) {
+        const err = new Error('UNAUTHORIZED');
+        err.code = 'UNAUTHORIZED';
+        throw err;
+    }
+
+    const qs = new URLSearchParams({
+        limit: String(limit),
+        offset: String(offset)
+    }).toString();
+
+    const res = await fetch(`${API_BASE_URL}/api/recruitments/mine?${qs}`, {
+        headers: {
+            ...headers,
+            Authorization: `Bearer ${token}`
+        },
+    });
+
+    if (res.status === 401 || res.status === 403) {
+        const err = new Error('UNAUTHORIZED');
+        err.code = 'UNAUTHORIZED';
+        throw err;
+    }
+
+    if (!res.ok) {
+        const err = new Error('SERVER_ERROR');
+        err.code = 'SERVER_ERROR';
+        throw err;
+    }
+
+    return res.json();
+};
+
+/**
+ * Gets all recruitments (Public) - 추가됨
+ */
+export const getAllRecruitments = async () => {
+    const { API_BASE_URL, headers } = getApiConfig();
+
+    // 백엔드 라우터: router.get("/", recruitmentController.getAllRecruitments);
+    const res = await fetch(`${API_BASE_URL}/api/recruitments`, {
+        method: 'GET',
+        headers,
+    });
+
+    if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        const err = new Error(errorData.message || 'Failed to fetch recruitments');
+        err.code = 'SERVER_ERROR';
+        throw err;
+    }
+
+    return res.json();
+};
