@@ -103,12 +103,16 @@ export default function TeamMatchingPage() {
                     title: post.title,
                     description: post.description,
                     imageUrl: post.photo_url,       // DB 컬럼명 확인 필요 (보통 photo_url)
-                    views: post.views || 0,
-                    applicantCount: post.applicant_count || 0, // 백엔드 컨트롤러가 count를 보내주는지 확인
+                    views: post.views || post.view_count || 0,
+                    applicantCount: post.applicant_count || post.applicantCount || 0,
+                    
                     date: post.created_at ? (post.created_at.substring(0, 10)) : '', 
-                    category: post.project_type === 'course' ? '수업' : '사이드', // 임시 카테고리 매핑
-                    tags: post.Hashtags ? post.Hashtags.map(h => h.name) : [], // 해시태그 매핑
-                    isBest: (post.views > 100), // 예시 로직
+                    category: post.project_type === 'course' ? '수업' : '사이드',
+                    
+                    // ★ 키워드도 여기서 안전하게 처리
+                    tags: (post.Hashtags || post.hashtags || []).map(h => h.name || h),
+                    
+                    isBest: (post.views > 100),
                 }));
 
                 setAllPosts(formattedData);
