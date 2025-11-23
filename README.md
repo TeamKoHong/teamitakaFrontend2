@@ -21,6 +21,12 @@
 - 🎨 **완료 뱃지 디자인 개선** - 회색 배경(#5E5E5E) + 주황색 체크(#F76241)
 - 🖼️ **아바타 폴백 처리** - null 값 대응 기본 SVG 아이콘 자동 표시
 
+### 시스템 및 UI/UX 개선
+- 🍞 **Global Toast System** - `ToastHost`를 싱글톤 패턴의 `GlobalToastSystem`으로 리팩토링하여 안정성 및 HMR 지원 강화
+- 🖱️ **스크롤 경험 개선** - 완료된 프로젝트 목록의 스크롤 이슈 해결 및 레이아웃 최적화
+- ✨ **선택 피드백 강화** - 팀원 평가 시 선택된 대상에 대한 시각적 피드백(오렌지 보더) 추가
+- 📱 **반응형 디자인 고도화** - `CompletedComponent`에 CSS Custom Properties 기반의 정교한 반응형 시스템 적용
+
 ### 컴포넌트 개선
 - 🔧 **Button 컴포넌트** - `layout` prop 추가 (center, navigation 레이아웃)
 - 📊 **데이터 변환 유틸리티** - `projectTransform.js` 추가로 API 데이터 변환 표준화
@@ -67,7 +73,7 @@
 - [ ] 알림 시스템 활성화 or 제거 결정
 
 #### Phase 3: UX 개선 (2-3주)
-- [ ] Alert → Toast/Modal 교체 (36개 - 11개 파일)
+- [/] Alert → Toast/Modal 교체 (시스템 구축 완료, 순차 적용 중)
 - [ ] 토스트 알림 추가 (복사, 공유 피드백)
 - [ ] 지원 취소 API 연동
 - [ ] 미사용 컴포넌트 정리 (StickyCTA, ProjectSummaryCard 등 6개)
