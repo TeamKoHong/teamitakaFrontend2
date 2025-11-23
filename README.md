@@ -85,7 +85,68 @@
 - **API 연동 필요**: `rating.js` (더미 데이터 사용 중)
 - **코드 품질 개선 항목**: 약 100개 (console.log, alert, TODO 주석 등)
 
-> 💡 **참고**: 상세 이슈 목록 및 파일별 TODO 주석은 개발팀 내부 이슈 트래커에서 관리 중입니다.
+### 📊 페이지별 구현 현황 (31개 페이지 분석)
+
+#### 카테고리별 통계
+
+| 카테고리 | 페이지 수 | ✅ 완전 구현 | 🎨 UI만 | 🔧 부분 구현 | ❌ 미구현 | 구현율 |
+|----------|----------|------------|---------|------------|---------|--------|
+| 인증/온보딩 | 4 | 9 | 0 | 1 | 2 | 75% |
+| 모집글 작성 | 6 | 14 | 0 | 0 | 0 | **100%** ⭐ |
+| 지원하기 | 3 | 3 | 1 | 0 | 1 | 60% |
+| 평가 시스템 | 4 | 10 | 16 | 1 | 0 | 37% |
+| 프로젝트 관리 | 7 | 6 | 14 | 1 | 0 | 29% |
+| 모집/검색 | 4 | 5 | 3 | 2 | 2 | 42% |
+| 기타 | 3 | 3 | 4 | 0 | 2 | 33% |
+| **합계** | **31** | **50** | **38** | **5** | **7** | **50%** |
+
+**구현 상태 범례:**
+- ✅ **완전 구현**: UI + 로직 + API 연동 완료
+- 🎨 **UI만**: 화면은 있지만 기능 미구현 (더미 데이터 또는 버튼만)
+- 🔧 **부분 구현**: 일부 기능만 동작 (예: 조회만 되고 수정/삭제 안 됨)
+- ❌ **미구현**: 필요하지만 구현 안 됨
+
+#### 백엔드 API 연동 현황
+
+| Service 파일 | 상태 | 주요 기능 | 사용 페이지 | 비고 |
+|-------------|------|-----------|------------|------|
+| **auth.js** | ✅ 완료 | 로그인, 회원가입, 이메일 인증 | LoginPage, RegisterPage | 실제 API 연동 |
+| **user.js** | ✅ 완료 | 사용자 정보 조회 | ProfilePage | 실제 API 연동 |
+| **recruitment.js** | ✅ 완료 | 모집글 CRUD, 지원서 제출 | RecruitmentViewPage, ProjectApplySelect, ProjectRecruitPublish | 실제 API 연동 |
+| **projects.js** | ✅ 완료 | 프로젝트 목록, 상세 조회 | ProjectManagement, TeamMemberEvaluationPage | 실제 API 연동 |
+| **evaluation.js** | ✅ 완료 | 팀원 평가 제출, 평가 대상 조회 | TeamMemberEvaluationPage | 실제 API 연동 |
+| **rating.js** | ⚠️ 부분 | 평가 현황 조회 | RatingManagementPage, RatingProjectStatusPage | 일부 더미 데이터 |
+
+**미연동 또는 더미 데이터 사용 중인 페이지:**
+- RecruitmentPage (파일 내 하드코딩)
+- SearchPage (검색 API 미구현)
+- TeamMatchingPage (localStorage)
+- ProjectDetailPage (더미 UI만)
+- ProjectCalendar (데이터 소스 없음)
+- BookmarkPage (하드코딩)
+- NotificationsPage (localStorage)
+- ProceedingsPage (localStorage)
+- RatingProjectPage (fixtures/projectSummary.js)
+
+#### 주요 페이지 상세 현황
+
+**✅ 완벽 구현 (100%)**
+- **모집글 작성 시리즈** (6페이지): 다단계 플로우, localStorage 임시저장, 최종 API 발행
+- **팀원 평가** (TeamMemberEvaluationPage): 3단계 평가 플로우, Optimistic UI, API 완벽 연동
+- **지원하기 플로우** (ProjectApplySelect): 포트폴리오 선택 → 제출, API 연동 완료
+
+**🔧 부분 구현 (기능 추가 필요)**
+- **RecruitmentViewPage**: 조회 완료, 수정/삭제 미구현 (TODO)
+- **SearchPage**: UI 완료, 검색 API 미구현 (TODO)
+- **RegisterPage**: 이메일 인증 완료, 인증 코드 확인 로직 주석처리
+
+**❌ 구현 필요**
+- **ProjectDetailPage**: 전체 더미 UI, 실제 데이터 연동 필요
+- **ProjectCalendar**: 일정 조회/추가/수정 API 전체 미구현
+- **ProjectVotePage**: 투표 기능 전체 미구현 (스켈레톤만)
+- **BookmarkPage**: 북마크 목록/추가/삭제 API 전체 미구현
+
+> 💡 **참고**: 상세 페이지별 기능 분석 및 파일별 TODO 주석은 개발팀 내부 이슈 트래커에서 관리 중입니다.
 
 ## ✨ 주요 기능
 
