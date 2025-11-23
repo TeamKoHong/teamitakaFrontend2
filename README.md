@@ -13,6 +13,19 @@
 - 👥 **투명한 평가**: 상호 평가로 팀워크 능력 가시화
 - 📱 **모바일 최적화**: 언제 어디서나 팀 프로젝트 관리
 
+## 🆕 최근 업데이트 (2025-11-23)
+
+### 팀원 평가 페이지 개선
+- ✨ **프로젝트 정보 표시 안정화** - 이름, 기간, 회의 시간 정확하게 표시
+- 🚀 **데이터 전달 최적화** - location.state 기반으로 불필요한 API 호출 제거
+- 🎨 **완료 뱃지 디자인 개선** - 회색 배경(#5E5E5E) + 주황색 체크(#F76241)
+- 🖼️ **아바타 폴백 처리** - null 값 대응 기본 SVG 아이콘 자동 표시
+
+### 컴포넌트 개선
+- 🔧 **Button 컴포넌트** - `layout` prop 추가 (center, navigation 레이아웃)
+- 📊 **데이터 변환 유틸리티** - `projectTransform.js` 추가로 API 데이터 변환 표준화
+- 📝 **백엔드 API 문서** - 프로젝트 필드 요청 사항 문서화
+
 ## ✨ 주요 기능
 
 ### 🎯 프로젝트 모집 & 매칭
@@ -34,10 +47,14 @@
 - **팀원 관리**: 팀원 역할 및 권한 관리
 
 - **상호 평가**: 프로젝트 종료 후 팀원 간 평가
+  - 3단계 평가 플로우 (카테고리 평가 → 종합 평가 → 완료)
+  - 프로젝트 정보 자동 표시 (이름, 기간, 회의 시간, D-day)
+  - 완료된 팀원 시각적 표시 (회색 배경 + 주황색 체크)
 - **평가 현황**: 보낸/받은 평가 상태 확인
 - **키워드 기반**: 긍정/부정 키워드로 빠른 평가
 - **프로필 통합**: 평가 결과를 프로필에 자동 반영
-- **UI 개선**: Figma 디자인 시스템 적용, 직관적인 평가 플로우 (Step 1~3)
+- **UI 개선**: Figma 디자인 시스템 적용, 직관적인 평가 플로우
+- **데이터 최적화**: location.state 기반 데이터 전달로 성능 개선
 
 ### 🔐 사용자 인증
 - **이메일 인증**: SendGrid 기반 이메일 인증 (180초 유효)
@@ -190,6 +207,10 @@ src/
 ├── contexts/         # React Context
 │   └── AuthContext.js
 ├── utils/            # 유틸리티 함수
+│   ├── dateFormatters.js     # 날짜/시간 포맷팅
+│   ├── calculateProgress.js  # 진행률 계산
+│   ├── projectTransform.js   # API 데이터 → UI 형식 변환
+│   └── ...
 ├── styles/           # 글로벌 스타일, SCSS 변수
 ├── constants/        # 상수 정의
 │   └── routes.js     # 라우트 경로 상수
@@ -1226,7 +1247,8 @@ git pull origin <branch>
 - [개발 환경 설정 가이드](./DEVELOPMENT_SETUP.md)
 - [README 작성 가이드라인](./README_GUIDELINES.md)
 - [Supabase 마이그레이션 가이드](./SUPABASE_MIGRATION_GUIDE.md)
-- [Git 워크플로우 문제 해결 가이드](./GIT_WORKFLOW_TROUBLESHOOTING.md) ⭐ NEW
+- [Git 워크플로우 문제 해결 가이드](./GIT_WORKFLOW_TROUBLESHOOTING.md)
+- [백엔드 API 요청서 - 프로젝트 필드](./BACKEND_PROJECT_API_REQUEST.md) ⭐ NEW
 - [지원서 제출 기능 테스트 보고서](./TEST_REPORT.md)
 
 ## 🙋 문의 및 지원
@@ -1237,8 +1259,8 @@ git pull origin <branch>
 
 ---
 
-**문서 버전**: 2.3 (메인 페이지 레이아웃 수정)
-**마지막 업데이트**: 2025-11-20
+**문서 버전**: 2.4 (팀원 평가 데이터 플로우 개선)
+**마지막 업데이트**: 2025-11-23
 **관리자**: Teamitaka 개발팀
 
 **Made with ❤️ by Teamitaka Team**
