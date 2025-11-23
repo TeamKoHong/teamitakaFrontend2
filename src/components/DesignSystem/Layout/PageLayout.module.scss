@@ -21,6 +21,10 @@
 }
 
 .closeButton {
+    position: absolute;
+    right: 22px;
+    top: 50%;
+    transform: translateY(-50%);
     background: none;
     border: none;
     font-size: 24px; // Larger touch target

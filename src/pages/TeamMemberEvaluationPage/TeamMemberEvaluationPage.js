@@ -61,19 +61,33 @@ function TeamMemberEvaluationPage() {
         // Fetch evaluation targets first
         const evalTargets = await fetchEvaluationTargets(projectId, user.userId);
 
-        // Try to fetch project details, but fallback if it fails
+        // Try to get project details from location.state first (passed from navigation)
         let projectDetails = null;
-        try {
-          projectDetails = await fetchProjectDetails(projectId);
-        } catch (projectErr) {
-          console.warn('프로젝트 상세 정보를 불러오지 못했습니다. 기본 정보를 사용합니다:', projectErr);
-          // Fallback to basic project data
+        if (location.state?.projectSummary) {
+          console.log('📦 Using project data from location.state:', location.state.projectSummary);
+          // Use data passed via navigation state
+          const stateProject = location.state.projectSummary;
           projectDetails = {
-            title: '프로젝트',
-            start_date: null,
-            end_date: null,
-            meeting_time: '회의 시간 미정'
+            title: stateProject.title || stateProject.name,
+            start_date: stateProject.start_date || stateProject.startDate,
+            end_date: stateProject.end_date || stateProject.endDate,
+            meeting_time: stateProject.meeting_schedule || stateProject.meetingSchedule || stateProject.meeting_time
           };
+        } else {
+          // Fallback: Try to fetch project details from API
+          try {
+            console.log('🌐 Fetching project details from API...');
+            projectDetails = await fetchProjectDetails(projectId);
+          } catch (projectErr) {
+            console.warn('프로젝트 상세 정보를 불러오지 못했습니다. 기본 정보를 사용합니다:', projectErr);
+            // Fallback to basic project data
+            projectDetails = {
+              title: '프로젝트',
+              start_date: null,
+              end_date: null,
+              meeting_time: '회의 시간 미정'
+            };
+          }
         }
 
         // Merge project details with members from evalTargets

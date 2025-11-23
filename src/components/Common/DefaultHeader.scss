@@ -9,9 +9,24 @@
   display: flex;
   align-items: center;
   position: relative;
-  gap: 12px;
+  height: 47px;
+  box-sizing: border-box;
 
-  .member-header-back,
+  .member-header-back {
+    background: none;
+    border: none;
+    cursor: pointer;
+    width: 22px;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    left: 21px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
   .member-header-chat {
     background: none;
     border: none;
@@ -21,7 +36,10 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    flex-shrink: 0;
+    position: absolute;
+    right: 22px;
+    top: 50%;
+    transform: translateY(-50%);
   }
 
   .member-header-title {
@@ -37,7 +55,10 @@
   }
 
   .member-header-chat--placeholder {
-    width: 22px; /* 아이콘 크기와 동일하게 */
-    flex-shrink: 0;
+    width: 22px;
+    position: absolute;
+    right: 22px;
+    top: 50%;
+    transform: translateY(-50%);
   }
 }

@@ -3,6 +3,7 @@ import styles from '../TeamMemberEvaluationPage.module.scss';
 import Button from '../../../components/DesignSystem/Button/Button';
 import BottomCTA from '../../../components/DesignSystem/Layout/BottomCTA';
 import RatingStars from '../../../components/DesignSystem/Input/RatingStars';
+import { formatDate } from '../../../utils/dateFormat';
 
 const EvaluationStep3 = ({
   memberData,
@@ -11,11 +12,7 @@ const EvaluationStep3 = ({
   onGoNext,
   onGoHome
 }) => {
-  const today = new Date().toLocaleDateString('ko-KR', {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit'
-  }).replace(/\. /g, '.').replace('.', '');
+  const today = formatDate(new Date().toISOString(), 'dot');
 
   return (
     <div className={styles.stepContainer}>
@@ -32,7 +29,7 @@ const EvaluationStep3 = ({
               <div className={styles.memberInfo}>
                 <div className={styles.memberName}>{memberData.name}</div>
                 <div className={styles.starRating}>
-                  <RatingStars value={evaluationData?.overallRating || 0} readOnly size="sm" />
+                  <RatingStars value={evaluationData?.overallRating || 0} readOnly size="md" />
                 </div>
               </div>
             </div>
@@ -48,14 +45,23 @@ const EvaluationStep3 = ({
         {/* Buttons */}
         <BottomCTA>
           <div className={styles.buttonBlock}>
-            {nextPendingMember && (
+            {nextPendingMember ? (
               <Button
                 variant="primary"
                 fullWidth
+                layout="navigation"
                 onClick={onGoNext}
                 rightIcon={<span>→</span>}
               >
                 다음 팀원 평가하러 가기
+              </Button>
+            ) : (
+              <Button
+                variant="primary"
+                fullWidth
+                onClick={onGoHome}
+              >
+                완료
               </Button>
             )}
 

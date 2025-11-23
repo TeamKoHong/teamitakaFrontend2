@@ -13,11 +13,22 @@ const ProjectInfoCard = ({ projectData, memberData, onMemberSelect, isLocked = f
     const bgImage = projectData.backgroundImage || null;
 
     const handleMemberClick = (memberId) => {
+        // Find the member to check if completed
+        const targetMember = projectData.members.find(m => m.id === memberId);
+
         if (isLocked) {
             console.warn('평가 진행 중에는 다른 멤버를 선택할 수 없습니다.');
             // TODO: Add toast notification
             return;
         }
+
+        // Prevent selection if completed
+        if (targetMember && targetMember.status === 'completed') {
+            console.warn('이미 평가가 완료된 멤버입니다.');
+            // TODO: Add toast notification
+            return;
+        }
+
         if (onMemberSelect) {
             onMemberSelect(memberId);
         }
