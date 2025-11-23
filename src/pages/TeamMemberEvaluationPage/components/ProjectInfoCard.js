@@ -1,19 +1,13 @@
 import React from 'react';
 import styles from './ProjectInfoCard.module.scss';
+import { formatDateRange, formatMeetingTime, calculateDaysFromStart } from '../../../utils/dateFormatters';
 
 const ProjectInfoCard = ({ projectData, memberData, onMemberSelect }) => {
     if (!projectData) return null;
 
-    const calculateDDay = (startDate) => {
-        if (!startDate) return '';
-        const start = new Date(startDate);
-        const today = new Date();
-        const diffTime = Math.abs(today - start);
-        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-        return `D + ${diffDays} `;
-    };
-
-    const dDay = calculateDDay(projectData.startDate);
+    const dDay = calculateDaysFromStart(projectData.startDate);
+    const dateRange = formatDateRange(projectData.startDate, projectData.endDate);
+    const meetingTime = formatMeetingTime(projectData.meetingSchedule);
     const bgImage = projectData.backgroundImage || null;
 
     return (
@@ -27,11 +21,11 @@ const ProjectInfoCard = ({ projectData, memberData, onMemberSelect }) => {
                     <div className={styles.projectTitle}>{projectData.name}</div>
                     <div className={styles.infoRow}>
                         <span>📅</span>
-                        <span>프로젝트 기간</span>
+                        <span>{dateRange}</span>
                     </div>
                     <div className={styles.infoRow}>
                         <span>🕐</span>
-                        <span>교육 회의 시간</span>
+                        <span>{meetingTime}</span>
                     </div>
                 </div>
 

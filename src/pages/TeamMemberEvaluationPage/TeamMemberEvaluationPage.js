@@ -71,7 +71,8 @@ function TeamMemberEvaluationPage() {
           projectDetails = {
             title: '프로젝트',
             start_date: null,
-            end_date: null
+            end_date: null,
+            meeting_time: '회의 시간 미정'
           };
         }
 
@@ -81,6 +82,7 @@ function TeamMemberEvaluationPage() {
           name: projectDetails.title || '프로젝트',
           startDate: projectDetails.start_date,
           endDate: projectDetails.end_date,
+          meetingSchedule: projectDetails.meeting_time || projectDetails.meetingSchedule,
           members: evalTargets.targets.map((member, index) => ({
             id: member.id,
             name: member.name,
