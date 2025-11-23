@@ -301,7 +301,8 @@ function TeamMemberEvaluationPage() {
       onOverallRatingChange: handleOverallRatingChange,
       onRoleDescriptionChange: handleRoleDescriptionChange,
       onSubmit: handleSubmitEvaluation,
-      onMemberSelect: handleMemberSelect
+      onMemberSelect: handleMemberSelect,
+      isLocked: currentStep > 1  // Step 2 이상에서 멤버 선택 잠금
     };
 
     switch (currentStep) {

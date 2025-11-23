@@ -14,15 +14,16 @@ const EvaluationStep2 = ({
   onOverallRatingChange,
   onRoleDescriptionChange,
   onSubmit,
-  onMemberSelect
+  onMemberSelect,
+  isLocked
 }) => {
   const isFormValid = evaluationData.overallRating > 0;
 
   return (
     <>
-      <ProjectInfoCard projectData={projectData} memberData={memberData} onMemberSelect={onMemberSelect} />
+      <ProjectInfoCard projectData={projectData} memberData={memberData} onMemberSelect={onMemberSelect} isLocked={isLocked} />
 
-      <div style={{ margin: '20px 0', display: 'flex', justifyContent: 'center' }}>
+      <div style={{ margin: '20px 0', display: 'flex', justifyContent: 'flex-start', width: '100%', alignSelf: 'flex-start' }}>
         <StepIndicator currentStep={2} totalSteps={2} />
       </div>
 

@@ -96,6 +96,12 @@
     &.disabled {
         cursor: default;
     }
+
+    &.locked {
+        opacity: 0.5;
+        cursor: not-allowed;
+        pointer-events: none;
+    }
 }
 
 .avatar {

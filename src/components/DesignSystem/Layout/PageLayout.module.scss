@@ -12,7 +12,7 @@
 .content {
     width: 100%;
     max-width: 390px; // Mobile standard
-    padding: 0 $padding-base;
+    padding: 16px $padding-base 0;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
