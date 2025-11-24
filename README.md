@@ -15,6 +15,13 @@
 
 ## 🆕 최근 업데이트 (2025-11-24)
 
+### 모집글 수정/삭제 기능 구현 완료
+- ✅ **삭제 기능**: 작성자 본인만 모집글 삭제 가능 (권한 검증 포함)
+- 📝 **수정 준비**: `updateRecruitment()` API 함수 구현 완료 (수정 페이지 연동 대기)
+- 🔐 **권한 관리**: JWT 토큰 기반 소유자 검증 및 에러 처리
+- 🎯 **UX 개선**: 삭제 확인 다이얼로그, 상세 에러 메시지, 자동 페이지 이동
+- 🛡️ **백엔드 연동**: `DELETE /api/recruitments/:id`, `PUT /api/recruitments/:id` 지원
+
 ### Firebase 전화번호 인증 통합 완료
 - ✨ **Firebase Phone Authentication**: SMS 기반 전화번호 인증 시스템 구축
 - 📱 **실제 SMS 인증**: Firebase를 통한 실제 전화번호 인증 지원
@@ -53,7 +60,7 @@
 
 | 우선순위 | 개수 | 주요 카테고리 | 타임라인 |
 |--------|------|---------------|------|
-| 🚨 **Critical (P0)** | 4 | 보안, API 미연동, 미사용 페이지 | 즉시 처리 |
+| 🚨 **Critical (P0)** | 3 | 보안, API 미연동, 미사용 페이지 | 즉시 처리 |
 | 🔴 **High (P1)** | 5 | 더미 데이터, 기능 미구현 | 1-2주 |
 | ⚠️ **Medium (P2)** | 5 | UX 개선, 미사용 컴포넌트 | 2-3주 |
 | 🔧 **Low (P3)** | 4 | 코드 품질, 정리 작업 | 지속적 |
@@ -64,7 +71,7 @@
 |----------|------|-----------|-----------|----------|
 | 🚨 **P0** | **프로젝트 권한 검증** | 미구현 (보안 취약) | `App.js:122` | 즉시 |
 | 🚨 **P0** | **rating.js API 연동** | 더미 데이터만 사용 | `services/rating.js` | 즉시 |
-| 🚨 **P0** | **모집글 수정/삭제** | alert만 표시 | `RecruitmentViewPage.js:232,243` | 즉시 |
+| ✅ ~~**P0**~~ | ~~**모집글 수정/삭제**~~ | ✅ **구현 완료** | `RecruitmentViewPage.js` | ✅ 완료 |
 | 🚨 **P0** | **ProjectVotePage** | 주석처리됨 (완전 미사용) | `pages/ProjectVotePage/` | 구현 or 삭제 결정 |
 | ⚠️ **P1** | **캘린더 일정 연동** | 더미 데이터 (7개 하드코딩) | `Calendar.js:11-77` | 1주 |
 | ⚠️ **P1** | **프로젝트 라이브러리** | 버튼만 있음 | `ProjectDetailHeader.js:16` | 1주 |
@@ -77,7 +84,7 @@
 #### Phase 1: 보안 & 핵심 기능 (즉시 처리)
 - [ ] 프로젝트 권한 검증 API 구현
 - [ ] rating.js 더미 데이터 → 실제 API 교체
-- [ ] 모집글 수정/삭제 기능 구현
+- [x] 모집글 수정/삭제 기능 구현 ✅ **완료** (2025-11-24)
 - [ ] ProjectVotePage 처리 방향 결정 (구현 완료 or 제거)
 
 #### Phase 2: 주요 기능 완성 (1-2주)
@@ -354,6 +361,11 @@ showToast('수정 기능 준비 중', 'info');
   - 1단계: 기본 정보 (제목, 기간, 유형)
   - 2단계: 상세 정보 (설명, 키워드)
   - 3단계: 대표 이미지 업로드
+- **모집글 관리**: 작성자 전용 수정/삭제 기능
+  - ✅ **삭제 기능**: 작성자 본인만 삭제 가능 (JWT 권한 검증)
+  - 📝 **수정 준비**: API 함수 구현 완료 (수정 페이지 연동 대기)
+  - 🛡️ **보안**: 소유자 검증, 에러 처리, 자동 페이지 이동
+  - 🎯 **UX**: 삭제 확인 다이얼로그, 상세 에러 메시지
 - **지원서 제출**: 3단계 플로우로 간편한 지원
   - 1단계: 자기소개 작성 (300자)
   - 2단계: 포트폴리오 프로젝트 선택 (완료된 프로젝트)
@@ -823,7 +835,9 @@ try {
 import {
   createRecruitment,
   getRecruitment,
-  uploadRecruitmentImage
+  uploadRecruitmentImage,
+  updateRecruitment,
+  deleteRecruitment
 } from './services/recruitment';
 
 // 1. 모집글 생성
@@ -936,6 +950,52 @@ try {
 // - Optional chaining (?.map) 필수 (빈 배열 대비)
 // - 날짜 변환: ISO 8601 → "YY.MM.DD" 형식
 // - project_type: "course" → "수업", 그 외 → "사이드"
+
+// 5. 모집글 수정 (작성자 전용) ✨ 2025-11-24 추가
+try {
+  const updated = await updateRecruitment(recruitmentId, {
+    title: '수정된 제목',
+    description: '수정된 설명',
+    project_type: 'course',
+    recruitment_start: '2025-02-01',
+    recruitment_end: '2025-02-15',
+    max_applicants: 10,
+    hashtags: ['Vue', 'Nuxt', 'Firebase']
+  });
+
+  console.log('모집글 수정 성공:', updated.recruitment_id);
+} catch (error) {
+  if (error.code === 'UNAUTHORIZED') {
+    console.error('로그인이 필요하거나 권한이 없습니다.');
+  } else if (error.code === 'NOT_FOUND') {
+    console.error('모집글을 찾을 수 없습니다.');
+  } else {
+    console.error('수정 실패:', error.message);
+  }
+}
+
+// 6. 모집글 삭제 (작성자 전용) ✨ 2025-11-24 추가
+try {
+  if (window.confirm('정말 삭제하시겠습니까?\n삭제된 게시글은 복구할 수 없습니다.')) {
+    await deleteRecruitment(recruitmentId);
+    console.log('모집글 삭제 성공');
+    // 삭제 후 목록 페이지로 이동
+    navigate('/team-matching');
+  }
+} catch (error) {
+  if (error.code === 'UNAUTHORIZED') {
+    console.error('로그인이 필요하거나 권한이 없습니다.');
+  } else if (error.code === 'NOT_FOUND') {
+    console.error('모집글을 찾을 수 없습니다.');
+  } else {
+    console.error('삭제 실패:', error.message);
+  }
+}
+
+// 💡 수정/삭제 권한 검증:
+// - JWT 토큰 기반 소유자 검증 (백엔드에서 user_id 비교)
+// - 401/403: 권한 없음, 404: 모집글 없음
+// - RecruitmentViewPage.js에서 isOwner 상태로 UI 조건부 렌더링
 ```
 
 ### 지원서 제출
