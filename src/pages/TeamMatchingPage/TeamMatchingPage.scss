@@ -210,7 +210,9 @@
     .matching-card-thumbnail {
         flex-shrink: 0;
         position: relative;
-        img {
+        width: 84px;
+            height: 79px;
+        .card-img {
             width: 84px;
             height: 79px;
             object-fit: cover;
