@@ -52,7 +52,7 @@ export default function PhoneAuthTestPage() {
           <li>인증 완료 후 자동으로 메인 페이지로 이동합니다</li>
         </ol>
         <div className="test-phone-info">
-          <strong>🧪 개발 환경 테스트 모드 (자동 활성화):</strong>
+          <strong>🧪 테스트 모드 (개발 및 배포 환경에서 사용 가능):</strong>
           <br />
           전화번호: 010-1234-5678
           <br />
