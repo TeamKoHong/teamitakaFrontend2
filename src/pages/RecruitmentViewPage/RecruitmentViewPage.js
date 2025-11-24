@@ -9,7 +9,7 @@ import { FaEye } from "react-icons/fa";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import apply from "../../assets/apply.png";
 
-import { getRecruitment } from '../../services/recruitment';
+import { getRecruitment, deleteRecruitment } from '../../services/recruitment';
 import { getCurrentUser } from '../../services/auth';
 import { formatKoreanDateRange, formatRelativeTime } from '../../utils/dateUtils';
 import ApplicantListSlide from '../../components/ApplicantListSlide';
@@ -160,7 +160,49 @@ export default function RecruitmentViewPage() {
     const handleCloseApplicantList = () => {
         setShowApplicantList(false);
     };
-    
+
+    /**
+     * 게시글 수정 핸들러
+     */
+    const handleEdit = () => {
+        setShowMoreMenu(false);
+        // TODO: 수정 페이지로 이동 (예: /recruit/edit/:id)
+        // 현재는 수정 페이지가 구현되지 않았으므로 안내 메시지 표시
+        alert('게시글 수정 페이지는 아직 준비 중입니다.\n\n수정 페이지 라우트: /recruit/edit/' + id);
+        // navigate(`/recruit/edit/${id}`, { state: { recruitment: post } });
+    };
+
+    /**
+     * 게시글 삭제 핸들러
+     */
+    const handleDelete = async () => {
+        setShowMoreMenu(false);
+
+        if (!window.confirm('정말 삭제하시겠습니까?\n삭제된 게시글은 복구할 수 없습니다.')) {
+            return;
+        }
+
+        try {
+            await deleteRecruitment(id);
+            alert('게시글이 성공적으로 삭제되었습니다.');
+            navigate('/team-matching'); // 목록 페이지로 이동
+        } catch (err) {
+            console.error('❌ Delete recruitment failed:', err);
+
+            let errorMessage = '게시글 삭제에 실패했습니다.';
+
+            if (err.code === 'UNAUTHORIZED') {
+                errorMessage = '로그인이 필요하거나 권한이 없습니다.';
+            } else if (err.code === 'NOT_FOUND') {
+                errorMessage = '게시글을 찾을 수 없습니다.';
+            } else if (err.message) {
+                errorMessage = err.message;
+            }
+
+            alert(errorMessage);
+        }
+    };
+
     if (error) {
         return (
             <div className="view-page">
@@ -225,23 +267,13 @@ export default function RecruitmentViewPage() {
                         {showMoreMenu && (
                             <div className="more-menu">
                                 <button
-                                    onClick={() => {
-                                        setShowMoreMenu(false);
-                                        // TODO: 수정 기능 구현
-                                        alert('게시글 수정 기능은 준비 중입니다.');
-                                    }}
+                                    onClick={handleEdit}
                                     className="menu-item"
                                 >
                                     게시글 수정하기
                                 </button>
                                 <button
-                                    onClick={() => {
-                                        setShowMoreMenu(false);
-                                        if (window.confirm('정말 삭제하시겠습니까?')) {
-                                            // TODO: 삭제 API 연동
-                                            alert('게시글 삭제 기능은 준비 중입니다.');
-                                        }
-                                    }}
+                                    onClick={handleDelete}
                                     className="menu-item"
                                 >
                                     게시글 삭제하기
