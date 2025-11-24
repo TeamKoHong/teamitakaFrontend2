@@ -78,22 +78,22 @@ const PhoneAuthForm = () => {
       const formattedPhone = formatPhoneNumber(phoneNumber);
       console.log('📱 전화번호:', formattedPhone);
 
-      // 🧪 개발 환경 우회 모드 (테스트용)
-      if (process.env.NODE_ENV === 'development' && formattedPhone === '+821012345678') {
-        console.log('🧪 개발 환경 테스트 모드: 인증 코드 123456 사용');
+      // 🧪 테스트 모드 (개발 및 배포 환경에서 사용 가능)
+      if (process.env.REACT_APP_ENABLE_TEST_MODE === 'true' && formattedPhone === '+821012345678') {
+        console.log('🧪 테스트 모드 활성화: 인증 코드 123456 사용');
         // 가짜 confirmationResult 객체 생성
         setConfirmationResult({
           confirm: async (code) => {
             if (code === '123456') {
-              console.log('✅ 개발 환경 테스트 인증 성공');
+              console.log('✅ 테스트 모드 인증 성공');
               // 임시 사용자 객체 반환
               return {
                 user: {
                   uid: 'test-user-' + Date.now(),
                   phoneNumber: formattedPhone,
                   getIdToken: async () => {
-                    // 개발 환경용 임시 토큰 (실제로는 백엔드에서 검증하지 않음)
-                    console.log('⚠️ 개발 환경 테스트 모드: 실제 Firebase ID 토큰 대신 테스트 토큰 사용');
+                    // 테스트용 임시 토큰 (백엔드에서 dev-test-token으로 검증)
+                    console.log('⚠️ 테스트 모드: 실제 Firebase ID 토큰 대신 테스트 토큰 사용');
                     return 'dev-test-token-' + Date.now();
                   }
                 }
