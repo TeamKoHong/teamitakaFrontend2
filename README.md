@@ -15,6 +15,12 @@
 
 ## 🆕 최근 업데이트 (2025-11-24)
 
+### 모집글 생성 status 필드 추가 및 백엔드 동기화
+- ✨ **status 필드 추가**: 모집글 생성 시 백엔드 ENUM 값 전송 (`ACTIVE`, `CLOSED`, `FILLED`)
+- 🔄 **백엔드 동기화**: 데이터베이스 제약 조건 오류(`recruitments_status_check`) 해결
+- 🛡️ **기본값 설정**: 새 모집글은 자동으로 `ACTIVE` (활성) 상태로 생성
+- 📝 **타입 안전성**: TypeScript 주석으로 허용 값 명시 (`"ACTIVE" | "CLOSED" | "FILLED"`)
+
 ### 모집글 수정/삭제 기능 구현 완료
 - ✅ **삭제 기능**: 작성자 본인만 모집글 삭제 가능 (권한 검증 포함)
 - 📝 **수정 준비**: `updateRecruitment()` API 함수 구현 완료 (수정 페이지 연동 대기)
@@ -849,7 +855,8 @@ try {
     recruitment_start: '2025-01-20',
     recruitment_end: '2025-02-20',
     max_applicants: 5,  // 선택사항
-    hashtags: ['React', 'TypeScript', 'Node.js']  // ✨ 해시태그 (선택사항, 최대 5개)
+    hashtags: ['React', 'TypeScript', 'Node.js'],  // ✨ 해시태그 (선택사항, 최대 5개)
+    status: 'ACTIVE'  // ✨ 모집 상태: 'ACTIVE' (기본값) | 'CLOSED' | 'FILLED'
   });
 
   console.log('모집글 생성 성공:', recruitment.recruitment_id);
@@ -865,6 +872,11 @@ try {
 // - # 기호는 자동으로 제거됨 ('#React' → 'React')
 // - 중복 제거 및 최대 5개로 제한
 // - 백엔드 commit ae37e1f에서 구현됨
+
+// 💡 status 필드 (2025-11-24 추가):
+// - 백엔드 ENUM 값: 'ACTIVE' (활성), 'CLOSED' (마감), 'FILLED' (충원 완료)
+// - 기본값: 'ACTIVE' (생략 가능하지만 명시 권장)
+// - 데이터베이스 제약 조건으로 인해 필수 필드
 
 // 2. 모집글 조회 (인증 불필요)
 try {
