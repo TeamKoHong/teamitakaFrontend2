@@ -15,6 +15,14 @@
 
 ## 🆕 최근 업데이트 (2025-11-24)
 
+### Firebase 전화번호 인증 통합 완료
+- ✨ **Firebase Phone Authentication**: SMS 기반 전화번호 인증 시스템 구축
+- 📱 **실제 SMS 인증**: Firebase를 통한 실제 전화번호 인증 지원
+- 🧪 **테스트 모드**: 개발/배포 환경에서 SMS 없이 테스트 가능 (010-1234-5678 / 123456)
+- 🔐 **백엔드 통합**: Firebase ID Token → JWT 토큰 발급 완벽 연동
+- ✅ **신규 사용자 자동 생성**: 전화번호 기반 자동 회원가입
+- 🛡️ **reCAPTCHA 보안**: Bot 방지 및 안정적인 인증 플로우
+
 ### RecruitmentPage API 통합 및 Hashtags 표시 완료
 - ✨ **API 통합**: `getAllRecruitments()` 실제 백엔드 API 연동 완료
 - 🏷️ **해시태그 표시**: 모집글 리스트 아이템에 키워드(Hashtags) 동적 표시
@@ -371,6 +379,11 @@ showToast('수정 기능 준비 중', 'info');
 
 ### 🔐 사용자 인증
 - **이메일 인증**: SendGrid 기반 이메일 인증 (180초 유효)
+- **전화번호 인증**: Firebase Phone Auth + SMS 인증
+  - 실제 전화번호 SMS 인증 (Firebase)
+  - 개발/배포 환경 테스트 모드 (010-1234-5678 / 123456)
+  - 백엔드 JWT 토큰 발급 연동
+  - 신규 사용자 자동 회원가입
 - **JWT 인증**: 안전한 토큰 기반 인증
 - **온보딩**: 신규 사용자 가이드
 
@@ -394,6 +407,10 @@ showToast('수정 기능 준비 중', 'info');
 ### UI Libraries
 - **Swiper**: 터치 기반 슬라이더 컴포넌트
 - **React Icons**: 다양한 아이콘 세트 (Ionicons, Font Awesome 등)
+
+### Authentication & Backend
+- **Firebase**: Phone Authentication (SMS 인증)
+- **JWT**: 토큰 기반 인증 및 세션 관리
 
 ### Development & Testing
 - **Jest**: 단위 테스트 프레임워크
@@ -596,6 +613,27 @@ REACT_APP_ENV=development
 SASS_DEPRECATION_WARNINGS=false
 ```
 
+### Firebase 설정 (전화번호 인증)
+
+```bash
+# Firebase Web App Configuration (프론트엔드용)
+REACT_APP_FIREBASE_API_KEY=your-api-key
+REACT_APP_FIREBASE_AUTH_DOMAIN=your-project.firebaseapp.com
+REACT_APP_FIREBASE_PROJECT_ID=your-project-id
+REACT_APP_FIREBASE_STORAGE_BUCKET=your-project.firebasestorage.app
+REACT_APP_FIREBASE_MESSAGING_SENDER_ID=your-sender-id
+REACT_APP_FIREBASE_APP_ID=your-app-id
+
+# Phone Auth Test Mode (개발 및 배포 환경 테스트용)
+REACT_APP_ENABLE_TEST_MODE=true
+```
+
+**테스트 모드 사용**:
+- `REACT_APP_ENABLE_TEST_MODE=true` 설정 시 테스트 전화번호 사용 가능
+- 테스트 전화번호: `010-1234-5678`
+- 테스트 인증 코드: `123456`
+- 실제 SMS 없이 개발/배포 환경에서 테스트 가능
+
 ### 환경별 설정
 
 **개발 환경** (`.env.local`):
@@ -657,6 +695,127 @@ try {
   console.error('재전송 실패:', error.message);
 }
 ```
+
+### 전화번호 인증 (Firebase Phone Auth)
+
+```javascript
+import { auth } from './config/firebase';
+import { RecaptchaVerifier, signInWithPhoneNumber } from 'firebase/auth';
+import { verifyPhoneAuth } from './services/phoneAuth';
+
+// 1. reCAPTCHA 초기화
+const setupRecaptcha = () => {
+  if (!window.recaptchaVerifier) {
+    window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
+      size: 'normal',  // 'invisible' 또는 'normal'
+      callback: () => {
+        console.log('✅ reCAPTCHA 검증 완료');
+      }
+    });
+  }
+};
+
+// 2. 전화번호 형식 변환 (010-xxxx-xxxx → +8210xxxxxxxx)
+const formatPhoneNumber = (phone) => {
+  const cleaned = phone.replace(/-/g, '');
+  if (cleaned.startsWith('010')) {
+    return '+82' + cleaned.substring(1);
+  }
+  return '+82' + cleaned;
+};
+
+// 3. SMS 인증 코드 전송
+try {
+  const phoneNumber = '010-1234-5678';
+  const formattedPhone = formatPhoneNumber(phoneNumber);  // +821012345678
+
+  // reCAPTCHA 초기화
+  setupRecaptcha();
+  const appVerifier = window.recaptchaVerifier;
+
+  // Firebase에서 SMS 전송
+  const confirmationResult = await signInWithPhoneNumber(
+    auth,
+    formattedPhone,
+    appVerifier
+  );
+
+  console.log('✅ SMS 인증 코드 전송 완료');
+
+  // confirmationResult를 저장해두고 사용자가 코드 입력하면 확인
+} catch (error) {
+  console.error('❌ SMS 전송 실패:', error);
+
+  if (error.code === 'auth/invalid-phone-number') {
+    console.error('올바르지 않은 전화번호 형식입니다.');
+  } else if (error.code === 'auth/too-many-requests') {
+    console.error('너무 많은 시도가 있었습니다. 잠시 후 다시 시도해주세요.');
+  }
+}
+
+// 4. 인증 코드 확인 및 백엔드 연동
+try {
+  const verificationCode = '123456';  // 사용자가 입력한 6자리 코드
+
+  // Firebase에서 인증 코드 확인
+  const credential = await confirmationResult.confirm(verificationCode);
+  const idToken = await credential.user.getIdToken();
+
+  console.log('✅ Firebase 인증 완료');
+  console.log('🎫 ID Token 획득');
+
+  // 백엔드 API 호출
+  const response = await verifyPhoneAuth(idToken);
+
+  console.log('✅ 백엔드 인증 완료:', response);
+
+  // 응답 예시:
+  // {
+  //   success: true,
+  //   message: "✅ 회원가입 및 로그인 성공!",
+  //   token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  //   user: {
+  //     userId: "de167dcb-9c97-4c88-a82a-47f6daf1b123",
+  //     username: "u821012345678",
+  //     email: "firebaseUid@phone.teamitaka.com",
+  //     phoneNumber: "+821012345678",
+  //     phoneVerified: true,
+  //     role: "MEMBER"
+  //   },
+  //   isNewUser: true  // 신규 사용자 여부
+  // }
+
+  // JWT 토큰과 사용자 정보 저장
+  localStorage.setItem('authToken', response.token);
+  localStorage.setItem('user', JSON.stringify(response.user));
+
+  // 신규 사용자 환영 메시지
+  if (response.isNewUser) {
+    console.log('🎉 신규 회원 가입을 환영합니다!');
+  }
+
+} catch (error) {
+  console.error('❌ 인증 실패:', error.message);
+
+  if (error.message.includes('invalid-verification-code')) {
+    console.error('인증 코드가 올바르지 않습니다.');
+  }
+}
+
+// 🧪 테스트 모드 사용 (REACT_APP_ENABLE_TEST_MODE=true)
+// 테스트 전화번호: 010-1234-5678
+// 테스트 인증 코드: 123456
+// 실제 SMS 없이 Firebase 인증 우회하여 백엔드 연동 테스트 가능
+```
+
+**Firebase Phone Auth 에러 처리**:
+
+| 에러 코드 | 설명 | 해결 방법 |
+|----------|------|----------|
+| `auth/invalid-phone-number` | 올바르지 않은 전화번호 형식 | E.164 형식 확인 (+821012345678) |
+| `auth/too-many-requests` | 너무 많은 시도 | 1-2시간 대기 또는 테스트 모드 사용 |
+| `auth/invalid-app-credential` | Firebase 설정 오류 | Firebase Console 설정 확인 |
+| `invalid-verification-code` | 잘못된 인증 코드 | 6자리 코드 재확인 |
 
 ### 모집글 관리
 
@@ -1322,6 +1481,29 @@ console.log('Expires at:', new Date(payload.exp * 1000));
 5. **재전송 시도**: "인증번호 재전송" 버튼 클릭
 
 **추가 정보**: 인증번호 유효 시간 180초
+
+### reCAPTCHA 401 오류 (Firebase Phone Auth)
+
+**증상**:
+```
+POST https://www.google.com/recaptcha/api2/pat?k=... 401 (Unauthorized)
+```
+Firebase Phone Auth 사용 시 콘솔에 reCAPTCHA 401 오류 표시
+
+**원인**: Firebase reCAPTCHA Enterprise 설정 관련 문제
+
+**해결**:
+- ✅ **정상 동작**: Firebase가 자동으로 fallback 처리하므로 **오류 무시 가능**
+- ✅ **실제 SMS 전송 및 인증은 정상 작동**함
+- ✅ **개발 환경**: 테스트 모드 사용 권장 (010-1234-5678 / 123456)
+
+**테스트 모드 사용법**:
+1. `.env.local`에 `REACT_APP_ENABLE_TEST_MODE=true` 추가
+2. 테스트 전화번호 `010-1234-5678` 입력
+3. 인증 코드 `123456` 입력
+4. 실제 SMS 없이 Firebase 인증 우회
+
+**참고**: 이 오류는 사용자 경험에 영향을 주지 않으며, Firebase가 reCAPTCHA v2로 자동 전환하여 정상 작동합니다.
 
 ### 로컬 개발 연결 실패
 
