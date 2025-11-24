@@ -25,9 +25,9 @@ const PhoneAuthForm = () => {
   const setupRecaptcha = () => {
     if (!window.recaptchaVerifier) {
       window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
-        size: 'invisible', // invisible 모드로 변경하여 401 오류 우회 시도
+        size: 'normal', // visible 모드 (401 오류 방지 및 안정성)
         callback: () => {
-          console.log('✅ reCAPTCHA 검증 완료 (invisible mode)');
+          console.log('✅ reCAPTCHA 검증 완료');
         },
         'expired-callback': () => {
           console.log('⚠️ reCAPTCHA 만료됨');
