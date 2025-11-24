@@ -2,11 +2,10 @@ import { useState, useEffect } from 'react';
 import { auth } from '../../config/firebase';
 import { RecaptchaVerifier, signInWithPhoneNumber } from 'firebase/auth';
 import { verifyPhoneAuth } from '../../services/phoneAuth';
-import { useAuth } from '../../contexts/AuthContext';
 import './PhoneAuthForm.scss';
 
 const PhoneAuthForm = () => {
-  const { dispatch } = useAuth();
+  // 테스트 전용: AuthContext 연동 제거
   const [phoneNumber, setPhoneNumber] = useState('');
   const [verificationCode, setVerificationCode] = useState('');
   const [confirmationResult, setConfirmationResult] = useState(null);
@@ -181,26 +180,15 @@ const PhoneAuthForm = () => {
 
       console.log('✅ 백엔드 인증 완료:', response);
 
-      // JWT 토큰 저장
+      // 🧪 테스트용: JWT 토큰과 사용자 정보를 localStorage에 저장 (디버깅용)
       localStorage.setItem('token', response.token);
       localStorage.setItem('user', JSON.stringify(response.user));
+      console.log('💾 localStorage에 저장 완료');
+      console.log('📄 User:', response.user);
+      console.log('🎫 Token:', response.token);
 
-      // AuthContext 업데이트
-      dispatch({
-        type: 'LOGIN_SUCCESS',
-        payload: {
-          token: response.token,
-          user: response.user
-        }
-      });
-
-      // 로그인 완료 처리
+      // 테스트 성공 화면 표시 (AuthContext 연동 없음, 자동 리다이렉트 없음)
       setStep('complete');
-
-      // 3초 후 메인 페이지로 리다이렉트
-      setTimeout(() => {
-        window.location.href = '/';
-      }, 3000);
 
     } catch (err) {
       console.error('❌ 인증 실패:', err);
@@ -291,9 +279,8 @@ const PhoneAuthForm = () => {
 
       {step === 'complete' && (
         <div className="success-message">
-          <h3>✅ 로그인 완료!</h3>
-          <p>환영합니다! 🎉</p>
-          <p className="redirect-message">메인 페이지로 이동합니다...</p>
+          <h3>✅ 번호 인증 성공!</h3>
+          <p>백엔드 연동 테스트 완료 🎉</p>
         </div>
       )}
     </div>
