@@ -13,9 +13,16 @@
 - 👥 **투명한 평가**: 상호 평가로 팀워크 능력 가시화
 - 📱 **모바일 최적화**: 언제 어디서나 팀 프로젝트 관리
 
-## 🆕 최근 업데이트 (2025-11-23)
+## 🆕 최근 업데이트 (2025-11-24)
 
-### 팀원 평가 페이지 개선
+### RecruitmentPage API 통합 및 Hashtags 표시 완료
+- ✨ **API 통합**: `getAllRecruitments()` 실제 백엔드 API 연동 완료
+- 🏷️ **해시태그 표시**: 모집글 리스트 아이템에 키워드(Hashtags) 동적 표시
+- ⚡ **상태 관리 개선**: 로딩 상태, 빈 데이터 상태 처리 구현
+- 🎯 **Mock 데이터 제거**: 정적 mock data 대신 실시간 API 데이터 사용
+- 🎨 **UX 개선**: 클릭 이벤트, 호버 효과, 2줄 말줄임 등 사용성 향상
+
+### 팀원 평가 페이지 개선 (2025-11-23)
 - ✨ **프로젝트 정보 표시 안정화** - 이름, 기간, 회의 시간 정확하게 표시
 - 🚀 **데이터 전달 최적화** - location.state 기반으로 불필요한 API 호출 제거
 - 🎨 **완료 뱃지 디자인 개선** - 회색 배경(#5E5E5E) + 주황색 체크(#F76241)
@@ -120,7 +127,7 @@
 |-------------|------|-----------|------------|------|
 | **auth.js** | ✅ 완료 | 로그인, 회원가입, 이메일 인증 (3개) | LoginPage, RegisterPage | 실제 API 연동 |
 | **user.js** | ✅ 완료 | 사용자 정보 조회 (1개) | ProfilePage | 실제 API 연동 |
-| **recruitment.js** | ✅ 완료 | 모집글 CRUD, 지원서 제출 (6개) | RecruitmentViewPage, ProjectApplySelect, ProjectRecruitPublish | 실제 API 연동 |
+| **recruitment.js** | ✅ 완료 | 모집글 CRUD, 지원서 제출 (6개) | RecruitmentPage, RecruitmentViewPage, ProjectApplySelect, ProjectRecruitPublish | 실제 API 연동 |
 | **projects.js** | ✅ 완료 | 프로젝트 목록, 상세 조회 (3개) | ProjectManagement, TeamMemberEvaluationPage | 실제 API 연동 |
 | **evaluation.js** | ✅ 완료 | 팀원 평가 제출, 평가 대상 조회 (4개) | TeamMemberEvaluationPage | 실제 API 연동 |
 | **rating.js** | ⚠️ 부분 | 평가 현황 조회 (2개) | RatingManagementPage, RatingProjectStatusPage | 일부 더미 데이터 |
@@ -130,7 +137,6 @@
 | **notifications.js** | ❌ 미구현 | 알림 조회, 동기화 (2개) | NotificationsPage | localStorage only |
 
 **미연동 또는 더미 데이터 사용 중인 페이지:**
-- RecruitmentPage (파일 내 하드코딩)
 - SearchPage (검색 API 미구현)
 - TeamMatchingPage (localStorage)
 - ProjectDetailPage (더미 UI만)
@@ -143,6 +149,7 @@
 #### 주요 페이지 상세 현황
 
 **✅ 완벽 구현 (100%)**
+- **모집글 목록** (RecruitmentPage): API 실시간 데이터 fetching, Hashtags 표시, 로딩/에러 처리 완료
 - **모집글 작성 시리즈** (6페이지): 다단계 플로우, localStorage 임시저장, 최종 API 발행
 - **팀원 평가** (TeamMemberEvaluationPage): 3단계 평가 플로우, Optimistic UI, API 완벽 연동
 - **지원하기 플로우** (ProjectApplySelect): 포트폴리오 선택 → 제출, API 연동 완료
@@ -330,6 +337,11 @@ showToast('수정 기능 준비 중', 'info');
 ## ✨ 주요 기능
 
 ### 🎯 프로젝트 모집 & 매칭
+- **모집글 목록 조회**: 실시간 API 기반 모집글 탐색
+  - 카테고리별 필터링 (전체, 마케팅, 디자인, 브랜딩, IT, 서비스)
+  - 키워드(Hashtags) 동적 표시로 빠른 정보 파악
+  - 로딩 상태 및 빈 데이터 처리
+  - 조회수 기반 "Best" 뱃지 자동 표시 (100회 이상)
 - **모집글 작성**: 3단계 플로우로 손쉬운 프로젝트 모집글 작성
   - 1단계: 기본 정보 (제목, 기간, 유형)
   - 2단계: 상세 정보 (설명, 키워드)
@@ -720,6 +732,51 @@ try {
     console.error('허용되지 않는 파일 형식입니다. (jpeg, png, webp만 가능)');
   }
 }
+
+// 4. 모집글 목록 조회 (RecruitmentPage)
+try {
+  const recruitments = await getAllRecruitments();
+
+  // API 응답을 컴포넌트 형식으로 변환
+  const formatted = recruitments.map(post => ({
+    id: post.recruitment_id,
+    title: post.title,
+    imageUrl: post.photo_url,
+    views: post.views || 0,
+    apply: post.applicant_count || 0,
+    date: post.created_at?.substring(0, 10).replace(/-/g, '.').substring(2), // "2025-01-15" → "25.01.15"
+    category: post.project_type === 'course' ? '수업' : '사이드',
+    tags: post.Hashtags?.map(h => h.name) || [], // ✨ Hashtags 매핑
+    isBest: (post.views || 0) > 100, // 조회수 100 이상
+  }));
+
+  console.log('모집글 목록:', formatted);
+
+  // API 응답 예시:
+  // [
+  //   {
+  //     "recruitment_id": "uuid",
+  //     "title": "프론트엔드 개발자 모집",
+  //     "photo_url": "https://...",
+  //     "views": 150,
+  //     "applicant_count": 5,
+  //     "created_at": "2025-01-15T10:30:00Z",
+  //     "project_type": "side",
+  //     "Hashtags": [
+  //       { "name": "React" },
+  //       { "name": "TypeScript" }
+  //     ]
+  //   }
+  // ]
+} catch (error) {
+  console.error('목록 조회 실패:', error.message);
+}
+
+// 💡 데이터 변환 참고사항:
+// - Hashtags 필드는 대문자 H (Sequelize ORM 자동 변환)
+// - Optional chaining (?.map) 필수 (빈 배열 대비)
+// - 날짜 변환: ISO 8601 → "YY.MM.DD" 형식
+// - project_type: "course" → "수업", 그 외 → "사이드"
 ```
 
 ### 지원서 제출
@@ -855,6 +912,63 @@ try {
 - 함수형 컴포넌트 사용
 - Custom Hooks로 로직 분리
 - Props drilling 최소화 (Context 활용)
+
+**5. API 데이터 변환**
+- API 응답과 컴포넌트 형식 분리
+- 변환 로직은 useEffect 내부 또는 별도 유틸리티 함수로 분리
+- 명확한 매핑 테이블 문서화
+
+### 데이터 변환 패턴 (RecruitmentPage 예시)
+
+백엔드 API 응답을 프론트엔드 컴포넌트 형식으로 변환하는 표준 패턴입니다.
+
+**API → Component 매핑 테이블**:
+
+| API 필드 | 컴포넌트 필드 | 변환 로직 | 예시 |
+|---------|-------------|-----------|------|
+| `recruitment_id` | `id` | 그대로 사용 | `"uuid-..."` |
+| `title` | `title` | 그대로 사용 | `"프론트엔드 개발자 모집"` |
+| `photo_url` | `imageUrl` | 그대로 사용 | `"https://..."` |
+| `views` | `views` | 기본값 0 | `150 \|\| 0` |
+| `applicant_count` | `apply` | 기본값 0 | `5 \|\| 0` |
+| `created_at` | `date` | ISO → "YY.MM.DD" | `"2025-01-15"` → `"25.01.15"` |
+| `project_type` | `category` | 조건부 변환 | `"course"` → `"수업"`, 그 외 → `"사이드"` |
+| `Hashtags` | `tags` | 배열 매핑 | `[{name: "React"}]` → `["React"]` |
+| - | `isBest` | 계산 필드 | `views > 100` |
+
+**변환 코드 예시**:
+```javascript
+// src/pages/RecruitmentPage/RecruitmentPage.js
+
+useEffect(() => {
+  const fetchRecruitments = async () => {
+    const data = await getAllRecruitments();
+
+    // API 응답을 컴포넌트 형식으로 변환
+    const formatted = data.map(post => ({
+      id: post.recruitment_id,
+      title: post.title,
+      imageUrl: post.photo_url,
+      views: post.views || 0, // 기본값 처리
+      apply: post.applicant_count || 0,
+      date: post.created_at?.substring(0, 10).replace(/-/g, '.').substring(2), // 날짜 변환
+      category: post.project_type === 'course' ? '수업' : '사이드', // 조건부 변환
+      tags: post.Hashtags?.map(h => h.name) || [], // 배열 매핑 + Optional chaining
+      isBest: (post.views || 0) > 100, // 계산 필드
+    }));
+
+    setRecruitments(formatted);
+  };
+
+  fetchRecruitments();
+}, []);
+```
+
+**중요 사항**:
+- ⚠️ **Hashtags 필드명**: 대문자 `H`로 시작 (Sequelize ORM 자동 변환)
+- ✅ **Optional chaining 필수**: `post.Hashtags?.map()` (빈 배열 대비)
+- ✅ **기본값 처리**: `|| 0`, `|| []` 사용하여 null/undefined 방어
+- 📅 **날짜 변환**: `"2025-01-15T10:30:00Z"` → `"25.01.15"` 형식 통일
 
 ### 코딩 컨벤션
 
