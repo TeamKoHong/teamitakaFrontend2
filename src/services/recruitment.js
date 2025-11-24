@@ -39,6 +39,7 @@ export const createRecruitment = async (recruitmentData) => {
 
     if (!res.ok) {
         const errorData = await res.json();
+        console.error('🚨 Backend error response:', errorData);
         const err = new Error(errorData.error || 'Failed to create recruitment');
         err.code = 'SERVER_ERROR';
         throw err;
