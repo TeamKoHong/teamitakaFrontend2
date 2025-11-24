@@ -110,8 +110,7 @@ export default function RecruitmentViewPage() {
     };
 
     const handleViewApplicants = () => setShowApplicantList(true);
-    const handleCloseApplicantList = () => setShowApplicantList(false);
-    
+
     // ★ 북마크 토글 함수
     const handleBookmarkToggle = () => {
         setIsBookmarked(!isBookmarked);
