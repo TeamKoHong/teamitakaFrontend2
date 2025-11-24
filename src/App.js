@@ -49,6 +49,9 @@ import ProjectRecruitPreview from './pages/ProjectRecruit/ProjectRecruitPreview/
 import ProjectRecruitPublish from "./pages/ProjectRecruit/ProjectRecruitPublish/ProjectRecruitPublish";
 import ProjectRecruitPublishDone from "./pages/ProjectRecruit/ProjectRecruitPublish/ProjectRecruitPublishDone";
 
+// Firebase 전화번호 인증 테스트 페이지
+import PhoneAuthTestPage from './pages/PhoneAuthTestPage/PhoneAuthTestPage';
+
 
 // 인증 관련 임포트
 import { AuthProvider } from './contexts/AuthContext';
@@ -294,8 +297,10 @@ const App = () => {
           <Route path={OTHER_ROUTES.BOOKMARK} element={<BookmarkPage />} />
           <Route path={OTHER_ROUTES.TEAM} element={<Navigate to={OTHER_ROUTES.TEAM_MATCHING} replace />} />
           <Route path="/recruitment/:id" element={<RecruitmentViewPage />} />
+
           {/* ===== 데모 및 개발 도구 라우트 (개발용) ===== */}
           <Route path={DEMO_ROUTES.CATEGORY_SLIDER} element={<CategorySliderDemo />} />
+          <Route path="/phone-auth-test" element={<PhoneAuthTestPage />} />
 
           {/* ===== 기본 리다이렉트 ===== */}
           <Route path="/" element={<Navigate to={MAIN_ROUTES.HOME} replace />} />
