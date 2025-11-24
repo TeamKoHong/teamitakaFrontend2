@@ -10,7 +10,7 @@ import applyIcon from "../../assets/apply.png"; // 변수명 충돌 방지 위�
 import bookmarkIcon from "../../assets/bookmark.png";          // 북마크 OFF 이미지
 import bookmarkActiveIcon from "../../assets/bookmark_active.png"; // 북마크 ON 이미지
 
-import { getRecruitment } from '../../api/recruit'; // api 경로 확인 (api/recruit.js)
+import { getRecruitment, deleteRecruitment } from '../../services/recruitment';
 import { getCurrentUser } from '../../services/auth';
 import { formatKoreanDateRange, formatRelativeTime } from '../../utils/dateUtils';
 import ApplicantListSlide from '../../components/ApplicantListSlide';
@@ -110,12 +110,60 @@ export default function RecruitmentViewPage() {
     };
 
     const handleViewApplicants = () => setShowApplicantList(true);
-    const handleCloseApplicantList = () => setShowApplicantList(false);
-    
+
     // ★ 북마크 토글 함수
     const handleBookmarkToggle = () => {
         setIsBookmarked(!isBookmarked);
         // 추후 여기에 API 호출 추가 (북마크 저장/해제)
+    };
+
+    /**
+     * ApplicantListSlide 닫기 핸들러
+     */
+    const handleCloseApplicantList = () => {
+        setShowApplicantList(false);
+    };
+
+    /**
+     * 게시글 수정 핸들러
+     */
+    const handleEdit = () => {
+        setShowMoreMenu(false);
+        // TODO: 수정 페이지로 이동 (예: /recruit/edit/:id)
+        // 현재는 수정 페이지가 구현되지 않았으므로 안내 메시지 표시
+        alert('게시글 수정 페이지는 아직 준비 중입니다.\n\n수정 페이지 라우트: /recruit/edit/' + id);
+        // navigate(`/recruit/edit/${id}`, { state: { recruitment: post } });
+    };
+
+    /**
+     * 게시글 삭제 핸들러
+     */
+    const handleDelete = async () => {
+        setShowMoreMenu(false);
+
+        if (!window.confirm('정말 삭제하시겠습니까?\n삭제된 게시글은 복구할 수 없습니다.')) {
+            return;
+        }
+
+        try {
+            await deleteRecruitment(id);
+            alert('게시글이 성공적으로 삭제되었습니다.');
+            navigate('/team-matching'); // 목록 페이지로 이동
+        } catch (err) {
+            console.error('❌ Delete recruitment failed:', err);
+
+            let errorMessage = '게시글 삭제에 실패했습니다.';
+
+            if (err.code === 'UNAUTHORIZED') {
+                errorMessage = '로그인이 필요하거나 권한이 없습니다.';
+            } else if (err.code === 'NOT_FOUND') {
+                errorMessage = '게시글을 찾을 수 없습니다.';
+            } else if (err.message) {
+                errorMessage = err.message;
+            }
+
+            alert(errorMessage);
+        }
     };
 
     if (error) {
@@ -140,8 +188,18 @@ export default function RecruitmentViewPage() {
                         </button>
                         {showMoreMenu && (
                             <div className="more-menu">
-                                <button className="menu-item">수정하기</button>
-                                <button className="menu-item">삭제하기</button>
+                                <button
+                                    onClick={handleEdit}
+                                    className="menu-item"
+                                >
+                                    게시글 수정하기
+                                </button>
+                                <button
+                                    onClick={handleDelete}
+                                    className="menu-item"
+                                >
+                                    게시글 삭제하기
+                                </button>
                             </div>
                         )}
                     </div>

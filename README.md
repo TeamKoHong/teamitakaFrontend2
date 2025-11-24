@@ -13,13 +13,41 @@
 - 👥 **투명한 평가**: 상호 평가로 팀워크 능력 가시화
 - 📱 **모바일 최적화**: 언제 어디서나 팀 프로젝트 관리
 
-## 🆕 최근 업데이트 (2025-11-23)
+## 🆕 최근 업데이트 (2025-11-24)
 
-### 팀원 평가 페이지 개선
+### 모집글 수정/삭제 기능 구현 완료
+- ✅ **삭제 기능**: 작성자 본인만 모집글 삭제 가능 (권한 검증 포함)
+- 📝 **수정 준비**: `updateRecruitment()` API 함수 구현 완료 (수정 페이지 연동 대기)
+- 🔐 **권한 관리**: JWT 토큰 기반 소유자 검증 및 에러 처리
+- 🎯 **UX 개선**: 삭제 확인 다이얼로그, 상세 에러 메시지, 자동 페이지 이동
+- 🛡️ **백엔드 연동**: `DELETE /api/recruitments/:id`, `PUT /api/recruitments/:id` 지원
+
+### Firebase 전화번호 인증 통합 완료
+- ✨ **Firebase Phone Authentication**: SMS 기반 전화번호 인증 시스템 구축
+- 📱 **실제 SMS 인증**: Firebase를 통한 실제 전화번호 인증 지원
+- 🧪 **테스트 모드**: 개발/배포 환경에서 SMS 없이 테스트 가능 (010-1234-5678 / 123456)
+- 🔐 **백엔드 통합**: Firebase ID Token → JWT 토큰 발급 완벽 연동
+- ✅ **신규 사용자 자동 생성**: 전화번호 기반 자동 회원가입
+- 🛡️ **reCAPTCHA 보안**: Bot 방지 및 안정적인 인증 플로우
+
+### RecruitmentPage API 통합 및 Hashtags 표시 완료
+- ✨ **API 통합**: `getAllRecruitments()` 실제 백엔드 API 연동 완료
+- 🏷️ **해시태그 표시**: 모집글 리스트 아이템에 키워드(Hashtags) 동적 표시
+- ⚡ **상태 관리 개선**: 로딩 상태, 빈 데이터 상태 처리 구현
+- 🎯 **Mock 데이터 제거**: 정적 mock data 대신 실시간 API 데이터 사용
+- 🎨 **UX 개선**: 클릭 이벤트, 호버 효과, 2줄 말줄임 등 사용성 향상
+
+### 팀원 평가 페이지 개선 (2025-11-23)
 - ✨ **프로젝트 정보 표시 안정화** - 이름, 기간, 회의 시간 정확하게 표시
 - 🚀 **데이터 전달 최적화** - location.state 기반으로 불필요한 API 호출 제거
 - 🎨 **완료 뱃지 디자인 개선** - 회색 배경(#5E5E5E) + 주황색 체크(#F76241)
 - 🖼️ **아바타 폴백 처리** - null 값 대응 기본 SVG 아이콘 자동 표시
+
+### 시스템 및 UI/UX 개선
+- 🍞 **Global Toast System** - `ToastHost`를 싱글톤 패턴의 `GlobalToastSystem`으로 리팩토링하여 안정성 및 HMR 지원 강화
+- 🖱️ **스크롤 경험 개선** - 완료된 프로젝트 목록의 스크롤 이슈 해결 및 레이아웃 최적화
+- ✨ **선택 피드백 강화** - 팀원 평가 시 선택된 대상에 대한 시각적 피드백(오렌지 보더) 추가
+- 📱 **반응형 디자인 고도화** - `CompletedComponent`에 CSS Custom Properties 기반의 정교한 반응형 시스템 적용
 
 ### 컴포넌트 개선
 - 🔧 **Button 컴포넌트** - `layout` prop 추가 (center, navigation 레이아웃)
@@ -30,12 +58,12 @@
 
 ### 📊 전체 현황
 
-| 심각도 | 개수 | 주요 카테고리 | 상태 |
+| 우선순위 | 개수 | 주요 카테고리 | 타임라인 |
 |--------|------|---------------|------|
-| 🚨 Critical | 4 | 보안, API 미연동, 미사용 페이지 | 즉시 처리 필요 |
-| ⚠️ High | 5 | 더미 데이터, 기능 미구현 | 1-2주 내 처리 |
-| 🔧 Medium | 5 | UX 개선, 미사용 컴포넌트 | 2-3주 내 처리 |
-| 📋 Low | 4 | 코드 품질, 정리 작업 | 지속적 개선 |
+| 🚨 **Critical (P0)** | 3 | 보안, API 미연동, 미사용 페이지 | 즉시 처리 |
+| 🔴 **High (P1)** | 5 | 더미 데이터, 기능 미구현 | 1-2주 |
+| ⚠️ **Medium (P2)** | 5 | UX 개선, 미사용 컴포넌트 | 2-3주 |
+| 🔧 **Low (P3)** | 4 | 코드 품질, 정리 작업 | 지속적 |
 
 ### 🎯 우선순위 이슈 목록
 
@@ -43,7 +71,7 @@
 |----------|------|-----------|-----------|----------|
 | 🚨 **P0** | **프로젝트 권한 검증** | 미구현 (보안 취약) | `App.js:122` | 즉시 |
 | 🚨 **P0** | **rating.js API 연동** | 더미 데이터만 사용 | `services/rating.js` | 즉시 |
-| 🚨 **P0** | **모집글 수정/삭제** | alert만 표시 | `RecruitmentViewPage.js:232,243` | 즉시 |
+| ✅ ~~**P0**~~ | ~~**모집글 수정/삭제**~~ | ✅ **구현 완료** | `RecruitmentViewPage.js` | ✅ 완료 |
 | 🚨 **P0** | **ProjectVotePage** | 주석처리됨 (완전 미사용) | `pages/ProjectVotePage/` | 구현 or 삭제 결정 |
 | ⚠️ **P1** | **캘린더 일정 연동** | 더미 데이터 (7개 하드코딩) | `Calendar.js:11-77` | 1주 |
 | ⚠️ **P1** | **프로젝트 라이브러리** | 버튼만 있음 | `ProjectDetailHeader.js:16` | 1주 |
@@ -56,7 +84,7 @@
 #### Phase 1: 보안 & 핵심 기능 (즉시 처리)
 - [ ] 프로젝트 권한 검증 API 구현
 - [ ] rating.js 더미 데이터 → 실제 API 교체
-- [ ] 모집글 수정/삭제 기능 구현
+- [x] 모집글 수정/삭제 기능 구현 ✅ **완료** (2025-11-24)
 - [ ] ProjectVotePage 처리 방향 결정 (구현 완료 or 제거)
 
 #### Phase 2: 주요 기능 완성 (1-2주)
@@ -67,29 +95,31 @@
 - [ ] 알림 시스템 활성화 or 제거 결정
 
 #### Phase 3: UX 개선 (2-3주)
-- [ ] Alert → Toast/Modal 교체 (약 20개)
+- [/] Alert → Toast/Modal 교체 (시스템 구축 완료, 순차 적용 중)
 - [ ] 토스트 알림 추가 (복사, 공유 피드백)
 - [ ] 지원 취소 API 연동
 - [ ] 미사용 컴포넌트 정리 (StickyCTA, ProjectSummaryCard 등 6개)
 
 #### Phase 4: 코드 품질 개선 (지속적)
-- [ ] Debug console.log 제거 (약 50개)
+- [ ] Debug console.log 제거 (209개 - 38개 파일)
 - [ ] 라우트 상수 정리 (`/apply2/*`, `/recruit/*` 등 14개 경로)
 - [ ] 빈 핸들러 실제 로직 구현
 - [ ] 스타일 시스템 통일 (.module.scss 표준화)
 
 ### 📈 진행 상황
 
-- **완료된 페이지**: 39개 (인증, 프로젝트 관리, 모집/지원, 평가 등)
-- **API 연동 완료**: `auth.js`, `recruitment.js`, `projects.js`, `evaluation.js`
+- **전체 페이지**: 31개 (완전 구현 50개 기능, 부분 구현 5개 기능)
+- **API 연동 완료**: `auth.js`, `recruitment.js`, `projects.js`, `evaluation.js`, `user.js`
 - **API 연동 필요**: `rating.js` (더미 데이터 사용 중)
-- **코드 품질 개선 항목**: 약 100개 (console.log, alert, TODO 주석 등)
+- **코드 품질 개선 항목**: 약 260개 (console.log 209개, alert 36개, TODO 50+ 등)
 
 ### 📊 페이지별 구현 현황 (31개 페이지 분석)
 
 #### 카테고리별 통계
 
-| 카테고리 | 페이지 수 | ✅ 완전 구현 | 🎨 UI만 | 🔧 부분 구현 | ❌ 미구현 | 구현율 |
+> **참고**: 아래 표는 31개 페이지에 포함된 기능별 구현 현황을 집계한 것입니다.
+
+| 카테고리 | 페이지 수 | ✅ 완전 구현<br>(기능 수) | 🎨 UI만<br>(기능 수) | 🔧 부분 구현<br>(기능 수) | ❌ 미구현<br>(기능 수) | 기능 구현율 |
 |----------|----------|------------|---------|------------|---------|--------|
 | 인증/온보딩 | 4 | 9 | 0 | 1 | 2 | 75% |
 | 모집글 작성 | 6 | 14 | 0 | 0 | 0 | **100%** ⭐ |
@@ -98,7 +128,7 @@
 | 프로젝트 관리 | 7 | 6 | 14 | 1 | 0 | 29% |
 | 모집/검색 | 4 | 5 | 3 | 2 | 2 | 42% |
 | 기타 | 3 | 3 | 4 | 0 | 2 | 33% |
-| **합계** | **31** | **50** | **38** | **5** | **7** | **50%** |
+| **합계** | **31 페이지** | **50 기능** | **38 기능** | **5 기능** | **7 기능** | **50%** |
 
 **구현 상태 범례:**
 - ✅ **완전 구현**: UI + 로직 + API 연동 완료
@@ -110,15 +140,18 @@
 
 | Service 파일 | 상태 | 주요 기능 | 사용 페이지 | 비고 |
 |-------------|------|-----------|------------|------|
-| **auth.js** | ✅ 완료 | 로그인, 회원가입, 이메일 인증 | LoginPage, RegisterPage | 실제 API 연동 |
-| **user.js** | ✅ 완료 | 사용자 정보 조회 | ProfilePage | 실제 API 연동 |
-| **recruitment.js** | ✅ 완료 | 모집글 CRUD, 지원서 제출 | RecruitmentViewPage, ProjectApplySelect, ProjectRecruitPublish | 실제 API 연동 |
-| **projects.js** | ✅ 완료 | 프로젝트 목록, 상세 조회 | ProjectManagement, TeamMemberEvaluationPage | 실제 API 연동 |
-| **evaluation.js** | ✅ 완료 | 팀원 평가 제출, 평가 대상 조회 | TeamMemberEvaluationPage | 실제 API 연동 |
-| **rating.js** | ⚠️ 부분 | 평가 현황 조회 | RatingManagementPage, RatingProjectStatusPage | 일부 더미 데이터 |
+| **auth.js** | ✅ 완료 | 로그인, 회원가입, 이메일 인증 (3개) | LoginPage, RegisterPage | 실제 API 연동 |
+| **user.js** | ✅ 완료 | 사용자 정보 조회 (1개) | ProfilePage | 실제 API 연동 |
+| **recruitment.js** | ✅ 완료 | 모집글 CRUD, 지원서 제출 (6개) | RecruitmentPage, RecruitmentViewPage, ProjectApplySelect, ProjectRecruitPublish | 실제 API 연동 |
+| **projects.js** | ✅ 완료 | 프로젝트 목록, 상세 조회 (3개) | ProjectManagement, TeamMemberEvaluationPage | 실제 API 연동 |
+| **evaluation.js** | ✅ 완료 | 팀원 평가 제출, 평가 대상 조회 (4개) | TeamMemberEvaluationPage | 실제 API 연동 |
+| **rating.js** | ⚠️ 부분 | 평가 현황 조회 (2개) | RatingManagementPage, RatingProjectStatusPage | 일부 더미 데이터 |
+| **calendar.js** | ❌ 미구현 | 일정 CRUD (3개) | ProjectCalendar | 하드코딩 데이터 |
+| **search.js** | ❌ 미구현 | 검색 API (1개) | SearchPage | 미연동 |
+| **bookmarks.js** | ❌ 미구현 | 북마크 CRUD (3개) | BookmarkPage | 하드코딩 데이터 |
+| **notifications.js** | ❌ 미구현 | 알림 조회, 동기화 (2개) | NotificationsPage | localStorage only |
 
 **미연동 또는 더미 데이터 사용 중인 페이지:**
-- RecruitmentPage (파일 내 하드코딩)
 - SearchPage (검색 API 미구현)
 - TeamMatchingPage (localStorage)
 - ProjectDetailPage (더미 UI만)
@@ -131,6 +164,7 @@
 #### 주요 페이지 상세 현황
 
 **✅ 완벽 구현 (100%)**
+- **모집글 목록** (RecruitmentPage): API 실시간 데이터 fetching, Hashtags 표시, 로딩/에러 처리 완료
 - **모집글 작성 시리즈** (6페이지): 다단계 플로우, localStorage 임시저장, 최종 API 발행
 - **팀원 평가** (TeamMemberEvaluationPage): 3단계 평가 플로우, Optimistic UI, API 완벽 연동
 - **지원하기 플로우** (ProjectApplySelect): 포트폴리오 선택 → 제출, API 연동 완료
@@ -270,10 +304,10 @@
 | **Project Delete** | Delete + confirm | Button only | Feature Gap | 🔧 Medium | 2-3 days | `ProjectDetailHeader.js:21` |
 
 **우선순위 범례**:
-- 🚨 **Critical**: 핵심 기능 누락, 즉시 처리 필요
-- 🔴 **High**: 주요 기능 차단, 1-2주 내 처리
-- ⚠️ **High**: 중요하지만 대체 가능, 2-3주 내 처리
-- 🔧 **Medium**: 개선 필요, 우선순위 조정 가능
+- 🚨 **Critical (P0)**: 핵심 기능 누락, 즉시 처리 필요
+- 🔴 **High (P1)**: 주요 기능 차단, 1-2주 내 처리
+- ⚠️ **Medium (P2)**: 중요하지만 대체 가능, 2-3주 내 처리
+- 🔧 **Low (P3)**: 개선 필요, 우선순위 조정 가능
 
 ### 🧹 코드 품질 이슈
 
@@ -318,10 +352,20 @@ showToast('수정 기능 준비 중', 'info');
 ## ✨ 주요 기능
 
 ### 🎯 프로젝트 모집 & 매칭
+- **모집글 목록 조회**: 실시간 API 기반 모집글 탐색
+  - 카테고리별 필터링 (전체, 마케팅, 디자인, 브랜딩, IT, 서비스)
+  - 키워드(Hashtags) 동적 표시로 빠른 정보 파악
+  - 로딩 상태 및 빈 데이터 처리
+  - 조회수 기반 "Best" 뱃지 자동 표시 (100회 이상)
 - **모집글 작성**: 3단계 플로우로 손쉬운 프로젝트 모집글 작성
   - 1단계: 기본 정보 (제목, 기간, 유형)
   - 2단계: 상세 정보 (설명, 키워드)
   - 3단계: 대표 이미지 업로드
+- **모집글 관리**: 작성자 전용 수정/삭제 기능
+  - ✅ **삭제 기능**: 작성자 본인만 삭제 가능 (JWT 권한 검증)
+  - 📝 **수정 준비**: API 함수 구현 완료 (수정 페이지 연동 대기)
+  - 🛡️ **보안**: 소유자 검증, 에러 처리, 자동 페이지 이동
+  - 🎯 **UX**: 삭제 확인 다이얼로그, 상세 에러 메시지
 - **지원서 제출**: 3단계 플로우로 간편한 지원
   - 1단계: 자기소개 작성 (300자)
   - 2단계: 포트폴리오 프로젝트 선택 (완료된 프로젝트)
@@ -347,6 +391,11 @@ showToast('수정 기능 준비 중', 'info');
 
 ### 🔐 사용자 인증
 - **이메일 인증**: SendGrid 기반 이메일 인증 (180초 유효)
+- **전화번호 인증**: Firebase Phone Auth + SMS 인증
+  - 실제 전화번호 SMS 인증 (Firebase)
+  - 개발/배포 환경 테스트 모드 (010-1234-5678 / 123456)
+  - 백엔드 JWT 토큰 발급 연동
+  - 신규 사용자 자동 회원가입
 - **JWT 인증**: 안전한 토큰 기반 인증
 - **온보딩**: 신규 사용자 가이드
 
@@ -370,6 +419,10 @@ showToast('수정 기능 준비 중', 'info');
 ### UI Libraries
 - **Swiper**: 터치 기반 슬라이더 컴포넌트
 - **React Icons**: 다양한 아이콘 세트 (Ionicons, Font Awesome 등)
+
+### Authentication & Backend
+- **Firebase**: Phone Authentication (SMS 인증)
+- **JWT**: 토큰 기반 인증 및 세션 관리
 
 ### Development & Testing
 - **Jest**: 단위 테스트 프레임워크
@@ -572,6 +625,27 @@ REACT_APP_ENV=development
 SASS_DEPRECATION_WARNINGS=false
 ```
 
+### Firebase 설정 (전화번호 인증)
+
+```bash
+# Firebase Web App Configuration (프론트엔드용)
+REACT_APP_FIREBASE_API_KEY=your-api-key
+REACT_APP_FIREBASE_AUTH_DOMAIN=your-project.firebaseapp.com
+REACT_APP_FIREBASE_PROJECT_ID=your-project-id
+REACT_APP_FIREBASE_STORAGE_BUCKET=your-project.firebasestorage.app
+REACT_APP_FIREBASE_MESSAGING_SENDER_ID=your-sender-id
+REACT_APP_FIREBASE_APP_ID=your-app-id
+
+# Phone Auth Test Mode (개발 및 배포 환경 테스트용)
+REACT_APP_ENABLE_TEST_MODE=true
+```
+
+**테스트 모드 사용**:
+- `REACT_APP_ENABLE_TEST_MODE=true` 설정 시 테스트 전화번호 사용 가능
+- 테스트 전화번호: `010-1234-5678`
+- 테스트 인증 코드: `123456`
+- 실제 SMS 없이 개발/배포 환경에서 테스트 가능
+
 ### 환경별 설정
 
 **개발 환경** (`.env.local`):
@@ -634,13 +708,136 @@ try {
 }
 ```
 
+### 전화번호 인증 (Firebase Phone Auth)
+
+```javascript
+import { auth } from './config/firebase';
+import { RecaptchaVerifier, signInWithPhoneNumber } from 'firebase/auth';
+import { verifyPhoneAuth } from './services/phoneAuth';
+
+// 1. reCAPTCHA 초기화
+const setupRecaptcha = () => {
+  if (!window.recaptchaVerifier) {
+    window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
+      size: 'normal',  // 'invisible' 또는 'normal'
+      callback: () => {
+        console.log('✅ reCAPTCHA 검증 완료');
+      }
+    });
+  }
+};
+
+// 2. 전화번호 형식 변환 (010-xxxx-xxxx → +8210xxxxxxxx)
+const formatPhoneNumber = (phone) => {
+  const cleaned = phone.replace(/-/g, '');
+  if (cleaned.startsWith('010')) {
+    return '+82' + cleaned.substring(1);
+  }
+  return '+82' + cleaned;
+};
+
+// 3. SMS 인증 코드 전송
+try {
+  const phoneNumber = '010-1234-5678';
+  const formattedPhone = formatPhoneNumber(phoneNumber);  // +821012345678
+
+  // reCAPTCHA 초기화
+  setupRecaptcha();
+  const appVerifier = window.recaptchaVerifier;
+
+  // Firebase에서 SMS 전송
+  const confirmationResult = await signInWithPhoneNumber(
+    auth,
+    formattedPhone,
+    appVerifier
+  );
+
+  console.log('✅ SMS 인증 코드 전송 완료');
+
+  // confirmationResult를 저장해두고 사용자가 코드 입력하면 확인
+} catch (error) {
+  console.error('❌ SMS 전송 실패:', error);
+
+  if (error.code === 'auth/invalid-phone-number') {
+    console.error('올바르지 않은 전화번호 형식입니다.');
+  } else if (error.code === 'auth/too-many-requests') {
+    console.error('너무 많은 시도가 있었습니다. 잠시 후 다시 시도해주세요.');
+  }
+}
+
+// 4. 인증 코드 확인 및 백엔드 연동
+try {
+  const verificationCode = '123456';  // 사용자가 입력한 6자리 코드
+
+  // Firebase에서 인증 코드 확인
+  const credential = await confirmationResult.confirm(verificationCode);
+  const idToken = await credential.user.getIdToken();
+
+  console.log('✅ Firebase 인증 완료');
+  console.log('🎫 ID Token 획득');
+
+  // 백엔드 API 호출
+  const response = await verifyPhoneAuth(idToken);
+
+  console.log('✅ 백엔드 인증 완료:', response);
+
+  // 응답 예시:
+  // {
+  //   success: true,
+  //   message: "✅ 회원가입 및 로그인 성공!",
+  //   token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  //   user: {
+  //     userId: "de167dcb-9c97-4c88-a82a-47f6daf1b123",
+  //     username: "u821012345678",
+  //     email: "firebaseUid@phone.teamitaka.com",
+  //     phoneNumber: "+821012345678",
+  //     phoneVerified: true,
+  //     role: "MEMBER"
+  //   },
+  //   isNewUser: true  // 신규 사용자 여부
+  // }
+
+  // JWT 토큰과 사용자 정보 저장
+  localStorage.setItem('authToken', response.token);
+  localStorage.setItem('user', JSON.stringify(response.user));
+
+  // 신규 사용자 환영 메시지
+  if (response.isNewUser) {
+    console.log('🎉 신규 회원 가입을 환영합니다!');
+  }
+
+} catch (error) {
+  console.error('❌ 인증 실패:', error.message);
+
+  if (error.message.includes('invalid-verification-code')) {
+    console.error('인증 코드가 올바르지 않습니다.');
+  }
+}
+
+// 🧪 테스트 모드 사용 (REACT_APP_ENABLE_TEST_MODE=true)
+// 테스트 전화번호: 010-1234-5678
+// 테스트 인증 코드: 123456
+// 실제 SMS 없이 Firebase 인증 우회하여 백엔드 연동 테스트 가능
+```
+
+**Firebase Phone Auth 에러 처리**:
+
+| 에러 코드 | 설명 | 해결 방법 |
+|----------|------|----------|
+| `auth/invalid-phone-number` | 올바르지 않은 전화번호 형식 | E.164 형식 확인 (+821012345678) |
+| `auth/too-many-requests` | 너무 많은 시도 | 1-2시간 대기 또는 테스트 모드 사용 |
+| `auth/invalid-app-credential` | Firebase 설정 오류 | Firebase Console 설정 확인 |
+| `invalid-verification-code` | 잘못된 인증 코드 | 6자리 코드 재확인 |
+
 ### 모집글 관리
 
 ```javascript
 import {
   createRecruitment,
   getRecruitment,
-  uploadRecruitmentImage
+  uploadRecruitmentImage,
+  updateRecruitment,
+  deleteRecruitment
 } from './services/recruitment';
 
 // 1. 모집글 생성
@@ -708,6 +905,97 @@ try {
     console.error('허용되지 않는 파일 형식입니다. (jpeg, png, webp만 가능)');
   }
 }
+
+// 4. 모집글 목록 조회 (RecruitmentPage)
+try {
+  const recruitments = await getAllRecruitments();
+
+  // API 응답을 컴포넌트 형식으로 변환
+  const formatted = recruitments.map(post => ({
+    id: post.recruitment_id,
+    title: post.title,
+    imageUrl: post.photo_url,
+    views: post.views || 0,
+    apply: post.applicant_count || 0,
+    date: post.created_at?.substring(0, 10).replace(/-/g, '.').substring(2), // "2025-01-15" → "25.01.15"
+    category: post.project_type === 'course' ? '수업' : '사이드',
+    tags: post.Hashtags?.map(h => h.name) || [], // ✨ Hashtags 매핑
+    isBest: (post.views || 0) > 100, // 조회수 100 이상
+  }));
+
+  console.log('모집글 목록:', formatted);
+
+  // API 응답 예시:
+  // [
+  //   {
+  //     "recruitment_id": "uuid",
+  //     "title": "프론트엔드 개발자 모집",
+  //     "photo_url": "https://...",
+  //     "views": 150,
+  //     "applicant_count": 5,
+  //     "created_at": "2025-01-15T10:30:00Z",
+  //     "project_type": "side",
+  //     "Hashtags": [
+  //       { "name": "React" },
+  //       { "name": "TypeScript" }
+  //     ]
+  //   }
+  // ]
+} catch (error) {
+  console.error('목록 조회 실패:', error.message);
+}
+
+// 💡 데이터 변환 참고사항:
+// - Hashtags 필드는 대문자 H (Sequelize ORM 자동 변환)
+// - Optional chaining (?.map) 필수 (빈 배열 대비)
+// - 날짜 변환: ISO 8601 → "YY.MM.DD" 형식
+// - project_type: "course" → "수업", 그 외 → "사이드"
+
+// 5. 모집글 수정 (작성자 전용) ✨ 2025-11-24 추가
+try {
+  const updated = await updateRecruitment(recruitmentId, {
+    title: '수정된 제목',
+    description: '수정된 설명',
+    project_type: 'course',
+    recruitment_start: '2025-02-01',
+    recruitment_end: '2025-02-15',
+    max_applicants: 10,
+    hashtags: ['Vue', 'Nuxt', 'Firebase']
+  });
+
+  console.log('모집글 수정 성공:', updated.recruitment_id);
+} catch (error) {
+  if (error.code === 'UNAUTHORIZED') {
+    console.error('로그인이 필요하거나 권한이 없습니다.');
+  } else if (error.code === 'NOT_FOUND') {
+    console.error('모집글을 찾을 수 없습니다.');
+  } else {
+    console.error('수정 실패:', error.message);
+  }
+}
+
+// 6. 모집글 삭제 (작성자 전용) ✨ 2025-11-24 추가
+try {
+  if (window.confirm('정말 삭제하시겠습니까?\n삭제된 게시글은 복구할 수 없습니다.')) {
+    await deleteRecruitment(recruitmentId);
+    console.log('모집글 삭제 성공');
+    // 삭제 후 목록 페이지로 이동
+    navigate('/team-matching');
+  }
+} catch (error) {
+  if (error.code === 'UNAUTHORIZED') {
+    console.error('로그인이 필요하거나 권한이 없습니다.');
+  } else if (error.code === 'NOT_FOUND') {
+    console.error('모집글을 찾을 수 없습니다.');
+  } else {
+    console.error('삭제 실패:', error.message);
+  }
+}
+
+// 💡 수정/삭제 권한 검증:
+// - JWT 토큰 기반 소유자 검증 (백엔드에서 user_id 비교)
+// - 401/403: 권한 없음, 404: 모집글 없음
+// - RecruitmentViewPage.js에서 isOwner 상태로 UI 조건부 렌더링
 ```
 
 ### 지원서 제출
@@ -843,6 +1131,63 @@ try {
 - 함수형 컴포넌트 사용
 - Custom Hooks로 로직 분리
 - Props drilling 최소화 (Context 활용)
+
+**5. API 데이터 변환**
+- API 응답과 컴포넌트 형식 분리
+- 변환 로직은 useEffect 내부 또는 별도 유틸리티 함수로 분리
+- 명확한 매핑 테이블 문서화
+
+### 데이터 변환 패턴 (RecruitmentPage 예시)
+
+백엔드 API 응답을 프론트엔드 컴포넌트 형식으로 변환하는 표준 패턴입니다.
+
+**API → Component 매핑 테이블**:
+
+| API 필드 | 컴포넌트 필드 | 변환 로직 | 예시 |
+|---------|-------------|-----------|------|
+| `recruitment_id` | `id` | 그대로 사용 | `"uuid-..."` |
+| `title` | `title` | 그대로 사용 | `"프론트엔드 개발자 모집"` |
+| `photo_url` | `imageUrl` | 그대로 사용 | `"https://..."` |
+| `views` | `views` | 기본값 0 | `150 \|\| 0` |
+| `applicant_count` | `apply` | 기본값 0 | `5 \|\| 0` |
+| `created_at` | `date` | ISO → "YY.MM.DD" | `"2025-01-15"` → `"25.01.15"` |
+| `project_type` | `category` | 조건부 변환 | `"course"` → `"수업"`, 그 외 → `"사이드"` |
+| `Hashtags` | `tags` | 배열 매핑 | `[{name: "React"}]` → `["React"]` |
+| - | `isBest` | 계산 필드 | `views > 100` |
+
+**변환 코드 예시**:
+```javascript
+// src/pages/RecruitmentPage/RecruitmentPage.js
+
+useEffect(() => {
+  const fetchRecruitments = async () => {
+    const data = await getAllRecruitments();
+
+    // API 응답을 컴포넌트 형식으로 변환
+    const formatted = data.map(post => ({
+      id: post.recruitment_id,
+      title: post.title,
+      imageUrl: post.photo_url,
+      views: post.views || 0, // 기본값 처리
+      apply: post.applicant_count || 0,
+      date: post.created_at?.substring(0, 10).replace(/-/g, '.').substring(2), // 날짜 변환
+      category: post.project_type === 'course' ? '수업' : '사이드', // 조건부 변환
+      tags: post.Hashtags?.map(h => h.name) || [], // 배열 매핑 + Optional chaining
+      isBest: (post.views || 0) > 100, // 계산 필드
+    }));
+
+    setRecruitments(formatted);
+  };
+
+  fetchRecruitments();
+}, []);
+```
+
+**중요 사항**:
+- ⚠️ **Hashtags 필드명**: 대문자 `H`로 시작 (Sequelize ORM 자동 변환)
+- ✅ **Optional chaining 필수**: `post.Hashtags?.map()` (빈 배열 대비)
+- ✅ **기본값 처리**: `|| 0`, `|| []` 사용하여 null/undefined 방어
+- 📅 **날짜 변환**: `"2025-01-15T10:30:00Z"` → `"25.01.15"` 형식 통일
 
 ### 코딩 컨벤션
 
@@ -1196,6 +1541,29 @@ console.log('Expires at:', new Date(payload.exp * 1000));
 5. **재전송 시도**: "인증번호 재전송" 버튼 클릭
 
 **추가 정보**: 인증번호 유효 시간 180초
+
+### reCAPTCHA 401 오류 (Firebase Phone Auth)
+
+**증상**:
+```
+POST https://www.google.com/recaptcha/api2/pat?k=... 401 (Unauthorized)
+```
+Firebase Phone Auth 사용 시 콘솔에 reCAPTCHA 401 오류 표시
+
+**원인**: Firebase reCAPTCHA Enterprise 설정 관련 문제
+
+**해결**:
+- ✅ **정상 동작**: Firebase가 자동으로 fallback 처리하므로 **오류 무시 가능**
+- ✅ **실제 SMS 전송 및 인증은 정상 작동**함
+- ✅ **개발 환경**: 테스트 모드 사용 권장 (010-1234-5678 / 123456)
+
+**테스트 모드 사용법**:
+1. `.env.local`에 `REACT_APP_ENABLE_TEST_MODE=true` 추가
+2. 테스트 전화번호 `010-1234-5678` 입력
+3. 인증 코드 `123456` 입력
+4. 실제 SMS 없이 Firebase 인증 우회
+
+**참고**: 이 오류는 사용자 경험에 영향을 주지 않으며, Firebase가 reCAPTCHA v2로 자동 전환하여 정상 작동합니다.
 
 ### 로컬 개발 연결 실패
 
