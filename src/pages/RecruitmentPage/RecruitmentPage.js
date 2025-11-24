@@ -26,7 +26,7 @@ export default function RecruitmentPage() {
         setLoading(true);
         const data = await getAllRecruitments();
 
-        // 1. 데이터 변환
+        // 1. 데이터 변환 (안전하게)
         const formatted = data.map(post => {
             const viewCount = Number(post.views || post.view_count || 0);
             const appCount = Number(post.applicationCount || post.applicant_count || post.applicantCount || 0);
@@ -34,7 +34,7 @@ export default function RecruitmentPage() {
             return {
               id: post.recruitment_id,
               title: post.title,
-              imageUrl: post.photo_url,
+              imageUrl: post.photo_url, // DB에 이미지 URL이 있으면 사용
               views: viewCount,
               apply: appCount,
               date: post.created_at?.substring(0, 10).replace(/-/g, '.').substring(2),
@@ -108,10 +108,11 @@ export default function RecruitmentPage() {
           filtered.map(item => (
             <li key={item.id} className="recruit-item" onClick={() => navigate(`/recruitment/${item.id}`)}>
               <div className="thumbnail-wrapper">
+                {/* 이미지가 있으면 <img>, 없으면 <div> (No Image) */}
                 {item.imageUrl ? (
                   <img src={item.imageUrl} alt={item.title} className="thumbnail-image" />
                 ) : (
-                  <div className="thumbnail-placeholder" />
+                  <div className="thumbnail-placeholder">No Image</div>
                 )}
                 {item.isBest && <span className="best-badge">Best</span>}
               </div>
