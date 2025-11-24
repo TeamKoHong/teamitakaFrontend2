@@ -49,10 +49,10 @@ export default function ProjectRecruitPublish() {
         const recruitmentData = {
           title: draft.title,
           description: draft.desc || "",
-          project_type: draft.type || undefined,
-          recruitment_start: draft.start || undefined,
-          recruitment_end: draft.end || undefined,
-          photo_url: photo_url || undefined,
+          project_type: draft.type || null,
+          recruitment_start: draft.start || null,
+          recruitment_end: draft.end || null,
+          photo: photo_url || null,
           max_applicants: 10, // 기본값
           hashtags: draft.keywords || [], // 해시태그 (백엔드가 # 자동 제거)
         };
