@@ -2,12 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import './RecruitmentViewPage.scss';
 
-// 아이콘 임포트
-import bookmark_active from "../../assets/bookmark_active.png";
+// 아이콘 및 이미지 임포트
 import { IoChevronBack } from "react-icons/io5";
 import { FaEye } from "react-icons/fa";
 import { BsThreeDotsVertical } from "react-icons/bs";
-import apply from "../../assets/apply.png";
+import applyIcon from "../../assets/apply.png"; // 변수명 충돌 방지 위해 이름 변경
+import bookmarkIcon from "../../assets/bookmark.png";          // 북마크 OFF 이미지
+import bookmarkActiveIcon from "../../assets/bookmark_active.png"; // 북마크 ON 이미지
 
 import { getRecruitment, deleteRecruitment } from '../../services/recruitment';
 import { getCurrentUser } from '../../services/auth';
@@ -22,44 +23,41 @@ export default function RecruitmentViewPage() {
     const [currentUser, setCurrentUser] = useState(null);
     const [isOwner, setIsOwner] = useState(false);
     const [showApplicantList, setShowApplicantList] = useState(false);
-    const [isScrapped, setIsScrapped] = useState(false);
-    const [showScrapToast, setShowScrapToast] = useState(false);
     const [showMoreMenu, setShowMoreMenu] = useState(false);
     const [error, setError] = useState(null);
 
-    // Get current user on component mount
+    // ★ 북마크 상태 관리 (API 연동 전엔 로컬 상태로만 구현)
+    const [isBookmarked, setIsBookmarked] = useState(false);
+
     useEffect(() => {
         const userData = getCurrentUser();
-        console.log('🔍 [Auth Debug] getCurrentUser() result:', userData);
         if (userData && userData.user) {
-            console.log('✅ [Auth Debug] Setting currentUser:', userData.user);
-            console.log('🆔 [Auth Debug] Current userId:', userData.user.userId, 'Type:', typeof userData.user.userId);
             setCurrentUser(userData.user);
-        } else {
-            console.log('❌ [Auth Debug] No user data found');
         }
     }, []);
 
-    // Close more menu when clicking outside
+    // 외부 클릭 시 메뉴 닫기
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (showMoreMenu && !event.target.closest('.more-menu-container')) {
                 setShowMoreMenu(false);
             }
         };
-
         document.addEventListener('mousedown', handleClickOutside);
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, [showMoreMenu]);
 
+    // 게시글 데이터 불러오기
     useEffect(() => {
         const fetchRecruitment = async () => {
             try {
                 const data = await getRecruitment(id);
-                console.log('📡 [API Debug] Recruitment API response:', data);
-                console.log('🆔 [API Debug] Post user_id:', data.user_id, 'Type:', typeof data.user_id);
+                console.log("📝 상세 데이터 확인:", data); // 디버깅용 로그
 
-                // Transform backend response to component format
+                // 키워드 데이터 안전하게 가져오기 (대소문자 이슈 방지)
+                const hashtags = data.Hashtags || data.hashtags || [];
+                const keywordList = hashtags.map(h => (typeof h === 'string' ? h : h.name));
+
                 const formattedPost = {
                     id: data.recruitment_id,
                     title: data.title,
@@ -75,83 +73,49 @@ export default function RecruitmentViewPage() {
                         : '프로젝트',
                     imageUrl: data.photo_url,
                     views: data.views || 0,
-                    applicantCount: data.applicant_count || 0,
-                    comments: 0, // Backend doesn't provide comments yet
+                    applicantCount: data.applicant_count || 0, // 백엔드에서 보내주는 필드명 확인
                     date: data.created_at ? formatRelativeTime(data.created_at) : '',
-                    keywords: data.Hashtags?.map(h => h.name) || [],
-                    createdBy: data.user_id // Store creator ID for ownership check
+                    keywords: keywordList, // 위에서 처리한 키워드 리스트
+                    createdBy: data.user_id,
+                    recruitmentInfo: { count: data.recruit_count || '-', activity: '-' },
+                    activityMethod: data.activity_method || '-'
                 };
 
                 setPost(formattedPost);
             } catch (err) {
                 console.error('Failed to fetch recruitment:', err);
                 setError(err.message);
-
-                if (err.code === 'NOT_FOUND') {
-                    setTimeout(() => navigate(-1), 2000);
-                }
             }
         };
 
         fetchRecruitment();
-    }, [id, navigate]);
+    }, [id]);
 
-    // Separate effect to check ownership when both post and currentUser are ready
     useEffect(() => {
-        console.log('🔐 [Owner Check] Separate useEffect triggered');
-        console.log('👤 [Owner Check] currentUser:', currentUser);
-        console.log('📝 [Owner Check] post?.createdBy:', post?.createdBy);
-
         if (post && currentUser) {
-            const isPostOwner = currentUser.userId === post.createdBy;
-            console.log('🆔 [Owner Check] currentUser.userId:', currentUser.userId, 'Type:', typeof currentUser.userId);
-            console.log('📝 [Owner Check] post.createdBy:', post.createdBy, 'Type:', typeof post.createdBy);
-            console.log('❓ [Owner Check] Are they equal?', isPostOwner);
-            console.log(isPostOwner ? '✅ [Owner Check] User IS the owner' : '❌ [Owner Check] User is NOT the owner');
-            setIsOwner(isPostOwner);
-        } else {
-            console.log('⏳ [Owner Check] Waiting for data...', { hasPost: !!post, hasCurrentUser: !!currentUser });
-            setIsOwner(false);
+            setIsOwner(currentUser.userId === post.createdBy);
         }
     }, [post, currentUser]);
 
-    const handleScrapToggle = () => {
-        const newState = !isScrapped;
-        setIsScrapped(newState);
-        if (newState) {
-            setShowScrapToast(true);
-            setTimeout(() => setShowScrapToast(false), 2000);
-        }
-    };
-    
-    /**
-     * '지원하기' 버튼 클릭 시 호출되는 함수
-     * /apply2 경로로 이동하면서, 어떤 프로젝트에 지원하는지 ID와 제목 정보를 함께 전달합니다.
-     */
     const handleApply = () => {
         if (!post) return;
-
-        // 로그인 체크
         if (!currentUser) {
             alert("로그인이 필요합니다.");
             navigate('/login');
             return;
         }
-
         navigate('/apply2', {
-            state: {
-                projectId: id,
-                projectTitle: post.title
-            }
+            state: { projectId: id, projectTitle: post.title }
         });
     };
 
-    /**
-     * '지원자 보기' 버튼 클릭 시 호출되는 함수 (작성자 전용)
-     * ApplicantListSlide 컴포넌트를 열어 지원자 목록을 표시합니다.
-     */
-    const handleViewApplicants = () => {
-        setShowApplicantList(true);
+    const handleViewApplicants = () => setShowApplicantList(true);
+    const handleCloseApplicantList = () => setShowApplicantList(false);
+    
+    // ★ 북마크 토글 함수
+    const handleBookmarkToggle = () => {
+        setIsBookmarked(!isBookmarked);
+        // 추후 여기에 API 호출 추가 (북마크 저장/해제)
     };
 
     /**
@@ -204,52 +168,15 @@ export default function RecruitmentViewPage() {
     };
 
     if (error) {
-        return (
-            <div className="view-page">
-                <header className="topbar">
-                    <button onClick={() => navigate(-1)} className="back-button" aria-label="뒤로가기">
-                        <IoChevronBack size={24} />
-                    </button>
-                    <h1 className="title">모집글</h1>
-                </header>
-                <main className="content" style={{ padding: '40px 20px', textAlign: 'center' }}>
-                    <p style={{ fontSize: '16px', color: '#666' }}>{error}</p>
-                    <button
-                        onClick={() => navigate(-1)}
-                        style={{
-                            marginTop: '20px',
-                            padding: '12px 24px',
-                            background: '#FF6442',
-                            color: 'white',
-                            border: 'none',
-                            borderRadius: '8px',
-                            cursor: 'pointer',
-                        }}
-                    >
-                        뒤로 가기
-                    </button>
-                </main>
-            </div>
-        );
+        return <div className="view-page" style={{padding:'20px', textAlign:'center'}}>{error} <br/><button onClick={()=>navigate(-1)}>뒤로가기</button></div>;
     }
 
     if (!post) {
-        return (
-            <div className="view-page">
-                <header className="topbar">
-                    <h1 className="title">모집글</h1>
-                </header>
-                <main className="content" style={{ padding: '40px 20px', textAlign: 'center' }}>
-                    <p>게시물을 불러오는 중입니다...</p>
-                </main>
-            </div>
-        );
+        return <div className="view-page" style={{padding:'20px', textAlign:'center'}}>로딩 중...</div>;
     }
 
     return (
         <div className="view-page">
-            {showScrapToast && <div className="scrap-toast">현재 게시글을 스크랩 했습니다. ✔</div>}
-
             <header className="topbar">
                 <button onClick={() => navigate(-1)} className="back-button" aria-label="뒤로가기">
                     <IoChevronBack size={24} />
@@ -257,11 +184,7 @@ export default function RecruitmentViewPage() {
                 <h1 className="title">모집글</h1>
                 {isOwner && (
                     <div className="more-menu-container">
-                        <button
-                            onClick={() => setShowMoreMenu(!showMoreMenu)}
-                            className="more-button"
-                            aria-label="더보기"
-                        >
+                        <button onClick={() => setShowMoreMenu(!showMoreMenu)} className="more-button">
                             <BsThreeDotsVertical size={20} />
                         </button>
                         {showMoreMenu && (
@@ -285,14 +208,23 @@ export default function RecruitmentViewPage() {
             </header>
 
             <main className="content">
-                {post.imageUrl && <img src={post.imageUrl} alt="프로젝트 대표 이미지" className="cover-image" />}
+                {/* ★ 이미지 섹션 수정: 이미지가 없으면 No Image 표시 */}
+                <div className="image-container">
+                    {post.imageUrl ? (
+                        <img src={post.imageUrl} alt="대표 이미지" className="cover-image" />
+                    ) : (
+                        <div className="no-image-placeholder">
+                            <span>No Image</span>
+                        </div>
+                    )}
+                </div>
                 
                 <section className="post-header">
                     <h2 className="post-title">{post.title}</h2>
                     <div className="meta-info">
                         <div className="meta-items">
                             <span><FaEye size={18} /> {post.views}</span>
-                            <span><img src={apply} alt="지원자" style={{width: '18px', height: '18px', marginRight: '4px', verticalAlign: 'middle'}} />{post.applicantCount}</span>
+                            <span><img src={applyIcon} alt="지원자" style={{width: '18px', height: '18px', marginRight: '4px', verticalAlign: 'middle'}} />{post.applicantCount}</span>
                         </div>
                         <span className="date">{post.date}</span>
                     </div>
@@ -319,55 +251,52 @@ export default function RecruitmentViewPage() {
 
                 <section className="post-body">
                     <p>{post.description}</p>
-
-                    {post.recruitmentInfo?.count &&
-                        <div className="detail-section">
-                            <h3>📝 모집 인원: {post.recruitmentInfo.count}</h3>
-                        </div>
-                    }
-                    {post.recruitmentInfo?.activity &&
-                        <div className="detail-section">
-                            <h3>🏃 활동 기간: {post.recruitmentInfo.activity}</h3>
-                        </div>
-                    }
-                    {post.activityMethod &&
-                        <div className="detail-section">
-                            <h3>💻 활동 방식: {post.activityMethod}</h3>
-                        </div>
-                    }
+                    {/* 추가 정보 섹션들 생략 가능 */}
                 </section>
 
                 <section className="keywords-section">
                     <h3 className="keywords-label">키워드</h3>
                     <div className="keywords-tags">
-                        {(post.keywords || []).map((tag, index) => (
-                            <span key={index} className="keyword-tag">#{tag}</span>
-                        ))}
+                        {post.keywords.length > 0 ? (
+                            post.keywords.map((tag, index) => (
+                                <span key={index} className="keyword-tag">#{tag}</span>
+                            ))
+                        ) : (
+                            <span style={{color:'#999', fontSize:'13px'}}>등록된 키워드가 없습니다.</span>
+                        )}
                     </div>
                 </section>
             </main>
 
+            {/* ★ 하단 버튼 섹션 전면 수정 */}
             <footer className="footer">
-                <div className="footer-buttons">
-                    {console.log('🎨 [Render Debug] isOwner state at render time:', isOwner)}
+                <div className="footer-buttons-new">
+                    {/* 왼쪽: 북마크 버튼 */}
+                    <button 
+                        onClick={handleBookmarkToggle} 
+                        className="bookmark-btn"
+                        aria-label="북마크"
+                    >
+                        <img 
+                            src={isBookmarked ? bookmarkActiveIcon : bookmarkIcon} 
+                            alt="bookmark" 
+                            style={{width: '24px', height: '24px'}}
+                        />
+                    </button>
+
+                    {/* 오른쪽: 지원하기 / 지원자보기 버튼 (꽉 채우기) */}
                     {isOwner ? (
-                        // 작성자: 지원자 보기 버튼 표시
-                        <button onClick={handleViewApplicants} className="apply-button-full">
+                        <button onClick={handleViewApplicants} className="apply-btn-expanded">
                             지원자 보기
                         </button>
                     ) : (
-                        // 일반 사용자: 지원하기 버튼 표시
-                        <button onClick={handleApply} className="apply-button-full">
+                        <button onClick={handleApply} className="apply-btn-expanded">
                             지원하기
                         </button>
                     )}
-                    <button onClick={() => navigate(-1)} className="close-button">
-                        닫기
-                    </button>
                 </div>
             </footer>
 
-            {/* 지원자 목록 슬라이드 (작성자 전용) */}
             {showApplicantList && (
                 <ApplicantListSlide
                     open={showApplicantList}
