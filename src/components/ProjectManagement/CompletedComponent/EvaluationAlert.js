@@ -9,7 +9,7 @@ const EvaluationAlert = ({ pendingCount, sortBy, onSortChange }) => {
     <div className="evaluation-alert">
       <p className="alert-text">
         팀원 평가가 이뤄지지 않은<br />
-        프로젝트가 {pendingCount}개 있어요!
+        프로젝트가 <span className="highlight-count">{pendingCount}개</span> 있어요!
       </p>
 
       <div className="sort-dropdown-wrapper">
