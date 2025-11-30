@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { IoEyeOutline } from 'react-icons/io5';
-import { HiOutlineChatBubbleOvalLeft } from 'react-icons/hi2';
+import { useNavigate } from 'react-router-dom'; // useLocation 제거 (혹은 안 씀)
+import view from "../../assets/view.png";
+import apply from "../../assets/apply.png";
 import { AiOutlineArrowLeft } from 'react-icons/ai';
 import './RecruitmentPage.scss';
 import BottomNav from "../../components/Common/BottomNav/BottomNav";
@@ -9,14 +9,13 @@ import { getAllRecruitments } from '../../api/recruit';
 
 export default function RecruitmentPage() {
   const navigate = useNavigate();
-  const location = useLocation();
   
-  // 메인 페이지에서 넘어온 필터 값 (없으면 '전체')
-  const initialFilter = location.state?.filter || '전체';
-  
-  const [activeFilter, setActiveFilter] = useState(initialFilter);
+  // [수정 포인트 1] location.state 로직을 제거하고, 초기값을 무조건 '전체'로 설정
+  // 이렇게 하면 페이지 진입/새로고침 시 항상 '전체'가 Active 상태가 됩니다.
+  const [activeFilter, setActiveFilter] = useState('전체');
+
   const [recruitments, setRecruitments] = useState([]);
-  const [filterOptions, setFilterOptions] = useState(['전체']); // 동적 필터 목록
+  const [filterOptions, setFilterOptions] = useState(['전체']); 
   const [loading, setLoading] = useState(true);
 
   // Fetch recruitments from API
@@ -26,7 +25,7 @@ export default function RecruitmentPage() {
         setLoading(true);
         const data = await getAllRecruitments();
 
-        // 1. 데이터 변환 (안전하게)
+        // 1. 데이터 변환
         const formatted = data.map(post => {
             const viewCount = Number(post.views || post.view_count || 0);
             const appCount = Number(post.applicationCount || post.applicant_count || post.applicantCount || 0);
@@ -34,7 +33,8 @@ export default function RecruitmentPage() {
             return {
               id: post.recruitment_id,
               title: post.title,
-              imageUrl: post.photo_url, // DB에 이미지 URL이 있으면 사용
+              description: post.description || post.content || '설명 없음',
+              imageUrl: post.photo_url, 
               views: viewCount,
               apply: appCount,
               date: post.created_at?.substring(0, 10).replace(/-/g, '.').substring(2),
@@ -56,8 +56,8 @@ export default function RecruitmentPage() {
           }
         });
 
-        // 가나다순 정렬
         const sortedTags = Array.from(allTags).sort();
+        // [수정 포인트 2] 필터 옵션이 로드되어도 activeFilter는 이미 '전체'이므로 그대로 유지됨
         setFilterOptions(['전체', ...sortedTags]);
 
       } catch (error) {
@@ -71,7 +71,7 @@ export default function RecruitmentPage() {
     fetchRecruitments();
   }, []);
 
-  // 3. 필터링 로직 (여기는 '전체' 클릭 시 진짜 모든 글을 보여줌)
+  // 3. 필터링 로직
   const filtered = recruitments.filter(item => {
     if (activeFilter === '전체') return true;
     return item.tags && item.tags.includes(activeFilter);
@@ -86,7 +86,7 @@ export default function RecruitmentPage() {
         <h1 className="header-title">모집글</h1>
       </header>
 
-      {/* 동적으로 생성된 필터 태그 목록 */}
+      {/* 필터 태그 목록 */}
       <div className="filter-tags horizontal-scroll">
         {filterOptions.map(tag => (
           <div
@@ -108,7 +108,6 @@ export default function RecruitmentPage() {
           filtered.map(item => (
             <li key={item.id} className="recruit-item" onClick={() => navigate(`/recruitment/${item.id}`)}>
               <div className="thumbnail-wrapper">
-                {/* 이미지가 있으면 <img>, 없으면 <div> (No Image) */}
                 {item.imageUrl ? (
                   <img src={item.imageUrl} alt={item.title} className="thumbnail-image" />
                 ) : (
@@ -119,7 +118,8 @@ export default function RecruitmentPage() {
               <div className="item-content">
                 <h2 className="item-title">{item.title}</h2>
 
-                {/* 해시태그 표시 */}
+
+<p className="item-desc">{item.description}</p>
                 {item.tags && item.tags.length > 0 && (
                   <div className="item-tags">
                     {item.tags.map((tag, index) => (
@@ -129,8 +129,10 @@ export default function RecruitmentPage() {
                 )}
 
                 <div className="item-info">
-                  <span><IoEyeOutline /> {item.views}</span>
-                  <span><HiOutlineChatBubbleOvalLeft /> {item.apply}</span>
+                  <div className="twoicons">
+                    <div className="view-icon"><img src={view} alt="조회수"/> {item.views}</div>
+                    <div className="apply-icon"><img src={apply} alt="지원자"/> {item.applicantCount} </div>
+                </div>
                   <span className="item-date">{item.date}</span>
                 </div>
               </div>
