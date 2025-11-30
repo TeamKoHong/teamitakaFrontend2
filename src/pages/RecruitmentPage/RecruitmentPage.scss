@@ -144,6 +144,17 @@
         -webkit-box-orient: vertical;
         line-height: 1.3;
       }
+      .item-desc {
+    font-size: 11px;
+    color: #888;
+    margin: 0 0 8px 0; // 태그와의 간격
+    
+    // 한 줄 말줄임표
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
 
       .item-author {
         font-size: 14px;
