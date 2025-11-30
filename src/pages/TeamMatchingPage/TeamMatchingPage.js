@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import { useLocation, useNavigate, Link } from 'react-router-dom';
 import './TeamMatchingPage.scss';
+
+// --- 컴포넌트 및 에셋 임포트 ---
 import BottomNav from "../../components/Common/BottomNav/BottomNav";
 import Header from "../../components/TeamMatching/Header/Header";
 import recruit_write from "../../assets/recruit_write.png";
@@ -7,11 +10,15 @@ import bookmark from "../../assets/bookmark.png";
 import bookmarkActive from "../../assets/bookmark_active.png";
 import view from "../../assets/view.png";
 import apply from "../../assets/apply.png";
-import { Link, useNavigate } from 'react-router-dom';
+
+// ★ 기본 이미지 임포트 (이미지가 없을 때 보여줄 로고 등)
+import defaultProjectImg from "../../assets/icons/Teamitaka.png"; 
 
 import { getAllRecruitments } from '../../api/recruit';
 
-// --- 컴포넌트들 ---
+// ---------------------------------------------
+// [1] 배너 컴포넌트
+// ---------------------------------------------
 const CreateProjectBanner = () => {
     const navigate = useNavigate();
     return (
@@ -25,8 +32,13 @@ const CreateProjectBanner = () => {
     );
 };
 
+// ---------------------------------------------
+// [2] 가로 스크롤 카드 (Hot Topic)
+// ---------------------------------------------
 const HotTopicCard = ({ item, onBookmarkToggle }) => {
     const navigate = useNavigate();
+    
+    // 카드 클릭 시 상세 페이지로 이동
     const handleCardClick = () => navigate(`/recruitment/${item.id}`);
     
     // 태그가 있으면 첫번째 태그, 없으면 카테고리 표시
@@ -55,22 +67,29 @@ const HotTopicCard = ({ item, onBookmarkToggle }) => {
     );
 };
 
+// ---------------------------------------------
+// [3] 세로 리스트 카드 (Matching Card)
+// ---------------------------------------------
 const MatchingCard = ({ item }) => {
     const navigate = useNavigate();
     const handleCardClick = () => navigate(`/recruitment/${item.id}`);
     
+    // 이미지 소스 결정: 서버 이미지 -> 없으면 기본 이미지
+    const imageSource = item.imageUrl || defaultProjectImg;
+
     return (
         <div className="matching-card" onClick={handleCardClick}>
             <div className="matching-card-thumbnail">
-                {/* ★ [수정] 상세 페이지와 동일한 로직 적용 */}
-                {/* 진짜 이미지가 있을 때만 보여주고, 없으면 No Image 박스 표시 */}
-                {item.imageUrl ? (
-                    <img src={item.imageUrl} alt={item.title} className="card-img" />
-                ) : (
-                    <div className="no-image">No Image</div>
-                )}
+                {/* ★ 이미지 렌더링 수정: object-fit 적용 및 에러 처리 */}
+                <img 
+                    src={imageSource} 
+                    alt={item.title} 
+                    className="card-img" 
+                    onError={(e) => { e.target.src = defaultProjectImg; }} // 이미지 로드 실패 시 기본 이미지로 대체
+                />
                 {item.isBest && <span className="best-badge">Best</span>}
             </div>
+            
             <div className="matching-card-content">
                 <div className="matching-card-title">{item.title}</div>
                 <div className="twoicons">
@@ -83,7 +102,16 @@ const MatchingCard = ({ item }) => {
     );
 };
 
+// ---------------------------------------------
+// [Main] 전체 페이지 컴포넌트
+// ---------------------------------------------
 export default function TeamMatchingPage() {
+    const location = useLocation();
+    const navigate = useNavigate();
+    
+    // SearchPage에서 전달된 검색어 가져오기
+    const passedSearchQuery = location.state?.searchQuery || '';
+
     const [activeFilter, setActiveFilter] = useState('전체');
     const [allPosts, setAllPosts] = useState([]);
     
@@ -92,42 +120,52 @@ export default function TeamMatchingPage() {
     const [topKeywords, setTopKeywords] = useState([]); 
     const [isLoading, setIsLoading] = useState(true);
 
+    // 1. 데이터 불러오기
     useEffect(() => {
         const fetchPosts = async () => {
             try {
                 setIsLoading(true);
                 const data = await getAllRecruitments();
                 
+                console.log("📝 전체 모집글 데이터:", data); // 디버깅용
+
+                // 백엔드 데이터를 프론트엔드 포맷으로 변환
                 const formattedData = data.map(post => {
-                    const viewCount = Number(post.views || post.view_count || 0);
-                    const appCount = Number(post.applicationCount || post.applicant_count || post.applicantCount || 0);
+                    const viewCount = Number(post.views || 0);
+                    const appCount = Number(post.applicationCount || 0);
                     
+                    // ★ 핵심: 백엔드에서 photo_url을 받아옵니다.
+                    // (만약 photo_url이 null이면 위 MatchingCard에서 defaultProjectImg 처리함)
+                    const rawImage = post.photo_url || post.imageUrl || null;
+
                     return {
                         id: post.recruitment_id,
                         title: post.title,
                         description: post.description,
-                        
-                        // ★ [핵심] 백엔드에서 오는 photo_url 그대로 사용
-                        imageUrl: post.photo_url, 
-                        
+                        imageUrl: rawImage, 
                         views: viewCount,
                         applicantCount: appCount,
-                        date: post.created_at ? (post.created_at.substring(0, 10)) : '', 
+                        // 날짜 포맷팅 (YYYY-MM-DD)
+                        date: post.created_at ? (typeof post.created_at === 'string' ? post.created_at.substring(0, 10) : '') : '', 
                         category: post.project_type === 'course' ? '수업' : '사이드',
+                        // 태그 매핑 (객체 배열 or 문자열 배열 대응)
                         tags: (post.Hashtags || post.hashtags || []).map(h => h.name || h),
-                        score: viewCount + (appCount * 10),
-                        isBookmarked: false
+                        score: viewCount + (appCount * 10), // 인기순 정렬 점수
+                        isBookmarked: false,
+                        isBest: appCount >= 5 // 예: 지원자가 5명 이상이면 Best 뱃지
                     };
                 });
 
-                // 1. Hot 공고 (Top 10)
+                // (1) Hot 공고 설정 (Top 10)
                 const sortedByScore = [...formattedData].sort((a, b) => b.score - a.score);
                 setHotProjects(sortedByScore.slice(0, 10));
 
-                // 2. 인기 키워드 (Top 5)
+                // (2) 인기 키워드 추출 (Top 5)
                 const tagCounts = {};
                 formattedData.forEach(post => {
-                    if (post.tags) post.tags.forEach(tag => { if(tag) tagCounts[tag] = (tagCounts[tag] || 0) + 1; });
+                    if (post.tags) post.tags.forEach(tag => { 
+                        if(tag) tagCounts[tag] = (tagCounts[tag] || 0) + 1; 
+                    });
                 });
                 const sortedTags = Object.entries(tagCounts)
                     .sort(([, countA], [, countB]) => countB - countA)
@@ -139,7 +177,7 @@ export default function TeamMatchingPage() {
                 setAllPosts(formattedData);
 
             } catch (error) {
-                console.error("데이터 불러오기 실패:", error);
+                console.error("❌ 데이터 불러오기 실패:", error);
                 setAllPosts([]);
             } finally {
                 setIsLoading(false);
@@ -148,53 +186,107 @@ export default function TeamMatchingPage() {
         fetchPosts();
     }, []);
 
+    // 2. 북마크 핸들러 (UI 업데이트용)
     const handleBookmarkToggle = (id) => {
         setHotProjects(prev => prev.map(item => item.id === id ? { ...item, isBookmarked: !item.isBookmarked } : item));
         setAllPosts(prev => prev.map(item => item.id === id ? { ...item, isBookmarked: !item.isBookmarked } : item));
     };
 
+    // 3. 필터링 로직 (검색어 + 태그 탭)
     const filteredMatching = allPosts.filter(item => {
-        if (!item.tags || item.tags.length === 0) return false;
-        if (activeFilter === '전체') return item.tags.some(tag => topKeywords.includes(tag));
-        return item.tags.includes(activeFilter);
+        // (A) 검색어가 있을 경우: 제목, 설명, 태그 중 하나라도 일치하면 표시
+        if (passedSearchQuery) {
+            const query = passedSearchQuery.toLowerCase();
+            const titleMatch = item.title.toLowerCase().includes(query);
+            const descMatch = item.description ? item.description.toLowerCase().includes(query) : false;
+            const tagMatch = item.tags ? item.tags.some(t => t.toLowerCase().includes(query)) : false;
+            
+            return titleMatch || descMatch || tagMatch;
+        }
+
+        // (B) 검색어가 없을 경우: 탭 필터 적용
+        if (activeFilter === '전체') {
+            // 전체 탭: 인기 키워드에 속한 태그가 하나라도 있거나, 데이터가 적으면 다 보여주기
+            // 여기서는 '전체' 탭 클릭 시 모든 게시글을 보여주는 것으로 설정 (사용성 고려)
+            return true; 
+            // 만약 '키워드 Top5 연관 글만' 보여주고 싶다면 아래 주석 해제
+            // if (!item.tags || item.tags.length === 0) return false;
+            // return item.tags.some(tag => topKeywords.includes(tag));
+        } else {
+            // 특정 태그 탭
+            return item.tags && item.tags.includes(activeFilter);
+        }
     });
+
+    // 검색 초기화 핸들러
+    const handleClearSearch = () => {
+        navigate(location.pathname, { state: {} }); // state 비우기
+    };
 
     return (
         <div className="team-matching-app">
             <Header />
             <main className="app-content">
-                <section className="section section-project-banner">
-                    <div className="section-header"><h2 className="section-title">팀원 구하기</h2></div>
-                    <CreateProjectBanner />
-                </section>
                 
-                <section className="section section--panel">
-                    <div className="section-header"><h2 className="section-title">홍익 HOT 공고 (Top 10)</h2></div>
-                    <div className="horizontal-scroll-list">
-                        {isLoading ? <div style={{padding:'20px', color:'#999'}}>로딩 중...</div> : 
-                         hotProjects.length > 0 ? hotProjects.map(item => (
-                            <HotTopicCard key={item.id} item={item} onBookmarkToggle={handleBookmarkToggle} />
-                         )) : 
-                         <div style={{padding:'20px', color:'#999'}}>등록된 공고가 없습니다.</div>}
-                    </div>
-                </section>
+                {/* [섹션 1] 배너 영역 (검색 중이 아닐 때만 표시) */}
+                {!passedSearchQuery && (
+                    <section className="section section-project-banner">
+                        <div className="section-header"><h2 className="section-title">팀원 구하기</h2></div>
+                        <CreateProjectBanner />
+                    </section>
+                )}
+
+                {/* [섹션 2] Hot 공고 (검색 중이 아닐 때만 표시) */}
+                {!passedSearchQuery && (
+                    <section className="section section--panel">
+                        <div className="section-header"><h2 className="section-title">홍익 HOT 공고 (Top 10)</h2></div>
+                        <div className="horizontal-scroll-list">
+                            {isLoading ? <div style={{padding:'20px', color:'#999'}}>로딩 중...</div> : 
+                             hotProjects.length > 0 ? hotProjects.map(item => (
+                                <HotTopicCard key={item.id} item={item} onBookmarkToggle={handleBookmarkToggle} />
+                             )) : 
+                             <div style={{padding:'20px', color:'#999'}}>등록된 공고가 없습니다.</div>}
+                        </div>
+                    </section>
+                )}
                 
+                {/* [섹션 3] 메인 리스트 (검색 결과 or 필터 결과) */}
                 <section className="section">
-                    <div className="section-top">
-                        <div className="section-header">
-                            <h2 className="section-title">키워드 별 모집 (인기 Top 5)</h2>
-                            <Link to="/recruitment" state={{ filter: activeFilter }} className="section-more">자세히보기 &gt;</Link>
+                    
+                    {/* (A) 검색 결과 헤더 */}
+                    {passedSearchQuery ? (
+                        <div style={{padding: '10px 20px', display:'flex', alignItems:'center', justifyContent:'space-between'}}>
+                            <h2 className="section-title">"{passedSearchQuery}" 검색 결과</h2>
+                            <button onClick={handleClearSearch} style={{fontSize:'12px', padding:'6px 10px', borderRadius:'15px', border:'1px solid #ccc', background:'#fff', cursor:'pointer'}}>
+                                초기화
+                            </button>
                         </div>
-                        <div className="horizontal-scroll-list filter-tags">
-                            {filterTabs.map(filter => (
-                                <div key={filter} className={`filter-tag ${activeFilter === filter ? 'active' : ''}`} onClick={() => setActiveFilter(filter)}>{filter}</div>
-                            ))}
+                    ) : (
+                    /* (B) 일반 필터 탭 헤더 */
+                        <div className="section-top">
+                            <div className="section-header">
+                                <h2 className="section-title">키워드 별 모집</h2>
+                            </div>
+                            <div className="horizontal-scroll-list filter-tags">
+                                {filterTabs.map(filter => (
+                                    <div key={filter} className={`filter-tag ${activeFilter === filter ? 'active' : ''}`} onClick={() => setActiveFilter(filter)}>{filter}</div>
+                                ))}
+                            </div>
                         </div>
-                    </div>
+                    )}
+
+                    {/* 리스트 출력 */}
                     <div className="matching-list">
-                        {isLoading ? <div>로딩 중...</div> : 
-                         filteredMatching.length > 0 ? filteredMatching.map(item => <MatchingCard key={item.id} item={item} />) : 
-                         <div style={{padding:'40px 0', textAlign:'center', color:'#999'}}>해당 키워드의 모집글이 없습니다.</div>}
+                        {isLoading ? 
+                            <div style={{textAlign:'center', padding:'20px'}}>로딩 중...</div> : 
+                         filteredMatching.length > 0 ? 
+                            filteredMatching.map(item => <MatchingCard key={item.id} item={item} />) : 
+                            <div style={{padding:'40px 0', textAlign:'center', color:'#999'}}>
+                                {passedSearchQuery 
+                                    ? `'${passedSearchQuery}'에 대한 검색 결과가 없습니다.` 
+                                    : '해당하는 모집글이 없습니다.'}
+                            </div>
+                        }
                     </div>
                 </section>
             </main>
