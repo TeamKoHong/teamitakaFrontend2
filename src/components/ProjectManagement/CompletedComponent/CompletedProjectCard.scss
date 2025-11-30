@@ -2,8 +2,8 @@
   position: relative;
   background: #fff;
   border-radius: 16px;
-  padding: 14px 16px;
-  min-height: 80px;
+  padding: 24px 16px 48px;
+  min-height: 100px;
   cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   box-shadow: 0 1px 2px rgba(16, 24, 40, 0.06), 0 1px 3px rgba(16, 24, 40, 0.08);
@@ -17,91 +17,82 @@
     transform: translateY(0);
   }
 
+  // 배지 스타일
   .evaluation-badge {
     position: absolute;
-    top: -7px;
-    left: 11px;
+    top: -10px;
+    left: 12px;
     background: linear-gradient(239.04deg, #f76241, #ff390d);
     color: #fff;
-    padding: 3px 8px;
+    padding: 4px 9px;
     border-radius: 2.86px;
-    font-size: 9px;
+    font-size: 10px;
     font-weight: 600;
     text-transform: capitalize;
     box-shadow: 0 2px 4px rgba(247, 98, 65, 0.2);
   }
 
-  .card-content {
+  // 상단: 제목 + 화살표
+  .card-header {
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    gap: 16px;
+    align-items: flex-start;
+    margin-bottom: 4px;
   }
 
-  .project-info {
+  .project-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #000;
+    margin: 0;
+    line-height: 1.4;
+    text-transform: capitalize;
     flex: 1;
-    min-width: 0; // Allow text truncation
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+  }
 
-    .project-title {
-      font-size: 16px;
-      font-weight: 600;
-      line-height: 1.25;
-      color: #140805;
-      margin: 0 0 6px 0;
-      text-transform: capitalize;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      display: -webkit-box;
-      -webkit-line-clamp: 1;
-      -webkit-box-orient: vertical;
-    }
+  .arrow-icon {
+    color: #999;
+    font-size: 20px;
+    flex-shrink: 0;
+    margin-left: 8px;
+  }
 
-    .date-row {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 13px;
-      color: #6B7280;
+  // 설명 텍스트
+  .project-description {
+    font-size: 10px;
+    color: #999899;
+    margin: 0 0 16px 0;
+    line-height: 1.4;
+    font-family: Pretendard, sans-serif;
+    text-transform: capitalize;
+  }
 
-      .calendar-icon {
-        width: 16px;
-        height: 16px;
-        color: #9CA3AF;
-        flex-shrink: 0;
-      }
-
-      .date-text {
-        flex-shrink: 0;
-      }
-    }
+  // 하단: 프로필 이미지
+  .card-footer {
+    position: absolute;
+    bottom: 12px;
+    right: 16px;
   }
 
   .team-avatars {
     display: flex;
-    flex-shrink: 0;
 
     .avatar {
-      width: 28px;
-      height: 28px;
+      width: 35px;
+      height: 35px;
       border-radius: 50%;
+      border: 2px solid #fff;
       object-fit: cover;
-      box-shadow: 0 0 0 2px #fff, 0 2px 4px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 
       &:not(:first-child) {
-        margin-left: -7px; // 겹치기 효과
+        margin-left: -8px;
       }
     }
-  }
-
-  .project-description {
-    font-size: 13px;
-    color: #6B7280;
-    line-height: 1.4;
-    margin-top: 6px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
   }
 }
