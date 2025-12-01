@@ -35,7 +35,9 @@ export default function DefaultHeader({
       )}
       <h1 className="member-header-title">{title}</h1>
       {rightElement ? (
-        rightElement
+        <div className="member-header-chat--placeholder">
+          {rightElement}
+        </div>
       ) : showChat ? (
         <button
           className="member-header-chat"

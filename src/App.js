@@ -15,6 +15,7 @@ import RatingManagementPage from './pages/RatingManagementPage/RatingManagementP
 import RatingProjectPage from './pages/RatingProjectPage/RatingProjectPage';
 import RatingProjectStatusPage from './pages/RatingProjectStatusPage/RatingProjectStatusPage';
 import TeamMemberEvaluationPage from './pages/TeamMemberEvaluationPage/TeamMemberEvaluationPage';
+import ReceivedFeedbackDetailPage from './pages/ReceivedFeedbackDetailPage/ReceivedFeedbackDetailPage';
 import CategorySliderDemo from './components/Common/CategorySliderDemo';
 import OnboardingPage from './pages/OnboardingPage/OnboardingPage';
 import LoginPage from './pages/LoginPage/LoginPage';
@@ -189,12 +190,22 @@ const ProjectPermissionGuard = ({ children, projectId }) => {
 
 // ===== 가드 래퍼 컴포넌트들 =====
 
-// 프로젝트 평가 페이지 가드
+// 프로젝트 평가 페이지 가드 (내가 받은 평가)
 const ProjectEvaluationGuard = () => {
   const { projectId } = useParams();
   return (
     <ProjectPermissionGuard projectId={projectId}>
-      <RatingProjectPage />
+      <RatingProjectPage mode="received" />
+    </ProjectPermissionGuard>
+  );
+};
+
+// 프로젝트 평가 페이지 가드 (내가 한 평가)
+const ProjectEvaluationGivenGuard = () => {
+  const { projectId } = useParams();
+  return (
+    <ProjectPermissionGuard projectId={projectId}>
+      <RatingProjectPage mode="given" />
     </ProjectPermissionGuard>
   );
 };
@@ -274,13 +285,15 @@ const App = () => {
           <Route path={PROJECT_ROUTES.CREATE_MEETING} element={<CreateMeetingPage />} />
           <Route path={PROJECT_ROUTES.CALENDAR} element={<ProjectCalender />} />
 
-          {/* ===== 평가 시스템 라우트 (로그인 제한 없음) ===== */}
-          <Route path={EVALUATION_ROUTES.MANAGEMENT} element={<RatingManagementPage />} />
-          <Route path={EVALUATION_ROUTES.PROJECT} element={<ProjectEvaluationGuard />} />
-          <Route path={EVALUATION_ROUTES.TEAM_MEMBER} element={<TeamMemberEvaluationGuard />} />
-          <Route path={EVALUATION_ROUTES.STATUS_GIVEN} element={<EvaluationStatusGuard />} />
-          <Route path={EVALUATION_ROUTES.STATUS_RECEIVED} element={<EvaluationStatusGuard />} />
-          <Route path={EVALUATION_ROUTES.STATUS} element={<EvaluationStatusGuard />} />
+          {/* ===== 평가 시스템 라우트 (인증 필요) ===== */}
+          <Route path={EVALUATION_ROUTES.MANAGEMENT} element={<ProtectedRoute><RatingManagementPage /></ProtectedRoute>} />
+          <Route path={EVALUATION_ROUTES.PROJECT} element={<ProtectedRoute><ProjectEvaluationGuard /></ProtectedRoute>} />
+          <Route path={EVALUATION_ROUTES.PROJECT_GIVEN} element={<ProtectedRoute><ProjectEvaluationGivenGuard /></ProtectedRoute>} />
+          <Route path={EVALUATION_ROUTES.FEEDBACK_DETAIL} element={<ProtectedRoute><ReceivedFeedbackDetailPage /></ProtectedRoute>} />
+          <Route path={EVALUATION_ROUTES.TEAM_MEMBER} element={<ProtectedRoute><TeamMemberEvaluationGuard /></ProtectedRoute>} />
+          <Route path={EVALUATION_ROUTES.STATUS_GIVEN} element={<ProtectedRoute><EvaluationStatusGuard /></ProtectedRoute>} />
+          <Route path={EVALUATION_ROUTES.STATUS_RECEIVED} element={<ProtectedRoute><EvaluationStatusGuard /></ProtectedRoute>} />
+          <Route path={EVALUATION_ROUTES.STATUS} element={<ProtectedRoute><EvaluationStatusGuard /></ProtectedRoute>} />
 
           {/* ===== 기존 URL 호환성 리다이렉트 ===== */}
           <Route path={LEGACY_EVALUATION_ROUTES.RATING_MANAGEMENT} element={<Navigate to={EVALUATION_ROUTES.MANAGEMENT} replace />} />
