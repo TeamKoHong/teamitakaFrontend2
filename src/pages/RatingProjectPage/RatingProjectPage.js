@@ -1,159 +1,264 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
+import { useAuth } from '../../contexts/AuthContext';
 import styles from './RatingProjectPage.module.scss';
 import DefaultHeader from '../../components/Common/DefaultHeader';
-// import RatingInputStars from '../../components/RatingManagement/RatingInputStars/RatingInputStars';
-import KeywordChips from '../../components/RatingProjectPage/KeywordChips';
-import KeywordBubble from '../../components/RatingProjectPage/KeywordBubble';
 import ProjectInfoCard from '../../components/RatingProjectPage/ProjectInfoCard';
-// import ProjectSummaryCard from '../../components/RatingProjectPage/ProjectSummaryCard';
+import TeamMemberAvatars from '../../components/RatingProjectPage/TeamMemberAvatars';
+import ProjectResultCard from '../../components/RatingProjectPage/ProjectResultCard';
 import ProsConsCards from '../../components/RatingProjectPage/ProsConsCards';
 import CategorySlidersGroup from '../../components/RatingProjectPage/CategorySlidersGroup';
-import CommentsBubble from '../../components/RatingProjectPage/CommentsBubble';
-// import StickyCTA from '../../components/RatingProjectPage/StickyCTA';
-import TeamMemberEvaluation from '../../components/RatingProjectPage/TeamMemberEvaluation';
+import EvaluationCommentCard from '../../components/RatingProjectPage/EvaluationCommentCard';
 import BottomNav from '../../components/Common/BottomNav/BottomNav';
-import ProjectResultCard from '../../components/RatingProjectPage/ProjectResultCard';
 import MyRatingSection from '../../components/RatingProjectPage/MyRatingSection';
+import { fetchRatingProjectData } from '../../services/rating';
 import { getMockProjectSummary } from '../../fixtures/projectSummary';
 
 function RatingProjectPage(props) {
-  const { projectId: propProjectId } = props;
+  const { projectId: propProjectId, mode = 'received' } = props;
   const { projectId: paramProjectId } = useParams();
   const projectId = propProjectId || paramProjectId;
   const location = useLocation();
   const navigate = useNavigate();
-  const [projectData, setProjectData] = useState(null);
+
+  // useAuth 훅으로 인증 상태 확인
+  const { isAuthenticated, isLoading: authLoading, user: authUser } = useAuth();
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  // const [ratings, setRatings] = useState({}); // 평가 입력 폼 제거됨
-  const [chipsActive, setChipsActive] = useState('');
-  const [detailOpen] = useState(false);
+  const [data, setData] = useState(null);
+  const [selectedMemberId, setSelectedMemberId] = useState(null);
 
   useEffect(() => {
-    const fetchProjectData = async () => {
+    // 인증 로딩 중이면 대기
+    if (authLoading) {
+      return;
+    }
+
+    // 인증되지 않은 경우 (ProtectedRoute가 처리하지만 안전장치)
+    if (!isAuthenticated) {
+      setError('로그인이 필요합니다.');
+      setLoading(false);
+      return;
+    }
+
+    const loadData = async () => {
       setLoading(true);
+      setError(null);
+
       try {
-        // Simulate API call to fetch project details and members
-        const dummyProject = {
-          id: parseInt(projectId),
-          name: `Project ${projectId} - 팀원 평가`,
-          description: `프로젝트 ${projectId}의 팀원 평가 페이지입니다.`,
-          members: [
-            {
-              id: 101,
-              name: "김철수",
-              position: "프론트엔드 개발자",
-              categories: [
-                { id: 1, name: "참여도" },
-                { id: 2, name: "소통" },
-                { id: 3, name: "책임감" },
-                { id: 4, name: "협력" },
-                { id: 5, name: "개인 능력" },
-              ],
-            },
-          ],
-        };
-        setProjectData(dummyProject);
+        // AuthContext에서 사용자 정보 가져오기 (더 신뢰할 수 있음)
+        // 백엔드에서 올 수 있는 모든 필드명 체크: user_id, userId, id
+        console.log('[DEBUG] authUser:', authUser);
+        const currentUserId = authUser?.user_id || authUser?.userId || authUser?.id;
+        console.log('[DEBUG] currentUserId:', currentUserId);
+
+        if (!currentUserId) {
+          // fallback: localStorage에서 가져오기
+          const userStr = localStorage.getItem('user');
+          const user = userStr ? JSON.parse(userStr) : null;
+          console.log('[DEBUG] localStorage user:', user);
+          const fallbackUserId = user?.user_id || user?.userId || user?.id;
+
+          if (!fallbackUserId) {
+            throw new Error('사용자 정보를 찾을 수 없습니다.');
+          }
+
+          // 실제 API 호출 (fallback userId 사용)
+          const result = await fetchRatingProjectData(projectId, fallbackUserId);
+          setData(result);
+        } else {
+          // 실제 API 호출
+          const result = await fetchRatingProjectData(projectId, currentUserId);
+          setData(result);
+        }
       } catch (err) {
-        setError("프로젝트 정보를 불러오는데 실패했습니다.");
-        console.error("Failed to fetch project data:", err);
+        console.error('API 호출 실패, Mock 데이터 사용:', err);
+        // API 실패 시 Mock 데이터로 fallback
+        const mock = getMockProjectSummary(projectId);
+        setData(mock);
+        // 개발 중에는 에러를 표시하지 않고 Mock 사용
+        // setError(err.message);
       } finally {
         setLoading(false);
       }
     };
-    fetchProjectData();
-  }, [projectId]);
 
-  // 입력 폼 관련 핸들러 제거됨 (UI 읽기 전용 구조)
+    loadData();
+  }, [projectId, isAuthenticated, authLoading, authUser]);
+
+  // "내가 한 평가" 모드 여부 (useEffect 의존성으로 사용되므로 여기서 계산)
+  const isGivenMode = mode === 'given';
+
+  // 초기 선택 설정 (첫 번째 평가 대상자) - early return 이전에 위치해야 함
+  useEffect(() => {
+    if (isGivenMode && data?.myGivenRatings?.length > 0 && !selectedMemberId) {
+      setSelectedMemberId(data.myGivenRatings[0].targetMember?.id);
+    }
+  }, [isGivenMode, data, selectedMemberId]);
 
   if (loading) {
     return <div className={styles.loading}>로딩 중...</div>;
   }
+
   if (error) {
-    return <div className={styles.error}>오류: {error}</div>;
-  }
-  if (!projectData) {
-    return <div className={styles.noData}>프로젝트 데이터를 찾을 수 없습니다.</div>;
+    return <div className={styles.error}>{error}</div>;
   }
 
-  // Step B: Use location.state first (if provided), then fall back to fixtures
-  const stateProject = location.state && location.state.projectSummary ? location.state.projectSummary : null;
-  const mock = getMockProjectSummary(projectId);
+  // location.state로 전달된 데이터가 있으면 우선 사용
+  const stateProject = location.state?.projectSummary;
+
+  // dday 값을 객체 형식으로 통일 (DdayProgress 컴포넌트가 { value, percent } 형식 기대)
+  const rawDday = stateProject?.dday ?? data?.dDay ?? 0;
+  const ddayObj = typeof rawDday === 'object'
+    ? rawDday
+    : { value: rawDday, percent: 0 }; // API에서 숫자로 올 경우 객체로 변환
+
   const project = {
-    id: mock.id,
-    name: stateProject?.name ?? mock.name,
-    period: stateProject?.period ?? mock.period,
-    meetingTime: stateProject?.meetingTime ?? mock.meetingTime,
-    avatars: stateProject?.avatars ?? mock.avatars,
-    dday: stateProject?.dday ?? mock.dday,
-    resultLink: (stateProject?.resultLink && stateProject.resultLink.trim()) || mock.resultLink,
+    id: data?.id || projectId,
+    name: stateProject?.name ?? data?.name ?? '프로젝트',
+    period: stateProject?.period ?? data?.period ?? '',
+    meetingTime: stateProject?.meetingTime ?? data?.meetingTime ?? '',
+    dday: ddayObj,
   };
-  const summary = stateProject?.summary ?? mock.summary;
-  const ratingSummary = stateProject?.ratingSummary ?? mock.ratingSummary;
+  const members = data?.members || [];
+  const sliders = data?.sliders || [];
+  const comments = data?.comments || [];
+  const summary = stateProject?.summary ?? data?.summary ?? { good: [], improve: [] };
+  const ratingSummary = stateProject?.ratingSummary ?? data?.ratingSummary ?? { average: 0 };
+  const myGivenRatings = data?.myGivenRatings || [];
+
+  // 선택된 팀원의 평가 데이터 찾기
+  const givenRating = isGivenMode && myGivenRatings.length > 0
+    ? (selectedMemberId
+        ? myGivenRatings.find(r => r.targetMember?.id === selectedMemberId)
+        : myGivenRatings[0])
+    : null;
+
+  const handleNavigateToGiven = () => {
+    navigate(`/evaluation/project/${projectId}/given`);
+  };
+
+  const handleNavigateToReceived = () => {
+    navigate(`/evaluation/project/${projectId}`);
+  };
+
+  const handleBack = () => {
+    const from = location.state?.from;
+    const searchParams = new URLSearchParams(location.search);
+    const tab = from?.tab || searchParams.get('tab');
+    if (from?.path === '/project-management' || tab === 'completed') {
+      navigate('/project-management?tab=completed', { replace: true });
+    } else {
+      navigate(-1);
+    }
+  };
 
   return (
     <div className={styles.pageBg}>
+      {/* 헤더: 완료된 프로젝트 + 내가 한 평가 버튼 */}
       <DefaultHeader
-        title="프로젝트 별점"
-        onBack={() => {
-          const from = location.state && location.state.from;
-          const searchParams = new URLSearchParams(location.search);
-          const tab = from?.tab || searchParams.get('tab');
-          if (from?.path === '/project-management' || tab === 'completed') {
-            navigate('/project-management?tab=completed', { replace: true });
-          } else {
-            navigate(-1);
-          }
-        }}
+        title={isGivenMode ? '내가 한 평가지' : '완료된 프로젝트'}
+        onBack={handleBack}
+        rightElement={
+          isGivenMode ? (
+            <button className={styles.headerBtn} onClick={handleNavigateToReceived}>
+              내가 받은 평가
+            </button>
+          ) : (
+            <button className={styles.headerBtn} onClick={handleNavigateToGiven}>
+              내가 한 평가
+            </button>
+          )
+        }
       />
+
       <div className={styles.scrollArea}>
-        {/* 1) 섹션 재배치: 프로젝트 카드 → 결과물 → 한 줄 요약 → 키워드 */}
-        <ProjectInfoCard {...project} id={project.id} />
-        <ProjectResultCard resultLink={project.resultLink} />
-        <div className={styles.oneLinerTitle}>한 줄 요약</div>
-        {/* 3) 하단: 팀원 평가지 / 종합적 키워드 (아코디언으로 유지) */}
-        <ProsConsCards good={summary?.good || []} improve={summary?.improve || []} />
-        <div className={styles.sectionLabel}>팀원 평가지</div>
-        <div className={styles.sectionLabel}>종합적 키워드</div>
-        <KeywordChips
-          items={summary?.keywords || []}
-          active={chipsActive || summary?.highlighted}
-          onSelect={(kw) => setChipsActive((prev) => (prev === kw ? '' : kw))}
-        />
-        <KeywordBubble
-          items={(summary?.keywordComments && (summary.keywordComments[chipsActive || summary.highlighted] || []))}
-        />
-        {/* 5) 슬라이더 카드: 설명 문구 활성화 */}
-        <div className={styles.sectionLabel} style={{ marginTop: 6 }}>해당 팀원의 능력별 점수는 몇 점인가요?</div>
-        <CategorySlidersGroup items={mock.sliders || []} onChange={() => {}} hideDescription={false} />
-        {/* 전체 총점 블록 + MyRatingSection (별만 표시) */}
-        <div className={styles.overallIntro}>
-          <h2 className={styles.overallTitle}>전체 총점은 몇 점인가요?</h2>
-          <p className={styles.overallCaption}>받은 전체 총점의 평균치입니다.</p>
-        </div>
-        <div className={styles.myRatingNoTitle}>
-          <MyRatingSection score={ratingSummary?.average ?? 0} />
-        </div>
-        {/* 4) 개별 코멘트 두 개를 하단에 개별 박스로 */}
-        <CommentsBubble items={mock.comments || []} />
-        <div id="detail-accordion" hidden={!detailOpen}>
-        <div className={styles.sectionLabelTight}>팀원 평가지</div>
-        <div className={styles.sectionLabelTight}>종합적 키워드</div>
-          <KeywordChips
-            items={summary?.aggregateKeywords || summary?.keywords || []}
-            active={chipsActive || summary?.highlighted}
-            onSelect={(kw) => setChipsActive((prev) => (prev === kw ? '' : kw))}
+        {/* 1. 프로젝트 카드 (배경 이미지 + D-Day) */}
+        <div className={styles.projectCardSection}>
+          <ProjectInfoCard
+            name={project.name}
+            period={project.period}
+            meetingTime={project.meetingTime}
+            dday={project.dday}
           />
-          <TeamMemberEvaluation
-            question="구체적인 역할은 무엇이었나요?"
-            answers={mock.roles || []}
+        </div>
+
+        {/* 2. 팀원 아바타 목록 */}
+        <div className={styles.membersSection}>
+          <TeamMemberAvatars
+            members={isGivenMode
+              ? [...new Map(myGivenRatings.map(r => [r.targetMember?.id, r.targetMember])).values()]
+              : members}
+            selectedId={isGivenMode ? selectedMemberId : null}
+            onSelect={isGivenMode ? setSelectedMemberId : null}
+            selectable={isGivenMode}
           />
-          <div style={{ marginTop: 12 }}>
-            
+        </div>
+
+        {/* 3. 프로젝트 결과물 */}
+        {!isGivenMode && (
+          <div className={styles.resultSection}>
+            <ProjectResultCard resultLink={data?.resultLink} />
           </div>
+        )}
+
+        {/* 4. 별점 섹션 */}
+        <div className={styles.ratingSection}>
+          <MyRatingSection
+            score={isGivenMode && givenRating ? givenRating.overallScore : (ratingSummary?.average ?? 0)}
+            showTitle={true}
+            title={isGivenMode
+              ? `내가 ${givenRating?.targetMember?.name || '팀원'}님에게 준 별점`
+              : '내가 받은 별점'}
+          />
+        </div>
+
+        {/* 5. 한 줄 요약 (장점/개선점) */}
+        <div className={styles.summarySection}>
+          <div className={styles.sectionLabel}>한 줄 요약</div>
+          <ProsConsCards
+            good={summary?.good || []}
+            improve={summary?.improve || []}
+          />
+        </div>
+
+        {/* 6. 능력 별 점수 (내가 한 평가 모드에서만 표시) */}
+        {isGivenMode && (
+          <div className={styles.slidersSection}>
+            <div className={styles.sectionLabel}>능력 별 점수</div>
+            <CategorySlidersGroup
+              items={givenRating ? givenRating.categoryScores : sliders}
+              readOnly
+              hideDescription={false}
+            />
+          </div>
+        )}
+
+        {/* 7. 평가 코멘트 */}
+        <div className={styles.commentsSection}>
+          <div className={styles.sectionLabel}>팀원 평가지</div>
+          <div className={styles.sectionSubLabel}>
+            업무 분담 및 구체적인 역할은 무엇이었나요?
+          </div>
+          {isGivenMode && givenRating ? (
+            <EvaluationCommentCard
+              avatar={givenRating.targetMember.avatar}
+              text={givenRating.comment}
+            />
+          ) : (
+            comments.map((c, i) => (
+              <EvaluationCommentCard
+                key={i}
+                avatar={c.avatar}
+                text={c.text}
+                onClick={() => navigate(`/evaluation/project/${projectId}/feedback/${c.memberId || i}`)}
+              />
+            ))
+          )}
         </div>
       </div>
+
       <BottomNav />
     </div>
   );

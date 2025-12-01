@@ -23,6 +23,8 @@ export const PROJECT_ROUTES = {
 export const EVALUATION_ROUTES = {
   MANAGEMENT: '/evaluation/management',
   PROJECT: '/evaluation/project/:projectId',
+  PROJECT_GIVEN: '/evaluation/project/:projectId/given',
+  FEEDBACK_DETAIL: '/evaluation/project/:projectId/feedback/:memberId',
   TEAM_MEMBER: '/evaluation/team-member/:projectId/:memberId',
   STATUS_GIVEN: '/evaluation/status/:projectId/given',
   STATUS_RECEIVED: '/evaluation/status/:projectId/received',
