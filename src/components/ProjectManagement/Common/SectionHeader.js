@@ -29,15 +29,17 @@ const SectionHeader = ({
     <section className="project-header">
       <p className="project-explain">{renderExplainText()}</p>
 
-      <div className="project-filter">
-        <select className="project-select" onChange={onFilterChange}>
-          {filterOptions.map((option) => (
-            <option key={option.value} value={option.value}>
-              {option.label}
-            </option>
-          ))}
-        </select>
-      </div>
+      {filterOptions && filterOptions.length > 0 && (
+        <div className="project-filter">
+          <select className="project-select" onChange={onFilterChange}>
+            {filterOptions.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
     </section>
   );
 };
