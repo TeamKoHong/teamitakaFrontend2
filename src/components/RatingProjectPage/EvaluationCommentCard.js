@@ -25,9 +25,11 @@ export default function EvaluationCommentCard({ avatar, text, onClick }) {
       role={onClick ? 'button' : undefined}
       tabIndex={onClick ? 0 : undefined}
     >
-      {avatar && (
-        <img src={avatar} alt="평가자" className={styles.avatar} />
-      )}
+      <img
+        src={avatar || '/icons/default-avatar.svg'}
+        alt="평가자"
+        className={styles.avatar}
+      />
       <div className={styles.bubble}>
         <p className={styles.text}>{text}</p>
       </div>
