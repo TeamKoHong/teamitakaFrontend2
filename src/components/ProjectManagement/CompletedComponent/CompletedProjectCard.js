@@ -2,6 +2,7 @@ import React from 'react';
 import { IoCalendarOutline } from 'react-icons/io5';
 import { formatDateRange } from '../../../utils/dateUtils';
 import './CompletedProjectCard.scss';
+import nextArrow from '../../../assets/icons/next_arrow.svg';
 
 // 더미 아바타 이미지 (실제 프로젝트에서는 API에서 가져올 수 있음)
 const DEFAULT_AVATARS = [
@@ -36,9 +37,12 @@ const CompletedProjectCard = ({ project, onClick }) => {
       )}
 
       <div className="card-content">
-        <div className="project-info">
-          <h3 className="project-title">{project.title}</h3>
-
+        <div className="completed-project-info">
+          <div className="title-row">
+            <h3 className="project-title">{project.title}</h3>
+            <img src={nextArrow} alt="" className="next-arrow" />
+          </div>
+        
           <div className="date-row">
             <IoCalendarOutline className="calendar-icon" />
             <span className="date-text">{dateRange}</span>

@@ -1,16 +1,13 @@
 .completed-project-card {
   position: relative;
   background: #fff;
-  border-radius: 16px;
-  padding: 14px 16px;
-  min-height: 80px;
+  border-radius: 20px;
+  padding: 1rem;
   cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
-  box-shadow: 0 1px 2px rgba(16, 24, 40, 0.06), 0 1px 3px rgba(16, 24, 40, 0.08);
 
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   }
 
   &:active {
@@ -19,11 +16,11 @@
 
   .evaluation-badge {
     position: absolute;
-    top: -7px;
+    top:  -0.75rem;
     left: 11px;
     background: linear-gradient(239.04deg, #f76241, #ff390d);
     color: #fff;
-    padding: 3px 8px;
+    padding: 4px 9px;
     border-radius: 2.86px;
     font-size: 9px;
     font-weight: 600;
@@ -33,27 +30,41 @@
 
   .card-content {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 16px;
+    flex-direction: column;
+    gap: 0.5rem;
   }
 
-  .project-info {
-    flex: 1;
-    min-width: 0; // Allow text truncation
+  .completed-project-info {
+    
+  
 
-    .project-title {
-      font-size: 16px;
-      font-weight: 600;
-      line-height: 1.25;
-      color: #140805;
-      margin: 0 0 6px 0;
-      text-transform: capitalize;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      display: -webkit-box;
-      -webkit-line-clamp: 1;
-      -webkit-box-orient: vertical;
+    .title-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+
+      .project-title {
+        font-size: 16px;
+        font-weight: 700;
+        line-height: 1.25;
+        color: #140805;
+        
+        text-transform: capitalize;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 1;
+        -webkit-box-orient: vertical;
+        
+      }
+
+      .next-arrow {
+        width: 7px;
+        height: 13px;
+        flex-shrink: 0;
+      }
     }
 
     .date-row {
@@ -77,12 +88,14 @@
   }
 
   .team-avatars {
+    width: 100%;
     display: flex;
+    justify-content: flex-end;
     flex-shrink: 0;
 
     .avatar {
-      width: 28px;
-      height: 28px;
+      width: 2.25rem;
+      height: 2.25rem;
       border-radius: 50%;
       object-fit: cover;
       box-shadow: 0 0 0 2px #fff, 0 2px 4px rgba(0, 0, 0, 0.1);
