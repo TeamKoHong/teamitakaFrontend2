@@ -4,25 +4,27 @@
   align-items: center;
   gap: 10px;
   width: 100%;
-  background: #FFFDFC;
+  background: #F5F5F5;
   border-radius: 100px;
-  padding: 4px 16px 4px 3px;
+  padding: 8px 16px 8px 8px;
 }
 
-// Figma: 48px x 48px
+// Figma: 40px x 40px
 .avatar {
-  width: 48px;
-  height: 48px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   object-fit: cover;
   flex-shrink: 0;
-  border: 1.5px solid #e0e0e0;
+  background: #E0E0E0;
 }
 
 .bubble {
   flex: 1;
+  min-width: 0;
   display: flex;
   align-items: center;
+  overflow: hidden;
 }
 
 // Figma: 14px, color #140805, line-height 140.98%
@@ -32,7 +34,9 @@
   color: #140805;
   line-height: 140.98%;
   margin: 0;
-  word-break: keep-all;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 // 클릭 가능한 카드 스타일
