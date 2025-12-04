@@ -21,16 +21,16 @@ const RecruitingProject = ({ recruitment, onSelectTeam }) => {
   // D-day 계산
   const getDDayText = () => {
     if (!recruitment_end) return 'D-DAY';
-    
+
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    
+
     const endDate = new Date(recruitment_end);
     endDate.setHours(0, 0, 0, 0);
-    
+
     const diffTime = endDate - today;
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    
+
     if (diffDays === 0) return 'D-DAY';
     if (diffDays > 0) return `D-${diffDays}`;
     return '마감';

@@ -1,5 +1,4 @@
 import React from "react";
-import PentagonChart from "./Common/UI/PentagonChart";
 import "./ApplicantDetailModal.scss";
 
 const ApplicantDetailModal = ({ isOpen, onClose, applicant, onInvite }) => {
@@ -11,13 +10,12 @@ const ApplicantDetailModal = ({ isOpen, onClose, applicant, onInvite }) => {
     }
   };
 
-  // 샘플 스킬 데이터 (실제로는 applicant 데이터에서 가져올 예정)
-  const skills = {
-    업무능력: 85,
-    노력: 75,
-    열정: 90,
-    실력: 70,
-    소통: 80
+  // 경력 표시 텍스트
+  const getExperienceText = () => {
+    if (!applicant.experience_years || applicant.experience_years === 0) {
+      return "신입";
+    }
+    return `${applicant.experience_years}년차`;
   };
 
   return (
@@ -26,7 +24,7 @@ const ApplicantDetailModal = ({ isOpen, onClose, applicant, onInvite }) => {
         <button className="close-button" onClick={onClose}>
           ×
         </button>
-        
+
         <div className="modal-content">
           {/* 프로필 섹션 */}
           <div className="profile-section">
@@ -35,7 +33,14 @@ const ApplicantDetailModal = ({ isOpen, onClose, applicant, onInvite }) => {
             </div>
             <div className="profile-info">
               <h3 className="applicant-name">{applicant.name}</h3>
-              <div className="experience-badge">3년차</div>
+              <div className="experience-badge">{getExperienceText()}</div>
+              {(applicant.university || applicant.major) && (
+                <div className="education-info">
+                  {applicant.university && <span>{applicant.university}</span>}
+                  {applicant.university && applicant.major && <span> · </span>}
+                  {applicant.major && <span>{applicant.major}</span>}
+                </div>
+              )}
             </div>
           </div>
 
@@ -43,40 +48,56 @@ const ApplicantDetailModal = ({ isOpen, onClose, applicant, onInvite }) => {
           <div className="section-caption">소개</div>
           <div className="introduction">
             <p>
-              안녕하세요! 저는 O O 프로젝트의 팀원이 되고 프로젝트를 성공적으로 완성하고 싶습니다. 미쳐...
+              {applicant.introduction || "자기소개가 없습니다."}
             </p>
           </div>
 
-          {/* 업무능력 차트 */}
-          <div className="skills-section">
-            <PentagonChart skills={skills} />
-          </div>
-
-          {/* 첨부 이력서 */}
-          <div className="resume-section">
-            <div className="resume-caption">첨부 이력서</div>
-            <div className="resume-card">
-              <div className="resume-texts">
-                <div className="resume-title">이력서 제목</div>
-                <div className="resume-sub">이력서 소개</div>
+          {/* 기술 스택 */}
+          {applicant.skills && Array.isArray(applicant.skills) && applicant.skills.length > 0 && (
+            <div className="skills-section">
+              <div className="section-caption">기술 스택</div>
+              <div className="skills-badges">
+                {applicant.skills.map((skill, index) => (
+                  <span key={index} className="skill-badge">{skill}</span>
+                ))}
               </div>
-              <div className="resume-arrow">›</div>
             </div>
-          </div>
+          )}
+
+          {/* 포트폴리오 */}
+          {applicant.portfolios && applicant.portfolios.length > 0 && (
+            <div className="portfolio-section">
+              <div className="section-caption">포트폴리오</div>
+              {applicant.portfolios.map((portfolio) => (
+                <div key={portfolio.project_id || portfolio.Project?.project_id} className="portfolio-card">
+                  <div className="portfolio-texts">
+                    <div className="portfolio-title">{portfolio.Project?.title || "프로젝트"}</div>
+                    <div className="portfolio-sub">{portfolio.Project?.description || ""}</div>
+                  </div>
+                  <div className="portfolio-arrow">›</div>
+                </div>
+              ))}
+            </div>
+          )}
 
           {/* 팀원으로 초대하기 버튼 */}
-          <button
-            className="invite-button"
-            onClick={() => {
-              if (onInvite && applicant) {
-                onInvite(applicant);
-              }
-              onClose();
-            }}
-          >
-            
-            팀원으로 초대하기
-          </button>
+          {applicant.status === 'ACCEPTED' ? (
+            <button className="invite-button disabled" disabled>
+              이미 초대된 팀원입니다
+            </button>
+          ) : (
+            <button
+              className="invite-button"
+              onClick={() => {
+                if (onInvite && applicant) {
+                  onInvite(applicant);
+                }
+                onClose();
+              }}
+            >
+              팀원으로 초대하기
+            </button>
+          )}
         </div>
       </div>
     </div>
