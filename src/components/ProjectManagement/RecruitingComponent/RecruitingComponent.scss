@@ -277,11 +277,47 @@
     padding: 1rem;
 
     .recruiting-deadline-card {
+      margin-bottom: 1rem;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+
+    .recruiting-deadline-title {
+      font-style: normal;
+      font-family: Pretendard;
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 21px;
+
+      .title-text {
+        color: #000;
+        margin: 0;
+
+        .highlight {
+          color: #F76241;
+        }
+      }
+    }
+
+    .recruiting-deadline-card {
       display: flex;
       flex-direction: column;
       padding: 1rem 1.5rem;
       background-color: #fff;
       border-radius: 1rem;
+
+      .recruiting-deadline-card-title {
+        color: #403E3E;
+        font-family: Pretendard;
+        font-size: 16px;
+        font-style: normal;
+        font-weight: 700;
+        line-height: normal;
+        text-transform: capitalize;
+        margin-bottom: 18px;
+      }
       
       .recruiting-deadline-card-description {
         color: #807C7C;
@@ -290,19 +326,37 @@
         font-weight: 400;
       }
 
-      .recruiting-deadline-card-title {
-        color: #403E3E;
-
-        font-family: Pretendard;
-        font-size: 16px;
-        font-weight: 700;
-        margin-bottom: 27px;
-      }
+      
 
       .recruiting-deadline-card-buttons {
         display: flex;
         gap: 8px;
-        
+        justify-content: space-between;
+
+        .delete-btn,
+        .rerecruit-btn {
+          flex: 1;
+          padding: 11px 0;
+          border-radius: 14.063px;
+          font-size: 14px;
+          font-weight: 500;
+          font-family: Pretendard;
+          cursor: pointer;
+          text-align: center
+
+        }
+
+        .delete-btn {
+          border: 1px solid #807C7C;
+          background: #fff;
+          color: #807C7C;
+        }
+
+        .rerecruit-btn {
+          border: none;
+          background: #807C7C;
+          color: #fff;
+        }
       }
 
    
