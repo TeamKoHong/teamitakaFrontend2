@@ -4,11 +4,11 @@ import EvaluationAlert from "./EvaluationAlert";
 import CompletedProjectCard from "./CompletedProjectCard";
 import { useNavigate } from 'react-router-dom';
 import AlertModal from '../../Common/AlertModal';
-import DebugBadge from '../../Common/DebugBadge/DebugBadge';
+// import DebugBadge from '../../Common/DebugBadge/DebugBadge';
 import { fetchEvaluationTargets } from '../../../services/rating';
 import { useAuth } from '../../../contexts/AuthContext';
 import { getMyProjects } from '../../../services/projects';
-import { compareProjectLists } from '../../../utils/compareProjects';
+// import { compareProjectLists } from '../../../utils/compareProjects';
 import { deriveCompletedProjects, splitByEvaluationStatus } from '../../../utils/projectFilters';
 import { getTeamMemberEvaluationUrl } from '../../../constants/routes';
 import { transformProjectForEvaluation } from '../../../utils/projectTransform';
@@ -27,8 +27,8 @@ const CompletedComponent = () => {
   const [isModalOpen, setModalOpen] = React.useState(false);
   const [modalProject] = React.useState(null);
 
-  // Comparison report for debugging
-  const [comparisonReport, setComparisonReport] = React.useState(null);
+  // // Comparison report for debugging
+  // const [comparisonReport, setComparisonReport] = React.useState(null);
 
   // SINGLE PIPELINE: Derive UI list from server data
   const completedProjects = deriveCompletedProjects(serverProjects, { sortOrder: 'latest' });
@@ -43,19 +43,19 @@ const CompletedComponent = () => {
   console.log('🔍 [DEBUG] completedProjectsDisplay:', completedProjectsDisplay);
 
 
-  // Verify consistency in development mode only
-  useEffect(() => {
-    if (process.env.NODE_ENV !== 'development') return;
-    if (!serverProjects || serverProjects.length === 0) return;
+  // // Verify consistency in development mode only
+  // useEffect(() => {
+  //   if (process.env.NODE_ENV !== 'development') return;
+  //   if (!serverProjects || serverProjects.length === 0) return;
 
-    const derived = deriveCompletedProjects(serverProjects, { sortOrder: 'latest' });
-    const report = compareProjectLists(serverProjects, derived, {
-      key: "project_id",
-      fields: ["title", "status", "start_date", "end_date", "description"]
-    });
+  //   const derived = deriveCompletedProjects(serverProjects, { sortOrder: 'latest' });
+  //   const report = compareProjectLists(serverProjects, derived, {
+  //     key: "project_id",
+  //     fields: ["title", "status", "start_date", "end_date", "description"]
+  //   });
 
-    setComparisonReport(report);
-  }, [serverProjects]);
+  //   // setComparisonReport(report);
+  // }, [serverProjects]);
 
   const handleCompletedItemClick = (project) => {
     // 평가 완료 프로젝트는 평가 결과 조회 페이지로 이동
@@ -241,8 +241,8 @@ const CompletedComponent = () => {
         </div>
       )}
 
-      {/* Debug Badge - Development only */}
-      <DebugBadge report={comparisonReport} />
+      {/* Debug Badge - Development only
+      <DebugBadge report={comparisonReport} /> */}
 
       <AlertModal
         isOpen={isModalOpen}
