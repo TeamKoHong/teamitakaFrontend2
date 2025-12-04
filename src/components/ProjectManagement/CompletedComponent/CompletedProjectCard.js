@@ -1,5 +1,6 @@
 import React from 'react';
-import { IoChevronForward } from 'react-icons/io5';
+import { IoCalendarOutline } from 'react-icons/io5';
+import { formatDateRange } from '../../../utils/dateUtils';
 import './CompletedProjectCard.scss';
 import nextArrow from '../../../assets/icons/next_arrow.svg';
 
@@ -13,6 +14,9 @@ const DEFAULT_AVATARS = [
 
 const CompletedProjectCard = ({ project, onClick }) => {
   const isPending = project.evaluation_status === 'PENDING';
+
+  // 날짜 범위 생성
+  const dateRange = formatDateRange(project.start_date, project.end_date) || '2025.01.23 - 2025.02.01';
 
   // 팀원 아바타 (API에 members 정보가 없으므로 더미 사용)
   const memberAvatars = project.members || DEFAULT_AVATARS;
@@ -50,20 +54,21 @@ const CompletedProjectCard = ({ project, onClick }) => {
           </div>
         </div>
 
-      {/* 설명 텍스트 */}
-      <p className="project-description">{description}</p>
+        {/* 설명 텍스트 */}
+        <p className="project-description">{description}</p>
 
-      {/* 하단 영역: 프로필 이미지 */}
-      <div className="card-footer">
-        <div className="team-avatars">
-          {memberAvatars.slice(0, 4).map((avatar, index) => (
-            <img
-              key={index}
-              src={avatar}
-              alt={`팀원 ${index + 1}`}
-              className="avatar"
-            />
-          ))}
+        {/* 하단 영역: 프로필 이미지 */}
+        <div className="card-footer">
+          <div className="team-avatars">
+            {memberAvatars.slice(0, 4).map((avatar, index) => (
+              <img
+                key={index}
+                src={avatar}
+                alt={`팀원 ${index + 1}`}
+                className="avatar"
+              />
+            ))}
+          </div>
         </div>
       </div>
     </div>

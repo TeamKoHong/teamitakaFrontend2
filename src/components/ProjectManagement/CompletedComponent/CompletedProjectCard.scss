@@ -38,9 +38,6 @@
   }
 
   .completed-project-info {
-    
-  
-
     .title-row {
       display: flex;
       justify-content: space-between;
@@ -53,14 +50,12 @@
         font-weight: 700;
         line-height: 1.25;
         color: #140805;
-        
         text-transform: capitalize;
         overflow: hidden;
         text-overflow: ellipsis;
         display: -webkit-box;
         -webkit-line-clamp: 1;
         -webkit-box-orient: vertical;
-        
       }
 
       .next-arrow {
@@ -69,6 +64,26 @@
         flex-shrink: 0;
       }
     }
+
+    .date-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: #6B7280;
+
+      .calendar-icon {
+        width: 16px;
+        height: 16px;
+        color: #9CA3AF;
+        flex-shrink: 0;
+      }
+
+      .date-text {
+        flex-shrink: 0;
+      }
+    }
+  }
 
   .arrow-icon {
     color: #999;
