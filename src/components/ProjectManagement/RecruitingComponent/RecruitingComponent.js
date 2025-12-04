@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import "./RecruitingComponent.scss";
 import SectionHeader from "../Common/SectionHeader";
-import ProjectCard from "../Common/ProjectCard";
+import RecruitingProjectCard from "./RecruitingProjectCard";
 import { useNavigate } from "react-router-dom";
-import { getMyRecruitments } from "../../../services/recruitment";
+import { getMyRecruitments, deleteRecruitment } from "../../../services/recruitment";
 
 const RecruitingComponent = () => {
   const navigate = useNavigate();
@@ -48,43 +48,132 @@ const RecruitingComponent = () => {
     // eslint-disable-next-line
   }, []);
 
-  const canLoadMore = items.length < (page.total || 0);
+  // 마감 여부 확인 함수
+  const isExpired = (recruitment) => {
+    if (!recruitment.recruitment_end) return false;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const endDate = new Date(recruitment.recruitment_end);
+    endDate.setHours(0, 0, 0, 0);
+    return endDate < today;
+  };
+
+  // 마감된 프로젝트와 진행 중인 프로젝트 분리
+  const expiredRecruitments = items.filter(isExpired);
+  const activeRecruitments = items.filter(item => !isExpired(item));
+
+  const handleDelete = async (recruitmentId) => {
+    if (!window.confirm('정말 이 모집글을 삭제하시겠습니까?')) {
+      return;
+    }
+
+    try {
+      const result = await deleteRecruitment(recruitmentId);
+      
+      if (result.success) {
+        // 삭제 성공 시 목록 새로고침
+        await load(0);
+        alert('모집글이 삭제되었습니다.');
+      }
+    } catch (error) {
+      console.error('❌ 모집글 삭제 실패:', error);
+      
+      if (error.code === 'UNAUTHORIZED') {
+        alert('로그인이 필요합니다.');
+        localStorage.removeItem('authToken');
+        localStorage.removeItem('user');
+        navigate('/login', { replace: true });
+      } else if (error.code === 'NOT_FOUND') {
+        alert('모집글을 찾을 수 없습니다.');
+        await load(0); // 목록 새로고침
+      } else {
+        alert(error.message || '모집글 삭제에 실패했습니다.');
+      }
+    }
+  };
+
+  const handleReRecruit = (recruitmentId) => {
+    console.log('다시 모집하기:', recruitmentId);
+    navigate(`/recruit?edit=${recruitmentId}`);
+  };
 
   return (
     <div className="recruiting-container">
-      <div className="recruiting-top">
-        <div className="recruiting-top-info">
-          <SectionHeader
-            explainText={`프로젝트 팀원을 모집하고\n함께 시작해보세요!`}
-            highlightText="모집 중"
-            filterOptions={[
-              { value: "latest", label: "최신순" },
-              { value: "date", label: "날짜순" },
-              { value: "meeting", label: "회의 빠른 순" },
-            ]}
-            onFilterChange={(e) => console.log(e.target.value)}
-          />
-        </div>
-      </div>
-
-      <hr />
-
-      <div className="recruiting-list">
-        {isLoading && items.length === 0 && <div>불러오는 중...</div>}
+      {!isLoading && !error && items.length > 0 && (
+        <>
+          <div className="recruiting-top">
+            <div className="recruiting-top-info">
+              <SectionHeader
+                explainText={`프로젝트 팀원을 모집하고\n함께 시작해보세요!`}
+                highlightText="모집 중"
+              />
+            </div>
+          </div>
+          <div className="recruiting-list">
+        {isLoading && items.length === 0 && <div className="loading-state">불러오는 중...</div>}
         {error && (
-          <div style={{ color: '#F76241' }}>
-            {error} <button onClick={() => load(page.offset || 0)}>다시 시도</button>
+          <div className="error-state">
+            <p style={{ color: '#F76241', marginBottom: '12px' }}>{error}</p>
+            <button onClick={() => load(page.offset || 0)}>다시 시도</button>
           </div>
         )}
-        {items.map((recruitment) => (
-          <ProjectCard key={recruitment.recruitment_id} project={recruitment} />
-        ))}
+
+        {!isLoading && !error && items.length === 0 && (
+          <div className="empty-state">
+            <h3 className="empty-title">모집중인 프로젝트가 없어요</h3>
+            <p className="empty-description">
+              모집글을 작성하고 프로젝트를 시작해보세요.
+            </p>
+            <button className="create-project-btn" onClick={() => navigate('/recruit')}>
+              프로젝트 모집하기
+            </button>
+          </div>
+        )}
+
+        <div className="recruiting-cards-wrapper">
+          {activeRecruitments.map((recruitment) => (
+            <RecruitingProjectCard key={recruitment.recruitment_id} recruitment={recruitment} />
+          ))}
+        </div>
       </div>
 
-      {canLoadMore && !isLoading && (
-        <div style={{ textAlign: 'center', margin: '16px 0' }}>
-          <button onClick={() => load((page.offset || 0) + (page.limit || 10))}>더 보기</button>
-        </div>
+      {/* 마감된 프로젝트 섹션 */}
+      {expiredRecruitments.length > 0 && (
+        <>
+          <hr />
+          <div className="recruiting-deadline-container">
+            <div className="recruiting-deadline-title">
+              <p className="title-text">모집 인원이 아쉽게 다 모이지 않았어요</p>
+              <p className="title-text">
+                <span className="highlight">다시 한번 모집</span>해보세요
+              </p>
+            </div>
+            
+            {expiredRecruitments.map((recruitment) => (
+              <div key={recruitment.recruitment_id} className="recruiting-deadline-card">
+                <p className="recruiting-deadline-card-description">목표 모집 인원에 도달하지 못했어요.</p>
+                <p className="recruiting-deadline-card-title">{recruitment.title}</p>
+                <div className="recruiting-deadline-card-buttons">
+                  <button 
+                    className="delete-btn"
+                    onClick={() => handleDelete(recruitment.recruitment_id)}
+                  >
+                    삭제하기
+                  </button>
+                  <button 
+                    className="rerecruit-btn"
+                    onClick={() => handleReRecruit(recruitment.recruitment_id)}
+                  >
+                    다시 모집하기
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </>
+      )}
+
+        </>
       )}
     </div>
   );

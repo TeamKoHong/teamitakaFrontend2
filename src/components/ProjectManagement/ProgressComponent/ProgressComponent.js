@@ -3,6 +3,7 @@ import ProjectCard from "../Common/ProjectCard";
 import SectionHeader from "../Common/SectionHeader";
 import { getMyProjects } from "../../../services/projects";
 import { useNavigate } from "react-router-dom";
+import "./ProgressComponent.scss";
 
 function ProgressComponent() {
   const navigate = useNavigate();
@@ -43,27 +44,42 @@ function ProgressComponent() {
   const canLoadMore = items.length < (page.total || 0);
 
   return (
-    <>
-      <main>
-        <section className="project-info">
-          <SectionHeader
-            explainText={`팀원들과 함께 프로젝트를 공유하고\n티미타카 해보세요!`}
-            highlightText="티미타카"
-            filterOptions={[
-              { value: "latest", label: "최신순" },
-              { value: "date", label: "날짜순" },
-              { value: "meeting", label: "회의 빠른 순" },
-            ]}
-            onFilterChange={(e) => console.log(e.target.value)}
-          />
-        </section>
+      <>
+        {!isLoading && !error && items.length > 0 && (
+          <section className="project-info">
+            <SectionHeader
+              explainText={`팀원들과 함께 프로젝트를 공유하고\n티미타카 해보세요!`}
+              highlightText="티미타카"
+              filterOptions={[
+                { value: "latest", label: "최신순" },
+                { value: "date", label: "날짜순" },
+                { value: "meeting", label: "회의 빠른 순" },
+              ]}
+              onFilterChange={(e) => console.log(e.target.value)}
+            />
+          </section>
+        )}
         <section className="project-list">
-          {isLoading && items.length === 0 && <div>불러오는 중...</div>}
+          {isLoading && items.length === 0 && <div className="loading-state">불러오는 중...</div>}
           {error && (
-            <div style={{ color: '#F76241' }}>
-              {error} <button onClick={() => load(page.offset || 0)}>다시 시도</button>
+            <div className="error-state">
+              <p style={{ color: '#F76241', marginBottom: '12px' }}>{error}</p>
+              <button onClick={() => load(page.offset || 0)}>다시 시도</button>
             </div>
           )}
+          
+          {!isLoading && !error && items.length === 0 && (
+            <div className="empty-state">
+              <h3 className="empty-title">진행 중인 프로젝트가 없어요</h3>
+              <p className="empty-description">
+                모집글을 작성하고 프로젝트를 시작해보세요.
+              </p>
+              <button className="create-project-btn" onClick={() => navigate('/recruit')}>
+                프로젝트 모집하기
+              </button>
+            </div>
+          )}
+          
           {items.map((p) => (
             <ProjectCard key={p.project_id} project={p} />
           ))}
@@ -73,8 +89,7 @@ function ProgressComponent() {
             <button onClick={() => load((page.offset || 0) + (page.limit || 10))}>더 보기</button>
           </div>
         )}
-      </main>
-    </>
+      </>    
   );
 }
 

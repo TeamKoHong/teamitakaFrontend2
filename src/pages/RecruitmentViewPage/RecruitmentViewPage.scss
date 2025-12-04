@@ -1,10 +1,9 @@
-// 변수 정의 (필요에 따라 색상, 폰트 등 조정)
+// 변수 정의
 $primary-color: #FF6442;
-$text-color: #333;
+$text-color: #1C1C1C;
 $secondary-text-color: #767676;
 $border-color: #EAEAEA;
 $background-color: #FFFFFF;
-$page-background: #F8F8F8;
 
 .view-page {
     display: flex;
@@ -14,596 +13,256 @@ $page-background: #F8F8F8;
     position: relative;
     overflow: hidden;
 
-    // 스크랩 완료 시 나타나는 토스트 메시지
-    .scrap-toast {
-        position: fixed;
-        bottom: 100px;
-        left: 50%;
-        transform: translateX(-50%);
-        background: linear-gradient(135deg, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.75) 100%);
-        color: white;
-        padding: 14px 24px;
-        border-radius: 24px;
-        font-size: 14px;
-        font-weight: 500;
-        z-index: 100;
-        animation: toastSlideIn 2s ease-in-out;
-        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
-        backdrop-filter: blur(4px);
-    }
-
-    @keyframes toastSlideIn {
-        0% {
-            opacity: 0;
-            transform: translateX(-50%) translateY(20px);
-        }
-        15% {
-            opacity: 1;
-            transform: translateX(-50%) translateY(0);
-        }
-        85% {
-            opacity: 1;
-            transform: translateX(-50%) translateY(0);
-        }
-        100% {
-            opacity: 0;
-            transform: translateX(-50%) translateY(-10px);
-        }
-    }
-
+    // 상단 네비게이션 바
     .topbar {
         display: flex;
         justify-content: space-between;
         align-items: center;
         padding: 12px 16px;
-        border-bottom: 1px solid $border-color;
         background-color: $background-color;
-        position: sticky;
-        top: 0;
-        z-index: 10;
+        // 스크롤 시 상단 고정 (필요 시 유지)
+        // border-bottom: 1px solid $border-color; 
 
         .title {
-            font-size: 18px;
-            font-weight: 600;
+            font-size: 16px;
+            font-weight: 700;
+            color: $text-color;
         }
 
-        .back-button, .scrap-button {
+        .back-button, .more-button {
             background: none;
             border: none;
             cursor: pointer;
             padding: 8px;
             display: flex;
             align-items: center;
-            border-radius: 8px;
-            transition: all 0.2s ease;
-
-            &:hover {
-                background-color: #F5F5F5;
-                transform: scale(1.05);
-            }
-
-            &:active {
-                transform: scale(0.95);
-            }
+            color: $text-color;
         }
-
-        // 작성자 메뉴
+        
+        // 작성자 메뉴 (기존 유지)
         .more-menu-container {
             position: relative;
-
-            .more-button {
-                background: none;
-                border: none;
-                cursor: pointer;
-                padding: 4px;
-                display: flex;
-                align-items: center;
-                color: $text-color;
-            }
-
             .more-menu {
                 position: absolute;
                 top: 100%;
                 right: 0;
-                margin-top: 8px;
-                background-color: $background-color;
-                border: 1px solid #E0E0E0;
-                border-radius: 12px;
-                box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
-                min-width: 180px;
-                overflow: hidden;
+                background-color: white;
+                border: 1px solid #eee;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+                min-width: 150px;
                 z-index: 20;
-                animation: menuSlideIn 0.2s ease-out;
-
                 .menu-item {
                     width: 100%;
-                    padding: 14px 18px;
-                    border: none;
-                    background: none;
+                    padding: 12px;
                     text-align: left;
+                    background: none;
+                    border: none;
+                    border-bottom: 1px solid #f5f5f5;
                     font-size: 14px;
-                    font-weight: 500;
-                    color: #333333;
                     cursor: pointer;
-                    transition: all 0.2s ease;
-
-                    &:hover {
-                        background-color: #F8F8F8;
-                        padding-left: 22px;
-                    }
-
-                    &:not(:last-child) {
-                        border-bottom: 1px solid #F0F0F0;
-                    }
-                }
-            }
-
-            @keyframes menuSlideIn {
-                from {
-                    opacity: 0;
-                    transform: translateY(-8px);
-                }
-                to {
-                    opacity: 1;
-                    transform: translateY(0);
+                    &:hover { background-color: #f9f9f9; }
                 }
             }
         }
     }
 
+    // 메인 컨텐츠 영역
     .content {
         flex: 1;
         overflow-y: auto;
-        padding: 24px 20px 100px 20px; // footer 높이만큼 패딩 추가
+        padding: 0 0 100px 0; // 좌우 패딩 제거 (이미지 꽉 채우기 위함)
+        margin-top: 0px;
 
-        .cover-image {
-            width: 100%;
-            height: 220px;
-            object-fit: cover;
+        // 1. 커버 이미지 (가로 꽉 차게)
+        .image-container {
+            width: 358px;
+            height: 121px; // 이미지 높이 살짝 키움 (비율 맞춤)
+            background-color: #eee;
+            margin-top: 30px;
             border-radius: 16px;
-            margin-bottom: 24px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            margin: 10px;
+
+
+            .cover-image {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+            .no-image-placeholder {
+                width: 100%;
+                height: 100%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                background-color: #f0f0f0;
+                color: #aaa;
+            }
         }
 
+        // 2. 제목 및 메타 정보 (여기부터 좌우 패딩 적용)
         .post-header {
-            margin-bottom: 4px;
+            padding: 0 20px;
+            margin-bottom: 20px;
 
             .post-title {
                 font-size: 20px;
-                font-weight: 800;
-                margin-bottom: 16px;
+                font-weight: 700; // Extra Bold
+                color: $text-color;
+                margin-bottom: 8px;
                 line-height: 1.3;
-                letter-spacing: -0.3px;
-                color: #1C1C1C;
-                text-transform: capitalize;
             }
 
             .meta-info {
                 display: flex;
-                justify-content: space-between;
                 align-items: center;
-                color: #807C7C;
-                font-size: 14px;
+                gap: 12px;
+                font-size: 10px;
+                color: #999;
+                margin-top: 20px;
 
-                .meta-items {
+                .twoicons {
                     display: flex;
+                    align-items: center;
                     gap: 16px;
-
-                    span {
+                    .view-icon, .apply-icon {
                         display: flex;
                         align-items: center;
-                        gap: 6px;
-                        font-weight: 600;
-
-                        svg {
-                            width: 20px;
-                            height: 20px;
+                        gap: 4px;
+                        font-size: 10px;
+                        img {
+                            width: 16px;
+                            height: auto;
                         }
                     }
                 }
-
                 .date {
-                    color: #999999;
-                    font-weight: 500;
+                    margin-left: auto; // 날짜 우측 정렬
                 }
             }
         }
 
+        // 구분선 (아주 얇게)
         .divider {
             border: none;
-            border-top: 1px solid $border-color;
-            margin: 32px 0;
+            border-top: 2px solid #ececec; // 아주 연한 회색
         }
 
+        // 3. 프로젝트 상세 정보 (Grid 느낌, 배경색 제거)
         .project-details {
+            padding: 0 20px;
             display: flex;
             flex-direction: column;
-            gap: 8px;
-            font-size: 16px;
-            background-color: #FAFAFA;
-            padding: 20px;
-            border-radius: 12px;
-            border: 1px solid #F0F0F0;
+            gap: 4px;
+            margin-bottom: 20px;
 
             .detail-item {
                 display: flex;
+                justify-content: space-between; // 좌우 끝 정렬
+                align-items: flex-start;
+                font-size: 15px;
+
                 .label {
-                    width: 120px;
-                    color: #403E3E;
                     font-weight: 700;
-                    flex-shrink: 0;
-                    letter-spacing: -0.1px;
+                    color: $text-color;
+                    width: 100px; // 라벨 너비 고정
+                    margin: 0px;
                 }
+
                 .value {
-                    color: #140805;
-                    font-weight: 500;
-                    line-height: 1.6;
+                    font-weight: 400;
+                    color: #555;
+                    text-align: right; // 값 우측 정렬
                 }
             }
         }
 
+        // 4. 본문 내용 (줄바꿈 적용)
         .post-body {
-            line-height: 1.8;
-            font-size: 16px;
-            color: #140805;
-            font-weight: 400;
-
-            p {
-                margin-bottom: 16px;
-            }
-
-            .detail-section {
-                margin-top: 32px;
-
-                h3 {
-                    font-size: 18px;
-                    font-weight: 700;
-                    margin-bottom: 14px;
-                    color: #1C1C1C;
-                    letter-spacing: -0.2px;
-                }
-
-                ul {
-                    list-style-type: '• ';
-                    padding-left: 20px;
-
-                    li {
-                        margin-bottom: 10px;
-                        color: $secondary-text-color;
-                        line-height: 1.6;
-                    }
-                }
-            }
+            padding: 0 20px;
+            font-size: 15px;
+            line-height: 1.7;
+            color: #333;
+            white-space: pre-wrap; // ★ 줄바꿈 문자(\n) 반영
+            margin-bottom: 40px;
         }
 
+        // 5. 키워드 섹션 (태그 스타일 변경)
         .keywords-section {
-            margin-top: 36px;
-
+            padding: 0 20px;
+            
             .keywords-label {
-                font-size: 17px;
-                font-weight: 700;
-                color: #1C1C1C;
-                margin-bottom: 16px;
-                letter-spacing: -0.2px;
+                font-size: 14px;
+                font-weight: 600;
+                color: $text-color;
+                margin-bottom: 12px;
             }
 
             .keywords-tags {
                 display: flex;
                 flex-wrap: wrap;
-                gap: 10px;
-            }
+                gap: 8px;
 
-            .keyword-tag {
-                background: linear-gradient(135deg, #FFF5F2 0%, #FFE8E1 100%);
-                color: $primary-color;
-                padding: 5px 10px;
-                border-radius: 34px;
-                font-size: 14px;
-                font-weight: 600;
-                letter-spacing: -0.1px;
-                border: 1px solid #FFD4C8;
-                box-shadow: 0 2px 4px rgba(255, 100, 66, 0.08);
-                transition: all 0.2s ease;
-                cursor: default;
-
-                &:hover {
-                    transform: translateY(-2px);
-                    box-shadow: 0 4px 8px rgba(255, 100, 66, 0.15);
-                    border-color: #FFBBA8;
+                .keyword-tag {
+                    // ★ 이미지와 같은 살구색 스타일
+                    background-color: #FFF0EB; 
+                    color: $primary-color;
+                    padding: 5px 10px;
+                    border-radius: 34px;
+                    font-size: 11px;
+                    font-weight: 600;
+                    border: none; // 테두리 제거
+                    box-shadow: none;
                 }
             }
         }
     }
 
+    // 하단 푸터 (버튼)
     .footer {
         position: fixed;
         bottom: 0;
         left: 0;
         right: 0;
-        padding: 12px 12px 20px 12px;
-        background-color: $background-color;
-        border-top: 1px solid $border-color;
+        background-color: white;
+        padding: 12px 20px 20px 20px; // 하단 여백 확보
+        border-top: 1px solid #f0f0f0;
 
-        display: flex;
-        align-items: center;
-
-        // 하단 스크랩 버튼 스타일
-        .scrap-button-footer {
-            width: 56px;
-            height: 59px;
-            padding: 0;
-            border: 1.5px solid #DDDDDD;
-            background-color: $background-color;
-            border-radius: 8px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #555;
-            transition: all 0.2s ease;
-            flex-shrink: 0;
-
-            &:hover {
-                background-color: #FFF5F2;
-                border-color: $primary-color;
-
-                .bookmark-icon {
-                    filter: brightness(1.1);
-                }
-            }
-
-            &:active {
-                transform: scale(0.95);
-            }
-        }
-
-        // 버튼 2개 레이아웃
-        .footer-buttons {
+        .footer-buttons-new {
             display: flex;
             gap: 10px;
-            flex: 1;
             width: 100%;
-        }
 
-        // 지원하기 버튼 (전체 너비)
-        .apply-button-full {
-            flex: 1;
-            height: 59px;
-            background: linear-gradient(135deg, #FF6442 0%, #FF4521 100%);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 15px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            box-shadow: 0 4px 12px rgba(255, 100, 66, 0.25);
+            // 북마크 버튼 (왼쪽 작은 사각형)
+            .bookmark-btn {
+                width: 16px;
+                height: 40px;
+                border-radius: 12px;
+                background-color: white;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                cursor: pointer;
+                flex-shrink: 0;
 
-            &:hover {
-                transform: translateY(-1px);
-                box-shadow: 0 6px 16px rgba(255, 100, 66, 0.35);
-            }
-
-            &:active {
-                transform: translateY(0);
-            }
-        }
-
-        // 닫기 버튼 (테두리만)
-        .close-button {
-            flex: 1;
-            height: 59px;
-            background-color: transparent;
-            color: #333333;
-            border: 1.5px solid #DDDDDD;
-            border-radius: 8px;
-            font-size: 15px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.2s ease;
-
-            &:hover {
-                background-color: #F5F5F5;
-                border-color: #CCCCCC;
-            }
-
-            &:active {
-                background-color: #EEEEEE;
-            }
-        }
-    }
-
-    // ===== Accessibility Improvements =====
-    // Focus states for keyboard navigation
-    button:focus-visible,
-    .back-button:focus-visible,
-    .scrap-button:focus-visible,
-    .apply-button-full:focus-visible,
-    .close-button:focus-visible,
-    .scrap-button-footer:focus-visible {
-        outline: 2px solid $primary-color;
-        outline-offset: 2px;
-    }
-
-    .keyword-tag:focus-visible {
-        outline: 2px solid $primary-color;
-        outline-offset: 2px;
-    }
-
-    // ===== Responsive Design =====
-    // Small mobile devices (360px and below)
-    @media (max-width: 360px) {
-        .content {
-            padding: 20px 16px 100px 16px;
-        }
-
-        .post-header {
-            .post-title {
-                font-size: 18px;
-                margin-bottom: 12px;
-            }
-
-            .meta-info {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 8px;
-
-                .meta-items {
-                    gap: 12px;
+                img {
+                    width: 24px;
+                    height: 24px;
                 }
             }
-        }
 
-        .cover-image {
-            height: 180px;
-            margin-bottom: 20px;
-        }
-
-        .project-details {
-            padding: 16px;
-            gap: 16px;
-
-            .detail-item {
-                flex-direction: column;
-                gap: 4px;
-
-                .label {
-                    width: auto;
-                    margin-bottom: 4px;
-                }
-            }
-        }
-
-        .keywords-section {
-            .keywords-label {
+            // 지원하기 버튼 (오른쪽 꽉 참)
+            .apply-btn-expanded {
+                flex: 1;
+                height: 59px;
+                background-color: $primary-color;
+                color: white;
+                border: none;
+                border-radius: 12px;
                 font-size: 16px;
-            }
-
-            .keyword-tag {
-                font-size: 13px;
-                padding: 5px 10px;
-            }
-        }
-
-        .footer {
-            padding: 10px 12px 16px 12px;
-            gap: 8px;
-
-            .scrap-button-footer {
-                width: 52px;
-                height: 52px;
-            }
-
-            .footer-buttons {
-                gap: 8px;
-            }
-
-            .apply-button-full,
-            .close-button {
-                height: 52px;
-                font-size: 14px;
+                font-weight: 700;
+                cursor: pointer;
             }
         }
     }
-
-    // Medium mobile devices (361px - 480px)
-    @media (min-width: 361px) and (max-width: 480px) {
-        .post-header .post-title {
-            font-size: 20px;
-        }
-
-        .cover-image {
-            height: 200px;
-        }
-
-    }
-
-    // Tablet and larger (481px+)
-    @media (min-width: 481px) {
-        .content {
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        .footer {
-            max-width: 600px;
-            left: 50%;
-            transform: translateX(-50%);
-        }
-    }
-
-    // High contrast mode support
-    @media (prefers-contrast: high) {
-        .post-title,
-        .keywords-label,
-        .project-details .label {
-            font-weight: 800;
-        }
-
-        .keyword-tag {
-            border-width: 2px;
-        }
-
-        .apply-button-full {
-            border: 2px solid darken($primary-color, 10%);
-        }
-    }
-
-    // Reduced motion support
-    @media (prefers-reduced-motion: reduce) {
-        *,
-        *::before,
-        *::after {
-            animation-duration: 0.01ms !important;
-            animation-iteration-count: 1 !important;
-            transition-duration: 0.01ms !important;
-        }
-    }
-}
-
-/* 기존 CSS 아래에 추가하세요 */
-
-.no-image-placeholder {
-  width: 100%;
-  height: 200px;
-  background-color: #f0f0f0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: #aaa;
-  font-weight: 500;
-  font-size: 1.2rem;
-}
-
-.footer-buttons-new {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  width: 100%;
-  padding: 0 4px;
-
-  .bookmark-btn {
-    width: 48px;
-    height: 48px;
-    border: 1px solid #e0e0e0;
-    border-radius: 12px;
-    background: white;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    flex-shrink: 0; // 크기 줄어듦 방지
-  }
-
-  .apply-btn-expanded {
-    flex: 1; // 남은 공간 모두 차지
-    height: 48px;
-    background-color: #FF6442;
-    color: white;
-    border: none;
-    border-radius: 12px;
-    font-size: 16px;
-    font-weight: 700;
-    cursor: pointer;
-  }
 }

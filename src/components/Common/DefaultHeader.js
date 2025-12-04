@@ -24,7 +24,7 @@ export default function DefaultHeader({
 
   return (
     <div className="member-header-container">
-      {onBack !== undefined && (
+      {(onBack !== undefined || backPath !== undefined) && (
         <button
           className="member-header-back"
           onClick={handleBack}
