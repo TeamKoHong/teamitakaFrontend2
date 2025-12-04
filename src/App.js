@@ -27,7 +27,7 @@ import SearchPage from './pages/SearchPage/SearchPage';
 import ProfilePage from './pages/Profile/ProfilePage';
 import BookmarkPage from './pages/BookmarkPage/BookmarkPage';
 import RecruitmentViewPage from './pages/RecruitmentViewPage/RecruitmentViewPage';
-import RecruitingProject from './components/RecruitingProject';
+import TeamSelectPage from './pages/TeamSelectPage/TeamSelectPage';
 
 // 메인 페이지 임포트
 import MainPage from './components/Home/MainPage';
@@ -311,7 +311,7 @@ const App = () => {
           <Route path={OTHER_ROUTES.BOOKMARK} element={<BookmarkPage />} />
           <Route path={OTHER_ROUTES.TEAM} element={<Navigate to={OTHER_ROUTES.TEAM_MATCHING} replace />} />
           <Route path="/recruitment/:id" element={<RecruitmentViewPage />} />
-          <Route path="/recruitment/:id/team-select" element={<RecruitingProject />} />
+          <Route path="/recruitment/:id/team-select" element={<TeamSelectPage />} />
 
           {/* ===== 데모 및 개발 도구 라우트 (개발용) ===== */}
           <Route path={DEMO_ROUTES.CATEGORY_SLIDER} element={<CategorySliderDemo />} />
