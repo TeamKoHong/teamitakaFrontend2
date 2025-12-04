@@ -197,11 +197,9 @@ function RatingProjectPage(props) {
         </div>
 
         {/* 3. 프로젝트 결과물 */}
-        {!isGivenMode && (
-          <div className={styles.resultSection}>
-            <ProjectResultCard resultLink={data?.resultLink} />
-          </div>
-        )}
+        <div className={styles.resultSection}>
+          <ProjectResultCard resultLink={data?.resultLink} />
+        </div>
 
         {/* 4. 별점 섹션 */}
         <div className={styles.ratingSection}>
