@@ -5,13 +5,13 @@ import { IoCalendarOutline, IoTimeOutline, IoPeopleOutline } from "react-icons/i
 import CircularProgress from "../../Common/CircularProgress";
 import { formatDateRange } from "../../../utils/dateFormat";
 
-const ProjectCard = ({ project }) => {
+const ProjectCard = ({ project, type = "project" }) => {
   const navigate = useNavigate();
   if (!project) return null;
 
-  // Handle both project and recruitment data structures
-  const isRecruitment = !!project.recruitment_id;
-  const id = project.recruitment_id || project.project_id;
+  // Use explicit type prop to determine navigation
+  const isRecruitment = type === "recruitment";
+  const id = isRecruitment ? project.recruitment_id : project.project_id;
   const {
     title,
     start_date,

@@ -81,7 +81,7 @@ function ProgressComponent() {
           )}
           
           {items.map((p) => (
-            <ProjectCard key={p.project_id} project={p} />
+            <ProjectCard key={p.project_id} project={p} type="project" />
           ))}
         </section>
         {canLoadMore && !isLoading && (
