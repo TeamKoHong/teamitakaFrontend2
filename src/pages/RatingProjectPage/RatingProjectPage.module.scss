@@ -141,23 +141,24 @@ $border-light: #e0e0e0;
 }
 
 .pageBg {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
+  padding-top: 47px;
+  padding-bottom: 88px;
   background: #f2f2f2;
-  padding-top: var(--spacing-lg);
+  min-height: 100vh;
+  box-sizing: border-box;
 }
 
+// Figma 스펙: 각 섹션별 개별 padding, gap 없음
 .scrollArea {
-  flex: 1 1 auto;
-  overflow-y: auto;
-  min-height: 0;
   display: flex;
   flex-direction: column;
-  gap: var(--gap-md);
-  padding: var(--spacing-lg) var(--padding-sm) 0 var(--padding-sm);
+  gap: 0;  // 섹션별 개별 간격 적용
+  padding: 0;
   box-sizing: border-box;
-  padding-bottom: 96px;
+  // 스크롤 영역을 헤더(47px)와 하단네비(88px) 사이로 제한
+  height: calc(100vh - 47px - 88px);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .card, .summaryROW {
@@ -224,8 +225,8 @@ $border-light: #e0e0e0;
 
 // 카드 간 일관된 간격(모바일 스크롤 시 부자연스러움 개선)
 .contentWrap > *:not(:last-child) { margin-bottom: var(--gap-md); }
-// 슬라이더 그룹과 하단 네비 사이 공백 확보
-.scrollArea { padding-bottom: 120px; }
+// 슬라이더 그룹과 하단 네비 사이 공백 확보 (BottomNav 88px + 여유공간 12px)
+.scrollArea { padding-bottom: 100px; }
 
 .divider {
   height: 1px;
@@ -323,8 +324,84 @@ $border-light: #e0e0e0;
 .overallIntro { padding: 8px 16px 0 16px; }
 .overallTitle { margin: 0 0 6px 0; font-size: 20px; font-weight: 700; color: #111; }
 .overallCaption { margin: 0; font-size: 14px; color: #C7C7CB; }
-.sectionLabel { padding: 0 12px; font-size: 16px; font-weight: 700; color: #222; margin: 6px 0; }
+// 섹션 라벨 통일 - 좌우 16px, 하단 마진 8px
+.sectionLabel { padding: 0 16px; font-size: 16px; font-weight: 600; color: #222; margin: 0 0 8px 0; }
 .sectionLabelTight { padding: 0 12px; font-size: 16px; font-weight: 700; color: #222; margin: 0; line-height: 1.25; }
+
+// 헤더 우측 버튼 (내가 한 평가) - 일반 텍스트 스타일
+.headerBtn {
+  background: transparent;
+  color: #333;
+  border: none;
+  padding: 0;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: color 0.2s;
+  white-space: nowrap;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  &:hover {
+    color: #f76241;
+  }
+}
+
+// 섹션 부제목 스타일
+.sectionSubLabel {
+  padding: 0 12px;
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 12px;
+}
+
+// ===== Figma 스펙 기준 섹션 간격 =====
+
+// 프로젝트 카드: Figma padding 24px 16px 8px
+.projectCardSection {
+  padding: 24px 16px 8px;
+}
+
+// 팀원 목록: Figma padding 8px 16px
+.membersSection {
+  padding: 8px 16px;
+}
+
+// 프로젝트 결과물: Figma padding 8px 16px
+.resultSection {
+  padding: 8px 16px;
+}
+
+// 별점 섹션: Figma padding 32px 16px 24px
+.ratingSection {
+  background: transparent;
+  border-radius: 0;
+  box-shadow: none;
+  padding: 32px 16px 24px;
+  text-align: center;
+}
+
+// 한 줄 요약: Figma padding 8px 16px
+.summarySection {
+  padding: 8px 16px;
+}
+
+// 카테고리별 점수 (내가 한 평가 모드)
+.slidersSection {
+  background: #fff;
+  border-radius: var(--border-radius-xl);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  padding: var(--spacing-lg);
+  margin: 8px 16px;
+}
+
+// 팀원 평가지: Figma padding 24px 16px 8px
+.commentsSection {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 24px 16px 8px;
+}
 
 // Hide title inside MyRatingSection without editing its code
 .myRatingNoTitle {

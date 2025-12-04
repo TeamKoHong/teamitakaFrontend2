@@ -55,7 +55,7 @@ export default function ProjectRecruitPublish() {
           photo: photo_url || null,
           max_applicants: 10, // 기본값
           hashtags: draft.keywords || [], // 해시태그 (백엔드가 # 자동 제거)
-          status: 'OPEN', // 백엔드 ENUM: "OPEN" | "CLOSED"
+          status: 'ACTIVE', // 백엔드 ENUM: "ACTIVE" | "CLOSED" | "FILLED"
         };
 
         // 4. API 호출
