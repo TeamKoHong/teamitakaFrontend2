@@ -2,15 +2,11 @@ import React from "react";
 import "./RecruitingProjectCard.scss";
 import { TbEyeFilled } from "react-icons/tb";
 import { RiFileList2Fill } from "react-icons/ri";
-import { useNavigate } from "react-router-dom";
 
-const RecruitingProjectCard = ({ recruitment }) => {
-  const navigate = useNavigate();
-
+const RecruitingProjectCard = ({ recruitment, onClick }) => {
   if (!recruitment) return null;
 
   const {
-    recruitment_id,
     title,
     description,
     recruitment_end,
@@ -19,10 +15,6 @@ const RecruitingProjectCard = ({ recruitment }) => {
   // 숫자로 변환 (문자열로 올 수 있음)
   const views = Number(recruitment.views) || 0;
   const applicantCount = Number(recruitment.applicant_count) || 0;
-
-  const handleClick = () => {
-    navigate(`/recruitment/${recruitment_id}`);
-  };
 
   // D-day 계산 및 표시 포맷
   const getDDayText = () => {
@@ -44,7 +36,7 @@ const RecruitingProjectCard = ({ recruitment }) => {
 
   return (
     <div className="recruiting-project-card">
-      <div className="recruiting-card" onClick={handleClick}>
+      <div className="recruiting-card" onClick={onClick}>
         <h3>{title || '프로젝트명'}</h3>
         <p className="description">
           {description || '프로젝트 설명이 없습니다.'}
