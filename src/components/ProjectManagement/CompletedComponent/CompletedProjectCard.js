@@ -1,5 +1,5 @@
-import React from 'react';
-import { IoCalendarOutline } from 'react-icons/io5';
+import React, { useState } from 'react';
+import { IoCalendarOutline, IoStar, IoStarOutline } from 'react-icons/io5';
 import { formatDateRange } from '../../../utils/dateUtils';
 import './CompletedProjectCard.scss';
 import nextArrow from '../../../assets/icons/next_arrow.svg';
@@ -14,6 +14,7 @@ const DEFAULT_AVATARS = [
 
 const CompletedProjectCard = ({ project, onClick }) => {
   const isPending = project.evaluation_status === 'PENDING';
+  const isCompleted = project.evaluation_status === 'COMPLETED';
 
   // 날짜 범위 생성
   const dateRange = formatDateRange(project.start_date, project.end_date) || '2025.01.23 - 2025.02.01';
@@ -24,6 +25,46 @@ const CompletedProjectCard = ({ project, onClick }) => {
   // 프로젝트 설명 (없으면 기본 텍스트)
   const description = project.description || '프로젝트 설명이 들어갑니다.';
 
+  // 별 즐겨찾기 상태 (COMPLETED용)
+  const [isStarred, setIsStarred] = useState(false);
+
+  const handleStarClick = (e) => {
+    e.stopPropagation(); // 카드 클릭 이벤트 방지
+    setIsStarred(!isStarred);
+    // TODO: 즐겨찾기 API 호출
+  };
+
+  // COMPLETED 상태일 때 간단한 디자인
+  if (isCompleted) {
+    return (
+      <div
+        className="completed-project-card simple"
+        role="button"
+        tabIndex={0}
+        onClick={onClick}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            if (onClick) onClick();
+          }
+        }}
+      >
+        <div className="simple-content">
+          <div className="simple-info">
+            <h3 className="simple-title">{project.title}</h3>
+            <p className="simple-description">{description}</p>
+          </div>
+          {isStarred ? (
+            <IoStar className="star-icon filled" onClick={handleStarClick} />
+          ) : (
+            <IoStarOutline className="star-icon outline" onClick={handleStarClick} />
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  // PENDING 상태일 때 기존 디자인
   return (
     <div
       className="completed-project-card"
