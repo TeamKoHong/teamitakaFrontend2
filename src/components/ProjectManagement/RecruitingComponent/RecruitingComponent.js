@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import "./RecruitingComponent.scss";
 import SectionHeader from "../Common/SectionHeader";
 import RecruitingProjectCard from "./RecruitingProjectCard";
+import RecruitingProjectSlide from "../../RecruitingProjectSlide";
+import ApplicantListSlide from "../../ApplicantListSlide";
 import { useNavigate } from "react-router-dom";
 import { getMyRecruitments, deleteRecruitment } from "../../../services/recruitment";
 
@@ -12,6 +14,9 @@ const RecruitingComponent = () => {
   const [page, setPage] = useState({ total: 0, limit: 10, offset: 0 });
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [showRecruitingProject, setShowRecruitingProject] = useState(false);
+  const [selectedRecruitment, setSelectedRecruitment] = useState(null);
+  const [showApplicantSlide, setShowApplicantSlide] = useState(false);
 
   const load = async (nextOffset = 0) => {
     try {
@@ -97,6 +102,24 @@ const RecruitingComponent = () => {
     navigate(`/recruit?edit=${recruitmentId}`);
   };
 
+  const handleCardClick = (recruitment) => {
+    setSelectedRecruitment(recruitment);
+    setShowRecruitingProject(true);
+  };
+
+  const handleCloseRecruitingProject = () => {
+    setShowRecruitingProject(false);
+    setSelectedRecruitment(null);
+  };
+
+  const handleSelectTeam = () => {
+    setShowApplicantSlide(true);
+  };
+
+  const handleCloseApplicantSlide = () => {
+    setShowApplicantSlide(false);
+  };
+
   return (
     <div className="recruiting-container">
       {!isLoading && !error && items.length > 0 && (
@@ -132,7 +155,11 @@ const RecruitingComponent = () => {
 
         <div className="recruiting-cards-wrapper">
           {activeRecruitments.map((recruitment) => (
-            <RecruitingProjectCard key={recruitment.recruitment_id} recruitment={recruitment} />
+            <RecruitingProjectCard 
+              key={recruitment.recruitment_id} 
+              recruitment={recruitment}
+              onClick={() => handleCardClick(recruitment)}
+            />
           ))}
         </div>
       </div>
@@ -175,6 +202,19 @@ const RecruitingComponent = () => {
 
         </>
       )}
+
+      <RecruitingProjectSlide
+        open={showRecruitingProject}
+        onClose={handleCloseRecruitingProject}
+        recruitment={selectedRecruitment}
+        onSelectTeam={handleSelectTeam}
+      />
+
+      <ApplicantListSlide
+        open={showApplicantSlide}
+        onClose={handleCloseApplicantSlide}
+        recruitmentId={selectedRecruitment?.recruitment_id}
+      />
     </div>
   );
 };

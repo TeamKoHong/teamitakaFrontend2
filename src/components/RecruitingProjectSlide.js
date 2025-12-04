@@ -3,7 +3,7 @@ import DefaultHeader from "./Common/DefaultHeader";
 import RecruitingProject from "./RecruitingProject";
 import "./RecruitingProjectSlide.scss";
 
-export default function RecruitingProjectSlide({ open, onClose }) {
+export default function RecruitingProjectSlide({ open, onClose, recruitment, onSelectTeam }) {
   return (
     <>
       {/* 1) 오버레이 */}
@@ -18,7 +18,7 @@ export default function RecruitingProjectSlide({ open, onClose }) {
           onBack={onClose}
         />
 
-        <RecruitingProject />
+        <RecruitingProject recruitment={recruitment} onSelectTeam={onSelectTeam} />
       </div>
     </>
   );
