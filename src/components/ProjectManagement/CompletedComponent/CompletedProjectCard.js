@@ -1,6 +1,7 @@
 import React from 'react';
 import { IoChevronForward } from 'react-icons/io5';
 import './CompletedProjectCard.scss';
+import nextArrow from '../../../assets/icons/next_arrow.svg';
 
 // 더미 아바타 이미지 (실제 프로젝트에서는 API에서 가져올 수 있음)
 const DEFAULT_AVATARS = [
@@ -36,11 +37,18 @@ const CompletedProjectCard = ({ project, onClick }) => {
         <div className="evaluation-badge">상호평가 진행 전</div>
       )}
 
-      {/* 상단 영역: 제목 + 화살표 */}
-      <div className="card-header">
-        <h3 className="project-title">{project.title}</h3>
-        <IoChevronForward className="arrow-icon" />
-      </div>
+      <div className="card-content">
+        <div className="completed-project-info">
+          <div className="title-row">
+            <h3 className="project-title">{project.title}</h3>
+            <img src={nextArrow} alt="" className="next-arrow" />
+          </div>
+        
+          <div className="date-row">
+            <IoCalendarOutline className="calendar-icon" />
+            <span className="date-text">{dateRange}</span>
+          </div>
+        </div>
 
       {/* 설명 텍스트 */}
       <p className="project-description">{description}</p>

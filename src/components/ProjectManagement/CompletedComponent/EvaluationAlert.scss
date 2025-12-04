@@ -2,7 +2,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px 14px;
+  padding: 1rem;
   margin-bottom: 12px;
   max-width: 390px;
   margin-left: auto;
@@ -30,43 +30,14 @@
     color: #000;
     margin: 0;
 
-    .highlight-count {
+    .count-highlight {
       color: #F76241;
-    }
-  }
-
-  .sort-dropdown-wrapper {
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    transform: translateY(1px);
-
-    .sort-dropdown {
-      appearance: none;
-      padding: 0px 28px 0px 8px;
-      font-size: 12px;
-      color: #403E3E;
-      border: none;
-      border-radius: 4px;
-      background: transparent;
-      cursor: pointer;
-      font-family: Pretendard, sans-serif;
-
-      &:focus {
-        outline: none;
-      }
-    }
-
-    .dropdown-icon {
-      position: absolute;
-      right: 8px;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 7px;
-      height: 3.5px;
-      color: #403E3E;
-      pointer-events: none;
+      font-family: Pretendard;
+      font-size: 15px;
+      font-style: normal;
+      font-weight: 600;
+      line-height: 0%;
+      text-transform: capitalize;
     }
   }
 }

@@ -1,16 +1,13 @@
 .completed-project-card {
   position: relative;
   background: #fff;
-  border-radius: 16px;
-  padding: 24px 16px 48px;
-  min-height: 100px;
+  border-radius: 20px;
+  padding: 1rem;
   cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
-  box-shadow: 0 1px 2px rgba(16, 24, 40, 0.06), 0 1px 3px rgba(16, 24, 40, 0.08);
 
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   }
 
   &:active {
@@ -20,10 +17,11 @@
   // 배지 스타일
   .evaluation-badge {
     position: absolute;
-    top: -10px;
-    left: 12px;
+    top:  -0.75rem;
+    left: 11px;
     background: linear-gradient(239.04deg, #f76241, #ff390d);
     color: #fff;
+    padding: 4px 9px;
     padding: 4px 9px;
     border-radius: 2.86px;
     font-size: 10px;
@@ -35,25 +33,42 @@
   // 상단: 제목 + 화살표
   .card-header {
     display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 4px;
+    flex-direction: column;
+    gap: 0.5rem;
   }
 
-  .project-title {
-    font-size: 15px;
-    font-weight: 700;
-    color: #000;
-    margin: 0;
-    line-height: 1.4;
-    text-transform: capitalize;
-    flex: 1;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: -webkit-box;
-    -webkit-line-clamp: 1;
-    -webkit-box-orient: vertical;
-  }
+  .completed-project-info {
+    
+  
+
+    .title-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+
+      .project-title {
+        font-size: 16px;
+        font-weight: 700;
+        line-height: 1.25;
+        color: #140805;
+        
+        text-transform: capitalize;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 1;
+        -webkit-box-orient: vertical;
+        
+      }
+
+      .next-arrow {
+        width: 7px;
+        height: 13px;
+        flex-shrink: 0;
+      }
+    }
 
   .arrow-icon {
     color: #999;
@@ -80,11 +95,14 @@
   }
 
   .team-avatars {
+    width: 100%;
     display: flex;
+    justify-content: flex-end;
+    flex-shrink: 0;
 
     .avatar {
-      width: 35px;
-      height: 35px;
+      width: 2.25rem;
+      height: 2.25rem;
       border-radius: 50%;
       border: 2px solid #fff;
       object-fit: cover;

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./RecruitingComponent.scss";
 import SectionHeader from "../Common/SectionHeader";
-import ProjectCard from "../Common/ProjectCard";
+import RecruitingProjectCard from "./RecruitingProjectCard";
 import { useNavigate } from "react-router-dom";
 import { getMyRecruitments } from "../../../services/recruitment";
 
@@ -52,39 +52,67 @@ const RecruitingComponent = () => {
 
   return (
     <div className="recruiting-container">
-      <div className="recruiting-top">
-        <div className="recruiting-top-info">
-          <SectionHeader
-            explainText={`프로젝트 팀원을 모집하고\n함께 시작해보세요!`}
-            highlightText="모집 중"
-            filterOptions={[
-              { value: "latest", label: "최신순" },
-              { value: "date", label: "날짜순" },
-              { value: "meeting", label: "회의 빠른 순" },
-            ]}
-            onFilterChange={(e) => console.log(e.target.value)}
-          />
-        </div>
-      </div>
-
-      <hr />
-
-      <div className="recruiting-list">
-        {isLoading && items.length === 0 && <div>불러오는 중...</div>}
+      {!isLoading && !error && items.length > 0 && (
+        <>
+          <div className="recruiting-top">
+            <div className="recruiting-top-info">
+              <SectionHeader
+                explainText={`프로젝트 팀원을 모집하고\n함께 시작해보세요!`}
+                highlightText="모집 중"
+              />
+            </div>
+          </div>
+          <div className="recruiting-list">
+        {isLoading && items.length === 0 && <div className="loading-state">불러오는 중...</div>}
         {error && (
-          <div style={{ color: '#F76241' }}>
-            {error} <button onClick={() => load(page.offset || 0)}>다시 시도</button>
+          <div className="error-state">
+            <p style={{ color: '#F76241', marginBottom: '12px' }}>{error}</p>
+            <button onClick={() => load(page.offset || 0)}>다시 시도</button>
           </div>
         )}
-        {items.map((recruitment) => (
-          <ProjectCard key={recruitment.recruitment_id} project={recruitment} />
-        ))}
+
+        {!isLoading && !error && items.length === 0 && (
+          <div className="empty-state">
+            <h3 className="empty-title">모집중인 프로젝트가 없어요</h3>
+            <p className="empty-description">
+              모집글을 작성하고 프로젝트를 시작해보세요.
+            </p>
+            <button className="create-project-btn" onClick={() => navigate('/recruit')}>
+              프로젝트 모집하기
+            </button>
+          </div>
+        )}
+
+        <div className="recruiting-cards-wrapper">
+          {items.map((recruitment) => (
+            <RecruitingProjectCard key={recruitment.recruitment_id} recruitment={recruitment} />
+          ))}
+        </div>
       </div>
 
       {canLoadMore && !isLoading && (
         <div style={{ textAlign: 'center', margin: '16px 0' }}>
           <button onClick={() => load((page.offset || 0) + (page.limit || 10))}>더 보기</button>
         </div>
+      )}
+          <hr />
+
+        <div className="recruiting-deadline-container">
+          <div className="recruiting-deadline-title">
+            <p>모집 인원이 아쉽게 다 모이지 않았어요</p>
+            <p>다시 한번 모집해보세요</p>
+          </div>
+          <div className="recruiting-deadline-card">
+            <p className="recruiting-deadline-card-description">목표 모집 인원에 도달하지 못했어요.</p>
+            <p className="recruiting-deadline-card-title">프로젝트명</p>
+            <div className="recruiting-deadline-card-buttons">
+              <button className="recruiting-deadline-card-delete-btn">삭제하기</button>
+              <button className="recruiting-deadline-card-rerecruit-btn">다시 모집하기</button>
+            </div>
+          </div>
+        </div>
+
+        </>
       )}
     </div>
   );

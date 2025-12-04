@@ -9,23 +9,10 @@
 
   main {
     width: 100%;
-    flex: 1;
+    
     overflow: hidden; // 자식 요소에서 스크롤 처리하도록
     display: flex;
     flex-direction: column;
-  }
-
-  /* 프로젝트 리스트 */
-  .project-info {
-    padding: 0px 22px;
-    width: 100%;
-    margin-top: 1rem;
-
-    ma .project-explain {
-      font-size: 0.875rem; // 14px -> 0.875rem
-      line-height: 1.4;
-      color: #666;
-    }
   }
 
   .project-filter {
@@ -42,21 +29,4 @@
     }
   }
 
-  .project-list {
-    padding: 0px 22px;
-    box-sizing: border-box;
-    width: 100%;
-    display: flex;
-    padding-bottom: 8rem; // 네비게이션 바 높이보다 조금 더 큰 패딩 추가
-    flex-direction: column;
-    max-height: calc(100dvh - 15rem); // 헤더 & 네비게이션 높이 제외한 값 설정
-    overflow-y: auto; // 리스트 부분만 스크롤 가능하게 설정
-    /* 스크롤바 숨기기 */
-    scrollbar-width: none; // Firefox에서 스크롤바 숨김
-    -ms-overflow-style: none; // IE/Edge에서 스크롤바 숨김
-
-    &::-webkit-scrollbar {
-      display: none; // Chrome, Safari에서 스크롤바 숨김
-    }
-  }
 }
