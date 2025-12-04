@@ -44,7 +44,7 @@
     height: 100%;
     display: flex;
     flex-direction: column;
-    overflow-y: hidden; /* 모달 내부 세로 스크롤 제거 */
+    overflow-y: auto;
   }
 
   .profile-section {
@@ -83,6 +83,12 @@
         border-radius: 12px;
         display: inline-block;
       }
+
+      .education-info {
+        font-size: 12px;
+        color: #888;
+        margin-top: 6px;
+      }
     }
   }
 
@@ -105,9 +111,74 @@
 
   .skills-section {
     margin-bottom: 20px;
-    display: flex;
-    justify-content: center;
-    flex: 0 0 auto; /* 스크롤 방지: 영역 크기 고정 */
+    flex: 0 0 auto;
+
+    .skills-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+
+      .skill-badge {
+        background: #F5F5F5;
+        color: #333;
+        font-size: 12px;
+        font-weight: 500;
+        padding: 6px 12px;
+        border-radius: 16px;
+        border: 1px solid #E5E5E5;
+      }
+    }
+  }
+
+  .portfolio-section {
+    margin-bottom: 20px;
+
+    .portfolio-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 16px;
+      border: 1px solid #E5E5E5;
+      border-radius: 12px;
+      background: #fff;
+      margin-top: 8px;
+      cursor: pointer;
+
+      &:hover {
+        background: #FAFAFA;
+      }
+
+      .portfolio-texts {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        flex: 1;
+        overflow: hidden;
+
+        .portfolio-title {
+          font-size: 14px;
+          color: #222;
+          font-weight: 600;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        .portfolio-sub {
+          font-size: 12px;
+          color: #888;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+      }
+
+      .portfolio-arrow {
+        font-size: 22px;
+        color: #333;
+        margin-left: 8px;
+      }
+    }
   }
 
   .resume-section {
@@ -177,6 +248,15 @@
 
     &:active {
       background: #D04E37;
+    }
+
+    &.disabled {
+      background: #CCCCCC;
+      cursor: not-allowed;
+
+      &:hover {
+        background: #CCCCCC;
+      }
     }
   }
 }
