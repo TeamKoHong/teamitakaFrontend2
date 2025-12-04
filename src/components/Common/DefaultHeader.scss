@@ -43,13 +43,15 @@
   }
 
   .member-header-title {
-    font-size: 20px;
+    font-size: 17px;
     font-weight: 600;
     letter-spacing: -0.2px;
     margin: 0;
     position: absolute;
     left: 50%;
     top: 50%;
+    font-style: normal;
+    color: #000;
     transform: translate(-50%, -50%);
     white-space: nowrap;
   }
