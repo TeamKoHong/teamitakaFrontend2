@@ -568,11 +568,42 @@ src/
 ## 🗺 주요 라우트
 
 ### 인증 & 메인
-- `/` - 랜딩 페이지
+- `/` - 온보딩 페이지 (3초 후 자동 이동)
 - `/login` - 로그인
-- `/register` - 회원가입
+- `/register` - 회원가입 (이메일 인증)
 - `/main` - 메인 대시보드
 - `/my` - 마이페이지
+
+### 📱 회원가입 플로우 (휴대폰 본인인증)
+
+신규 회원가입 시 다음 5단계 플로우를 거칩니다:
+
+```
+/login (회원가입 버튼)
+    ↓
+/phone-verify (휴대폰 본인인증 - 정보 입력)
+    ↓
+/phone-verify/code (SMS 인증번호 입력)
+    ↓
+/register (이메일 계정 연동)
+    ↓
+/profile-setup (학교 정보 입력) ← 현재 미연결
+    ↓
+/welcome (가입 완료)
+    ↓
+/main
+```
+
+| 단계 | 경로 | 설명 | 페이지 |
+|------|------|------|--------|
+| 1 | `/phone-verify` | 통신사, 휴대폰 번호, 주민번호 앞자리, 이름 입력 | `PhoneVerifyPage` |
+| 2 | `/phone-verify/code` | SMS 인증번호 6자리 입력 (3분 제한) | `VerificationCodePage` |
+| 3 | `/register` | 이메일/비밀번호 설정, 약관 동의 | `RegisterPage` |
+| 4 | `/profile-setup` | 학교, 학번, 학과 입력 | `ProfileSetupPage` |
+| 5 | `/welcome` | 가입 완료 환영 메시지 | `WelcomePage` |
+
+> ⚠️ **주의**: 현재 RegisterPage → ProfileSetupPage 연결이 누락되어 있습니다.
+> RegisterPage 완료 시 `/login`으로 이동하며, 추후 `/profile-setup`으로 연결 필요.
 
 ### 모집글
 - `/recruit` - 모집글 작성 (1단계: 기본 정보)

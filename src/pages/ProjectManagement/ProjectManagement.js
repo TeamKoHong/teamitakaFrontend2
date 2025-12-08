@@ -26,11 +26,9 @@ function ProjectManagement() {
   return (
     <div className="project-management-container">
       <Header onTabChange={handleTabChange} activeTabIndex={tabIndex} /> {/* Tab 변경 시 setTabIndex 실행 */}
-      <main>
         {tabIndex === 0 && <ProgressComponent />}
         {tabIndex === 1 && <RecruitingComponent />}
-        {tabIndex === 2 && <CompletedComponent />}
-      </main>
+        {tabIndex === 2 && <CompletedComponent />}      
       <BottomNav />
     </div>
   );
