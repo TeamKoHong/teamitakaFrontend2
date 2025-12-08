@@ -1,4 +1,4 @@
-import PhoneAuthForm from '../../components/Auth/PhoneAuthForm';
+import PhoneAuthForm from '../../components/auth/PhoneAuthForm';
 import './PhoneAuthTestPage.scss';
 
 export default function PhoneAuthTestPage() {
