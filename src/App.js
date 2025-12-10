@@ -339,7 +339,7 @@ const App = () => {
           <Route path="/notifications" element={<NotificationsPage />} />
           <Route path="/notifications/settings" element={<NotificationSettings />} />
 
-          {/* 프로젝트 생성하기 */}
+          {/* 프로젝트 생성하기(로그인 필요 없) */}
           <Route path="/recruit" element={<ProjectRecruit />} />
           <Route path="/recruit/detail" element={<ProjectRecruitDetail />} />
           <Route path="/recruit/image" element={<ProjectRecruitImage />} />
@@ -348,8 +348,14 @@ const App = () => {
           <Route path="/recruit/publish" element={<ProjectRecruitPublish />} />
           <Route path="/recruit/publish/done" element={<ProjectRecruitPublishDone />} />
 
-
-
+         {/* 프로젝트 생성하기(로그인 필요) */}
+          {/* <Route path="/recruit" element={<ProtectedRoute><ProjectRecruit /></ProtectedRoute>} />
+          <Route path="/recruit/detail" element={<ProtectedRoute><ProjectRecruitDetail /></ProtectedRoute>} />
+          <Route path="/recruit/image" element={<ProtectedRoute><ProjectRecruitImage /></ProtectedRoute>} />
+          <Route path="/recruit/drafts" element={<ProtectedRoute><ProjectDrafts /></ProtectedRoute>} />
+          <Route path="/recruit/preview" element={<ProtectedRoute><ProjectRecruitPreview /></ProtectedRoute>} />
+          <Route path="/recruit/publish" element={<ProtectedRoute><ProjectRecruitPublish /></ProtectedRoute>} />
+          <Route path="/recruit/publish/done" element={<ProtectedRoute><ProjectRecruitPublishDone /></ProtectedRoute>} /> */}
         </Routes>
       </AuthProvider>
     </Router>
