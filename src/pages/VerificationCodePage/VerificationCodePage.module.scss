@@ -1,0 +1,76 @@
+@use '../../styles/variables' as *;
+
+.container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: $card-bg;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 56px;
+    padding: 0 16px;
+    background-color: $card-bg;
+}
+
+.backButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border: none;
+    background: none;
+    cursor: pointer;
+}
+
+.headerTitle {
+    font-size: 17px;
+    font-weight: $font-weight-bold;
+    color: $text-primary;
+    margin: 0;
+}
+
+.headerSpacer {
+    width: 40px;
+}
+
+.content {
+    flex: 1;
+    padding: 0 16px;
+    overflow-y: auto;
+}
+
+.description {
+    margin: 8px 0 24px;
+
+    p {
+        margin: 0;
+        font-size: 22px;
+        font-weight: $font-weight-bold;
+        color: $text-primary;
+        line-height: 1.4;
+    }
+}
+
+.formSection {
+    margin-bottom: 20px;
+}
+
+.label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: $font-size-caption;
+    font-weight: $font-weight-medium;
+    color: $gray-light;
+}
+
+.bottomButton {
+    padding: 16px;
+    padding-bottom: max(16px, env(safe-area-inset-bottom));
+    background-color: $card-bg;
+}

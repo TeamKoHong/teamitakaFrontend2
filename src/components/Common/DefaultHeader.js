@@ -24,7 +24,7 @@ export default function DefaultHeader({
 
   return (
     <div className="member-header-container">
-      {onBack !== undefined && (
+      {(onBack !== undefined || backPath !== undefined) && (
         <button
           className="member-header-back"
           onClick={handleBack}
@@ -35,7 +35,9 @@ export default function DefaultHeader({
       )}
       <h1 className="member-header-title">{title}</h1>
       {rightElement ? (
-        rightElement
+        <div className="member-header-chat--placeholder">
+          {rightElement}
+        </div>
       ) : showChat ? (
         <button
           className="member-header-chat"

@@ -1,0 +1,64 @@
+// Figma: CategorySliders 스펙
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px;
+  border-radius: 16px;
+  background: #FFFDFC;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+// Figma: 13px, weight 600, color #403E3E
+.label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #403E3E;
+}
+
+.value {
+  font-size: 14px;
+  color: #f76241;
+  font-weight: 600;
+}
+
+// Figma: height 7px, radius 50px, bg #ECECEC
+.track {
+  height: 7px;
+  background: #ECECEC;
+  border-radius: 50px;
+  overflow: hidden;
+}
+
+// Figma: fill #F76241, radius 50px
+.fill {
+  height: 100%;
+  background: #F76241;
+  border-radius: 50px;
+  transition: width 0.3s ease;
+}
+
+// Figma: gap 14px from track
+.scale {
+  display: flex;
+  justify-content: space-between;
+  padding: 0;
+  margin-top: 6px;
+}
+
+// Figma: 10px, color #807C7C
+.scaleNum {
+  font-size: 10px;
+  color: #807C7C;
+  font-weight: 400;
+}
+
+.scaleNum.active {
+  color: #F76241;
+  font-weight: 600;
+}
