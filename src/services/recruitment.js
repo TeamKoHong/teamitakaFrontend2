@@ -114,16 +114,29 @@ export const uploadRecruitmentImage = async (imageFile) => {
  */
 export const getRecruitment = async (recruitmentId) => {
     const { API_BASE_URL, headers } = getApiConfig();
+    const token = localStorage.getItem('authToken'); // [Modified] Get token
+
+    const requestHeaders = { ...headers };
+    if (token) {
+        requestHeaders['Authorization'] = `Bearer ${token}`; // [Modified] Add auth header if token exists
+    }
 
     const res = await fetch(`${API_BASE_URL}/api/recruitments/${recruitmentId}`, {
         method: 'GET',
-        headers,
+        headers: requestHeaders, // [Modified] Use headers with auth
     });
 
     if (res.status === 404) {
         const err = new Error('모집글을 찾을 수 없습니다.');
         err.code = 'NOT_FOUND';
         throw err;
+    }
+
+    // [Modified] Handle 401 specifically
+    if (res.status === 401) {
+         const err = new Error('로그인이 필요하거나 권한이 없습니다.');
+         err.code = 'UNAUTHORIZED';
+         throw err;
     }
 
     if (!res.ok) {

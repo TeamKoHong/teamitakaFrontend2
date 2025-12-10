@@ -317,12 +317,16 @@
             font-size: 14px;
             font-weight: 600;
             color: #333;
+            margin-bottom: 0;
             
             // 한 줄 말줄임표
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            margin-bottom: auto; // 남은 공간 아래로 밈
+        }
+
+        .matching-card-desc{
+            font-size: 11px;;
         }
 
         // ★ [요청] 뷰/지원자(왼쪽) --- 날짜(오른쪽) 한 줄 배치
