@@ -28,17 +28,45 @@ export default function ApplicantListSlide({ open, onClose, recruitmentId }) {
 
       try {
         const data = await getRecruitmentApplicants(recruitmentId);
+        console.log('🔍 [ApplicantListSlide] API 응답 전체:', data);
+        console.log('🔍 [ApplicantListSlide] recruitmentId:', recruitmentId);
+
+        // API가 배열을 직접 반환하는 경우와 객체로 감싸서 반환하는 경우 모두 처리
+        const applications = Array.isArray(data) ? data : (data.applications || []);
+        console.log('🔍 [ApplicantListSlide] applications 배열:', applications);
+
         // Map backend data to component format
-        const mappedApplicants = (data.applications || []).map((app) => ({
-          id: app.application_id,
-          name: app.User?.name || "지원자",
-          img: app.User?.profile_image || avatar1,
-          application_id: app.application_id,
-          user_id: app.user_id,
-          status: app.status,
-          User: app.User,
-        }));
+        const mappedApplicants = applications.map((app) => {
+          console.log('🔍 [ApplicantListSlide] 개별 application:', app);
+          console.log('🔍 [ApplicantListSlide] User 정보:', app.User);
+          return {
+            id: app.application_id,
+            name: app.User?.username || "지원자",
+            img: app.User?.avatar || avatar1,
+            application_id: app.application_id,
+            user_id: app.user_id,
+            status: app.status,
+            introduction: app.introduction,
+            skills: Array.isArray(app.User?.skills)
+              ? app.User.skills
+              : (typeof app.User?.skills === 'string' && app.User.skills
+                ? app.User.skills.split(',').map(s => s.trim())
+                : []),
+            experience_years: app.User?.experience_years,
+            university: app.User?.university,
+            major: app.User?.major,
+            portfolios: app.ApplicationPortfolios || [],
+            User: app.User,
+          };
+        });
+        console.log('🔍 [ApplicantListSlide] 매핑된 지원자 목록:', mappedApplicants);
         setApplicants(mappedApplicants);
+
+        // 이미 승인된 지원자들을 선택된 팀원 목록에 추가
+        const approvedApplicants = mappedApplicants.filter(a => a.status === 'ACCEPTED');
+        if (approvedApplicants.length > 0) {
+          setSelectedTeamMembers(approvedApplicants);
+        }
       } catch (err) {
         console.error("Failed to fetch applicants:", err);
         if (err.code === 'UNAUTHORIZED') {
@@ -159,14 +187,16 @@ export default function ApplicantListSlide({ open, onClose, recruitmentId }) {
                 <div className="avatars-grid">
                    {applicants.map((a) => {
                      const isSelected = selectedTeamMembers.some((m) => m.id === a.id);
+                     const isApproved = a.status === 'ACCEPTED';
                      return (
                        <div
                          key={a.id}
-                         className={`avatar-card ${isSelected ? "selected" : ""}`}
+                         className={`avatar-card ${isSelected || isApproved ? "selected" : ""}`}
                          onClick={() => handleApplicantClick(a)}
                        >
                          <img src={a.img} alt={a.name} />
                          <p>{a.name}</p>
+                         {isApproved && <span className="approved-badge">✓</span>}
                        </div>
                      );
                    })}

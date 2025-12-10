@@ -119,12 +119,28 @@ export const getRecruitment = async (recruitmentId) => {
     const requestHeaders = { ...headers };
     if (token) {
         requestHeaders['Authorization'] = `Bearer ${token}`; // [Modified] Add auth header if token exists
+    const token = localStorage.getItem('authToken');
+
+    if (!token) {
+        const err = new Error('로그인이 필요합니다.');
+        err.code = 'UNAUTHORIZED';
+        throw err;
     }
 
     const res = await fetch(`${API_BASE_URL}/api/recruitments/${recruitmentId}`, {
         method: 'GET',
         headers: requestHeaders, // [Modified] Use headers with auth
+        headers: {
+            ...headers,
+            Authorization: `Bearer ${token}`,
+        },
     });
+
+    if (res.status === 401 || res.status === 403) {
+        const err = new Error('UNAUTHORIZED');
+        err.code = 'UNAUTHORIZED';
+        throw err;
+    }
 
     if (res.status === 404) {
         const err = new Error('모집글을 찾을 수 없습니다.');
@@ -147,7 +163,7 @@ export const getRecruitment = async (recruitmentId) => {
     }
 
     return res.json();
-};
+}};
 
 /**
  * Gets applicants for a recruitment

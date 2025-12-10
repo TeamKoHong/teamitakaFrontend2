@@ -1,17 +1,17 @@
 import React from "react";
 import "./ProjectCard.scss";
 import { useNavigate } from "react-router-dom";
-import { IoCalendarOutline, IoTimeOutline } from "react-icons/io5";
+import { IoCalendarOutline, IoTimeOutline, IoPeopleOutline } from "react-icons/io5";
 import CircularProgress from "../../Common/CircularProgress";
 import { formatDateRange } from "../../../utils/dateFormat";
 
-const ProjectCard = ({ project }) => {
+const ProjectCard = ({ project, type = "project" }) => {
   const navigate = useNavigate();
   if (!project) return null;
 
-  // Handle both project and recruitment data structures
-  const isRecruitment = !!project.recruitment_id;
-  const id = project.recruitment_id || project.project_id;
+  // Use explicit type prop to determine navigation
+  const isRecruitment = type === "recruitment";
+  const id = isRecruitment ? project.recruitment_id : project.project_id;
   const {
     title,
     start_date,
@@ -20,7 +20,8 @@ const ProjectCard = ({ project }) => {
     recruitment_end,
     meeting_time,
     updated_at,
-    progress_percent
+    progress_percent,
+    applicant_count
   } = project;
 
   // Use recruitment dates if available, otherwise use project dates
@@ -36,7 +37,7 @@ const ProjectCard = ({ project }) => {
 
   const handleClick = () => {
     if (isRecruitment) {
-      navigate(`/recruitment/${id}`);
+      navigate(`/recruitment/${id}/team-select`);
     } else {
       navigate(`/project/${id}`);
     }
@@ -60,6 +61,11 @@ const ProjectCard = ({ project }) => {
           <p>
             <IoTimeOutline className="details-icon" /> {meetingTimeDisplay}
           </p>
+          {isRecruitment && (
+            <p className="applicant-info">
+              <IoPeopleOutline className="details-icon" /> {applicant_count || 0}명 지원
+            </p>
+          )}
         </div>
 
         {/* 팀원 리스트: 서버가 제공 시 추후 적용 */}

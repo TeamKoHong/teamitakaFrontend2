@@ -1,5 +1,8 @@
 .card {
-  background: #fff;
+  background-color: #fff;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   border-radius: 18px;
   box-shadow: 0 2px 12px rgba(0,0,0,0.06);
   padding: 16px;
@@ -10,6 +13,7 @@
   flex-direction: column;
   gap: 0;
   position: relative;
+  min-height: 120px;
 }
 .headerRow {
   display: flex;
@@ -72,18 +76,6 @@
   width: 16px;
   height: 16px;
   flex-shrink: 0;
-}
-.avatars {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 0;
-}
-.avatar {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 1.5px solid #e0e0e0;
 }
 .projectResult {
   margin-top: 18px;

@@ -15,6 +15,7 @@ import RatingManagementPage from './pages/RatingManagementPage/RatingManagementP
 import RatingProjectPage from './pages/RatingProjectPage/RatingProjectPage';
 import RatingProjectStatusPage from './pages/RatingProjectStatusPage/RatingProjectStatusPage';
 import TeamMemberEvaluationPage from './pages/TeamMemberEvaluationPage/TeamMemberEvaluationPage';
+import ReceivedFeedbackDetailPage from './pages/ReceivedFeedbackDetailPage/ReceivedFeedbackDetailPage';
 import CategorySliderDemo from './components/Common/CategorySliderDemo';
 import OnboardingPage from './pages/OnboardingPage/OnboardingPage';
 import LoginPage from './pages/LoginPage/LoginPage';
@@ -26,6 +27,7 @@ import SearchPage from './pages/SearchPage/SearchPage';
 import ProfilePage from './pages/Profile/ProfilePage';
 import BookmarkPage from './pages/BookmarkPage/BookmarkPage';
 import RecruitmentViewPage from './pages/RecruitmentViewPage/RecruitmentViewPage';
+import TeamSelectPage from './pages/TeamSelectPage/TeamSelectPage';
 
 // 메인 페이지 임포트
 import MainPage from './components/Home/MainPage';
@@ -52,6 +54,11 @@ import ProjectRecruitPublishDone from "./pages/ProjectRecruit/ProjectRecruitPubl
 // Firebase 전화번호 인증 테스트 페이지
 import PhoneAuthTestPage from './pages/PhoneAuthTestPage/PhoneAuthTestPage';
 
+// 휴대폰 본인인증 페이지 (신규)
+import PhoneVerifyPage from './pages/PhoneVerifyPage/PhoneVerifyPage';
+import VerificationCodePage from './pages/VerificationCodePage/VerificationCodePage';
+import ProfileSetupPage from './pages/ProfileSetupPage/ProfileSetupPage';
+import WelcomePage from './pages/WelcomePage/WelcomePage';
 
 // 인증 관련 임포트
 import { AuthProvider } from './contexts/AuthContext';
@@ -189,12 +196,22 @@ const ProjectPermissionGuard = ({ children, projectId }) => {
 
 // ===== 가드 래퍼 컴포넌트들 =====
 
-// 프로젝트 평가 페이지 가드
+// 프로젝트 평가 페이지 가드 (내가 받은 평가)
 const ProjectEvaluationGuard = () => {
   const { projectId } = useParams();
   return (
     <ProjectPermissionGuard projectId={projectId}>
-      <RatingProjectPage />
+      <RatingProjectPage mode="received" />
+    </ProjectPermissionGuard>
+  );
+};
+
+// 프로젝트 평가 페이지 가드 (내가 한 평가)
+const ProjectEvaluationGivenGuard = () => {
+  const { projectId } = useParams();
+  return (
+    <ProjectPermissionGuard projectId={projectId}>
+      <RatingProjectPage mode="given" />
     </ProjectPermissionGuard>
   );
 };
@@ -274,13 +291,15 @@ const App = () => {
           <Route path={PROJECT_ROUTES.CREATE_MEETING} element={<CreateMeetingPage />} />
           <Route path={PROJECT_ROUTES.CALENDAR} element={<ProjectCalender />} />
 
-          {/* ===== 평가 시스템 라우트 (로그인 제한 없음) ===== */}
-          <Route path={EVALUATION_ROUTES.MANAGEMENT} element={<RatingManagementPage />} />
-          <Route path={EVALUATION_ROUTES.PROJECT} element={<ProjectEvaluationGuard />} />
-          <Route path={EVALUATION_ROUTES.TEAM_MEMBER} element={<TeamMemberEvaluationGuard />} />
-          <Route path={EVALUATION_ROUTES.STATUS_GIVEN} element={<EvaluationStatusGuard />} />
-          <Route path={EVALUATION_ROUTES.STATUS_RECEIVED} element={<EvaluationStatusGuard />} />
-          <Route path={EVALUATION_ROUTES.STATUS} element={<EvaluationStatusGuard />} />
+          {/* ===== 평가 시스템 라우트 (인증 필요) ===== */}
+          <Route path={EVALUATION_ROUTES.MANAGEMENT} element={<ProtectedRoute><RatingManagementPage /></ProtectedRoute>} />
+          <Route path={EVALUATION_ROUTES.PROJECT} element={<ProtectedRoute><ProjectEvaluationGuard /></ProtectedRoute>} />
+          <Route path={EVALUATION_ROUTES.PROJECT_GIVEN} element={<ProtectedRoute><ProjectEvaluationGivenGuard /></ProtectedRoute>} />
+          <Route path={EVALUATION_ROUTES.FEEDBACK_DETAIL} element={<ProtectedRoute><ReceivedFeedbackDetailPage /></ProtectedRoute>} />
+          <Route path={EVALUATION_ROUTES.TEAM_MEMBER} element={<ProtectedRoute><TeamMemberEvaluationGuard /></ProtectedRoute>} />
+          <Route path={EVALUATION_ROUTES.STATUS_GIVEN} element={<ProtectedRoute><EvaluationStatusGuard /></ProtectedRoute>} />
+          <Route path={EVALUATION_ROUTES.STATUS_RECEIVED} element={<ProtectedRoute><EvaluationStatusGuard /></ProtectedRoute>} />
+          <Route path={EVALUATION_ROUTES.STATUS} element={<ProtectedRoute><EvaluationStatusGuard /></ProtectedRoute>} />
 
           {/* ===== 기존 URL 호환성 리다이렉트 ===== */}
           <Route path={LEGACY_EVALUATION_ROUTES.RATING_MANAGEMENT} element={<Navigate to={EVALUATION_ROUTES.MANAGEMENT} replace />} />
@@ -297,10 +316,17 @@ const App = () => {
           <Route path={OTHER_ROUTES.BOOKMARK} element={<BookmarkPage />} />
           <Route path={OTHER_ROUTES.TEAM} element={<Navigate to={OTHER_ROUTES.TEAM_MATCHING} replace />} />
           <Route path="/recruitment/:id" element={<RecruitmentViewPage />} />
+          <Route path="/recruitment/:id/team-select" element={<TeamSelectPage />} />
 
           {/* ===== 데모 및 개발 도구 라우트 (개발용) ===== */}
           <Route path={DEMO_ROUTES.CATEGORY_SLIDER} element={<CategorySliderDemo />} />
           <Route path="/phone-auth-test" element={<PhoneAuthTestPage />} />
+
+          {/* ===== 휴대폰 본인인증 라우트 ===== */}
+          <Route path="/phone-verify" element={<PublicRoute><PhoneVerifyPage /></PublicRoute>} />
+          <Route path="/phone-verify/code" element={<PublicRoute><VerificationCodePage /></PublicRoute>} />
+          <Route path="/profile-setup" element={<ProtectedRoute><ProfileSetupPage /></ProtectedRoute>} />
+          <Route path="/welcome" element={<ProtectedRoute><WelcomePage /></ProtectedRoute>} />
 
           {/* ===== 기본 리다이렉트 ===== */}
           <Route path="/" element={<Navigate to={MAIN_ROUTES.HOME} replace />} />
@@ -321,6 +347,7 @@ const App = () => {
           <Route path="/recruit/preview" element={<ProjectRecruitPreview />} />
           <Route path="/recruit/publish" element={<ProjectRecruitPublish />} />
           <Route path="/recruit/publish/done" element={<ProjectRecruitPublishDone />} />
+
 
 
         </Routes>

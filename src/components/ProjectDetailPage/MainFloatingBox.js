@@ -5,13 +5,13 @@ import meetingNoteIcon from "../../assets/icons/meetingNoteIcon.png";
 import teamMemberIcon from "../../assets/icons/teamMemberIcon.png";
 import voteIcon from "../../assets/icons/voteIcon.png";
 import { useNavigate } from "react-router-dom";
-function MainFloatingBox() {
+function MainFloatingBox({ projectId }) {
   const navigate = useNavigate();
   return (
     <div className="main-floating-box">
       <div className="header-container">
         <div className="icon-container">
-          <div className="icon" onClick={() => navigate("/project/1/member")}>
+          <div className="icon" onClick={() => navigate(`/project/${projectId}/member`)}>
             <img src={teamMemberIcon} alt="팀멤버아이콘" />
           </div>
           <p>팀원 정보</p>
@@ -20,7 +20,7 @@ function MainFloatingBox() {
         <div className="icon-container">
           <div
             className="icon"
-            onClick={() => navigate("/project/1/proceedings")}
+            onClick={() => navigate(`/project/${projectId}/proceedings`)}
           >
             <img src={meetingNoteIcon} alt="회의록" />
           </div>
@@ -32,7 +32,7 @@ function MainFloatingBox() {
             <img
               src={voteIcon}
               alt="투표하기"
-              onClick={() => navigate("/project/1/vote")}
+              onClick={() => navigate(`/project/${projectId}/vote`)}
             />
           </div>
           <p>투표하기</p>
@@ -42,8 +42,8 @@ function MainFloatingBox() {
           <div className="icon">
             <img
               src={groupCalendarIcon}
-              alt="회의록"
-              onClick={() => navigate("/project/1/calender")}
+              alt="공유 캘린더"
+              onClick={() => navigate(`/project/${projectId}/calender`)}
             />
           </div>
           <p>공유 캘린더</p>

@@ -2,9 +2,6 @@ import React from 'react';
 import styles from './ProsConsCards.module.scss';
 
 export default function ProsConsCards({ good = [], improve = [] }) {
-  const hasContent = (arr) => Array.isArray(arr) && arr.length > 0;
-  if (!hasContent(good) && !hasContent(improve)) return null;
-
   const renderList = (items) => (
     <ul className={styles.list}>
       {items.map((t, i) => (
@@ -15,18 +12,22 @@ export default function ProsConsCards({ good = [], improve = [] }) {
 
   return (
     <section className={styles.wrap} aria-label="한 줄 요약">
-      {hasContent(good) && (
-        <div className={`${styles.card} ${styles.good}`}>
-          <div className={styles.badge}>이런 점이 좋아요</div>
-          {renderList(good)}
-        </div>
-      )}
-      {hasContent(improve) && (
-        <div className={`${styles.card} ${styles.improve}`}>
-          <div className={styles.badge}>이런 점은 개선이 필요해요</div>
-          {renderList(improve)}
-        </div>
-      )}
+      <div className={`${styles.card} ${styles.good}`}>
+        <div className={styles.badge}>👍 이런 점이 좋아요</div>
+        {good.length > 0 ? (
+          renderList(good)
+        ) : (
+          <p className={styles.empty}>아직 평가가 없습니다</p>
+        )}
+      </div>
+      <div className={`${styles.card} ${styles.improve}`}>
+        <div className={styles.badge}>🚨 이런 점은 개선이 필요해요</div>
+        {improve.length > 0 ? (
+          renderList(improve)
+        ) : (
+          <p className={styles.empty}>아직 평가가 없습니다</p>
+        )}
+      </div>
     </section>
   );
 }

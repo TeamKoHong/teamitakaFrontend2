@@ -77,6 +77,7 @@
       padding-bottom: 80px; // 그라데이션 영역을 위한 여유 공간
 
       .avatar-card {
+        position: relative;
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -115,6 +116,22 @@
         &.selected img {
           border-color: #2ecc71;
           box-shadow: 0 0 0 3px rgba(46, 204, 113, 0.2);
+        }
+
+        .approved-badge {
+          position: absolute;
+          top: 0;
+          right: 0;
+          width: 20px;
+          height: 20px;
+          background: #2ecc71;
+          color: white;
+          border-radius: 50%;
+          font-size: 12px;
+          font-weight: bold;
+          display: flex;
+          align-items: center;
+          justify-content: center;
         }
       }
     }

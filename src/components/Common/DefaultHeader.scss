@@ -1,14 +1,14 @@
 .member-header-container {
-  position: sticky;
+  position: fixed;
   top: 0;
+  left: 0;
+  right: 0;
   z-index: 100;
-  width: 100%;
   background: #fffdfc;
   box-shadow: 0px 1px 1px 0px rgba(0, 0, 0, 0.15);
   padding: 12px 22px 12px 21px;
   display: flex;
   align-items: center;
-  position: relative;
   height: 47px;
   box-sizing: border-box;
 
@@ -43,22 +43,26 @@
   }
 
   .member-header-title {
-    font-size: 20px;
+    font-size: 17px;
     font-weight: 600;
     letter-spacing: -0.2px;
     margin: 0;
     position: absolute;
     left: 50%;
     top: 50%;
+    font-style: normal;
+    color: #000;
     transform: translate(-50%, -50%);
     white-space: nowrap;
   }
 
   .member-header-chat--placeholder {
-    width: 22px;
+    width: auto;
+    min-width: 22px;
     position: absolute;
-    right: 22px;
+    right: 16px;
     top: 50%;
     transform: translateY(-50%);
+    white-space: nowrap;
   }
 }
