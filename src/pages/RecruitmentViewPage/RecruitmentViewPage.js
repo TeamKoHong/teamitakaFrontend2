@@ -51,9 +51,14 @@ export default function RecruitmentViewPage() {
     useEffect(() => {
         const fetchRecruitment = async () => {
             try {
-                const data = await getRecruitment(id);
-                console.log("📝 상세 데이터 확인:", data);
+                const response = await getRecruitment(id);
+                console.log("📝 API 원본 응답:", response);
 
+                // [중요 수정 1] 백엔드 응답이 { data: {...} } 형태인지, 바로 객체 {...} 인지 확인하여 처리
+                // response.data가 있으면 그것을 쓰고, 없으면 response 자체를 씁니다.
+                const data = response.data || response;
+
+                // [중요 수정 2] 필수 데이터가 없을 경우를 대비한 안전 장치 (Nullish Coalescing)
                 const hashtags = data.Hashtags || data.hashtags || [];
                 const keywordList = hashtags.map(h => (typeof h === 'string' ? h : h.name));
 
@@ -61,21 +66,23 @@ export default function RecruitmentViewPage() {
                     id: data.recruitment_id,
                     title: data.title,
                     description: data.description || '',
-                    period: data.recruitment_start && data.recruitment_end
+                    // [중요 수정 3] 날짜 데이터가 null일 경우 format 함수가 에러나지 않도록 방어 코드 추가
+                    period: (data.recruitment_start && data.recruitment_end)
                         ? formatKoreanDateRange(data.recruitment_start, data.recruitment_end)
                         : '모집 기간 미정',
-                    projectInfo: data.description || '',
+                    projectInfo: data.description || '', // 필요한 경우 다른 필드로 매핑
                     projectType: data.project_type === 'course'
                         ? '수업 프로젝트'
                         : data.project_type === 'side'
                         ? '사이드 프로젝트'
                         : '프로젝트',
-                    imageUrl: data.photo_url,
+                    imageUrl: data.photo_url || data.photo, // 필드명 불일치 대비
                     views: data.views || 0,
                     applicantCount: data.applicant_count || 0,
+                    bookmarkCount: data.scrap_count || data.bookmark_count || 0,
                     date: data.created_at ? formatRelativeTime(data.created_at) : '',
                     keywords: keywordList,
-                    createdBy: data.user_id,
+                    createdBy: data.user_id, // Owner 체크용 ID
                     recruitmentInfo: { count: data.recruit_count || '-', activity: '-' },
                     activityMethod: data.activity_method || '-'
                 };
@@ -198,7 +205,10 @@ export default function RecruitmentViewPage() {
                             <div className="view-icon">
                                 <img src={viewIcon} alt="조회수" /> {post.views}
                             </div>
-                            <div className="apply-icon">
+                            <div className="apply-icon"
+                                onClick={handleViewApplicants}
+                                style={{cursor: 'pointer'}}
+                            >
                                 <img src={applyIcon} alt="지원자" /> {post.applicantCount}
                             </div>
                         </div>
@@ -254,6 +264,9 @@ export default function RecruitmentViewPage() {
                             alt="bookmark" 
                             style={{width: '24px', height: '24px'}}
                         />
+                        <span className="bookmark-count">
+                            {post ? post.bookmarkCount : 0}
+                        </span>
                     </button>
 
                     

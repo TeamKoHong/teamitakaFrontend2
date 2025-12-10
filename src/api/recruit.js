@@ -1,3 +1,4 @@
+// src/api/recruit.js
 import { getApiConfig } from '../services/auth';
 
 // ───────── 단일 진행중 드래프트(기존 호환) ─────────
@@ -180,14 +181,30 @@ export const uploadRecruitmentImage = async (imageFile) => {
 export const getRecruitment = async (recruitmentId) => {
     const { API_BASE_URL, headers } = getApiConfig();
 
+    const token = localStorage.getItem('authToken');
+    if (!token) {
+        const err = new Error('UNAUTHORIZED');
+        err.code = 'UNAUTHORIZED';
+        throw err;
+    }
+
     const res = await fetch(`${API_BASE_URL}/api/recruitments/${recruitmentId}`, {
         method: 'GET',
-        headers,
+        headers: {
+            ...headers,
+            Authorization: `Bearer ${token}`,
+        },
     });
 
     if (res.status === 404) {
         const err = new Error('모집글을 찾을 수 없습니다.');
         err.code = 'NOT_FOUND';
+        throw err;
+    }
+
+    if (res.status === 401 || res.status === 403) {
+        const err = new Error('권한이 없습니다');
+        err.code = 'UNAUTHORIZED';
         throw err;
     }
 
