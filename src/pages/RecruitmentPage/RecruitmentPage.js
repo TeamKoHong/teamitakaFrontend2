@@ -10,7 +10,6 @@ import { getAllRecruitments } from '../../api/recruit';
 export default function RecruitmentPage() {
   const navigate = useNavigate();
   
-  // [수정 포인트 1] location.state 로직을 제거하고, 초기값을 무조건 '전체'로 설정
   // 이렇게 하면 페이지 진입/새로고침 시 항상 '전체'가 Active 상태가 됩니다.
   const [activeFilter, setActiveFilter] = useState('전체');
 
@@ -57,7 +56,6 @@ export default function RecruitmentPage() {
         });
 
         const sortedTags = Array.from(allTags).sort();
-        // [수정 포인트 2] 필터 옵션이 로드되어도 activeFilter는 이미 '전체'이므로 그대로 유지됨
         setFilterOptions(['전체', ...sortedTags]);
 
       } catch (error) {

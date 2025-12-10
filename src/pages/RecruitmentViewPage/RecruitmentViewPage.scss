@@ -186,7 +186,7 @@ $background-color: #FFFFFF;
             font-size: 14px;
             line-height: 1.7;
             color: #333;
-            white-space: pre-wrap; // ★ 줄바꿈 문자(\n) 반영
+            white-space: pre-wrap; 
             margin-bottom: 40px;
         }
 
@@ -207,7 +207,6 @@ $background-color: #FFFFFF;
                 gap: 8px;
 
                 .keyword-tag {
-                    // ★ 이미지와 같은 살구색 스타일
                     background-color: #FFF0EB; 
                     color: $primary-color;
                     padding: 5px 10px;

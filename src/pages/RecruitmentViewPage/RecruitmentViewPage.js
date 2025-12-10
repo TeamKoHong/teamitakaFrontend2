@@ -6,14 +6,13 @@ import './RecruitmentViewPage.scss';
 import { IoChevronBack } from "react-icons/io5";
 import { BsThreeDotsVertical } from "react-icons/bs";
 
-// ★ [수정 1] view.png, apply.png 이미지 임포트
 import viewIcon from "../../assets/view.png"; 
 import applyIcon from "../../assets/apply.png"; 
 
 import bookmarkIcon from "../../assets/bookmark.png";           
 import bookmarkActiveIcon from "../../assets/bookmark_active.png"; 
 
-import { getRecruitment, deleteRecruitment } from '../../services/recruitment';
+import { getRecruitment, deleteRecruitment, toggleRecruitmentScrap } from '../../services/recruitment';
 import { getCurrentUser } from '../../services/auth';
 import { formatKoreanDateRange, formatRelativeTime } from '../../utils/dateUtils';
 import ApplicantListSlide from '../../components/ApplicantListSlide';
@@ -54,11 +53,9 @@ export default function RecruitmentViewPage() {
                 const response = await getRecruitment(id);
                 console.log("📝 API 원본 응답:", response);
 
-                // [중요 수정 1] 백엔드 응답이 { data: {...} } 형태인지, 바로 객체 {...} 인지 확인하여 처리
                 // response.data가 있으면 그것을 쓰고, 없으면 response 자체를 씁니다.
                 const data = response.data || response;
 
-                // [중요 수정 2] 필수 데이터가 없을 경우를 대비한 안전 장치 (Nullish Coalescing)
                 const hashtags = data.Hashtags || data.hashtags || [];
                 const keywordList = hashtags.map(h => (typeof h === 'string' ? h : h.name));
 
@@ -66,7 +63,6 @@ export default function RecruitmentViewPage() {
                     id: data.recruitment_id,
                     title: data.title,
                     description: data.description || '',
-                    // [중요 수정 3] 날짜 데이터가 null일 경우 format 함수가 에러나지 않도록 방어 코드 추가
                     period: (data.recruitment_start && data.recruitment_end)
                         ? formatKoreanDateRange(data.recruitment_start, data.recruitment_end)
                         : '모집 기간 미정',
@@ -79,7 +75,7 @@ export default function RecruitmentViewPage() {
                     imageUrl: data.photo_url || data.photo, // 필드명 불일치 대비
                     views: data.views || 0,
                     applicantCount: data.applicant_count || 0,
-                    bookmarkCount: data.scrap_count || data.bookmark_count || 0,
+                    bookmarkCount: data.scrap_count || 0,
                     date: data.created_at ? formatRelativeTime(data.created_at) : '',
                     keywords: keywordList,
                     createdBy: data.user_id, // Owner 체크용 ID
@@ -88,6 +84,7 @@ export default function RecruitmentViewPage() {
                 };
 
                 setPost(formattedPost);
+                setIsBookmarked(!!data.is_scrapped);
             } catch (err) {
                 console.error('Failed to fetch recruitment:', err);
                 setError(err.message);
@@ -117,8 +114,38 @@ export default function RecruitmentViewPage() {
 
     const handleViewApplicants = () => setShowApplicantList(true);
 
-    const handleBookmarkToggle = () => {
-        setIsBookmarked(!isBookmarked);
+    const handleBookmarkToggle = async () => {
+        if (!currentUser) {
+            alert("로그인이 필요합니다.");
+            // 로그인 페이지 이동 로직이 있다면 추가
+            return;
+        }
+
+        // 1. 현재 상태 저장 (에러 시 복구용 - 낙관적 업데이트)
+        const previousState = isBookmarked;
+        const previousCount = post.bookmarkCount;
+
+        // 2. 화면 즉시 갱신 (반응 속도 향상)
+        const newState = !previousState;
+        setIsBookmarked(newState);
+        setPost(prev => ({
+            ...prev,
+            // true가 되면 +1, false가 되면 -1
+            bookmarkCount: newState ? prev.bookmarkCount + 1 : prev.bookmarkCount - 1
+        }));
+
+        try {
+        // 백엔드가 알아서 판단해서 처리함
+            await toggleRecruitmentScrap(id);
+
+        } catch (error) {
+            console.error("북마크 변경 실패:", error);
+            alert("요청 처리에 실패했습니다.");
+        
+            // 3. 에러 발생 시 원상복구 (Rollback)
+            setIsBookmarked(previousState);
+            setPost(prev => ({ ...prev, bookmarkCount: previousCount }));
+        }
     };
 
     const handleCloseApplicantList = () => {
@@ -200,7 +227,6 @@ export default function RecruitmentViewPage() {
                 <section className="post-header">
                     <h2 className="post-title">{post.title}</h2>
                     <div className="meta-info">
-                        {/* ★ [수정 2] SCSS 클래스(.twoicons)에 맞춰 구조 변경 및 이미지 적용 */}
                         <div className="twoicons">
                             <div className="view-icon">
                                 <img src={viewIcon} alt="조회수" /> {post.views}
