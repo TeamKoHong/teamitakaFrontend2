@@ -97,7 +97,6 @@ export const uploadRecruitmentImage = async (imageFile) => {
 
 /**
  * Gets a recruitment by ID
- * [수정됨] 상세 조회 시 토큰을 보내야 '북마크 여부(is_scrapped)'를 알 수 있음
  */
 export const getRecruitment = async (recruitmentId) => {
     const { API_BASE_URL, headers } = getApiConfig();
@@ -411,11 +410,7 @@ export const deleteRecruitment = async (recruitmentId) => {
     return res.json();
 };
 
-/**
- * [추가] 북마크(스크랩) 등록
- * @param {string} recruitmentId
- */
-export const scrapRecruitment = async (recruitmentId) => {
+export const toggleRecruitmentScrap = async (recruitmentId) => {
     const { API_BASE_URL, headers } = getApiConfig();
     const token = localStorage.getItem('authToken');
 
@@ -426,7 +421,7 @@ export const scrapRecruitment = async (recruitmentId) => {
     }
 
     const res = await fetch(`${API_BASE_URL}/api/recruitments/${recruitmentId}/scrap`, {
-        method: 'POST',
+        method: 'POST', 
         headers: {
             ...headers,
             Authorization: `Bearer ${token}`,
@@ -434,35 +429,7 @@ export const scrapRecruitment = async (recruitmentId) => {
     });
 
     if (res.status === 401) throw new Error('UNAUTHORIZED');
-    if (!res.ok) throw new Error('북마크 등록 실패');
-
-    return res.json();
-};
-
-/**
- * [추가] 북마크(스크랩) 취소
- * @param {string} recruitmentId
- */
-export const unsynScrapRecruitment = async (recruitmentId) => {
-    const { API_BASE_URL, headers } = getApiConfig();
-    const token = localStorage.getItem('authToken');
-
-    if (!token) {
-        const err = new Error('UNAUTHORIZED');
-        err.code = 'UNAUTHORIZED';
-        throw err;
-    }
-
-    const res = await fetch(`${API_BASE_URL}/api/recruitments/${recruitmentId}/scrap`, {
-        method: 'DELETE',
-        headers: {
-            ...headers,
-            Authorization: `Bearer ${token}`,
-        },
-    });
-
-    if (res.status === 401) throw new Error('UNAUTHORIZED');
-    if (!res.ok) throw new Error('북마크 취소 실패');
+    if (!res.ok) throw new Error('북마크 변경 실패');
 
     return res.json();
 };
