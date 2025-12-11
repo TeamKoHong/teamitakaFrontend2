@@ -25,6 +25,7 @@ import TeamMatchingPage from './pages/TeamMatchingPage/TeamMatchingPage';
 import RecruitmentPage from './pages/RecruitmentPage/RecruitmentPage';
 import SearchPage from './pages/SearchPage/SearchPage';
 import ProfilePage from './pages/Profile/ProfilePage';
+import ProfileEdit from './pages/ProfileEdit';
 import BookmarkPage from './pages/BookmarkPage/BookmarkPage';
 import RecruitmentViewPage from './pages/RecruitmentViewPage/RecruitmentViewPage';
 import TeamSelectPage from './pages/TeamSelectPage/TeamSelectPage';
@@ -282,6 +283,7 @@ const App = () => {
           {/* ===== 메인/프로필 (인증 필요) ===== */}
           <Route path={MAIN_ROUTES.MAIN} element={<ProtectedRoute><MainPage /></ProtectedRoute>} />
           <Route path={MAIN_ROUTES.MY} element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
+          <Route path="/profile/edit" element={<ProfileEdit />} />
 
           {/* ===== 프로젝트 관리 라우트 (로그인 제한 없음) ===== */}
           <Route path={PROJECT_ROUTES.MANAGEMENT} element={<ProjectManagement />} />
@@ -339,7 +341,7 @@ const App = () => {
           <Route path="/notifications" element={<NotificationsPage />} />
           <Route path="/notifications/settings" element={<NotificationSettings />} />
 
-          {/* 프로젝트 생성하기 */}
+          {/* 프로젝트 생성하기(로그인 필요 없) */}
           <Route path="/recruit" element={<ProjectRecruit />} />
           <Route path="/recruit/detail" element={<ProjectRecruitDetail />} />
           <Route path="/recruit/image" element={<ProjectRecruitImage />} />
@@ -348,8 +350,14 @@ const App = () => {
           <Route path="/recruit/publish" element={<ProjectRecruitPublish />} />
           <Route path="/recruit/publish/done" element={<ProjectRecruitPublishDone />} />
 
-
-
+         {/* 프로젝트 생성하기(로그인 필요) */}
+          {/* <Route path="/recruit" element={<ProtectedRoute><ProjectRecruit /></ProtectedRoute>} />
+          <Route path="/recruit/detail" element={<ProtectedRoute><ProjectRecruitDetail /></ProtectedRoute>} />
+          <Route path="/recruit/image" element={<ProtectedRoute><ProjectRecruitImage /></ProtectedRoute>} />
+          <Route path="/recruit/drafts" element={<ProtectedRoute><ProjectDrafts /></ProtectedRoute>} />
+          <Route path="/recruit/preview" element={<ProtectedRoute><ProjectRecruitPreview /></ProtectedRoute>} />
+          <Route path="/recruit/publish" element={<ProtectedRoute><ProjectRecruitPublish /></ProtectedRoute>} />
+          <Route path="/recruit/publish/done" element={<ProtectedRoute><ProjectRecruitPublishDone /></ProtectedRoute>} /> */}
         </Routes>
       </AuthProvider>
     </Router>
