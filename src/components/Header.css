@@ -1,0 +1,22 @@
+.header-container {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 124px;              /* 아이콘과 텍스트 간격 */
+  padding: 48px 0 0 22px; /* Figma Top: 78px, Left: 22px */
+  box-sizing: border-box;
+}
+
+.back-icon {
+  width: 8px;
+  height: 16px;
+  object-fit: contain;
+}
+
+.header-title {
+  font-family: "Pretendard", sans-serif;
+  font-size: 17px;
+  font-weight: 600;
+  color: #000;
+  line-height: 20px;
+}
