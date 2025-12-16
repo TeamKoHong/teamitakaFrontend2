@@ -61,6 +61,10 @@ import VerificationCodePage from './pages/VerificationCodePage/VerificationCodeP
 import ProfileSetupPage from './pages/ProfileSetupPage/ProfileSetupPage';
 import WelcomePage from './pages/WelcomePage/WelcomePage';
 
+// 아이디/비밀번호 찾기 페이지
+import FindIdPage from './pages/FindIdPage/FindIdPage';
+import FindPasswordPage from './pages/FindPasswordPage/FindPasswordPage';
+
 // 인증 관련 임포트
 import { AuthProvider } from './contexts/AuthContext';
 import GlobalToastSystem from './components/Common/GlobalToastSystem';
@@ -329,6 +333,10 @@ const App = () => {
           <Route path="/phone-verify/code" element={<PublicRoute><VerificationCodePage /></PublicRoute>} />
           <Route path="/profile-setup" element={<ProtectedRoute><ProfileSetupPage /></ProtectedRoute>} />
           <Route path="/welcome" element={<ProtectedRoute><WelcomePage /></ProtectedRoute>} />
+
+          {/* ===== 아이디/비밀번호 찾기 라우트 ===== */}
+          <Route path="/find-id" element={<PublicRoute><FindIdPage /></PublicRoute>} />
+          <Route path="/find-password" element={<PublicRoute><FindPasswordPage /></PublicRoute>} />
 
           {/* ===== 기본 리다이렉트 ===== */}
           <Route path="/" element={<Navigate to={MAIN_ROUTES.HOME} replace />} />
