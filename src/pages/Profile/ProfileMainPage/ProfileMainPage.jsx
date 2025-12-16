@@ -345,14 +345,27 @@ export default function ProfileMainPage() {
               <div style={{
                 display: 'flex',
                 flexDirection: 'row',
-                gap: '8px',
-                marginTop: '16px',
+                gap: '0',
+                marginTop: '40px',
+                position: 'relative',
               }}>
                 <FeedbackCard
                   type="positive"
                   title="이런 점이 좋아요👍"
                   items={displayData.feedback.positive}
                 />
+
+                {/* 가운데 점선 구분선 */}
+                <div style={{
+                  position: 'absolute',
+                  top: '10px',
+                  left: '50%',
+                  width: '1px',
+                  height: 'calc(100% - 20px)',
+                  borderLeft: '1px dashed #D1CCCB',
+                  zIndex: 10,
+                }} />
+
                 <FeedbackCard
                   type="negative"
                   title="이런 점은 개선이 필요해요🚨"

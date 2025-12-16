@@ -73,13 +73,13 @@ const PentagonChart = ({
       {/* 라벨들 (가장 큰 오각형 꼭짓점에 정확히 위치) */}
       <div className="chart-labels">
         {points.map(({ x, y, label }) => {
-          // 보기 좋게 약간 바깥쪽으로 보정
+          // 보기 좋게 바깥쪽으로 오프셋 적용 (차트 선과 겹치지 않도록)
           const offset =
-            label === "업무능력" ? { dx: 0, dy: -10 } :
-            label === "노력" ? { dx: 10, dy: -5 } :
-            label === "열정" ? { dx: 8, dy: 10 } :
-            label === "실력" ? { dx: -8, dy: 10 } :
-            { dx: -10, dy: -5 }; // 소통
+            label === "업무능력" ? { dx: 0, dy: -18 } :
+            label === "노력" ? { dx: 18, dy: -8 } :
+            label === "열정" ? { dx: 12, dy: 18 } :
+            label === "실력" ? { dx: -12, dy: 18 } :
+            { dx: -18, dy: -8 }; // 소통
           const style = { left: x + offset.dx, top: y + offset.dy };
           return (
             <div key={label} className="label" style={style}>{label}</div>
