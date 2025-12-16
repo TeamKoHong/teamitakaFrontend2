@@ -1,7 +1,7 @@
 /* 전체 영역 */
 .interest-container {
-  width: 390px;
-  padding-left: 16px;
+  width: 100%;
+  padding-left: 0;
   box-sizing: border-box;
 
   margin-top: 32px; /* 위 요소와 간격 */
@@ -14,8 +14,8 @@
   font-weight: 600; /* SemiBold */
   line-height: 100%;
   color: #000000;
-   margin-bottom: 8px;  
-   margin-left: -270px;
+  margin-bottom: 8px;
+  margin-left: 0;
 }
 
 

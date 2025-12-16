@@ -1,25 +1,42 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./ProfileImage.css";
 import PenIcon from "../assets/pen.png";
 import PenBack from "../assets/penback.png";
 import DefaultProfile from "../assets/profile_potato.png"; // 기본 이미지 (감자)
 
-export default function ProfileImage({ src }) {
+export default function ProfileImage({ src, onChange }) {
   const [showModal, setShowModal] = useState(false);
   const [profileImage, setProfileImage] = useState(src || DefaultProfile);
+
+  // src prop이 변경되면 상태 업데이트 (외부에서 이미지 URL 전달 시)
+  useEffect(() => {
+    if (src) {
+      setProfileImage(src);
+    }
+  }, [src]);
 
   const handleFileSelect = (e) => {
     const file = e.target.files[0];
     if (!file) return;
 
+    // 미리보기용 로컬 이미지 설정
     const reader = new FileReader();
     reader.onload = () => setProfileImage(reader.result);
     reader.readAsDataURL(file);
+
+    // 부모 컴포넌트에 파일 전달
+    if (onChange) {
+      onChange(file);
+    }
   };
 
   const resetImage = () => {
     setProfileImage(DefaultProfile);
     setShowModal(false);
+    // 부모 컴포넌트에 리셋 알림 (null로 전달)
+    if (onChange) {
+      onChange(null);
+    }
   };
 
   return (

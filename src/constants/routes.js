@@ -7,6 +7,7 @@ export const MAIN_ROUTES = {
   LOGIN: '/login',
   REGISTER: '/register',
   MY: '/my',
+  MY_EDIT: '/my/edit',
 };
 
 // ===== 프로젝트 관리 라우트 =====
@@ -91,6 +92,11 @@ export const ROUTE_METADATA = {
     title: '프로필',
     requiresAuth: true,
     showBottomNav: true,
+  },
+  [MAIN_ROUTES.MY_EDIT]: {
+    title: '프로필 편집',
+    requiresAuth: true,
+    showBottomNav: false,
   },
   [PROJECT_ROUTES.MANAGEMENT]: {
     title: '프로젝트 관리',
