@@ -6,8 +6,6 @@ export const MAIN_ROUTES = {
   MAIN: '/main',
   LOGIN: '/login',
   REGISTER: '/register',
-  MY: '/my',
-  MY_EDIT: '/my/edit',
 };
 
 // ===== 프로젝트 관리 라우트 =====
@@ -54,6 +52,7 @@ export const OTHER_ROUTES = {
 // ===== 프로필 라우트 =====
 export const PROFILE_ROUTES = {
   MAIN: '/profile',
+  EDIT: '/profile/edit',
   VERIFICATION: '/profile/verification',
 };
 
@@ -95,16 +94,6 @@ export const ROUTE_METADATA = {
     requiresAuth: false,
     showBottomNav: false,
   },
-  [MAIN_ROUTES.MY]: {
-    title: '프로필',
-    requiresAuth: true,
-    showBottomNav: true,
-  },
-  [MAIN_ROUTES.MY_EDIT]: {
-    title: '프로필 편집',
-    requiresAuth: true,
-    showBottomNav: false,
-  },
   [PROJECT_ROUTES.MANAGEMENT]: {
     title: '프로젝트 관리',
     requiresAuth: true,
@@ -144,6 +133,11 @@ export const ROUTE_METADATA = {
     title: '프로필',
     requiresAuth: true,
     showBottomNav: true,
+  },
+  [PROFILE_ROUTES.EDIT]: {
+    title: '프로필 편집',
+    requiresAuth: true,
+    showBottomNav: false,
   },
   [PROFILE_ROUTES.VERIFICATION]: {
     title: '대학 인증 내역',

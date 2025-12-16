@@ -175,7 +175,7 @@ export default function ProfileMainPage() {
 
   // 설정 버튼 클릭
   const handleSettingsClick = () => {
-    navigate('/my/edit');
+    navigate('/profile/edit');
   };
 
   // 인증 뱃지 클릭

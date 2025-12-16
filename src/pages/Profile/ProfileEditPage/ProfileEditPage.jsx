@@ -77,7 +77,7 @@ export default function ProfileEditPage() {
 
   // 뒤로가기 핸들러
   const handleBack = () => {
-    navigate("/my");
+    navigate("/profile");
   };
 
   // 이미지 변경 핸들러
@@ -114,8 +114,8 @@ export default function ProfileEditPage() {
 
       const res = await updateProfile(updatedData);
       if (res?.success) {
-        // 성공 시 /my 페이지로 이동 (업데이트된 데이터 전달)
-        navigate("/my", { replace: true, state: { user: updatedData } });
+        // 성공 시 /profile 페이지로 이동 (업데이트된 데이터 전달)
+        navigate("/profile", { replace: true, state: { user: updatedData } });
       } else {
         throw new Error("프로필 저장에 실패했습니다.");
       }
@@ -149,7 +149,7 @@ export default function ProfileEditPage() {
         <Header title="프로필 편집" onBack={handleBack} />
         <div className={styles.errorContainer}>
           <p>{error}</p>
-          <Button onClick={() => navigate("/my")}>돌아가기</Button>
+          <Button onClick={() => navigate("/profile")}>돌아가기</Button>
         </div>
       </div>
     );

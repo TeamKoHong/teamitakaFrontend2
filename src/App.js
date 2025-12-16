@@ -24,8 +24,7 @@ import RegisterPage from './pages/RegisterPage/RegisterPage';
 import TeamMatchingPage from './pages/TeamMatchingPage/TeamMatchingPage';
 import RecruitmentPage from './pages/RecruitmentPage/RecruitmentPage';
 import SearchPage from './pages/SearchPage/SearchPage';
-import ProfilePage from './pages/Profile/ProfilePage';
-import ProfileEdit from './pages/ProfileEdit';
+// ProfilePage와 ProfileEdit 삭제 - /my, /my/edit 라우트 제거됨
 import ProfileEditPage from './pages/Profile/ProfileEditPage';
 import ProfileMainPage from './pages/Profile/ProfileMainPage';
 import ProfileVerificationPage from './pages/Profile/ProfileVerificationPage';
@@ -288,15 +287,12 @@ const App = () => {
           {/* ===== 게스트 랜딩 페이지 (로그인 불필요) ===== */}
           <Route path="/guest" element={<GuestLandingPage />} />
 
-          {/* ===== 메인/프로필 (인증 필요) ===== */}
+          {/* ===== 메인 (인증 필요) ===== */}
           <Route path={MAIN_ROUTES.MAIN} element={<ProtectedRoute><MainPage /></ProtectedRoute>} />
-          <Route path={MAIN_ROUTES.MY} element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
-          <Route path={MAIN_ROUTES.MY_EDIT} element={<ProtectedRoute><ProfileEditPage /></ProtectedRoute>} />
-          {/* 기존 /profile/edit - 데모/예시용 (인증 불필요) */}
-          <Route path="/profile/edit" element={<ProfileEdit />} />
 
-          {/* ===== 프로필 상세 라우트 (인증 필요) ===== */}
+          {/* ===== 프로필 라우트 (인증 필요) ===== */}
           <Route path={PROFILE_ROUTES.MAIN} element={<ProtectedRoute><ProfileMainPage /></ProtectedRoute>} />
+          <Route path={PROFILE_ROUTES.EDIT} element={<ProtectedRoute><ProfileEditPage /></ProtectedRoute>} />
           <Route path={PROFILE_ROUTES.VERIFICATION} element={<ProtectedRoute><ProfileVerificationPage /></ProtectedRoute>} />
 
           {/* ===== 프로젝트 관리 라우트 (로그인 제한 없음) ===== */}
