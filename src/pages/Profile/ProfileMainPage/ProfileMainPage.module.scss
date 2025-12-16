@@ -158,40 +158,47 @@
   color: $primary-color;
 }
 
-// 활동 타입 카드
+// 활동 타입 카드 (주황색 그라데이션 + 캐릭터)
 .activityCard {
-  background-color: #fff;
+  background: linear-gradient(135deg, #F76241 0%, #FF9780 100%);
   border-radius: 20px;
   padding: 20px;
   margin-bottom: 16px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  position: relative;
+  overflow: hidden;
+  min-height: 100px;
 }
 
 .activityContent {
   flex: 1;
+  z-index: 1;
 }
 
 .activityLabel {
   font-family: 'Pretendard';
   font-size: 14px;
   font-weight: 500;
-  color: #807C7C;
+  color: rgba(255, 255, 255, 0.9);
   margin-bottom: 4px;
 }
 
 .activityType {
   font-family: 'Pretendard';
-  font-size: 18px;
+  font-size: 22px;
   font-weight: 700;
-  color: #140805;
+  color: #fff;
 }
 
 .activityCharacter {
-  width: 80px;
-  height: 80px;
+  width: 120px;
+  height: auto;
   object-fit: contain;
+  position: absolute;
+  right: 10px;
+  bottom: 0;
 }
 
 // 능력치 분석 섹션
@@ -268,7 +275,7 @@
 .radarChartContainer {
   display: flex;
   justify-content: center;
-  margin-bottom: 40px;
+  margin-bottom: 16px;
 }
 
 .feedbackCards {

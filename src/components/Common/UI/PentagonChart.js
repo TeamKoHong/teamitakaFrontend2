@@ -1,14 +1,15 @@
 import React from "react";
 import "./PentagonChart.scss";
 
-const PentagonChart = ({ 
+const PentagonChart = ({
   skills = {
     업무능력: 80,
     노력: 70,
     열정: 90,
     실력: 60,
     소통: 85
-  }
+  },
+  highlightLabels = [] // 하이라이트할 라벨 목록 (주황색으로 표시)
 }) => {
   // 스킬 값을 0-100 범위로 정규화하고 SVG 좌표로 변환
   const normalizeValue = (value) => Math.max(0, Math.min(100, value));
@@ -80,7 +81,16 @@ const PentagonChart = ({
             label === "열정" ? { dx: 12, dy: 18 } :
             label === "실력" ? { dx: -12, dy: 18 } :
             { dx: -18, dy: -8 }; // 소통
-          const style = { left: x + offset.dx, top: y + offset.dy };
+
+          // 하이라이트 라벨 스타일 적용
+          const isHighlighted = highlightLabels.includes(label);
+          const style = {
+            left: x + offset.dx,
+            top: y + offset.dy,
+            color: isHighlighted ? '#F76241' : '#3e3e3e',
+            fontWeight: isHighlighted ? 600 : 500,
+          };
+
           return (
             <div key={label} className="label" style={style}>{label}</div>
           );

@@ -7,6 +7,36 @@ import PentagonChart from '../../../components/Common/UI/PentagonChart';
 import styles from './ProfileMainPage.module.scss';
 import defaultProfileImage from '../../../images/profileImage.png';
 
+// 캐릭터 배너 이미지 import
+import 활동티미 from '../../../assets/character_banner/활동티미.png';
+import 긍정티미 from '../../../assets/character_banner/긍정티미.png';
+import 분석티미 from '../../../assets/character_banner/분석티미.png';
+import 감각티미 from '../../../assets/character_banner/감각티미.png';
+import 실험티미 from '../../../assets/character_banner/실험티미.png';
+import 안정티미 from '../../../assets/character_banner/안정티미.png';
+import 완벽티미 from '../../../assets/character_banner/완벽티미.png';
+import 융합티미 from '../../../assets/character_banner/융합티미.png';
+import 적응티미 from '../../../assets/character_banner/적응티미.png';
+import 조율티미 from '../../../assets/character_banner/조율티미.png';
+import 창의티미 from '../../../assets/character_banner/창의티미.png';
+import 통찰티미 from '../../../assets/character_banner/통찰티미.png';
+
+// 티미 타입별 이미지 매핑
+const CHARACTER_IMAGES = {
+  '활동티미': 활동티미,
+  '긍정티미': 긍정티미,
+  '분석티미': 분석티미,
+  '감각티미': 감각티미,
+  '실험티미': 실험티미,
+  '안정티미': 안정티미,
+  '완벽티미': 완벽티미,
+  '융합티미': 융합티미,
+  '적응티미': 적응티미,
+  '조율티미': 조율티미,
+  '창의티미': 창의티미,
+  '통찰티미': 통찰티미,
+};
+
 // 아이콘 (임시 - 실제로는 이미지나 SVG 컴포넌트 사용)
 const SettingsIcon = () => (
   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -240,13 +270,7 @@ export default function ProfileMainPage() {
 
       {/* 메인 컨텐츠 */}
       <div className={styles.content}>
-        {/* 프로필 소개 문구 */}
-        <div className={styles.profileIntro}>
-          지난 활동을 돌아보고, <br/>
-          <span className={styles.profileIntroHighlight}>더 나은 팀원</span>이 되어가요.
-        </div>
-
-        {/* 프로필 카드 */}
+        {/* 1. 프로필 카드 */}
         <div className={styles.profileCard}>
           <div className={styles.profileHeader}>
             <div className={styles.profileImageWrapper}>
@@ -292,7 +316,7 @@ export default function ProfileMainPage() {
           )}
         </div>
 
-        {/* 활동 타입 카드 */}
+        {/* 2. 활동 타입 카드 (주황색 그라데이션 + 캐릭터 이미지) */}
         <div className={styles.activityCard}>
           <div className={styles.activityContent}>
             <div className={styles.activityLabel}>
@@ -302,7 +326,17 @@ export default function ProfileMainPage() {
               {displayData.activityType.type}
             </div>
           </div>
-          {/* 캐릭터 이미지 - 추후 추가 */}
+          <img
+            src={CHARACTER_IMAGES[displayData.activityType.type] || 활동티미}
+            alt={displayData.activityType.type}
+            className={styles.activityCharacter}
+          />
+        </div>
+
+        {/* 3. 프로필 소개 문구 */}
+        <div className={styles.profileIntro}>
+          지난 활동을 돌아보고, <br/>
+          <span className={styles.profileIntroHighlight}>더 나은 팀원</span>이 되어가요.
         </div>
 
         {/* 능력치 분석 섹션 */}
@@ -332,13 +366,8 @@ export default function ProfileMainPage() {
             <div className={styles.expandedContent}>
               <div className={styles.radarChartContainer}>
                 <PentagonChart
-                  scores={{
-                    effort: displayData.skills.노력,
-                    ability: displayData.skills.업무능력,
-                    growth: displayData.skills.성장,
-                    communication: displayData.skills.소통,
-                    will: displayData.skills.의지,
-                  }}
+                  skills={displayData.skills}
+                  highlightLabels={['소통', '성장']}
                 />
               </div>
 
@@ -346,7 +375,7 @@ export default function ProfileMainPage() {
                 display: 'flex',
                 flexDirection: 'row',
                 gap: '0',
-                marginTop: '40px',
+                marginTop: '16px',
                 position: 'relative',
               }}>
                 <FeedbackCard
@@ -358,10 +387,10 @@ export default function ProfileMainPage() {
                 {/* 가운데 점선 구분선 */}
                 <div style={{
                   position: 'absolute',
-                  top: '10px',
+                  top: '11px',
                   left: '50%',
                   width: '1px',
-                  height: 'calc(100% - 20px)',
+                  height: '52px',
                   borderLeft: '1px dashed #D1CCCB',
                   zIndex: 10,
                 }} />
