@@ -316,20 +316,12 @@ export default function ProfileMainPage() {
           )}
         </div>
 
-        {/* 2. 활동 타입 카드 (주황색 그라데이션 + 캐릭터 이미지) */}
+        {/* 2. 활동 타입 카드 (배너 이미지만 표시) */}
         <div className={styles.activityCard}>
-          <div className={styles.activityContent}>
-            <div className={styles.activityLabel}>
-              {displayData.activityType.description}
-            </div>
-            <div className={styles.activityType}>
-              {displayData.activityType.type}
-            </div>
-          </div>
           <img
             src={CHARACTER_IMAGES[displayData.activityType.type] || 활동티미}
             alt={displayData.activityType.type}
-            className={styles.activityCharacter}
+            className={styles.activityBanner}
           />
         </div>
 
