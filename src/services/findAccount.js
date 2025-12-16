@@ -121,6 +121,26 @@ export const requestPasswordReset = async (email) => {
 };
 
 /**
+ * 비밀번호 찾기 - 인증번호 확인
+ * @param {string} email - 이메일 주소
+ * @param {string} code - 6자리 인증번호
+ * @returns {Promise<{success: boolean}>}
+ */
+export const verifyPasswordResetCode = async (email, code) => {
+    // Mock: 시뮬레이션 딜레이
+    await new Promise(resolve => setTimeout(resolve, 500));
+
+    // 테스트 인증번호 확인
+    if (code !== TEST_VERIFICATION_CODE) {
+        throw new Error('인증번호가 일치하지 않습니다.');
+    }
+
+    console.log('✅ [Mock] 비밀번호 재설정 인증번호 확인 성공:', email);
+
+    return { success: true };
+};
+
+/**
  * 비밀번호 재설정
  * @param {Object} data - { email, newPassword }
  * @returns {Promise<{success: boolean, message: string}>}

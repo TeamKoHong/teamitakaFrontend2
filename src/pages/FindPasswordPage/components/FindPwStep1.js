@@ -15,7 +15,7 @@ function FindPwStep1({ email: initialEmail, onComplete }) {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const isEmailValid = emailRegex.test(email);
 
-    // 재설정 메일 보내기
+    // 인증번호 전송
     const handleSubmit = async () => {
         if (!isEmailValid || isLoading) return;
 
@@ -64,7 +64,7 @@ function FindPwStep1({ email: initialEmail, onComplete }) {
                     onClick={handleSubmit}
                     isLoading={isLoading}
                 >
-                    재설정 메일 보내기
+                    인증번호 전송
                 </Button>
             </div>
         </div>

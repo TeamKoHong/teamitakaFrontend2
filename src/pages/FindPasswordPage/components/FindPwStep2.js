@@ -1,40 +1,62 @@
 import React, { useState } from 'react';
 import Button from '../../../components/DesignSystem/Button/Button';
-import {
-    resetPassword,
-    validatePassword,
-    validatePasswordConfirm
-} from '../../../services/findAccount';
+import useTimer from '../../../hooks/useTimer';
+import { verifyPasswordResetCode, requestPasswordReset } from '../../../services/findAccount';
 import styles from '../FindPasswordPage.module.scss';
 
 /**
- * 비밀번호 찾기 Step 2 - 새 비밀번호 입력
+ * 비밀번호 찾기 Step 2 - 이메일 인증번호 입력
  */
 function FindPwStep2({ email, onComplete }) {
-    const [password, setPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
+    const [code, setCode] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
+    const [successMessage, setSuccessMessage] = useState('인증 코드를 이메일로 보냈습니다.');
 
-    // 실시간 유효성 검사
-    const passwordValidation = validatePassword(password);
-    const confirmValidation = validatePasswordConfirm(password, confirmPassword);
+    // 타이머 (3분)
+    const { formatted, isExpired, reset: resetTimer } = useTimer(180);
 
     // 폼 유효성
-    const isFormValid = passwordValidation.isValid && confirmValidation.isValid;
+    const isCodeValid = code.length === 6;
 
-    // 비밀번호 재설정 완료
-    const handleSubmit = async () => {
-        if (!isFormValid || isLoading) return;
+    // 인증번호 변경
+    const handleCodeChange = (e) => {
+        const value = e.target.value.replace(/\D/g, '').slice(0, 6);
+        setCode(value);
+    };
+
+    // 인증번호 확인
+    const handleVerify = async () => {
+        if (!isCodeValid || isExpired || isLoading) return;
 
         setIsLoading(true);
         setError('');
 
         try {
-            await resetPassword({ email, newPassword: password });
-            onComplete();
+            const result = await verifyPasswordResetCode(email, code);
+
+            if (result.success) {
+                onComplete();
+            }
         } catch (err) {
-            setError(err.message || '오류가 발생했습니다.');
+            setError(err.message || '인증번호가 일치하지 않습니다.');
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    // 인증번호 재전송
+    const handleResend = async () => {
+        setIsLoading(true);
+        setError('');
+
+        try {
+            await requestPasswordReset(email);
+            resetTimer();
+            setCode('');
+            setSuccessMessage('인증 코드가 재전송되었습니다.');
+        } catch (err) {
+            setError(err.message || '재전송에 실패했습니다.');
         } finally {
             setIsLoading(false);
         }
@@ -43,58 +65,55 @@ function FindPwStep2({ email, onComplete }) {
     return (
         <div className={styles.stepContainer}>
             <div className={styles.description}>
-                <p>새롭게 사용할</p>
-                <p>비밀번호를 재설정 해주세요.</p>
+                <p>입력하신 이메일로 받은</p>
+                <p>인증 코드를 입력해주세요.</p>
             </div>
 
-            {/* 새 비밀번호 입력 */}
+            {/* 인증번호 입력 */}
             <div className={styles.formSection}>
-                <label className={styles.label}>비밀번호 ( 8자 이상 , 영문 , 숫자 , 특수문자 )</label>
-                <input
-                    type="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder="새로운 비밀번호 입력"
-                    className={styles.input}
-                />
-                {passwordValidation.message && (
-                    <div className={styles.errorMessage}>
-                        {passwordValidation.message}
-                    </div>
-                )}
-            </div>
+                <label className={styles.label}>인증 코드 입력</label>
+                <div className={styles.codeInputWrapper}>
+                    <input
+                        type="text"
+                        inputMode="numeric"
+                        value={code}
+                        onChange={handleCodeChange}
+                        placeholder="인증번호 6자리"
+                        className={styles.codeInput}
+                        maxLength={6}
+                    />
+                    <span className={`${styles.timer} ${isExpired ? styles.expired : ''}`}>
+                        {formatted}
+                    </span>
+                </div>
 
-            {/* 비밀번호 확인 */}
-            <div className={styles.formSection}>
-                <label className={styles.label}>비밀번호 확인</label>
-                <input
-                    type="password"
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    placeholder="비밀번호를 한번 더 입력해 확인해주세요."
-                    className={styles.input}
-                />
-                {confirmValidation.message && (
-                    <div className={styles.errorMessage}>
-                        {confirmValidation.message}
-                    </div>
+                {/* 성공/에러 메시지 */}
+                {error ? (
+                    <div className={styles.errorMessage}>{error}</div>
+                ) : successMessage && (
+                    <div className={styles.successMessage}>{successMessage}</div>
                 )}
-            </div>
 
-            {/* 서버 에러 메시지 */}
-            {error && (
-                <div className={styles.errorMessage}>{error}</div>
-            )}
+                {/* 다시 보내기 */}
+                <button
+                    type="button"
+                    className={styles.resendButton}
+                    onClick={handleResend}
+                    disabled={isLoading}
+                >
+                    코드 다시 받기
+                </button>
+            </div>
 
             {/* 하단 버튼 */}
             <div className={styles.bottomButton}>
                 <Button
                     fullWidth
-                    disabled={!isFormValid || isLoading}
-                    onClick={handleSubmit}
+                    disabled={!isCodeValid || isExpired || isLoading}
+                    onClick={handleVerify}
                     isLoading={isLoading}
                 >
-                    비밀번호 재설정 완료
+                    확인
                 </Button>
             </div>
         </div>
