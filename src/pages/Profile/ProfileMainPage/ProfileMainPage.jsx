@@ -27,37 +27,38 @@ const ChevronDownIcon = () => (
   </svg>
 );
 
-// 피드백 카드 컴포넌트 (가로 배치용)
+// 피드백 카드 컴포넌트 (Figma 사양)
 const FeedbackCard = ({ type, title, items }) => {
   const isPositive = type === 'positive';
   return (
     <div style={{
-      flex: 1,
-      minWidth: 0,
-      padding: '16px',
-      borderRadius: '12px',
+      width: '182px',
+      height: '72px',
+      padding: '12px',
+      borderRadius: '10px',
       backgroundColor: isPositive ? '#FFFDFC' : '#F76241',
-      border: isPositive ? '1px solid #f0f0f0' : 'none',
-      overflow: 'hidden',
+      boxSizing: 'border-box',
     }}>
       <div style={{
         fontFamily: 'Pretendard',
-        fontSize: '13px',
+        fontSize: '11px',
         fontWeight: 600,
-        color: isPositive ? '#140805' : '#FFFDFC',
-        marginBottom: '8px',
+        color: isPositive ? '#000' : '#fff',
+        marginBottom: '4px',
+        letterSpacing: '-0.01em',
       }}>
         {title}
       </div>
       <ul style={{
         margin: 0,
-        paddingLeft: '16px',
-        color: isPositive ? '#807C7C' : 'rgba(255, 253, 252, 0.8)',
-        fontSize: '12px',
-        lineHeight: 1.5,
+        paddingLeft: '13px',
+        color: isPositive ? '#444' : '#efefef',
+        fontSize: '10px',
+        lineHeight: '165.04%',
+        letterSpacing: '-0.01em',
       }}>
         {items?.map((item, index) => (
-          <li key={index} style={{ marginBottom: '4px' }}>{item}</li>
+          <li key={index} style={{ marginBottom: '0px' }}>{item}</li>
         ))}
       </ul>
     </div>
@@ -341,15 +342,20 @@ export default function ProfileMainPage() {
                 />
               </div>
 
-              <div className={styles.feedbackCards}>
+              <div style={{
+                display: 'flex',
+                flexDirection: 'row',
+                gap: '0px',
+                justifyContent: 'center',
+              }}>
                 <FeedbackCard
                   type="positive"
-                  title="이런 점이 좋아요 👍"
+                  title="이런 점이 좋아요👍"
                   items={displayData.feedback.positive}
                 />
                 <FeedbackCard
                   type="negative"
-                  title="이런 점은 개선이 필요해요."
+                  title="이런 점은 개선이 필요해요🚨"
                   items={displayData.feedback.negative}
                 />
               </div>
