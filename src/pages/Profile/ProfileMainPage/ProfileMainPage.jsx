@@ -79,10 +79,9 @@ const SkillBubbleChart = ({ skills }) => {
   // skills가 없거나 비어있으면 기본값 사용
   const skillData = skills && Object.keys(skills).length > 0 ? skills : DEFAULT_SKILLS;
 
-  // 값 기준 내림차순 정렬 → 높은 값이 큰 버블에 배치됨
+  // 값 기준 내림차순 정렬 → 높은 값이 큰 버블에 배치됨 (이름과 값 모두 유지)
   const sortedSkills = Object.entries(skillData)
-    .sort(([, a], [, b]) => b - a)
-    .map(([name]) => name);
+    .sort(([, a], [, b]) => b - a);
 
   return (
     <div style={{
@@ -91,9 +90,14 @@ const SkillBubbleChart = ({ skills }) => {
       height: '177px',
       margin: '0 auto',
     }}>
-      {sortedSkills.map((skillName, index) => {
+      {sortedSkills.map(([skillName, skillValue], index) => {
         const style = BUBBLE_STYLES[index];
         if (!style) return null; // 5개 초과 스킬 방어
+
+        // 버블 크기에 따른 폰트 크기 조정
+        const nameFontSize = style.size >= 100 ? '16.79px' : style.size >= 80 ? '14px' : '12px';
+        const valueFontSize = style.size >= 100 ? '14px' : style.size >= 80 ? '12px' : '10px';
+
         return (
           <div
             key={skillName}
@@ -106,19 +110,30 @@ const SkillBubbleChart = ({ skills }) => {
               borderRadius: '50%',
               backgroundColor: style.bg,
               display: 'flex',
+              flexDirection: 'column',
               alignItems: 'center',
               justifyContent: 'center',
               zIndex: style.zIndex,
             }}
           >
             <span style={{
-              fontSize: style.size >= 100 ? '16.79px' : '14px',
+              fontSize: nameFontSize,
               fontWeight: 800,
               color: style.textColor,
               fontFamily: 'Pretendard',
               letterSpacing: '-0.01em',
+              lineHeight: 1.2,
             }}>
               {skillName}
+            </span>
+            <span style={{
+              fontSize: valueFontSize,
+              fontWeight: 600,
+              color: style.textColor,
+              fontFamily: 'Pretendard',
+              opacity: 0.9,
+            }}>
+              {skillValue}
             </span>
           </div>
         );
