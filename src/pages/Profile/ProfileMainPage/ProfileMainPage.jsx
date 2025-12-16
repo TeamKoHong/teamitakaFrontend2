@@ -63,13 +63,13 @@ const FeedbackCard = ({ type, title, items }) => {
 };
 
 // 버블 차트 컴포넌트 (Figma 디자인 - Overlap 레이아웃)
-// 크기 내림차순 정렬된 버블 스타일 (값이 높은 스킬 → 큰 버블)
+// 크기 내림차순 정렬된 버블 스타일 (값이 높은 스킬 → 큰 버블, 큰 버블 → 앞 레이어)
 const BUBBLE_STYLES = [
-  { size: 123, bg: '#F76241', textColor: '#FFFDFC', top: 0, left: 114 },   // 1위 (가장 큰 버블)
-  { size: 107, bg: '#FF9780', textColor: '#FFFDFC', top: 18, left: 0 },    // 2위
-  { size: 94, bg: '#FFC5B8', textColor: '#FFFDFC', top: 84, left: 60 },    // 3위
-  { size: 65, bg: '#D1CCCB', textColor: '#FFFDFC', top: 54, left: 232 },   // 4위
-  { size: 54, bg: '#ECECEC', textColor: '#D1CCCB', top: 104, left: 210 },  // 5위 (가장 작은 버블)
+  { size: 123, bg: '#F76241', textColor: '#FFFDFC', top: 0, left: 114, zIndex: 5 },   // 1위 (가장 큰 버블, 가장 앞)
+  { size: 107, bg: '#FF9780', textColor: '#FFFDFC', top: 18, left: 0, zIndex: 4 },    // 2위
+  { size: 94, bg: '#FFC5B8', textColor: '#FFFDFC', top: 84, left: 60, zIndex: 3 },    // 3위
+  { size: 65, bg: '#D1CCCB', textColor: '#FFFDFC', top: 54, left: 232, zIndex: 2 },   // 4위
+  { size: 54, bg: '#ECECEC', textColor: '#D1CCCB', top: 104, left: 210, zIndex: 1 },  // 5위 (가장 작은 버블, 가장 뒤)
 ];
 
 // 기본 스킬 데이터 (API 응답이 없을 때 사용)
@@ -108,6 +108,7 @@ const SkillBubbleChart = ({ skills }) => {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
+              zIndex: style.zIndex,
             }}
           >
             <span style={{
