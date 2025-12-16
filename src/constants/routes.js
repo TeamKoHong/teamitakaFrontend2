@@ -51,6 +51,12 @@ export const OTHER_ROUTES = {
   BOOKMARK: '/bookmark',
 };
 
+// ===== 프로필 라우트 =====
+export const PROFILE_ROUTES = {
+  MAIN: '/profile',
+  VERIFICATION: '/profile/verification',
+};
+
 // ===== 데모 및 개발 도구 라우트 =====
 export const DEMO_ROUTES = {
   CATEGORY_SLIDER: '/demo/category-slider',
@@ -63,6 +69,7 @@ export const ROUTE_GROUPS = {
   EVALUATION: Object.values(EVALUATION_ROUTES),
   LEGACY_EVALUATION: Object.values(LEGACY_EVALUATION_ROUTES),
   OTHER: Object.values(OTHER_ROUTES),
+  PROFILE: Object.values(PROFILE_ROUTES),
   DEMO: Object.values(DEMO_ROUTES),
 };
 
@@ -132,6 +139,16 @@ export const ROUTE_METADATA = {
     title: '평가 상태 (받은 평가)',
     requiresAuth: true,
     showBottomNav: true,
+  },
+  [PROFILE_ROUTES.MAIN]: {
+    title: '프로필',
+    requiresAuth: true,
+    showBottomNav: true,
+  },
+  [PROFILE_ROUTES.VERIFICATION]: {
+    title: '대학 인증 내역',
+    requiresAuth: true,
+    showBottomNav: false,
   },
 };
 

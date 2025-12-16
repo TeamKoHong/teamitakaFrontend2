@@ -27,6 +27,8 @@ import SearchPage from './pages/SearchPage/SearchPage';
 import ProfilePage from './pages/Profile/ProfilePage';
 import ProfileEdit from './pages/ProfileEdit';
 import ProfileEditPage from './pages/Profile/ProfileEditPage';
+import ProfileMainPage from './pages/Profile/ProfileMainPage';
+import ProfileVerificationPage from './pages/Profile/ProfileVerificationPage';
 import BookmarkPage from './pages/BookmarkPage/BookmarkPage';
 import RecruitmentViewPage from './pages/RecruitmentViewPage/RecruitmentViewPage';
 import TeamSelectPage from './pages/TeamSelectPage/TeamSelectPage';
@@ -79,6 +81,7 @@ import {
   EVALUATION_ROUTES,
   LEGACY_EVALUATION_ROUTES,
   OTHER_ROUTES,
+  PROFILE_ROUTES,
   DEMO_ROUTES,
   isEvaluationRoute
 } from './constants/routes';
@@ -291,6 +294,10 @@ const App = () => {
           <Route path={MAIN_ROUTES.MY_EDIT} element={<ProtectedRoute><ProfileEditPage /></ProtectedRoute>} />
           {/* 기존 /profile/edit - 데모/예시용 (인증 불필요) */}
           <Route path="/profile/edit" element={<ProfileEdit />} />
+
+          {/* ===== 프로필 상세 라우트 (인증 필요) ===== */}
+          <Route path={PROFILE_ROUTES.MAIN} element={<ProtectedRoute><ProfileMainPage /></ProtectedRoute>} />
+          <Route path={PROFILE_ROUTES.VERIFICATION} element={<ProtectedRoute><ProfileVerificationPage /></ProtectedRoute>} />
 
           {/* ===== 프로젝트 관리 라우트 (로그인 제한 없음) ===== */}
           <Route path={PROJECT_ROUTES.MANAGEMENT} element={<ProjectManagement />} />
