@@ -33,10 +33,12 @@ const FeedbackCard = ({ type, title, items }) => {
   return (
     <div style={{
       flex: 1,
+      minWidth: 0,
       padding: '16px',
       borderRadius: '12px',
       backgroundColor: isPositive ? '#FFFDFC' : '#F76241',
       border: isPositive ? '1px solid #f0f0f0' : 'none',
+      overflow: 'hidden',
     }}>
       <div style={{
         fontFamily: 'Pretendard',
@@ -96,7 +98,6 @@ const SkillBubbleChart = ({ skills }) => {
 
         // 버블 크기에 따른 폰트 크기 조정
         const nameFontSize = style.size >= 100 ? '16.79px' : style.size >= 80 ? '14px' : '12px';
-        const valueFontSize = style.size >= 100 ? '14px' : style.size >= 80 ? '12px' : '10px';
 
         return (
           <div
@@ -110,7 +111,6 @@ const SkillBubbleChart = ({ skills }) => {
               borderRadius: '50%',
               backgroundColor: style.bg,
               display: 'flex',
-              flexDirection: 'column',
               alignItems: 'center',
               justifyContent: 'center',
               zIndex: style.zIndex,
@@ -122,18 +122,8 @@ const SkillBubbleChart = ({ skills }) => {
               color: style.textColor,
               fontFamily: 'Pretendard',
               letterSpacing: '-0.01em',
-              lineHeight: 1.2,
             }}>
               {skillName}
-            </span>
-            <span style={{
-              fontSize: valueFontSize,
-              fontWeight: 600,
-              color: style.textColor,
-              fontFamily: 'Pretendard',
-              opacity: 0.9,
-            }}>
-              {skillValue}
             </span>
           </div>
         );
