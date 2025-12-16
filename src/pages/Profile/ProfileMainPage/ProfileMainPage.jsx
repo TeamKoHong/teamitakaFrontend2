@@ -27,13 +27,13 @@ const ChevronDownIcon = () => (
   </svg>
 );
 
-// 피드백 카드 컴포넌트 (Figma 사양)
+// 피드백 카드 컴포넌트
 const FeedbackCard = ({ type, title, items }) => {
   const isPositive = type === 'positive';
   return (
     <div style={{
-      width: '182px',
-      height: '72px',
+      flex: 1,
+      minHeight: '72px',
       padding: '12px',
       borderRadius: '10px',
       backgroundColor: isPositive ? '#FFFDFC' : '#F76241',
@@ -44,7 +44,7 @@ const FeedbackCard = ({ type, title, items }) => {
         fontSize: '11px',
         fontWeight: 600,
         color: isPositive ? '#000' : '#fff',
-        marginBottom: '4px',
+        marginBottom: '6px',
         letterSpacing: '-0.01em',
       }}>
         {title}
@@ -58,7 +58,7 @@ const FeedbackCard = ({ type, title, items }) => {
         letterSpacing: '-0.01em',
       }}>
         {items?.map((item, index) => (
-          <li key={index} style={{ marginBottom: '0px' }}>{item}</li>
+          <li key={index} style={{ marginBottom: '2px' }}>{item}</li>
         ))}
       </ul>
     </div>
@@ -345,8 +345,8 @@ export default function ProfileMainPage() {
               <div style={{
                 display: 'flex',
                 flexDirection: 'row',
-                gap: '0px',
-                justifyContent: 'center',
+                gap: '8px',
+                marginTop: '16px',
               }}>
                 <FeedbackCard
                   type="positive"
