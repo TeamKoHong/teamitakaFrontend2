@@ -93,7 +93,7 @@ export default function ProfileEditPage() {
     setError(null);
 
     try {
-      let profileImageUrl = userData?.profileImage;
+      let profileImageUrl = userData?.avatar || userData?.profileImage;
 
       // 새 이미지가 선택되었으면 먼저 업로드
       if (imageFile) {
@@ -161,7 +161,7 @@ export default function ProfileEditPage() {
 
       <div className={styles.content}>
         <ProfileImage
-          src={userData?.profileImage}
+          src={userData?.avatar || userData?.profileImage}
           onChange={handleImageChange}
         />
 

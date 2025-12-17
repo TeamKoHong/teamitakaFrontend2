@@ -1,27 +1,46 @@
 import React from "react";
 import "./PentagonChart.scss";
 
+// 위치 인덱스 기반 오프셋 (라벨명이 아닌 위치로 결정)
+const POSITION_OFFSETS = [
+  { dx: 0, dy: -18 },   // 상단
+  { dx: 18, dy: -8 },   // 우상단
+  { dx: 12, dy: 18 },   // 우하단
+  { dx: -12, dy: 18 },  // 좌하단
+  { dx: -18, dy: -8 }   // 좌상단
+];
+
+// 각 꼭짓점의 기본 좌표 (가장 큰 바깥 오각형 기준)
+const BASE_POINTS = [
+  { x: 74.5, y: 0.5 },     // 상단
+  { x: 149.5, y: 62 },     // 우상단
+  { x: 118.677, y: 147 },  // 우하단
+  { x: 30, y: 147 },       // 좌하단
+  { x: 1, y: 62.3403 }     // 좌상단
+];
+
 const PentagonChart = ({
   skills = {
-    업무능력: 80,
     노력: 70,
-    열정: 90,
-    실력: 60,
-    소통: 85
+    업무능력: 80,
+    소통: 85,
+    성장: 90,
+    의지: 60
   },
   highlightLabels = [] // 하이라이트할 라벨 목록 (주황색으로 표시)
 }) => {
-  // 스킬 값을 0-100 범위로 정규화하고 SVG 좌표로 변환
+  // 스킬 값을 0-100 범위로 정규화
   const normalizeValue = (value) => Math.max(0, Math.min(100, value));
-  
-  // 각 꼭짓점의 기본 좌표 (가장 큰 바깥 오각형 기준)
-  const points = [
-    { x: 74.5, y: 0.5, label: "업무능력" },       // 상단
-    { x: 149.5, y: 62, label: "노력" },           // 우상단 (격자선 좌표 기준)
-    { x: 118.677, y: 147, label: "열정" },        // 우하단
-    { x: 30, y: 147, label: "실력" },             // 좌하단
-    { x: 1, y: 62.3403, label: "소통" }           // 좌상단
-  ];
+
+  // skills 객체에서 키(라벨)와 값 추출 - 백엔드 API 데이터 기반 동적 처리
+  const skillEntries = Object.entries(skills);
+
+  // skills 키 순서대로 라벨 동적 배치
+  const points = BASE_POINTS.map((point, idx) => ({
+    ...point,
+    label: skillEntries[idx]?.[0] || '',
+    value: skillEntries[idx]?.[1] || 0
+  }));
 
   // 중심점 (격자선 교차 지점과 동일)
   const center = { x: 74.5, y: 85 };
@@ -36,10 +55,8 @@ const PentagonChart = ({
   };
 
   // 실제 데이터 포인트들 계산
-  const dataPoints = points.map((point, index) => {
-    const skillKeys = Object.keys(skills);
-    const skillValue = skills[skillKeys[index]] || 0;
-    return calculatePoint(point, skillValue);
+  const dataPoints = points.map((point) => {
+    return calculatePoint(point, point.value);
   });
 
   // SVG path 생성
@@ -71,15 +88,11 @@ const PentagonChart = ({
         />
       </svg>
       
-      {/* 라벨들 (SVG 꼭짓점 + 오프셋 방식) */}
+      {/* 라벨들 (SVG 꼭짓점 + 위치 기반 오프셋) */}
       <div className="chart-labels">
-        {points.map(({ x, y, label }) => {
-          const offset =
-            label === "업무능력" ? { dx: 0, dy: -18 } :
-            label === "노력" ? { dx: 18, dy: -8 } :
-            label === "열정" ? { dx: 12, dy: 18 } :
-            label === "실력" ? { dx: -12, dy: 18 } :
-            { dx: -18, dy: -8 }; // 소통
+        {points.map(({ x, y, label }, index) => {
+          // 위치 인덱스 기반 오프셋 사용 (라벨명이 아닌 위치로 결정)
+          const offset = POSITION_OFFSETS[index] || { dx: 0, dy: 0 };
 
           const isHighlighted = highlightLabels.includes(label);
           const style = {
@@ -90,7 +103,7 @@ const PentagonChart = ({
           };
 
           return (
-            <div key={label} className="label" style={style}>{label}</div>
+            <div key={label || index} className="label" style={style}>{label}</div>
           );
         })}
       </div>

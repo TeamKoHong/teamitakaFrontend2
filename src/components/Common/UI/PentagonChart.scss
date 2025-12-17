@@ -4,6 +4,8 @@
   flex-direction: column;
   align-items: center;
   margin: 0; /* 모달에서 잘림 방지 위해 여백 제거 */
+  overflow: visible; /* 라벨 잘림 방지 */
+  padding: 20px; /* 라벨이 나갈 공간 확보 */
 
   svg {
     width: 151px;
@@ -13,11 +15,12 @@
 
   .chart-labels {
     position: absolute;
-    top: 0;
-    left: 0;
+    top: 20px; /* padding 보정 */
+    left: 20px; /* padding 보정 */
     width: 151px;
     height: 148px;
     pointer-events: none;
+    overflow: visible; /* 라벨 잘림 방지 */
 
     .label {
       position: absolute;

@@ -52,6 +52,13 @@ const ChevronDownIcon = () => (
   </svg>
 );
 
+const GraduationCapIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
+    <path d="M10 2L1 7L10 12L19 7L10 2Z" stroke="#807C7C" strokeWidth="1.5" strokeLinejoin="round"/>
+    <path d="M4 9V14C4 14 6 17 10 17C14 17 16 14 16 14V9" stroke="#807C7C" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+  </svg>
+);
+
 // 피드백 카드 컴포넌트 (Figma 스펙: 182x72px)
 const FeedbackCard = ({ type, title, items = [] }) => {
   const isPositive = type === 'positive';
@@ -62,12 +69,11 @@ const FeedbackCard = ({ type, title, items = [] }) => {
     <div style={{
       flex: 1,
       minWidth: 0,
-      height: '72px',
+      minHeight: '72px',
       padding: '12px',
       borderRadius: '10px',
       backgroundColor: isPositive ? '#FFFDFC' : '#F76241',
       boxSizing: 'border-box',
-      overflow: 'hidden',
     }}>
       <div style={{
         fontFamily: 'Pretendard',
@@ -79,18 +85,16 @@ const FeedbackCard = ({ type, title, items = [] }) => {
       }}>
         {title}
       </div>
-      <ul style={{
-        margin: 0,
-        paddingLeft: '13px',
+      <div style={{
         color: isPositive ? '#444' : '#efefef',
         fontSize: '10px',
         lineHeight: '165.04%',
         letterSpacing: '-0.01em',
       }}>
         {displayItems.map((item, index) => (
-          <li key={index} style={{ marginBottom: '2px' }}>{item}</li>
+          <div key={index} style={{ marginBottom: '2px' }}>• {item}</div>
         ))}
-      </ul>
+      </div>
     </div>
   );
 };
@@ -105,8 +109,8 @@ const BUBBLE_STYLES = [
   { size: 54, bg: '#ECECEC', textColor: '#D1CCCB', top: 104, left: 210, zIndex: 1 },  // 5위 (가장 작은 버블, 가장 뒤)
 ];
 
-// 기본 스킬 데이터 (API 응답이 없을 때 사용)
-const DEFAULT_SKILLS = { 노력: 80, 업무능력: 75, 성장: 90, 소통: 85, 의지: 70 };
+// 기본 스킬 데이터 (API 응답이 없을 때 사용) - PentagonChart와 동일한 순서
+const DEFAULT_SKILLS = { 노력: 80, 업무능력: 75, 소통: 85, 성장: 90, 의지: 70 };
 
 const SkillBubbleChart = ({ skills }) => {
   // skills가 없거나 비어있으면 기본값 사용
@@ -243,14 +247,14 @@ export default function ProfileMainPage() {
     profileImage: userData?.profileImage || defaultProfileImage,
     username: userData?.username || '사용자',
     university: userData?.university || '대학교 미인증',
-    department: userData?.department || '',
+    department: userData?.major || userData?.department || '',
     enrollmentStatus: userData?.enrollmentStatus || '재학 중',
-    currentProjects: profileData?.currentProjects || 0,
+    currentProjects: profileData?.totalProjects || profileData?.currentProjects || 0,
     totalTeamExperience: userData?.teamExperience || profileData?.totalTeamExperience || 0,
     tags: userData?.keywords || profileData?.tags || [],
     isVerified: !!userData?.university,
     activityType: profileData?.activityType || { type: '활동티미', description: '활동적이고 긍정적인' },
-    skills: profileData?.skills || { 노력: 80, 업무능력: 75, 성장: 90, 소통: 85, 의지: 70 },
+    skills: profileData?.skills || { 노력: 80, 업무능력: 75, 소통: 85, 성장: 90, 의지: 70 },
     feedback: {
       positive: profileData?.feedback?.positive?.length > 0
         ? profileData.feedback.positive
@@ -275,48 +279,45 @@ export default function ProfileMainPage() {
 
       {/* 메인 컨텐츠 */}
       <div className={styles.content}>
-        {/* 1. 프로필 카드 */}
+        {/* 1. 프로필 카드 (컴팩트 가로 배치) */}
         <div className={styles.profileCard}>
-          <div className={styles.profileHeader}>
-            <div className={styles.profileImageWrapper}>
+          <div className={styles.profileImageWrapper}>
+            <img
+              src={displayData.profileImage}
+              alt="프로필"
+              className={styles.profileImage}
+            />
+            {displayData.isVerified && (
               <img
-                src={displayData.profileImage}
-                alt="프로필"
-                className={styles.profileImage}
+                src={verificationBadge}
+                alt="대학 인증 완료"
+                className={styles.verificationBadge}
+                onClick={handleVerificationClick}
               />
-              {displayData.isVerified && (
-                <img
-                  src={verificationBadge}
-                  alt="대학 인증 완료"
-                  className={styles.verificationBadge}
-                  onClick={handleVerificationClick}
-                />
-              )}
+            )}
+          </div>
+          <div className={styles.profileInfo}>
+            <div className={styles.profileName}>{displayData.username} 티미님</div>
+            <div className={styles.profileUniversity}>
+              <GraduationCapIcon />
+              <span>{displayData.university} {displayData.department} {displayData.enrollmentStatus}</span>
             </div>
-            <div className={styles.profileInfo}>
-              <div className={styles.profileName}>{displayData.username} 티미님</div>
-              <div className={styles.profileUniversity}>
-                {displayData.university} {displayData.department} {displayData.enrollmentStatus}
+            <div className={styles.profileStats}>
+              <div className={styles.statHighlight}>
+                현재 진행중인 프로젝트 <span className={styles.statOrange}>총 {displayData.currentProjects}건</span>
+              </div>
+              <div className={styles.statNormal}>
+                전체 팀플 경험 {displayData.totalTeamExperience}회
               </div>
             </div>
+            {displayData.tags.length > 0 && (
+              <div className={styles.profileTags}>
+                {displayData.tags.map((tag, index) => (
+                  <span key={index} className={styles.tag}>{tag}</span>
+                ))}
+              </div>
+            )}
           </div>
-
-          <div className={styles.profileStats}>
-            <div className={styles.statHighlight}>
-              현재 진행중인 프로젝트 <span className={styles.statOrange}>총 {displayData.currentProjects}건</span>
-            </div>
-            <div className={styles.statNormal}>
-              전체 팀플 경험 {displayData.totalTeamExperience}회
-            </div>
-          </div>
-
-          {displayData.tags.length > 0 && (
-            <div className={styles.profileTags}>
-              {displayData.tags.map((tag, index) => (
-                <span key={index} className={styles.tag}>{tag}</span>
-              ))}
-            </div>
-          )}
         </div>
 
         {/* 2. 활동 타입 카드 (배너 이미지만 표시) */}
@@ -362,7 +363,6 @@ export default function ProfileMainPage() {
               <div className={styles.radarChartContainer}>
                 <PentagonChart
                   skills={displayData.skills}
-                  highlightLabels={['소통', '성장']}
                 />
               </div>
 
@@ -372,9 +372,8 @@ export default function ProfileMainPage() {
                 width: '100%',
                 maxWidth: '364px',
                 gap: '0',
-                marginTop: '16px',
                 position: 'relative',
-                margin: '16px auto 0',
+                margin: '32px auto 0',
               }}>
                 <FeedbackCard
                   type="positive"
