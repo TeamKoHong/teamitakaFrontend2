@@ -21,6 +21,10 @@ function BottomNav() {
     if (path === '/team-matching') {
       return location.pathname.startsWith('/team-matching');
     }
+    // '/profile' 탭의 경우, '/profile'으로 시작하는 모든 경로에서 활성화
+    if (path === '/profile') {
+      return location.pathname.startsWith('/profile');
+    }
     // 다른 탭들은 정확히 일치할 때만 활성화 (또는 필요에 따라 startsWith 사용)
     return location.pathname === path;
   };
@@ -50,8 +54,8 @@ function BottomNav() {
         <span>팀매칭</span>
       </NavLink>
       <NavLink
-        to="/my"
-        className={isTabActive('/my') ? "nav-item active" : "nav-item"}
+        to="/profile"
+        className={isTabActive('/profile') ? "nav-item active" : "nav-item"}
       >
         <MdOutlinePerson className="nav-icon" />
         <span>프로필</span>
