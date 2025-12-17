@@ -9,7 +9,7 @@ function MainFloatingBox({ projectId }) {
   const navigate = useNavigate();
   return (
     <div className="main-floating-box">
-      <div className="header-container">
+      <div className="box-header-container">
         <div className="icon-container">
           <div className="icon" onClick={() => navigate(`/project/${projectId}/member`)}>
             <img src={teamMemberIcon} alt="팀멤버아이콘" />
