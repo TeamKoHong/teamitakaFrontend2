@@ -90,6 +90,7 @@
     justify-content: center;
     height: calc(100dvh - 110px - 88px);
     padding: 0 2rem;
+    margin-bottom: -100px;
     text-align: center;
 
     .empty-title {
@@ -792,7 +793,7 @@
 // 공통 섹션 스타일
 .pending-projects-section,
 .completed-projects-section {
-  padding: 0 16px;
+  
   margin: 16px auto 0;
   max-width: 390px;
 
