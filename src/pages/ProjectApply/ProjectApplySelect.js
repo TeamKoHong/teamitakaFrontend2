@@ -38,7 +38,7 @@ export default function ProjectApplySelect() {
         });
 
         // 백엔드 응답을 컴포넌트 형식으로 변환
-        const formattedProjects = result.projects.map(p => ({
+        const formattedProjects = (result.items || result.projects || []).map(p => ({
           id: p.project_id,  // UUID 형식
           title: p.title,
           thumb: p.photo_url || null,
