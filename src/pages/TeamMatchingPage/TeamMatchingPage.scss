@@ -254,7 +254,6 @@
     gap: 12px;
     align-items: center;
 
-    // ★ 썸네일 영역 수정됨
     .matching-card-thumbnail {
         flex-shrink: 0;
         position: relative;
@@ -312,20 +311,22 @@
         height: 79px; // 썸네일 높이와 맞춤
         padding: 4px 0; // 내부 여백
 
-        // ★ [요청] 키워드 설명(제목)은 한 줄 표시
         .matching-card-title {
             font-size: 14px;
             font-weight: 600;
             color: #333;
+            margin-bottom: 0;
             
             // 한 줄 말줄임표
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            margin-bottom: auto; // 남은 공간 아래로 밈
         }
 
-        // ★ [요청] 뷰/지원자(왼쪽) --- 날짜(오른쪽) 한 줄 배치
+        .matching-card-desc{
+            font-size: 11px;;
+        }
+
         .card-footer {
             display: flex;
             justify-content: space-between; // 양쪽 끝 정렬

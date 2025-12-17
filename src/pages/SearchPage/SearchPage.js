@@ -79,7 +79,6 @@ export default function SearchPage() {
   return (
     <div className="search-page">
       <header className="search-header">
-        {/* ★ [수정 2] 뒤로가기 클릭 시 팀매칭 홈(/team-matching)으로 이동 */}
         <button className="back-button" onClick={() => navigate('/team-matching')}>
           &lt;
         </button>

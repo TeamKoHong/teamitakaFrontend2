@@ -16,7 +16,6 @@ import defaultProjectImg from "../../assets/icons/Teamitaka.png";
 
 import { getAllRecruitments } from '../../api/recruit';
 
-// [1] 배너 컴포넌트
 const CreateProjectBanner = () => {
     const navigate = useNavigate();
     return (
@@ -30,7 +29,6 @@ const CreateProjectBanner = () => {
     );
 };
 
-// [2] Hot Topic 카드
 const HotTopicCard = ({ item, onBookmarkToggle }) => {
     const navigate = useNavigate();
     const handleCardClick = () => navigate(`/recruitment/${item.id}`);
@@ -59,7 +57,6 @@ const HotTopicCard = ({ item, onBookmarkToggle }) => {
     );
 };
 
-// [3] Matching Card
 const MatchingCard = ({ item }) => {
     const navigate = useNavigate();
     const handleCardClick = () => navigate(`/recruitment/${item.id}`);
@@ -92,7 +89,6 @@ const MatchingCard = ({ item }) => {
     );
 };
 
-// [Main] 전체 페이지
 export default function TeamMatchingPage() {
     const location = useLocation();
     const navigate = useNavigate();
@@ -190,7 +186,6 @@ export default function TeamMatchingPage() {
 
     return (
         <div className="team-matching-app">
-            {/* ★ [수정 1] 검색 중일 때는 Global Header를 숨김 (모집하기 헤더 안 뜨게) */}
             {!passedSearchQuery && <Header />}
 
             <main className="app-content">

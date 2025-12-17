@@ -1,9 +1,9 @@
 import React, { createContext, useContext, useReducer, useEffect } from 'react';
-import { 
-    getToken, 
-    getUser, 
-    setToken, 
-    removeToken, 
+import {
+    getToken,
+    getUser,
+    setToken,
+    removeToken,
     isAuthenticated,
     getTokenRemainingTime,
     shouldRefreshToken
@@ -30,7 +30,14 @@ const initialState = {
     isLoading: false,
     isAuthenticated: false,
     error: null,
-    isRefreshing: false
+    isRefreshing: false,
+    // 휴대폰 본인인증 등록 정보 (신규)
+    registration: {
+        phoneVerified: false,
+        verifiedName: null,
+        verifiedPhone: null,
+        ci: null,
+    }
 };
 
 // 리듀서 함수
@@ -42,7 +49,7 @@ const authReducer = (state, action) => {
                 isLoading: true,
                 error: null
             };
-        
+
         case AUTH_ACTIONS.LOGIN_SUCCESS:
             return {
                 ...state,
@@ -52,7 +59,7 @@ const authReducer = (state, action) => {
                 token: action.payload.token,
                 error: null
             };
-        
+
         case AUTH_ACTIONS.LOGIN_FAILURE:
             return {
                 ...state,
@@ -62,7 +69,7 @@ const authReducer = (state, action) => {
                 token: null,
                 error: action.payload.error
             };
-        
+
         case AUTH_ACTIONS.LOGOUT:
             return {
                 ...state,
@@ -72,14 +79,14 @@ const authReducer = (state, action) => {
                 error: null,
                 isRefreshing: false
             };
-        
+
         case AUTH_ACTIONS.REFRESH_TOKEN_START:
             return {
                 ...state,
                 isRefreshing: true,
                 error: null
             };
-        
+
         case AUTH_ACTIONS.REFRESH_TOKEN_SUCCESS:
             return {
                 ...state,
@@ -87,7 +94,7 @@ const authReducer = (state, action) => {
                 token: action.payload.token,
                 error: null
             };
-        
+
         case AUTH_ACTIONS.REFRESH_TOKEN_FAILURE:
             return {
                 ...state,
@@ -97,7 +104,7 @@ const authReducer = (state, action) => {
                 token: null,
                 error: action.payload.error
             };
-        
+
         case AUTH_ACTIONS.SET_USER:
             return {
                 ...state,
@@ -105,13 +112,22 @@ const authReducer = (state, action) => {
                 token: action.payload.token,
                 isAuthenticated: true
             };
-        
+
         case AUTH_ACTIONS.CLEAR_ERROR:
             return {
                 ...state,
                 error: null
             };
-        
+
+        case 'SET_REGISTRATION':
+            return {
+                ...state,
+                registration: {
+                    ...state.registration,
+                    ...action.payload
+                }
+            };
+
         default:
             return state;
     }
@@ -130,13 +146,13 @@ export const AuthProvider = ({ children }) => {
             try {
                 const token = getToken();
                 const user = getUser();
-                
+
                 if (token && user && isAuthenticated()) {
                     dispatch({
                         type: AUTH_ACTIONS.SET_USER,
                         payload: { user, token }
                     });
-                    
+
                     console.log('기존 인증 정보 복원됨:', { user: user.email, tokenValid: true });
                 } else {
                     // 유효하지 않은 토큰이나 사용자 정보가 있으면 정리
@@ -168,7 +184,7 @@ export const AuthProvider = ({ children }) => {
 
         // 5분마다 토큰 상태 확인
         const interval = setInterval(checkTokenRefresh, 5 * 60 * 1000);
-        
+
         // 즉시 한 번 확인
         checkTokenRefresh();
 
@@ -179,10 +195,10 @@ export const AuthProvider = ({ children }) => {
     const login = (user, token) => {
         try {
             dispatch({ type: AUTH_ACTIONS.LOGIN_START });
-            
+
             // 토큰과 사용자 정보 저장
             const success = setToken(token, user);
-            
+
             if (success) {
                 dispatch({
                     type: AUTH_ACTIONS.LOGIN_SUCCESS,
@@ -220,9 +236,9 @@ export const AuthProvider = ({ children }) => {
     const handleRefreshToken = async () => {
         try {
             dispatch({ type: AUTH_ACTIONS.REFRESH_TOKEN_START });
-            
+
             const result = await refreshToken();
-            
+
             if (result.token) {
                 dispatch({
                     type: AUTH_ACTIONS.REFRESH_TOKEN_SUCCESS,
@@ -273,14 +289,16 @@ export const AuthProvider = ({ children }) => {
         isAuthenticated: state.isAuthenticated,
         error: state.error,
         isRefreshing: state.isRefreshing,
-        
+        registration: state.registration, // 신규
+
         // 함수
         login,
         logout,
         clearError,
         updateUser,
         refreshToken: handleRefreshToken,
-        
+        setRegistration: (regData) => dispatch({ type: 'SET_REGISTRATION', payload: regData }), // 신규
+
         // 헬퍼 함수
         getRemainingTime: getTokenRemainingTime,
         checkAuthStatus: isAuthenticated
@@ -296,11 +314,11 @@ export const AuthProvider = ({ children }) => {
 // useAuth 훅
 export const useAuth = () => {
     const context = useContext(AuthContext);
-    
+
     if (!context) {
         throw new Error('useAuth는 AuthProvider 내에서 사용되어야 합니다.');
     }
-    
+
     return context;
 };
 
@@ -308,15 +326,15 @@ export const useAuth = () => {
 export const withAuth = (Component) => {
     return function AuthenticatedComponent(props) {
         const { isAuthenticated, isLoading } = useAuth();
-        
+
         if (isLoading) {
             return <div>로딩 중...</div>;
         }
-        
+
         if (!isAuthenticated) {
             return <div>인증이 필요합니다.</div>;
         }
-        
+
         return <Component {...props} />;
     };
 };

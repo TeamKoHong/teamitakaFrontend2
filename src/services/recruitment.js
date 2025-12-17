@@ -3,14 +3,6 @@ import { getApiConfig } from './auth';
 /**
  * Creates a new recruitment
  * @param {Object} recruitmentData - Recruitment data
- * @param {string} recruitmentData.title - Recruitment title (required)
- * @param {string} recruitmentData.description - Recruitment description (required)
- * @param {number} [recruitmentData.max_applicants] - Maximum number of applicants (optional)
- * @param {string} [recruitmentData.photo] - Photo URL or data URL (optional)
- * @param {string} [recruitmentData.recruitment_start] - Start date YYYY-MM-DD (optional)
- * @param {string} [recruitmentData.recruitment_end] - End date YYYY-MM-DD (optional)
- * @param {string} [recruitmentData.project_type] - Project type: 'course' or 'side' (optional)
- * @returns {Promise<Object>} Created recruitment
  */
 export const createRecruitment = async (recruitmentData) => {
     const { API_BASE_URL, headers } = getApiConfig();
@@ -50,8 +42,6 @@ export const createRecruitment = async (recruitmentData) => {
 
 /**
  * Uploads a recruitment image
- * @param {File} imageFile - Image file to upload
- * @returns {Promise<Object>} Upload result with photo_url
  */
 export const uploadRecruitmentImage = async (imageFile) => {
     const { API_BASE_URL } = getApiConfig();
@@ -63,7 +53,6 @@ export const uploadRecruitmentImage = async (imageFile) => {
         throw err;
     }
 
-    // Validate file size (5MB max)
     const MAX_SIZE = 5 * 1024 * 1024;
     if (imageFile.size > MAX_SIZE) {
         const err = new Error('파일 크기는 5MB를 초과할 수 없습니다.');
@@ -71,7 +60,6 @@ export const uploadRecruitmentImage = async (imageFile) => {
         throw err;
     }
 
-    // Validate file type
     const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
     if (!allowedTypes.includes(imageFile.type)) {
         const err = new Error('허용되지 않는 파일 형식입니다. (jpeg, png, webp만 가능)');
@@ -109,37 +97,33 @@ export const uploadRecruitmentImage = async (imageFile) => {
 
 /**
  * Gets a recruitment by ID
- * @param {string} recruitmentId - Recruitment UUID
- * @returns {Promise<Object>} Recruitment data
  */
 export const getRecruitment = async (recruitmentId) => {
     const { API_BASE_URL, headers } = getApiConfig();
     const token = localStorage.getItem('authToken');
 
-    if (!token) {
-        const err = new Error('로그인이 필요합니다.');
-        err.code = 'UNAUTHORIZED';
-        throw err;
+    // 토큰이 있으면 헤더에 추가 (로그인 유저 구분용)
+    const requestHeaders = { ...headers };
+    if (token) {
+        requestHeaders['Authorization'] = `Bearer ${token}`;
     }
 
     const res = await fetch(`${API_BASE_URL}/api/recruitments/${recruitmentId}`, {
         method: 'GET',
-        headers: {
-            ...headers,
-            Authorization: `Bearer ${token}`,
-        },
+        headers: requestHeaders,
     });
-
-    if (res.status === 401 || res.status === 403) {
-        const err = new Error('UNAUTHORIZED');
-        err.code = 'UNAUTHORIZED';
-        throw err;
-    }
 
     if (res.status === 404) {
         const err = new Error('모집글을 찾을 수 없습니다.');
         err.code = 'NOT_FOUND';
         throw err;
+    }
+
+    // 401 처리는 상황에 따라 다를 수 있음 (비공개 글 등)
+    if (res.status === 401) {
+         const err = new Error('로그인이 필요하거나 권한이 없습니다.');
+         err.code = 'UNAUTHORIZED';
+         throw err;
     }
 
     if (!res.ok) {
@@ -154,8 +138,6 @@ export const getRecruitment = async (recruitmentId) => {
 
 /**
  * Gets applicants for a recruitment
- * @param {string} recruitmentId - Recruitment UUID
- * @returns {Promise<Object>} Applicants data
  */
 export const getRecruitmentApplicants = async (recruitmentId) => {
     const { API_BASE_URL, headers } = getApiConfig();
@@ -193,8 +175,6 @@ export const getRecruitmentApplicants = async (recruitmentId) => {
 
 /**
  * Approves an applicant
- * @param {string} applicationId - Application UUID
- * @returns {Promise<Object>} Approval result
  */
 export const approveApplicant = async (applicationId) => {
     const { API_BASE_URL, headers } = getApiConfig();
@@ -232,11 +212,6 @@ export const approveApplicant = async (applicationId) => {
 
 /**
  * Submits an application to a recruitment
- * @param {string} recruitmentId - Recruitment UUID
- * @param {Object} applicationData - Application data
- * @param {string} applicationData.introduction - Self-introduction (required, 1-500 chars)
- * @param {Array<string>} [applicationData.portfolio_project_ids] - Portfolio project IDs (optional)
- * @returns {Promise<Object>} Created application
  */
 export const submitApplication = async (recruitmentId, applicationData) => {
     const { API_BASE_URL, headers } = getApiConfig();
@@ -271,8 +246,6 @@ export const submitApplication = async (recruitmentId, applicationData) => {
 
 /**
  * Converts recruitment to project
- * @param {string} recruitmentId - Recruitment UUID
- * @returns {Promise<Object>} Created project
  */
 export const convertToProject = async (recruitmentId) => {
     const { API_BASE_URL, headers } = getApiConfig();
@@ -310,10 +283,6 @@ export const convertToProject = async (recruitmentId) => {
 
 /**
  * Gets user's own recruitments
- * @param {Object} options - Query options
- * @param {number} [options.limit=10] - Maximum number of results
- * @param {number} [options.offset=0] - Pagination offset
- * @returns {Promise<Object>} User's recruitments { success, items, page }
  */
 export const getMyRecruitments = async ({ limit = 10, offset = 0 } = {}) => {
     const { API_BASE_URL, headers } = getApiConfig();
@@ -349,21 +318,11 @@ export const getMyRecruitments = async ({ limit = 10, offset = 0 } = {}) => {
         throw err;
     }
 
-    return res.json(); // { success, items, page }
+    return res.json();
 };
 
 /**
  * Updates a recruitment
- * @param {string} recruitmentId - Recruitment UUID
- * @param {Object} recruitmentData - Updated recruitment data
- * @param {string} [recruitmentData.title] - Recruitment title (optional)
- * @param {string} [recruitmentData.description] - Recruitment description (optional)
- * @param {number} [recruitmentData.max_applicants] - Maximum number of applicants (optional)
- * @param {string} [recruitmentData.photo] - Photo URL or data URL (optional)
- * @param {string} [recruitmentData.recruitment_start] - Start date YYYY-MM-DD (optional)
- * @param {string} [recruitmentData.recruitment_end] - End date YYYY-MM-DD (optional)
- * @param {string} [recruitmentData.project_type] - Project type: 'course' or 'side' (optional)
- * @returns {Promise<Object>} Updated recruitment
  */
 export const updateRecruitment = async (recruitmentId, recruitmentData) => {
     const { API_BASE_URL, headers } = getApiConfig();
@@ -409,8 +368,6 @@ export const updateRecruitment = async (recruitmentId, recruitmentData) => {
 
 /**
  * Deletes a recruitment
- * @param {string} recruitmentId - Recruitment UUID
- * @returns {Promise<Object>} Deletion result
  */
 export const deleteRecruitment = async (recruitmentId) => {
     const { API_BASE_URL, headers } = getApiConfig();
@@ -449,6 +406,30 @@ export const deleteRecruitment = async (recruitmentId) => {
         err.code = 'SERVER_ERROR';
         throw err;
     }
+
+    return res.json();
+};
+
+export const toggleRecruitmentScrap = async (recruitmentId) => {
+    const { API_BASE_URL, headers } = getApiConfig();
+    const token = localStorage.getItem('authToken');
+
+    if (!token) {
+        const err = new Error('UNAUTHORIZED');
+        err.code = 'UNAUTHORIZED';
+        throw err;
+    }
+
+    const res = await fetch(`${API_BASE_URL}/api/recruitments/${recruitmentId}/scrap`, {
+        method: 'POST', 
+        headers: {
+            ...headers,
+            Authorization: `Bearer ${token}`,
+        },
+    });
+
+    if (res.status === 401) throw new Error('UNAUTHORIZED');
+    if (!res.ok) throw new Error('북마크 변경 실패');
 
     return res.json();
 };
