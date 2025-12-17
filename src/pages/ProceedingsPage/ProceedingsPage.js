@@ -190,7 +190,7 @@ export default function ProceedingsPage() {
 
   return (
     <div className="proceedings-page-container">
-      <DefaultHeader title="팀 회의록" showChat={false} backPath="/project/1" />
+      <DefaultHeader title="팀 회의록" showChat={false} backPath={`/project/${projectId}`} />
       
       <div className="proceedings-content">
         {meetingData.map((monthData, monthIndex) => (

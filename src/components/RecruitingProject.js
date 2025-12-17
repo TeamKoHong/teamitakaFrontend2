@@ -41,6 +41,7 @@ const RecruitingProject = ({ recruitment, onSelectTeam }) => {
 
   return (
     <div className="recruiting-project-container">
+      <div className="recruiting-content">
       <div className="recruiting-card">
         <h3>{title || '프로젝트명'}</h3>
         <p className="description">
@@ -77,6 +78,7 @@ const RecruitingProject = ({ recruitment, onSelectTeam }) => {
       <button className="team-btn" onClick={onSelectTeam}>
         팀원 선정하러 가기
       </button>
+      </div>
     </div>
   );
 };
