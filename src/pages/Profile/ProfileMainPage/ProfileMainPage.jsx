@@ -6,6 +6,7 @@ import BottomNav from '../../../components/Common/BottomNav/BottomNav';
 import PentagonChart from '../../../components/Common/UI/PentagonChart';
 import styles from './ProfileMainPage.module.scss';
 import defaultProfileImage from '../../../images/profileImage.png';
+import verificationBadge from '../../../assets/대학_인증_완료.svg';
 
 // 캐릭터 배너 이미지 import
 import 활동티미 from '../../../assets/character_banner/활동티미.png';
@@ -42,12 +43,6 @@ const SettingsIcon = () => (
   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
     <circle cx="12" cy="12" r="3" />
     <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
-  </svg>
-);
-
-const CheckIcon = () => (
-  <svg width="12.5" height="9.1" viewBox="0 0 13 10" fill="none" stroke="white" strokeWidth="2">
-    <polyline points="1 5 4.5 8.5 11.5 1.5" />
   </svg>
 );
 
@@ -280,12 +275,12 @@ export default function ProfileMainPage() {
                 className={styles.profileImage}
               />
               {displayData.isVerified && (
-                <div
+                <img
+                  src={verificationBadge}
+                  alt="대학 인증 완료"
                   className={styles.verificationBadge}
                   onClick={handleVerificationClick}
-                >
-                  <CheckIcon />
-                </div>
+                />
               )}
             </div>
             <div className={styles.profileInfo}>
@@ -297,13 +292,11 @@ export default function ProfileMainPage() {
           </div>
 
           <div className={styles.profileStats}>
-            <div className={styles.statItem}>
-              <span className={styles.statLabel}>진행중인 프로젝트</span>
-              <span className={styles.statValue}>{displayData.currentProjects}개</span>
+            <div className={styles.statHighlight}>
+              현재 진행중인 프로젝트 <span className={styles.statOrange}>총 {displayData.currentProjects}건</span>
             </div>
-            <div className={styles.statItem}>
-              <span className={styles.statLabel}>팀플 경험 횟수</span>
-              <span className={styles.statValue}>{displayData.totalTeamExperience}회</span>
+            <div className={styles.statNormal}>
+              전체 팀플 경험 {displayData.totalTeamExperience}회
             </div>
           </div>
 

@@ -80,20 +80,7 @@
   right: -4px;
   width: 42px;
   height: 42px;
-  background-color: $primary-color;
-  border-radius: 30px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 3px solid #fff;
   cursor: pointer;
-  box-shadow: 0 2px 8px rgba(247, 98, 65, 0.3);
-}
-
-.checkIcon {
-  width: 12.5px;
-  height: 9.1px;
-  color: #fff;
 }
 
 .profileInfo {
@@ -117,29 +104,28 @@
 
 .profileStats {
   display: flex;
-  gap: 24px;
+  flex-direction: column;
+  gap: 4px;
   margin-bottom: 16px;
 }
 
-.statItem {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+.statHighlight {
+  font-family: 'Pretendard';
+  font-size: 14px;
+  font-weight: 500;
+  color: #140805;
 }
 
-.statLabel {
+.statOrange {
+  color: $primary-color;
+  font-weight: 700;
+}
+
+.statNormal {
   font-family: 'Pretendard';
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 500;
   color: #807C7C;
-  margin-bottom: 4px;
-}
-
-.statValue {
-  font-family: 'Pretendard';
-  font-size: 16px;
-  font-weight: 700;
-  color: #140805;
 }
 
 .profileTags {
