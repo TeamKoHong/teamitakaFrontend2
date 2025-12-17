@@ -71,10 +71,9 @@ const PentagonChart = ({
         />
       </svg>
       
-      {/* 라벨들 (가장 큰 오각형 꼭짓점에 정확히 위치) */}
+      {/* 라벨들 (SVG 꼭짓점 + 오프셋 방식) */}
       <div className="chart-labels">
         {points.map(({ x, y, label }) => {
-          // 보기 좋게 바깥쪽으로 오프셋 적용 (차트 선과 겹치지 않도록)
           const offset =
             label === "업무능력" ? { dx: 0, dy: -18 } :
             label === "노력" ? { dx: 18, dy: -8 } :
@@ -82,7 +81,6 @@ const PentagonChart = ({
             label === "실력" ? { dx: -12, dy: 18 } :
             { dx: -18, dy: -8 }; // 소통
 
-          // 하이라이트 라벨 스타일 적용
           const isHighlighted = highlightLabels.includes(label);
           const style = {
             left: x + offset.dx,

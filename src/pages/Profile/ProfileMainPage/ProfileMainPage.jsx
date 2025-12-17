@@ -52,21 +52,26 @@ const ChevronDownIcon = () => (
   </svg>
 );
 
-// 피드백 카드 컴포넌트
-const FeedbackCard = ({ type, title, items }) => {
+// 피드백 카드 컴포넌트 (Figma 스펙: 182x72px)
+const FeedbackCard = ({ type, title, items = [] }) => {
   const isPositive = type === 'positive';
+  // 빈 배열인 경우 기본 메시지 표시
+  const displayItems = items.length > 0 ? items : ['피드백이 없습니다'];
+
   return (
     <div style={{
       flex: 1,
-      minHeight: '72px',
+      minWidth: 0,
+      height: '72px',
       padding: '12px',
       borderRadius: '10px',
       backgroundColor: isPositive ? '#FFFDFC' : '#F76241',
       boxSizing: 'border-box',
+      overflow: 'hidden',
     }}>
       <div style={{
         fontFamily: 'Pretendard',
-        fontSize: '11px',
+        fontSize: '13px',
         fontWeight: 600,
         color: isPositive ? '#000' : '#fff',
         marginBottom: '6px',
@@ -82,7 +87,7 @@ const FeedbackCard = ({ type, title, items }) => {
         lineHeight: '165.04%',
         letterSpacing: '-0.01em',
       }}>
-        {items?.map((item, index) => (
+        {displayItems.map((item, index) => (
           <li key={index} style={{ marginBottom: '2px' }}>{item}</li>
         ))}
       </ul>
@@ -114,7 +119,8 @@ const SkillBubbleChart = ({ skills }) => {
   return (
     <div style={{
       position: 'relative',
-      width: '296px',
+      width: '100%',
+      maxWidth: '296px',
       height: '177px',
       margin: '0 auto',
     }}>
@@ -245,9 +251,13 @@ export default function ProfileMainPage() {
     isVerified: !!userData?.university,
     activityType: profileData?.activityType || { type: '활동티미', description: '활동적이고 긍정적인' },
     skills: profileData?.skills || { 노력: 80, 업무능력: 75, 성장: 90, 소통: 85, 의지: 70 },
-    feedback: profileData?.feedback || {
-      positive: ['책임감이 강해요', '소통을 잘해요', '피드백을 잘 수용해요'],
-      negative: ['일정 관리가 필요해요', '문서화 습관이 필요해요'],
+    feedback: {
+      positive: profileData?.feedback?.positive?.length > 0
+        ? profileData.feedback.positive
+        : ['책임감이 강해요', '소통을 잘해요', '피드백을 잘 수용해요'],
+      negative: profileData?.feedback?.negative?.length > 0
+        ? profileData.feedback.negative
+        : ['일정 관리가 필요해요', '문서화 습관이 필요해요'],
     },
     projects: profileData?.projects || [],
     totalProjects: profileData?.totalProjects || 5,
@@ -359,9 +369,12 @@ export default function ProfileMainPage() {
               <div style={{
                 display: 'flex',
                 flexDirection: 'row',
+                width: '100%',
+                maxWidth: '364px',
                 gap: '0',
                 marginTop: '16px',
                 position: 'relative',
+                margin: '16px auto 0',
               }}>
                 <FeedbackCard
                   type="positive"

@@ -50,7 +50,7 @@
 .profileCard {
   background-color: #fff;
   border-radius: 20px;
-  padding: 20px;
+  padding: 20px 0;
   margin-bottom: 16px;
 }
 
@@ -62,22 +62,22 @@
 
 .profileImageWrapper {
   position: relative;
-  width: 80px;
-  height: 80px;
+  width: 111px;
+  height: 111px;
   margin-right: 16px;
 }
 
 .profileImage {
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
+  width: 111px;
+  height: 111px;
+  border-radius: 24px;
   object-fit: cover;
 }
 
 .verificationBadge {
   position: absolute;
-  bottom: -4px;
-  right: -4px;
+  top: 0;
+  left: 82px;
   width: 42px;
   height: 42px;
   cursor: pointer;
@@ -160,9 +160,8 @@
 
 // 능력치 분석 섹션
 .skillSection {
-  background-color: #fff;
-  border-radius: 20px;
-  padding: 20px;
+  background-color: transparent;
+  padding: 20px 0;
   margin-bottom: 16px;
 }
 
@@ -182,8 +181,8 @@
 
 .skillProjectCount {
   font-family: 'Pretendard';
-  font-size: 12px;
-  font-weight: 500;
+  font-size: 14px;
+  font-weight: 400;
   color: #807C7C;
 }
 
@@ -198,13 +197,13 @@
 .expandButton {
   width: 100%;
   padding: 12px;
-  background-color: #f5f5f5;
+  background-color: #f76241;
   border: none;
   border-radius: 8px;
   font-family: 'Pretendard';
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 600;
-  color: #807C7C;
+  color: #fffdfc;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -244,12 +243,12 @@
 // 프로필 소개 문구
 .profileIntro {
   font-family: 'Pretendard';
-  font-size: 14px;
-  font-weight: 500;
-  color: #807C7C;
-  text-align: center;
-  padding: 16px;
-  line-height: 1.5;
+  font-size: 20px;
+  font-weight: 600;
+  color: #000000;
+  text-align: left;
+  padding: 16px 0;
+  line-height: 140%;
 }
 
 .profileIntroHighlight {
@@ -268,7 +267,6 @@
   font-weight: 700;
   color: #140805;
   margin-bottom: 12px;
-  padding-left: 4px;
 }
 
 .projectGrid {
