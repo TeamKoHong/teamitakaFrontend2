@@ -55,7 +55,7 @@ export default function ProjectMemberPage() {
   ];
   return (
     <div className="team-page">
-      <DefaultHeader title="팀원 정보" showChat={false} backPath="/project/1" />
+      <DefaultHeader title="팀원 정보" showChat={false} />
 
       <ul className="team-list">
         {members.map((m) => (

@@ -1,12 +1,12 @@
 .tab-container {
-  display: grid;
+  display: flex;
   grid-template-columns: repeat(3, 130px);
-  width: 390px; // fixed device width requirement
+  width: 100%;
   box-sizing: border-box;
   background-color: #fff;
   position: relative;
   padding-bottom: 0; // ensure indicator sits on bottom edge
-  margin: 0 auto 8px; // center within parent + bottom margin
+ 
 }
 
 // full-width base track
@@ -33,20 +33,24 @@
   border: none;
   cursor: pointer;
   letter-spacing: -0.2px;
+
+  .tab-text {
+    display: inline-block;
+  }
 }
 
 .tab-item.active {
   color: #111;
   font-weight: 600;
+  
 }
 
 // moving indicator
 .indicator {
   position: absolute;
-  bottom: -2px;
-  width: 114px; // one column width minus 16px margins
-  height: 2px;
-  background: #F76241; // 브랜드 컬러
+  bottom: 0;
+  background: #140805;
+  border: 2px solid #140805;
   border-radius: 2px;
-  transition: left 200ms ease;
+  transition: left 200ms ease, width 200ms ease;
 }
