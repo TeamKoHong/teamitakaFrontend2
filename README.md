@@ -13,7 +13,24 @@
 - 👥 **투명한 평가**: 상호 평가로 팀워크 능력 가시화
 - 📱 **모바일 최적화**: 언제 어디서나 팀 프로젝트 관리
 
-## 🆕 최근 업데이트 (2025-11-24)
+## 🆕 최근 업데이트 (2025-12-18)
+
+### Recruitment 지원 Flow 개선
+- ✨ **API 연동 수정**: 프로젝트 선택 API 필드명 호환성 처리 (`items` || `projects`)
+- 🔧 **지원서 제출 오류 수정**: Backend 인증 오류 해결 (`req.user.userId` 사용)
+- 📝 **포트폴리오 선택 옵션화**: 완료된 프로젝트 없이도 지원 가능하도록 개선
+- 🎨 **UI 레이아웃 수정**: 모집 중인 프로젝트 슬라이드 Header 겹침 이슈 해결
+
+### 수정된 파일
+| 위치 | 파일 | 변경 내용 |
+|------|------|-----------|
+| Frontend | `ProjectApplySelect.js` | API 호환성, 선택사항 처리 |
+| Frontend | `RecruitingProject.scss` | Header 간격 조정 (71px) |
+| Backend | `applicationController.js` | user_id 접근 오류 수정 |
+
+---
+
+## 🆕 이전 업데이트 (2025-11-24)
 
 ### 모집글 생성 status 필드 추가 및 백엔드 동기화
 - ✨ **status 필드 추가**: 모집글 생성 시 백엔드 ENUM 값 전송 (`ACTIVE`, `CLOSED`, `FILLED`)
