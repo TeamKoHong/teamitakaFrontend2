@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../../contexts/AuthContext';
 import { getMe } from '../../../services/user';
 import { getProfileDetail } from '../../../services/profile';
 import BottomNav from '../../../components/Common/BottomNav/BottomNav';
@@ -170,6 +171,7 @@ const SkillBubbleChart = ({ skills }) => {
 
 export default function ProfileMainPage() {
   const navigate = useNavigate();
+  const { logout } = useAuth();
 
   const [userData, setUserData] = useState(null);
   const [profileData, setProfileData] = useState(null);
@@ -216,6 +218,16 @@ export default function ProfileMainPage() {
   // 인증 뱃지 클릭
   const handleVerificationClick = () => {
     navigate('/profile/verification');
+  };
+
+  // 로그아웃 핸들러
+  const handleLogout = () => {
+    try { sessionStorage.setItem('suppress-session-expired', '1'); } catch (e) {}
+    try { logout(); } catch (e) {
+      localStorage.removeItem('authToken');
+      localStorage.removeItem('user');
+    }
+    navigate('/login', { replace: true });
   };
 
   // 로딩 상태
@@ -424,6 +436,13 @@ export default function ProfileMainPage() {
             </div>
           </div>
         )}
+
+        {/* 로그아웃 버튼 */}
+        <div className={styles.logoutSection}>
+          <button className={styles.logoutButton} onClick={handleLogout}>
+            로그아웃
+          </button>
+        </div>
       </div>
 
       <BottomNav />
