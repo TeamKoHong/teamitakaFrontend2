@@ -2,7 +2,7 @@ import React from "react";
 import "./Header.css";
 import BackIcon from "../assets/back.png";
 
-export default function Header({ title = "프로필 편집", onBack }) {
+export default function Header({ title = "프로필 편집", onBack, rightAction }) {
   const handleBack = () => {
     if (onBack) {
       onBack();
@@ -14,14 +14,19 @@ export default function Header({ title = "프로필 편집", onBack }) {
 
   return (
     <div className="header-container">
-      <img
-        src={BackIcon}
-        className="back-icon"
-        alt="back"
-        onClick={handleBack}
-        style={{ cursor: 'pointer' }}
-      />
+      <div className="header-left">
+        <img
+          src={BackIcon}
+          className="back-icon"
+          alt="back"
+          onClick={handleBack}
+          style={{ cursor: 'pointer' }}
+        />
+      </div>
       <h1 className="header-title">{title}</h1>
+      <div className="header-right">
+        {rightAction}
+      </div>
     </div>
   );
 }
