@@ -2,10 +2,7 @@ import React from "react";
 import "./RecruitingProject.scss";
 import { TbEyeFilled } from "react-icons/tb";
 import { RiFileList2Fill } from "react-icons/ri";
-import avatar1 from "../assets/icons/avatar1.png";
-import avatar2 from "../assets/icons/avatar2.png";
-import avatar3 from "../assets/icons/avatar3.png";
-import avatar4 from "../assets/icons/avatar4.png";
+import userDefaultImg from "../assets/icons/user_default_img.svg";
 
 const RecruitingProject = ({ recruitment, onSelectTeam }) => {
   if (!recruitment) return null;
@@ -36,8 +33,8 @@ const RecruitingProject = ({ recruitment, onSelectTeam }) => {
     return '마감';
   };
 
-  // 더미 아바타 (실제로는 API에서 지원자 아바타를 가져와야 함)
-  const dummyAvatars = [avatar1, avatar2, avatar3, avatar4];
+  // 기본 아바타 이미지 배열 생성
+  const defaultAvatars = Array(Math.min(4, Number(applicant_count))).fill(userDefaultImg);
 
   return (
     <div className="recruiting-project-container">
@@ -69,8 +66,8 @@ const RecruitingProject = ({ recruitment, onSelectTeam }) => {
           총 <span className="highlight">{applicant_count}명</span>의 지원서가 도착했어요!
         </p>
         <div className="avatars">
-          {dummyAvatars.slice(0, Math.min(4, Number(applicant_count))).map((avatar, idx) => (
-            <img key={idx} src={avatar} alt={`avatar ${idx + 1}`} />
+          {defaultAvatars.map((avatar, idx) => (
+            <img key={idx} src={avatar} alt={`지원자 ${idx + 1}`} />
           ))}
         </div>
       </div>

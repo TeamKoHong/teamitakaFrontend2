@@ -3,10 +3,7 @@ import { useNavigate } from "react-router-dom";
 import DefaultHeader from "./Common/DefaultHeader";
 import ApplicantDetailModal from "./ApplicantDetailModal";
 import { getRecruitmentApplicants, approveApplicant, convertToProject } from "../services/recruitment";
-import avatar1 from "../assets/icons/avatar1.png";
-import avatar2 from "../assets/icons/avatar2.png";
-import avatar3 from "../assets/icons/avatar3.png";
-import avatar4 from "../assets/icons/avatar4.png";
+import userDefaultImg from "../assets/icons/user_default_img.svg";
 import "./ApplicantListSlide.scss";
 
 export default function ApplicantListSlide({ open, onClose, recruitmentId }) {
@@ -18,6 +15,14 @@ export default function ApplicantListSlide({ open, onClose, recruitmentId }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const contentRef = useRef(null);
+  
+  // Drag & Drop states
+  const [draggedApplicant, setDraggedApplicant] = useState(null);
+  const [dragPosition, setDragPosition] = useState({ x: 0, y: 0 });
+  const [isDragging, setIsDragging] = useState(false);
+  const [isOverDeleteZone, setIsOverDeleteZone] = useState(false);
+  const longPressTimer = useRef(null);
+  const dragStartPos = useRef({ x: 0, y: 0 });
 
   useEffect(() => {
     const fetchApplicants = async () => {
@@ -42,7 +47,7 @@ export default function ApplicantListSlide({ open, onClose, recruitmentId }) {
           return {
             id: app.application_id,
             name: app.User?.username || "지원자",
-            img: app.User?.avatar || avatar1,
+            img: app.User?.avatar || userDefaultImg,
             application_id: app.application_id,
             user_id: app.user_id,
             status: app.status,
@@ -62,11 +67,8 @@ export default function ApplicantListSlide({ open, onClose, recruitmentId }) {
         console.log('🔍 [ApplicantListSlide] 매핑된 지원자 목록:', mappedApplicants);
         setApplicants(mappedApplicants);
 
-        // 이미 승인된 지원자들을 선택된 팀원 목록에 추가
-        const approvedApplicants = mappedApplicants.filter(a => a.status === 'ACCEPTED');
-        if (approvedApplicants.length > 0) {
-          setSelectedTeamMembers(approvedApplicants);
-        }
+        // 슬라이드를 열 때마다 선택 상태 초기화 (로컬 상태로만 관리)
+        setSelectedTeamMembers([]);
       } catch (err) {
         console.error("Failed to fetch applicants:", err);
         if (err.code === 'UNAUTHORIZED') {
@@ -93,44 +95,62 @@ export default function ApplicantListSlide({ open, onClose, recruitmentId }) {
     setSelectedApplicant(null);
   };
 
-  const handleInvite = async (applicant) => {
-    try {
-      // Call approval API
-      await approveApplicant(applicant.application_id);
+  const handleInvite = (applicant) => {
+    // 로컬 상태로만 관리 (백엔드 API는 프로젝트 시작 시에만 호출)
+    setSelectedTeamMembers((prev) => {
+      const exists = prev.some((m) => m.id === applicant.id);
+      if (exists) return prev; // 중복 방지
+      return [...prev, applicant];
+    });
 
-      // Add to selected team members
-      setSelectedTeamMembers((prev) => {
-        const exists = prev.some((m) => m.id === applicant.id);
-        if (exists) return prev; // 중복 방지
-        return [...prev, applicant];
-      });
+    // 로컬 applicants 상태도 업데이트
+    setApplicants((prev) =>
+      prev.map((a) =>
+        a.id === applicant.id
+          ? { ...a, status: 'ACCEPTED' }
+          : a
+      )
+    );
 
-      setIsModalOpen(false);
-      setSelectedApplicant(null);
+    setIsModalOpen(false);
+    setSelectedApplicant(null);
 
-      // 상단 배너가 바로 보이도록 스크롤 업
-      requestAnimationFrame(() => {
-        if (contentRef.current) {
-          contentRef.current.scrollTo({ top: 0, behavior: "smooth" });
-        }
-      });
-    } catch (err) {
-      console.error("Failed to approve applicant:", err);
-      if (err.code === 'UNAUTHORIZED') {
-        alert("로그인이 필요합니다.");
-        navigate("/login");
-      } else {
-        alert("팀원 승인에 실패했습니다.");
+    // 상단 배너가 바로 보이도록 스크롤 업
+    requestAnimationFrame(() => {
+      if (contentRef.current) {
+        contentRef.current.scrollTo({ top: 0, behavior: "smooth" });
       }
-    }
+    });
   };
 
   const hasSelection = selectedTeamMembers.length > 0;
+
+  // 슬라이드 닫을 때 상태 초기화
+  const handleClose = () => {
+    setSelectedTeamMembers([]);
+    setDraggedApplicant(null);
+    setIsDragging(false);
+    setIsOverDeleteZone(false);
+    setSelectedApplicant(null);
+    setIsModalOpen(false);
+    if (longPressTimer.current) {
+      clearTimeout(longPressTimer.current);
+    }
+    onClose();
+  };
 
   const handleStartProject = async () => {
     if (!hasSelection || !recruitmentId) return;
 
     try {
+      // 1. 선택된 팀원들을 먼저 승인 (백엔드에 ACCEPTED 상태로 저장)
+      console.log("✅ 선택된 팀원 승인 중...", selectedTeamMembers);
+      for (const member of selectedTeamMembers) {
+        await approveApplicant(member.application_id);
+      }
+      console.log("✅ 모든 팀원 승인 완료");
+
+      // 2. 프로젝트로 전환 (백엔드가 ACCEPTED 상태인 지원자들을 자동으로 포함)
       const result = await convertToProject(recruitmentId);
       console.log("✅ Project created:", result);
       alert("프로젝트가 생성되었습니다!");
@@ -152,11 +172,108 @@ export default function ApplicantListSlide({ open, onClose, recruitmentId }) {
     }
   };
 
+  // Drag handlers (for selected team members only)
+  const handleLongPressStart = (e, applicant) => {
+    e.stopPropagation();
+    
+    const clientX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
+    const clientY = e.type.includes('touch') ? e.touches[0].clientY : e.clientY;
+    
+    dragStartPos.current = { x: clientX, y: clientY };
+
+    longPressTimer.current = setTimeout(() => {
+      // Long press 완료 시 드래그 가능 상태로만 설정 (아직 드래그 중은 아님)
+      setDraggedApplicant(applicant);
+      setDragPosition({ x: clientX, y: clientY });
+    }, 500); // 500ms long press
+  };
+
+  const handleLongPressEnd = () => {
+    if (longPressTimer.current) {
+      clearTimeout(longPressTimer.current);
+      longPressTimer.current = null;
+    }
+  };
+
+  const handleDragMove = (e) => {
+    if (!draggedApplicant) return;
+
+    e.preventDefault();
+    const clientX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
+    const clientY = e.type.includes('touch') ? e.touches[0].clientY : e.clientY;
+
+    // 실제 움직임이 있을 때만 드래그 상태로 전환 (최소 5px 이동)
+    if (!isDragging) {
+      const deltaX = Math.abs(clientX - dragStartPos.current.x);
+      const deltaY = Math.abs(clientY - dragStartPos.current.y);
+      
+      if (deltaX > 5 || deltaY > 5) {
+        setIsDragging(true);
+      } else {
+        return; // 아직 충분히 움직이지 않음
+      }
+    }
+
+    setDragPosition({ x: clientX, y: clientY });
+
+    // Check if over delete zone (bottom 150px)
+    const windowHeight = window.innerHeight;
+    setIsOverDeleteZone(clientY > windowHeight - 150);
+  };
+
+  const handleDragEnd = () => {
+    // 드래그 가능 상태였지만 실제로 드래그하지 않았으면 그냥 리셋
+    if (!isDragging && draggedApplicant) {
+      setDraggedApplicant(null);
+      handleLongPressEnd();
+      return;
+    }
+
+    if (!isDragging || !draggedApplicant) return;
+
+    // If over delete zone, remove from selected team members
+    if (isOverDeleteZone) {
+      setSelectedTeamMembers((prev) => 
+        prev.filter((m) => m.id !== draggedApplicant.id)
+      );
+      
+      // 예비 팀원 목록의 상태도 업데이트
+      setApplicants((prev) =>
+        prev.map((a) =>
+          a.id === draggedApplicant.id
+            ? { ...a, status: 'PENDING' }
+            : a
+        )
+      );
+    }
+
+    // Reset drag state
+    setDraggedApplicant(null);
+    setIsDragging(false);
+    setIsOverDeleteZone(false);
+    handleLongPressEnd();
+  };
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      if (longPressTimer.current) {
+        clearTimeout(longPressTimer.current);
+      }
+    };
+  }, []);
+
   return (
     <>
-      <div className={`als-overlay ${open ? "open" : ""}`} onClick={onClose} />
-      <div className={`als-panel ${open ? "open" : ""}`}>
-        <DefaultHeader title="프로젝트 지원자 목록" onBack={onClose} />
+      <div className={`als-overlay ${open ? "open" : ""}`} onClick={handleClose} />
+      <div 
+        className={`als-panel ${open ? "open" : ""}`}
+        onMouseMove={handleDragMove}
+        onMouseUp={handleDragEnd}
+        onTouchMove={handleDragMove}
+        onTouchEnd={handleDragEnd}
+      >
+        <DefaultHeader title="프로젝트 지원자 목록" onBack={handleClose} />
         <div className="als-content" ref={contentRef}>
           {loading && <p className="description">지원자 목록을 불러오는 중...</p>}
           {error && <p className="description" style={{color: "red"}}>{error}</p>}
@@ -167,12 +284,23 @@ export default function ApplicantListSlide({ open, onClose, recruitmentId }) {
                   <p className="selected-title">[모집자]님이 선정했어요.</p>
                   <p className="selected-sub">함께하게 될 팀원들이에요!</p>
                   <div className="selected-avatars">
-                    {selectedTeamMembers.map((m) => (
-                      <div className="selected-avatar" key={`selected-${m.id}`}>
-                        <img src={m.img} alt={m.name} />
-                        <p>{m.name}</p>
-                      </div>
-                    ))}
+                    {selectedTeamMembers.map((m) => {
+                      const isBeingDragged = draggedApplicant?.id === m.id;
+                      return (
+                        <div 
+                          className={`selected-avatar ${isBeingDragged ? "dragging" : ""}`}
+                          key={`selected-${m.id}`}
+                          onMouseDown={(e) => handleLongPressStart(e, m)}
+                          onMouseUp={handleLongPressEnd}
+                          onMouseLeave={handleLongPressEnd}
+                          onTouchStart={(e) => handleLongPressStart(e, m)}
+                          onTouchCancel={handleLongPressEnd}
+                        >
+                          <img src={m.img} alt={m.name} />
+                          <p>{m.name}</p>
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
               ) : (
@@ -187,16 +315,14 @@ export default function ApplicantListSlide({ open, onClose, recruitmentId }) {
                 <div className="avatars-grid">
                    {applicants.map((a) => {
                      const isSelected = selectedTeamMembers.some((m) => m.id === a.id);
-                     const isApproved = a.status === 'ACCEPTED';
                      return (
                        <div
                          key={a.id}
-                         className={`avatar-card ${isSelected || isApproved ? "selected" : ""}`}
+                         className={`avatar-card ${isSelected ? "selected" : ""}`}
                          onClick={() => handleApplicantClick(a)}
                        >
                          <img src={a.img} alt={a.name} />
                          <p>{a.name}</p>
-                         {isApproved && <span className="approved-badge">✓</span>}
                        </div>
                      );
                    })}
@@ -205,15 +331,42 @@ export default function ApplicantListSlide({ open, onClose, recruitmentId }) {
             </>
           )}
         </div>
-        <div className="bottom-fixed-button">
-          <button
-            className={`select-team-button ${hasSelection ? "active" : ""}`}
-            onClick={hasSelection ? handleStartProject : undefined}
-            disabled={!hasSelection}
+        
+        {/* Delete Zone - 드래그 중일 때만 표시 */}
+        {isDragging ? (
+          <div className={`bottom-fixed-button dragging-mode ${isOverDeleteZone ? "delete-zone-active" : ""}`}>
+            <div className="delete-icon-wrapper">
+              <span className="delete-icon">🗑️</span>
+            </div>
+          </div>
+        ) : (
+          <div className="bottom-fixed-button">
+            <button
+              className={`select-team-button ${hasSelection ? "active" : ""}`}
+              onClick={hasSelection ? handleStartProject : undefined}
+              disabled={!hasSelection}
+            >
+              {hasSelection ? "프로젝트 시작하기!" : "함께 할 팀원을 선정하세요."}
+            </button>
+          </div>
+        )}
+
+        {/* Dragging Avatar */}
+        {isDragging && draggedApplicant && (
+          <div 
+            className="dragging-avatar"
+            style={{
+              position: 'fixed',
+              left: dragPosition.x - 32,
+              top: dragPosition.y - 32,
+              pointerEvents: 'none',
+              zIndex: 10000,
+            }}
           >
-            {hasSelection ? "프로젝트 시작하기!" : "함께 할 팀원을 선정하세요."}
-          </button>
-        </div>
+            <img src={draggedApplicant.img} alt={draggedApplicant.name} />
+            <p>{draggedApplicant.name}</p>
+          </div>
+        )}
       </div>
       
       {/* 지원자 상세 모달 */}
