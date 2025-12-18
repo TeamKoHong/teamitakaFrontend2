@@ -2,9 +2,32 @@
   width: 100%;
   display: flex;
   align-items: center;
-  gap: 124px;              /* 아이콘과 텍스트 간격 */
-  padding: 48px 0 0 22px; /* Figma Top: 78px, Left: 22px */
+  justify-content: space-between;
+  padding: 48px 22px 0 22px;
   box-sizing: border-box;
+}
+
+.header-left {
+  min-width: 60px;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.header-right {
+  min-width: 60px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.header-logout-btn {
+  font-family: "Pretendard", sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: #807C7C;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
 }
 
 .back-icon {
