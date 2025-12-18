@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useAuth } from "../../../contexts/AuthContext";
 import Header from "../../../components/Header";
 import ProfileImage from "../../../components/ProfileImage";
 import BasicInfo from "../../../components/BasicInfo";
@@ -14,6 +15,7 @@ import styles from "./ProfileEditPage.module.scss";
 export default function ProfileEditPage() {
   const location = useLocation();
   const navigate = useNavigate();
+  const { logout } = useAuth();
 
   // 사용자 데이터 상태
   const [userData, setUserData] = useState(null);
@@ -80,6 +82,16 @@ export default function ProfileEditPage() {
     navigate("/profile");
   };
 
+  // 로그아웃 핸들러
+  const handleLogout = () => {
+    try { sessionStorage.setItem('suppress-session-expired', '1'); } catch (e) {}
+    try { logout(); } catch (e) {
+      localStorage.removeItem('authToken');
+      localStorage.removeItem('user');
+    }
+    navigate('/login', { replace: true });
+  };
+
   // 이미지 변경 핸들러
   const handleImageChange = (file) => {
     setImageFile(file);
@@ -130,11 +142,18 @@ export default function ProfileEditPage() {
     }
   };
 
+  // 로그아웃 버튼 컴포넌트
+  const logoutButton = (
+    <button className="header-logout-btn" onClick={handleLogout}>
+      로그아웃
+    </button>
+  );
+
   // 로딩 상태
   if (isLoading) {
     return (
       <div className={styles.container}>
-        <Header title="프로필 편집" onBack={handleBack} />
+        <Header title="프로필 편집" onBack={handleBack} rightAction={logoutButton} />
         <div className={styles.loadingContainer}>
           <p>로딩 중...</p>
         </div>
@@ -146,7 +165,7 @@ export default function ProfileEditPage() {
   if (!userData && error) {
     return (
       <div className={styles.container}>
-        <Header title="프로필 편집" onBack={handleBack} />
+        <Header title="프로필 편집" onBack={handleBack} rightAction={logoutButton} />
         <div className={styles.errorContainer}>
           <p>{error}</p>
           <Button onClick={() => navigate("/profile")}>돌아가기</Button>
@@ -157,7 +176,7 @@ export default function ProfileEditPage() {
 
   return (
     <div className={styles.container}>
-      <Header title="프로필 편집" onBack={handleBack} />
+      <Header title="프로필 편집" onBack={handleBack} rightAction={logoutButton} />
 
       <div className={styles.content}>
         <ProfileImage
