@@ -130,8 +130,8 @@ export default function RecruitmentViewPage() {
         setIsBookmarked(newState);
         setPost(prev => ({
             ...prev,
-            // true가 되면 +1, false가 되면 -1
-            bookmarkCount: newState ? prev.bookmarkCount + 1 : prev.bookmarkCount - 1
+            // true가 되면 +1, false가 되면 -1 (음수 방지)
+            bookmarkCount: Math.max(0, newState ? prev.bookmarkCount + 1 : prev.bookmarkCount - 1)
         }));
 
         try {
