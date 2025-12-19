@@ -431,7 +431,8 @@ export const toggleRecruitmentScrap = async (recruitmentId) => {
     if (res.status === 401) throw new Error('UNAUTHORIZED');
     if (!res.ok) throw new Error('북마크 변경 실패');
 
-    return res.json();
+    // 백엔드가 plain text 반환 ("스크랩 추가" / "스크랩 취소")
+    return res.text();
 };
 
 export const getBookmarkedRecruitments = async () => {
