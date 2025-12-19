@@ -16,7 +16,7 @@ import defaultProjectImg from "../../assets/icons/Teamitaka.png";
 
 import { getAllRecruitments } from '../../api/recruit';
 import { toggleRecruitmentScrap } from '../../services/recruitment';
-import { useSelector } from 'react-redux';
+import { useAuth } from '../../contexts/AuthContext';
 
 const CreateProjectBanner = () => {
     const navigate = useNavigate();
@@ -104,7 +104,7 @@ export default function TeamMatchingPage() {
     const [filterTabs, setFilterTabs] = useState(['전체']);
     const [isLoading, setIsLoading] = useState(true);
 
-    const currentUser = useSelector(state => state.auth?.user);
+    const { user: currentUser } = useAuth();
 
     useEffect(() => {
         const fetchPosts = async () => {
