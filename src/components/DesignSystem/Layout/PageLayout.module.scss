@@ -6,13 +6,15 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    padding-top: 69px; // Header(47px) + margin(22px)
     padding-bottom: 80px; // Space for BottomNav or BottomCTA
+    box-sizing: border-box;
 }
 
 .content {
     width: 100%;
     max-width: 390px; // Mobile standard
-    padding: 16px $padding-base 0;
+    padding: 0 $padding-base; // 상단 padding 제거 (container에서 69px 처리)
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
