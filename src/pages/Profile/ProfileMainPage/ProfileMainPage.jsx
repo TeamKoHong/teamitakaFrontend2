@@ -21,6 +21,10 @@ import 적응티미 from '../../../assets/character_banner/적응티미.png';
 import 조율티미 from '../../../assets/character_banner/조율티미.png';
 import 창의티미 from '../../../assets/character_banner/창의티미.png';
 import 통찰티미 from '../../../assets/character_banner/통찰티미.png';
+import 비회원배너 from '../../../assets/character_banner/비회원 캐릭터 배너_테스트유도용.png';
+
+// 빈 상태 일러스트
+import projectEmpty from '../../../assets/icons/project_empty.png';
 
 // 티미 타입별 이미지 매핑
 const CHARACTER_IMAGES = {
@@ -253,18 +257,32 @@ export default function ProfileMainPage() {
     totalTeamExperience: userData?.teamExperience || profileData?.totalTeamExperience || 0,
     tags: userData?.keywords || profileData?.tags || [],
     isVerified: !!userData?.university,
-    activityType: profileData?.activityType || { type: '활동티미', description: '활동적이고 긍정적인' },
-    skills: profileData?.skills || { 노력: 80, 업무능력: 75, 소통: 85, 성장: 90, 의지: 70 },
+    activityType: profileData?.activityType || null,
+    skills: profileData?.skills || null,
     feedback: {
-      positive: profileData?.feedback?.positive?.length > 0
-        ? profileData.feedback.positive
-        : ['책임감이 강해요', '소통을 잘해요', '피드백을 잘 수용해요'],
-      negative: profileData?.feedback?.negative?.length > 0
-        ? profileData.feedback.negative
-        : ['일정 관리가 필요해요', '문서화 습관이 필요해요'],
+      positive: profileData?.feedback?.positive || [],
+      negative: profileData?.feedback?.negative || [],
     },
     projects: profileData?.projects || [],
-    totalProjects: profileData?.totalProjects || 5,
+    totalProjects: profileData?.totalProjects || 0,
+  };
+
+  // Empty State 조건 변수
+  const isProfileEmpty = !userData?.university && !userData?.major && (!userData?.keywords || userData.keywords.length === 0);
+  const hasNoTeamiType = !profileData?.activityType?.type;
+  const hasNoProjects = displayData.totalProjects === 0 && (!displayData.projects || displayData.projects.length === 0);
+  const hasNoEvaluations = displayData.totalProjects === 0;
+
+  // 캐릭터 배너 핸들러
+  const handleBannerClick = () => {
+    if (hasNoTeamiType) {
+      navigate('/teami-type');
+    }
+  };
+
+  // 프로젝트 등록 핸들러
+  const handleAddProject = () => {
+    navigate('/project/create');
   };
 
   return (
@@ -298,33 +316,48 @@ export default function ProfileMainPage() {
           </div>
           <div className={styles.profileInfo}>
             <div className={styles.profileName}>{displayData.username} 티미님</div>
-            <div className={styles.profileUniversity}>
-              <GraduationCapIcon />
-              <span>{displayData.university} {displayData.department} {displayData.enrollmentStatus}</span>
-            </div>
-            <div className={styles.profileStats}>
-              <div className={styles.statHighlight}>
-                현재 진행중인 프로젝트 <span className={styles.statOrange}>총 {displayData.currentProjects}건</span>
-              </div>
-              <div className={styles.statNormal}>
-                전체 팀플 경험 {displayData.totalTeamExperience}회
-              </div>
-            </div>
-            {displayData.tags.length > 0 && (
-              <div className={styles.profileTags}>
-                {displayData.tags.map((tag, index) => (
-                  <span key={index} className={styles.tag}>{tag}</span>
-                ))}
-              </div>
+            {isProfileEmpty ? (
+              <button
+                className={styles.emptyProfileButton}
+                onClick={handleSettingsClick}
+              >
+                프로필을 입력하세요.
+              </button>
+            ) : (
+              <>
+                <div className={styles.profileUniversity}>
+                  <GraduationCapIcon />
+                  <span>{displayData.university} {displayData.department} {displayData.enrollmentStatus}</span>
+                </div>
+                <div className={styles.profileStats}>
+                  <div className={styles.statHighlight}>
+                    현재 진행중인 프로젝트 <span className={styles.statOrange}>총 {displayData.currentProjects}건</span>
+                  </div>
+                  <div className={styles.statNormal}>
+                    전체 팀플 경험 {displayData.totalTeamExperience}회
+                  </div>
+                </div>
+                {displayData.tags.length > 0 && (
+                  <div className={styles.profileTags}>
+                    {displayData.tags.map((tag, index) => (
+                      <span key={index} className={styles.tag}>{tag}</span>
+                    ))}
+                  </div>
+                )}
+              </>
             )}
           </div>
         </div>
 
         {/* 2. 활동 타입 카드 (배너 이미지만 표시) */}
-        <div className={styles.activityCard}>
+        <div
+          className={`${styles.activityCard} ${hasNoTeamiType ? styles.clickable : ''}`}
+          onClick={handleBannerClick}
+          style={{ cursor: hasNoTeamiType ? 'pointer' : 'default' }}
+        >
           <img
-            src={CHARACTER_IMAGES[displayData.activityType.type] || 활동티미}
-            alt={displayData.activityType.type}
+            src={hasNoTeamiType ? 비회원배너 : (CHARACTER_IMAGES[displayData.activityType?.type] || 활동티미)}
+            alt={hasNoTeamiType ? '지금 캐릭터 확인하기' : displayData.activityType?.type}
             className={styles.activityBanner}
           />
         </div>
@@ -344,68 +377,101 @@ export default function ProfileMainPage() {
             </span>
           </div>
 
-          <div className={styles.bubbleChartContainer}>
-            <SkillBubbleChart skills={displayData.skills} />
-          </div>
-
-          <button
-            className={styles.expandButton}
-            onClick={() => setIsSkillExpanded(!isSkillExpanded)}
-          >
-            나의 능력치 분석 자세히보기
-            <span className={`${styles.expandIcon} ${isSkillExpanded ? styles.expandIconRotated : ''}`}>
-              <ChevronDownIcon />
-            </span>
-          </button>
-
-          {isSkillExpanded && (
-            <div className={styles.expandedContent}>
-              <div className={styles.radarChartContainer}>
-                <PentagonChart
-                  skills={displayData.skills}
-                />
-              </div>
-
-              <div style={{
-                display: 'flex',
-                flexDirection: 'row',
-                width: '100%',
-                maxWidth: '364px',
-                gap: '0',
-                position: 'relative',
-                margin: '32px auto 0',
-              }}>
-                <FeedbackCard
-                  type="positive"
-                  title="이런 점이 좋아요👍"
-                  items={displayData.feedback.positive}
-                />
-
-                {/* 가운데 점선 구분선 */}
-                <div style={{
-                  position: 'absolute',
-                  top: '11px',
-                  left: '50%',
-                  width: '1px',
-                  height: '52px',
-                  borderLeft: '1px dashed #D1CCCB',
-                  zIndex: 10,
-                }} />
-
-                <FeedbackCard
-                  type="negative"
-                  title="이런 점은 개선이 필요해요🚨"
-                  items={displayData.feedback.negative}
-                />
-              </div>
+          {hasNoEvaluations ? (
+            <div className={styles.emptySkillContainer}>
+              <img
+                src={projectEmpty}
+                alt="데이터 없음"
+                className={styles.emptyIllustration}
+              />
+              <p className={styles.emptyText}>
+                아직 팀플 평가가 없어요.<br/>
+                프로젝트를 완료하고 평가를 받아보세요!
+              </p>
             </div>
+          ) : (
+            <>
+              <div className={styles.bubbleChartContainer}>
+                <SkillBubbleChart skills={displayData.skills} />
+              </div>
+
+              <button
+                className={styles.expandButton}
+                onClick={() => setIsSkillExpanded(!isSkillExpanded)}
+              >
+                나의 능력치 분석 자세히보기
+                <span className={`${styles.expandIcon} ${isSkillExpanded ? styles.expandIconRotated : ''}`}>
+                  <ChevronDownIcon />
+                </span>
+              </button>
+
+              {isSkillExpanded && (
+                <div className={styles.expandedContent}>
+                  <div className={styles.radarChartContainer}>
+                    <PentagonChart
+                      skills={displayData.skills}
+                    />
+                  </div>
+
+                  <div style={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    width: '100%',
+                    maxWidth: '364px',
+                    gap: '0',
+                    position: 'relative',
+                    margin: '32px auto 0',
+                  }}>
+                    <FeedbackCard
+                      type="positive"
+                      title="이런 점이 좋아요👍"
+                      items={displayData.feedback.positive}
+                    />
+
+                    {/* 가운데 점선 구분선 */}
+                    <div style={{
+                      position: 'absolute',
+                      top: '11px',
+                      left: '50%',
+                      width: '1px',
+                      height: '52px',
+                      borderLeft: '1px dashed #D1CCCB',
+                      zIndex: 10,
+                    }} />
+
+                    <FeedbackCard
+                      type="negative"
+                      title="이런 점은 개선이 필요해요🚨"
+                      items={displayData.feedback.negative}
+                    />
+                  </div>
+                </div>
+              )}
+            </>
           )}
         </div>
 
         {/* 나의 프로젝트 */}
-        {displayData.projects.length > 0 && (
-          <div className={styles.projectSection}>
-            <div className={styles.sectionTitle}>나의 프로젝트</div>
+        <div className={styles.projectSection}>
+          <div className={styles.sectionTitle}>나의 프로젝트</div>
+          {hasNoProjects ? (
+            <div className={styles.emptyProjectContainer}>
+              <img
+                src={projectEmpty}
+                alt="프로젝트 없음"
+                className={styles.emptyIllustration}
+              />
+              <p className={styles.emptyText}>
+                아직 등록된 프로젝트가 없어요.
+              </p>
+              <button
+                className={styles.addProjectButton}
+                onClick={handleAddProject}
+              >
+                + 프로젝트 등록하기
+              </button>
+            </div>
+          ) : (
             <div className={styles.projectGrid}>
               {displayData.projects.map((project, index) => (
                 <div
@@ -422,8 +488,8 @@ export default function ProfileMainPage() {
                 </div>
               ))}
             </div>
-          </div>
-        )}
+          )}
+        </div>
 
       </div>
 
