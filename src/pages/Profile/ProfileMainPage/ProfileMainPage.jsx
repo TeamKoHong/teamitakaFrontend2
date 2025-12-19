@@ -315,36 +315,38 @@ export default function ProfileMainPage() {
             )}
           </div>
           <div className={styles.profileInfo}>
-            <div className={styles.profileName}>{displayData.username} 티미님</div>
-            {isProfileEmpty ? (
-              <button
-                className={styles.emptyProfileButton}
-                onClick={handleSettingsClick}
-              >
-                프로필을 입력하세요.
-              </button>
-            ) : (
-              <>
-                <div className={styles.profileUniversity}>
-                  <GraduationCapIcon />
-                  <span>{displayData.university} {displayData.department} {displayData.enrollmentStatus}</span>
-                </div>
-                <div className={styles.profileStats}>
-                  <div className={styles.statHighlight}>
-                    현재 진행중인 프로젝트 <span className={styles.statOrange}>총 {displayData.currentProjects}건</span>
-                  </div>
-                  <div className={styles.statNormal}>
-                    전체 팀플 경험 {displayData.totalTeamExperience}회
-                  </div>
-                </div>
-                {displayData.tags.length > 0 && (
-                  <div className={styles.profileTags}>
-                    {displayData.tags.map((tag, index) => (
-                      <span key={index} className={styles.tag}>{tag}</span>
-                    ))}
-                  </div>
-                )}
-              </>
+            <div className={styles.profileName}>
+              {isProfileEmpty ? '프로필을 입력하세요.' : `${displayData.username} 티미님`}
+            </div>
+            <div className={styles.profileUniversity}>
+              <GraduationCapIcon />
+              <span>
+                {isProfileEmpty
+                  ? '대학교명 재학 중'
+                  : `${displayData.university} ${displayData.department} ${displayData.enrollmentStatus}`
+                }
+              </span>
+            </div>
+            <div className={styles.profileStats}>
+              <div className={styles.statHighlight}>
+                {isProfileEmpty
+                  ? '현재 진행중인 프로젝트가 없어요.'
+                  : <>현재 진행중인 프로젝트 <span className={styles.statOrange}>총 {displayData.currentProjects}건</span></>
+                }
+              </div>
+              <div className={styles.statNormal}>
+                {isProfileEmpty
+                  ? '팀플 경험이 없어요.'
+                  : `전체 팀플 경험 ${displayData.totalTeamExperience}회`
+                }
+              </div>
+            </div>
+            {!isProfileEmpty && displayData.tags.length > 0 && (
+              <div className={styles.profileTags}>
+                {displayData.tags.map((tag, index) => (
+                  <span key={index} className={styles.tag}>{tag}</span>
+                ))}
+              </div>
             )}
           </div>
         </div>
@@ -364,8 +366,17 @@ export default function ProfileMainPage() {
 
         {/* 3. 프로필 소개 문구 */}
         <div className={styles.profileIntro}>
-          지난 활동을 돌아보고, <br/>
-          <span className={styles.profileIntroHighlight}>더 나은 팀원</span>이 되어가요.
+          {isProfileEmpty ? (
+            <>
+              프로필을 작성하고 <br/>
+              <span className={styles.profileIntroHighlight}>내 팀플 분석</span>을 완성해보세요!
+            </>
+          ) : (
+            <>
+              지난 활동을 돌아보고, <br/>
+              <span className={styles.profileIntroHighlight}>더 나은 팀원</span>이 되어가요.
+            </>
+          )}
         </div>
 
         {/* 능력치 분석 섹션 */}
@@ -373,7 +384,10 @@ export default function ProfileMainPage() {
           <div className={styles.skillHeader}>
             <span className={styles.skillTitle}>팀플 능력치 분석</span>
             <span className={styles.skillProjectCount}>
-              {displayData.totalProjects}회 프로젝트 종합결과
+              {hasNoEvaluations
+                ? '프로젝트 종합 결과가 없어요.'
+                : `${displayData.totalProjects}회 프로젝트 종합결과`
+              }
             </span>
           </div>
 
@@ -385,8 +399,7 @@ export default function ProfileMainPage() {
                 className={styles.emptyIllustration}
               />
               <p className={styles.emptyText}>
-                아직 팀플 평가가 없어요.<br/>
-                프로젝트를 완료하고 평가를 받아보세요!
+                프로젝트 정보가 없어요.
               </p>
             </div>
           ) : (
