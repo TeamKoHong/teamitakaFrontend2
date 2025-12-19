@@ -121,14 +121,14 @@ export default function TeamMatchingPage() {
                         id: post.recruitment_id,
                         title: post.title,
                         description: post.description,
-                        imageUrl: rawImage, 
+                        imageUrl: rawImage,
                         views: viewCount,
                         applicantCount: appCount,
-                        date: post.created_at ? (typeof post.created_at === 'string' ? post.created_at.substring(0, 10) : '') : '', 
+                        date: post.created_at ? (typeof post.created_at === 'string' ? post.created_at.substring(0, 10) : '') : '',
                         category: post.project_type === 'course' ? '수업' : '사이드',
                         tags: (post.Hashtags || post.hashtags || []).map(h => h.name || h),
                         score: viewCount + (appCount * 10),
-                        isBookmarked: false,
+                        isBookmarked: !!post.is_scrapped,  // API에서 북마크 상태 로드
                         isBest: appCount >= 5
                     };
                 });
