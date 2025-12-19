@@ -15,6 +15,8 @@ import { Link } from 'react-router-dom';
 import defaultProjectImg from "../../assets/icons/Teamitaka.png"; 
 
 import { getAllRecruitments } from '../../api/recruit';
+import { toggleRecruitmentScrap } from '../../services/recruitment';
+import { useAuth } from '../../contexts/AuthContext';
 
 const CreateProjectBanner = () => {
     const navigate = useNavigate();
@@ -98,9 +100,11 @@ export default function TeamMatchingPage() {
 
     const [activeFilter, setActiveFilter] = useState('전체');
     const [allPosts, setAllPosts] = useState([]);
-    const [hotProjects, setHotProjects] = useState([]); 
-    const [filterTabs, setFilterTabs] = useState(['전체']); 
+    const [hotProjects, setHotProjects] = useState([]);
+    const [filterTabs, setFilterTabs] = useState(['전체']);
     const [isLoading, setIsLoading] = useState(true);
+
+    const { user: currentUser } = useAuth();
 
     useEffect(() => {
         const fetchPosts = async () => {
@@ -163,9 +167,29 @@ export default function TeamMatchingPage() {
         fetchPosts();
     }, []);
 
-    const handleBookmarkToggle = (id) => {
+    const handleBookmarkToggle = async (id) => {
+        if (!currentUser) {
+            alert('로그인이 필요합니다.');
+            return;
+        }
+
+        // 이전 상태 저장 (롤백용)
+        const prevHot = [...hotProjects];
+        const prevAll = [...allPosts];
+
+        // 낙관적 업데이트
         setHotProjects(prev => prev.map(item => item.id === id ? { ...item, isBookmarked: !item.isBookmarked } : item));
         setAllPosts(prev => prev.map(item => item.id === id ? { ...item, isBookmarked: !item.isBookmarked } : item));
+
+        try {
+            await toggleRecruitmentScrap(id);
+        } catch (error) {
+            console.error('북마크 변경 실패:', error);
+            // 에러 시 롤백
+            setHotProjects(prevHot);
+            setAllPosts(prevAll);
+            alert('북마크 변경에 실패했습니다.');
+        }
     };
 
     const filteredMatching = allPosts.filter(item => {
