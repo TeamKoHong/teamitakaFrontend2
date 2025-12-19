@@ -420,8 +420,8 @@ export const toggleRecruitmentScrap = async (recruitmentId) => {
         throw err;
     }
 
-    const res = await fetch(`${API_BASE_URL}/api/recruitments/${recruitmentId}/scrap`, {
-        method: 'POST', 
+    const res = await fetch(`${API_BASE_URL}/api/scraps/recruitment/${recruitmentId}/scrap`, {
+        method: 'PUT',
         headers: {
             ...headers,
             Authorization: `Bearer ${token}`,
