@@ -433,3 +433,27 @@ export const toggleRecruitmentScrap = async (recruitmentId) => {
 
     return res.json();
 };
+
+export const getBookmarkedRecruitments = async () => {
+    const { API_BASE_URL, headers } = getApiConfig();
+    const token = localStorage.getItem('authToken');
+
+    if (!token) {
+        const err = new Error('UNAUTHORIZED');
+        err.code = 'UNAUTHORIZED';
+        throw err;
+    }
+
+    const res = await fetch(`${API_BASE_URL}/api/scraps/recruitments`, {
+        method: 'GET',
+        headers: {
+            ...headers,
+            Authorization: `Bearer ${token}`,
+        },
+    });
+
+    if (res.status === 401) throw new Error('UNAUTHORIZED');
+    if (!res.ok) throw new Error('북마크 목록 조회 실패');
+
+    return res.json();
+};
