@@ -73,9 +73,15 @@ export function deriveCompletedProjects(serverProjects, { sortOrder = 'latest' }
  * @returns {Object} - { pending, completed } projects
  */
 export function splitByEvaluationStatus(completedProjects) {
-  const pending = completedProjects.filter(p => p.evaluation_status === 'PENDING');
+  // COMPLETED 또는 NOT_REQUIRED 상태만 완료 섹션으로
   const completed = completedProjects.filter(
     p => p.evaluation_status === 'COMPLETED' || p.evaluation_status === 'NOT_REQUIRED'
+  );
+
+  // 나머지는 모두 pending 섹션으로 (undefined, null, 'PENDING' 포함)
+  // 이렇게 하면 evaluation_status가 없는 프로젝트도 평가 대기로 표시됨
+  const pending = completedProjects.filter(
+    p => p.evaluation_status !== 'COMPLETED' && p.evaluation_status !== 'NOT_REQUIRED'
   );
 
   return { pending, completed };
