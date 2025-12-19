@@ -455,3 +455,38 @@
   color: #807C7C;
 }
 
+// Figma 스펙 기반 Empty Project Card
+.emptyProjectCard {
+  width: 100%;
+  max-width: 176px;
+  aspect-ratio: 176 / 134;
+  border-radius: 16px;
+  background-color: #dcdcdc;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: darken(#dcdcdc, 5%);
+  }
+}
+
+.emptyProjectIcon {
+  font-size: 14px;
+  font-weight: 300;
+  color: #403e3e;
+}
+
+.emptyProjectText {
+  font-family: 'Pretendard';
+  font-size: 13px;
+  font-weight: 600;
+  color: #403e3e;
+  letter-spacing: -0.03em;
+  line-height: 19px;
+}
+

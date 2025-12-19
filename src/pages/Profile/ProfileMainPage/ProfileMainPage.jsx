@@ -468,21 +468,12 @@ export default function ProfileMainPage() {
         <div className={styles.projectSection}>
           <div className={styles.sectionTitle}>나의 프로젝트</div>
           {hasNoProjects ? (
-            <div className={styles.emptyProjectContainer}>
-              <img
-                src={projectEmpty}
-                alt="프로젝트 없음"
-                className={styles.emptyIllustration}
-              />
-              <p className={styles.emptyText}>
-                아직 등록된 프로젝트가 없어요.
-              </p>
-              <button
-                className={styles.addProjectButton}
-                onClick={handleAddProject}
-              >
-                + 프로젝트 등록하기
-              </button>
+            <div
+              className={styles.emptyProjectCard}
+              onClick={handleAddProject}
+            >
+              <span className={styles.emptyProjectIcon}>+</span>
+              <span className={styles.emptyProjectText}>프로젝트 등록하기</span>
             </div>
           ) : (
             <div className={styles.projectGrid}>
