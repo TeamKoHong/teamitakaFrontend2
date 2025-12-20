@@ -433,3 +433,48 @@ export const toggleRecruitmentScrap = async (recruitmentId) => {
 
     return res.json();
 };
+
+/**
+ * Creates a project from recruitment (Kickoff)
+ */
+export const createProjectFromRecruitment = async (recruitmentId, kickoffData) => {
+    const { API_BASE_URL, headers } = getApiConfig();
+    const token = localStorage.getItem('authToken');
+
+    if (!token) {
+        const err = new Error('로그인이 필요합니다.');
+        err.code = 'UNAUTHORIZED';
+        throw err;
+    }
+
+    const res = await fetch(`${API_BASE_URL}/api/projects/from-recruitment/${recruitmentId}`, {
+        method: 'POST',
+        headers: {
+            ...headers,
+            Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(kickoffData),
+    });
+
+    if (res.status === 401 || res.status === 403) {
+        const err = new Error('권한이 없습니다.');
+        err.code = 'UNAUTHORIZED';
+        throw err;
+    }
+
+    if (res.status === 409) {
+        const err = new Error('이미 프로젝트로 전환된 모집글입니다.');
+        err.code = 'ALREADY_CONVERTED';
+        throw err;
+    }
+
+    if (!res.ok) {
+        const errorData = await res.json();
+        console.error('🚨 Create project error:', errorData);
+        const err = new Error(errorData.message || '프로젝트 생성에 실패했습니다.');
+        err.code = 'SERVER_ERROR';
+        throw err;
+    }
+
+    return res.json();
+};
