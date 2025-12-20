@@ -33,7 +33,20 @@ const ProjectCard = ({ project, type = "project" }) => {
   const period = formattedPeriod ||
                  (isRecruitment ? "모집 기간 미정" : "프로젝트 기간 미정");
   const meetingTimeDisplay = meeting_time || "회의 시간 미정";
-  const progressValue = Number(progress_percent) || 0;
+  
+  // Calculate progress and remaining days
+  const progressValue = startDate && endDate 
+    ? Number(calculateProgress(startDate, endDate)) 
+    : (Number(progress_percent) || 0);
+  
+  const remainingDays = endDate ? calculateRemainingDays(endDate) : null;
+  
+  // Format D-Day text
+  const getDdayText = () => {
+    if (remainingDays === null) return '완료';
+    if (remainingDays === 0) return 'D-Day';
+    return `D-${remainingDays}`;
+  };
 
   const handleClick = () => {
     if (isRecruitment) {

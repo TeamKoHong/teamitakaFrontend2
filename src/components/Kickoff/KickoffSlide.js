@@ -1,15 +1,19 @@
 import { useState, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs';
 import './KickoffSlide.scss';
 import DefaultHeader from '../Common/DefaultHeader';
 import DateRangePickerSheet from '../ProjectRecruit/DateRangePicker/DateRangePickerSheet';
+import { createProjectFromRecruitment } from '../../services/recruitment';
 
-export default function KickoffSlide({ open, onClose, onComplete }) {
+export default function KickoffSlide({ open, onClose, selectedMembers, recruitmentId }) {
+  const navigate = useNavigate();
   const [title, setTitle] = useState('');
   const [desc, setDesc] = useState('');
   const [start, setStart] = useState('');
   const [end, setEnd] = useState('');
   const [datePickerOpen, setDatePickerOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const isValidRange = useMemo(() => {
     if (!start || !end) return false;
@@ -31,11 +35,54 @@ export default function KickoffSlide({ open, onClose, onComplete }) {
     setEnd(dayjs(endDate).format('YYYY-MM-DD'));
   };
 
-  const handleNext = () => {
+  const handleNext = async () => {
     if (!isReady) return;
     
-    if (onComplete) {
-      onComplete({ title, desc, start, end });
+    if (!recruitmentId || !selectedMembers || selectedMembers.length === 0) {
+      alert('필수 정보가 누락되었습니다.');
+      return;
+    }
+
+    setLoading(true);
+    
+    try {
+      // API 요청 데이터 구성
+      const requestData = {
+        title,
+        resolution: desc || '', // 설명 또는 다짐
+        start_date: start,
+        end_date: end,
+        memberUserIds: selectedMembers.map(member => member.user_id)
+      };
+
+      console.log('✅ 프로젝트 생성 요청:', requestData);
+
+      // 프로젝트 생성 API 호출 (KickoffSlide에서 직접 호출)
+      const result = await createProjectFromRecruitment(recruitmentId, requestData);
+      
+      console.log('✅ 프로젝트 생성 성공:', result);
+      alert('프로젝트가 생성되었습니다!');
+
+      // 슬라이드 닫기
+      onClose();
+
+      // 내 프로젝트 관리 페이지로 이동
+      navigate('/project-management');
+      
+    } catch (err) {
+      console.error('❌ 프로젝트 생성 실패:', err);
+      
+      if (err.code === 'UNAUTHORIZED') {
+        alert('로그인이 필요합니다.');
+        navigate('/login');
+      } else if (err.code === 'ALREADY_CONVERTED') {
+        alert('이미 프로젝트로 전환된 모집글입니다.');
+        onClose();
+      } else {
+        alert(err.message || '프로젝트 생성에 실패했습니다.');
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -95,9 +142,9 @@ export default function KickoffSlide({ open, onClose, onComplete }) {
           <button
             className={`kickoff-button ${isReady ? 'active' : ''}`}
             onClick={handleNext}
-            disabled={!isReady}
+            disabled={!isReady || loading}
           >
-            프로젝트 시작하기!
+            {loading ? '프로젝트 생성 중...' : '프로젝트 시작하기!'}
           </button>
         </div>
       </div>
