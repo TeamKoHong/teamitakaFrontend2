@@ -144,8 +144,6 @@ export default function ApplicantListSlide({ open, onClose, recruitmentId }) {
   };
 
   const handleStartProject = () => {
-   
-    
     if (!hasSelection || !recruitmentId) {
       console.log("❌ 조건 미충족 - return");
       return;
@@ -157,9 +155,10 @@ export default function ApplicantListSlide({ open, onClose, recruitmentId }) {
     setIsMatchingCompleteOpen(true);
   };
 
-
   const handleMatchingCompleteClose = () => {
     setIsMatchingCompleteOpen(false);
+    // 팀 매칭 완료가 닫히면 지원자 목록도 닫기
+    onClose();
   };
 
   // Drag handlers (for selected team members only)
@@ -340,7 +339,7 @@ export default function ApplicantListSlide({ open, onClose, recruitmentId }) {
               onClick={hasSelection ? handleStartProject : undefined}
               disabled={!hasSelection}
             >
-              {hasSelection ? "프로젝트 시작하기!" : "함께 할 팀원을 선정하세요."}
+              {hasSelection ? "다음" : "함께 할 팀원을 선정하세요."}
             </button>
           </div>
         )}
