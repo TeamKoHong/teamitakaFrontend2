@@ -3,7 +3,7 @@ import "./ProjectCard.scss";
 import { useNavigate } from "react-router-dom";
 import { IoCalendarOutline, IoTimeOutline, IoPeopleOutline } from "react-icons/io5";
 import CircularProgress from "../../Common/CircularProgress";
-import { formatDateRange } from "../../../utils/dateFormat";
+import { formatDateRange, getRelativeTime } from "../../../utils/dateFormat";
 
 const ProjectCard = ({ project, type = "project" }) => {
   const navigate = useNavigate();
@@ -19,7 +19,7 @@ const ProjectCard = ({ project, type = "project" }) => {
     recruitment_start,
     recruitment_end,
     meeting_time,
-    updated_at,
+    last_feed_at,
     progress_percent,
     applicant_count
   } = project;
@@ -75,9 +75,11 @@ const ProjectCard = ({ project, type = "project" }) => {
 
       {/* D-Day 원형 프로그레스 */}
       <div className="projectCard-right">
-        <p className="time-ago">
-          {updated_at ? '업데이트됨' : ''} <span className="dot" />
-        </p>
+        {last_feed_at && (
+          <p className="time-ago">
+            {getRelativeTime(last_feed_at)}
+          </p>
+        )}
         <CircularProgress percentage={progressValue} />
       </div>
     </div>
