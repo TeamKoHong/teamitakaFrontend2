@@ -280,20 +280,53 @@
 
   &.dragging-mode {
     justify-content: center;
+    background: linear-gradient(to bottom, rgba(247, 98, 65, 0) 0%, rgba(247, 98, 65, 0.3) 30%, rgba(247, 98, 65, 0.6) 60%, rgba(247, 98, 65, 0.85) 90%, rgba(247, 98, 65, 1) 100%);
     
-    .delete-icon-wrapper {
-      opacity: 1;
+    .delete-zone-content {
+      opacity: 1; // 드래그 시작 시 바로 보임
     }
   }
 
   &.delete-zone-active {
-    background: linear-gradient(to bottom, rgba(247, 98, 65, 0) 0%, rgba(247, 98, 65, 0.2) 20%, rgba(247, 98, 65, 0.4) 40%, rgba(247, 98, 65, 0.6) 60%, rgba(247, 98, 65, 0.8) 80%, rgba(247, 98, 65, 0.95) 100%);
-
     .delete-icon-wrapper {
-      transform: scale(1.3);
-      
       .delete-icon {
-        animation: shake 0.3s ease-in-out infinite;
+        animation: shake 0.3s ease-in-out infinite; // 쓰레기통만 흔들림
+      }
+    }
+  }
+
+  .delete-zone-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    opacity: 1; // 항상 보이도록 변경
+    transition: all 0.3s ease;
+  }
+
+  .arrow-indicators {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+    margin-bottom: 0.5rem;
+
+    .arrow-icon {
+      width: 24px;
+      height: 24px;
+      transition: all 0.3s ease;
+
+      &.arrow-1 {
+        opacity: 0.3;
+      }
+
+      &.arrow-2 {
+        opacity: 0.5;
+      }
+
+      &.arrow-3 {
+        opacity: 0.7;
       }
     }
   }
@@ -303,10 +336,12 @@
     align-items: center;
     justify-content: center;
     transition: all 0.3s ease;
-    opacity: 0;
 
     .delete-icon {
-      font-size: 48px;
+      width: 48px;
+      height: 48px;
+      filter: brightness(0) invert(1); // 흰색으로 변경
+      transition: all 0.3s ease;
     }
   }
 
@@ -344,7 +379,13 @@
     padding: 1rem 1rem 1.5rem 1rem;
     
     .delete-icon-wrapper .delete-icon {
-      font-size: 40px;
+      width: 40px;
+      height: 40px;
+    }
+
+    .arrow-indicators .arrow-icon {
+      width: 20px;
+      height: 20px;
     }
   }
 }

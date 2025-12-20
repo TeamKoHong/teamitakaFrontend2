@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { IoCalendarOutline, IoTimeOutline, IoPeopleOutline } from "react-icons/io5";
 import CircularProgress from "../../Common/CircularProgress";
 import { formatDateRange } from "../../../utils/dateFormat";
+import { calculateProgress, calculateRemainingDays } from "../../../utils/calculateProgress";
 
 const ProjectCard = ({ project, type = "project" }) => {
   const navigate = useNavigate();
@@ -33,7 +34,20 @@ const ProjectCard = ({ project, type = "project" }) => {
   const period = formattedPeriod ||
                  (isRecruitment ? "모집 기간 미정" : "프로젝트 기간 미정");
   const meetingTimeDisplay = meeting_time || "회의 시간 미정";
-  const progressValue = Number(progress_percent) || 0;
+  
+  // Calculate progress and remaining days
+  const progressValue = startDate && endDate 
+    ? Number(calculateProgress(startDate, endDate)) 
+    : (Number(progress_percent) || 0);
+  
+  const remainingDays = endDate ? calculateRemainingDays(endDate) : null;
+  
+  // Format D-Day text
+  const getDdayText = () => {
+    if (remainingDays === null) return '완료';
+    if (remainingDays === 0) return 'D-Day';
+    return `D-${remainingDays}`;
+  };
 
   const handleClick = () => {
     if (isRecruitment) {
@@ -78,7 +92,9 @@ const ProjectCard = ({ project, type = "project" }) => {
         <p className="time-ago">
           {updated_at ? '업데이트됨' : ''} <span className="dot" />
         </p>
-        <CircularProgress percentage={progressValue} />
+        <CircularProgress percentage={progressValue}>
+          {getDdayText()}
+        </CircularProgress>
       </div>
     </div>
   );

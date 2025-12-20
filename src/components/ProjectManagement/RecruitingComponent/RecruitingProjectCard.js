@@ -34,9 +34,24 @@ const RecruitingProjectCard = ({ recruitment, onClick }) => {
     return '마감'; // 마감일이 지난 경우
   };
 
+  const isDDay = () => {
+    if (!recruitment_end) return true;
+    
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    const endDate = new Date(recruitment_end);
+    endDate.setHours(0, 0, 0, 0);
+    
+    const diffTime = endDate - today;
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    
+    return diffDays === 0;
+  };
+
   return (
     <div className="recruiting-project-card">
-      <div className="recruiting-card" onClick={onClick}>
+      <div className={`recruiting-card ${isDDay() ? 'is-dday' : ''}`} onClick={onClick}>
         <h3>{title || '프로젝트명'}</h3>
         <p className="description">
           {description || '프로젝트 설명이 없습니다.'}
