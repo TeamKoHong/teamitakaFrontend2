@@ -5,6 +5,26 @@ import { IoCalendarOutline, IoTimeOutline, IoPeopleOutline } from "react-icons/i
 import CircularProgress from "../../Common/CircularProgress";
 import { formatDateRange, getRelativeTime } from "../../../utils/dateFormat";
 
+// 진행률 계산 (시작일~종료일 기준)
+const calculateProgress = (startDate, endDate) => {
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+  const now = new Date();
+  if (now < start) return 0;
+  if (now > end) return 100;
+  const total = end - start;
+  const elapsed = now - start;
+  return Math.round((elapsed / total) * 100);
+};
+
+// 남은 일수 계산
+const calculateRemainingDays = (endDate) => {
+  const end = new Date(endDate);
+  const now = new Date();
+  const diff = Math.ceil((end - now) / (1000 * 60 * 60 * 24));
+  return diff > 0 ? diff : 0;
+};
+
 const ProjectCard = ({ project, type = "project" }) => {
   const navigate = useNavigate();
   if (!project) return null;
