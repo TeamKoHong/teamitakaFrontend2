@@ -5,6 +5,8 @@ import ApplicantDetailModal from "./ApplicantDetailModal";
 import TeamMatchingComplete from "./TeamMatchingComplete";
 import { getRecruitmentApplicants} from "../services/recruitment";
 import userDefaultImg from "../assets/icons/user_default_img.svg";
+import deleteIcon from "../assets/icons/deleteIcon.svg";
+import arrowIcon from "../assets/icons/arrow_back_ios.svg";
 import "./ApplicantListSlide.scss";
 
 export default function ApplicantListSlide({ open, onClose, recruitmentId }) {
@@ -328,8 +330,15 @@ export default function ApplicantListSlide({ open, onClose, recruitmentId }) {
         {/* Delete Zone - 드래그 중일 때만 표시 */}
         {isDragging ? (
           <div className={`bottom-fixed-button dragging-mode ${isOverDeleteZone ? "delete-zone-active" : ""}`}>
-            <div className="delete-icon-wrapper">
-              <span className="delete-icon">🗑️</span>
+            <div className="delete-zone-content">
+              <div className="arrow-indicators">
+                <img src={arrowIcon} alt="" className="arrow-icon arrow-1" />
+                <img src={arrowIcon} alt="" className="arrow-icon arrow-2" />
+                <img src={arrowIcon} alt="" className="arrow-icon arrow-3" />
+              </div>
+              <div className="delete-icon-wrapper">
+                <img src={deleteIcon} alt="삭제" className="delete-icon" />
+              </div>
             </div>
           </div>
         ) : (
