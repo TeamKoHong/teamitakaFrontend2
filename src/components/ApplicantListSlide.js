@@ -2,7 +2,8 @@ import React, { useRef, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import DefaultHeader from "./Common/DefaultHeader";
 import ApplicantDetailModal from "./ApplicantDetailModal";
-import { getRecruitmentApplicants, approveApplicant, convertToProject } from "../services/recruitment";
+import TeamMatchingComplete from "./TeamMatchingComplete";
+import { getRecruitmentApplicants} from "../services/recruitment";
 import userDefaultImg from "../assets/icons/user_default_img.svg";
 import "./ApplicantListSlide.scss";
 
@@ -15,6 +16,9 @@ export default function ApplicantListSlide({ open, onClose, recruitmentId }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const contentRef = useRef(null);
+  
+  // Team Matching Complete state
+  const [isMatchingCompleteOpen, setIsMatchingCompleteOpen] = useState(false);
   
   // Drag & Drop states
   const [draggedApplicant, setDraggedApplicant] = useState(null);
@@ -139,37 +143,23 @@ export default function ApplicantListSlide({ open, onClose, recruitmentId }) {
     onClose();
   };
 
-  const handleStartProject = async () => {
-    if (!hasSelection || !recruitmentId) return;
-
-    try {
-      // 1. 선택된 팀원들을 먼저 승인 (백엔드에 ACCEPTED 상태로 저장)
-      console.log("✅ 선택된 팀원 승인 중...", selectedTeamMembers);
-      for (const member of selectedTeamMembers) {
-        await approveApplicant(member.application_id);
-      }
-      console.log("✅ 모든 팀원 승인 완료");
-
-      // 2. 프로젝트로 전환 (백엔드가 ACCEPTED 상태인 지원자들을 자동으로 포함)
-      const result = await convertToProject(recruitmentId);
-      console.log("✅ Project created:", result);
-      alert("프로젝트가 생성되었습니다!");
-
-      // Navigate to the created project or projects list
-      if (result.project_id) {
-        navigate(`/projects/${result.project_id}`);
-      } else {
-        navigate("/projects");
-      }
-    } catch (err) {
-      console.error("Failed to convert to project:", err);
-      if (err.code === 'UNAUTHORIZED') {
-        alert("로그인이 필요합니다.");
-        navigate("/login");
-      } else {
-        alert("프로젝트 생성에 실패했습니다.");
-      }
+  const handleStartProject = () => {
+   
+    
+    if (!hasSelection || !recruitmentId) {
+      console.log("❌ 조건 미충족 - return");
+      return;
     }
+
+    console.log("✅ 선택된 팀원:", selectedTeamMembers);
+    console.log("✅ 팀 매칭 완료 슬라이드 열기");
+    // 팀 매칭 완료 슬라이드 열기
+    setIsMatchingCompleteOpen(true);
+  };
+
+
+  const handleMatchingCompleteClose = () => {
+    setIsMatchingCompleteOpen(false);
   };
 
   // Drag handlers (for selected team members only)
@@ -282,7 +272,7 @@ export default function ApplicantListSlide({ open, onClose, recruitmentId }) {
               {hasSelection ? (
                 <div className="selected-banner">
                   <p className="selected-title">[모집자]님이 선정했어요.</p>
-                  <p className="selected-sub">함께하게 될 팀원들이에요!</p>
+                  <p className="selected-sub">함께하게 될 팀원들<span>이에요!</span></p>
                   <div className="selected-avatars">
                     {selectedTeamMembers.map((m) => {
                       const isBeingDragged = draggedApplicant?.id === m.id;
@@ -304,7 +294,11 @@ export default function ApplicantListSlide({ open, onClose, recruitmentId }) {
                   </div>
                 </div>
               ) : (
-                <p className="description">지원자 목록에서 함께 할 팀원을 선정해주세요.</p>
+                <div className="description-container">
+                  <p className="description-title">함께 할 팀원을 선정해주세요.</p>
+                  <p className="description-text">원하는 지원자 프로필을 꾹 눌러 드래그 해보세요!</p>
+                </div>
+                
               )}
               <hr />
               <p className="highlight-text">
@@ -375,6 +369,14 @@ export default function ApplicantListSlide({ open, onClose, recruitmentId }) {
         onClose={handleModalClose}
         applicant={selectedApplicant}
         onInvite={handleInvite}
+      />
+
+      {/* 팀 매칭 완료 슬라이드 */}
+      <TeamMatchingComplete
+        open={isMatchingCompleteOpen}
+        onClose={handleMatchingCompleteClose}
+        selectedMembers={selectedTeamMembers}
+        recruitmentId={recruitmentId}
       />
     </>
   );

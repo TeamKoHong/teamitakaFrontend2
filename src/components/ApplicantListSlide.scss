@@ -40,6 +40,7 @@
   display: flex;
   flex-direction: column;
   overflow-y: auto;
+  margin-top: 48px;
   padding: 1rem 1rem 0 1rem; // 위 16px, 좌우 16px, 아래는 버튼이 차지
   box-sizing: border-box;
   scrollbar-width: none;
@@ -49,12 +50,25 @@
     display: none;
   }
 
-  .description {
-    margin: 48px 60px;
-    color: #999;
-    font-size: 13px;
-    text-align: center;
+  .description-container {
+    margin: 48px 0;
+    .description-title {
+      color: #403E3E;
+      font-size: 15px;
+      font-style: normal;
+      font-weight: 600px;
+      text-align: center;
+    }
+    .description-text {
+      color: #807C7C;
+      font-size: 13px;
+      font-style: normal;
+      font-weight: 600;
+      text-align: center;
+    }
   }
+
+  
 
   .highlight-text {
     margin-top: 23px;
@@ -179,7 +193,7 @@
 
   .selected-banner {
     background: transparent;
-    margin: 0 0 8px 0;
+    margin: 1rem 0 1rem 0;
     padding: 0;
     border-radius: 0;
     box-shadow: none;
@@ -194,6 +208,10 @@
       font-size: 12px;
       color: #f76241;
       margin: 0 0 12px 0;
+
+      span {
+        color: #333; // 타이틀과 같은 색상
+      }
     }
     .selected-avatars {
       display: flex;
