@@ -13,9 +13,9 @@ $radius-lg:    16px;
 $radius-md:    12px;
 $header-h:     56px;
 
-/* 프로필 아바타 내리는 정도 */
-$avatar-offset: 102px;     // 기본
-$avatar-offset-sm: 106px;  // 360px 이하
+/* ✅ 프로필 아바타 위치(위로 올리기) */
+$avatar-offset: 16px;      // ✅ 기존 102px → 16px (훨씬 위로)
+$avatar-offset-sm: 12px;   // ✅ 기존 106px → 12px (360px 이하)
 
 /* 헤더 아래 흰 공백(카드와 헤더 사이 간격) 조절 */
 $card-gap-top: 0px;
@@ -73,7 +73,6 @@ $keywords-bottom-space: 24px;
     border-radius: 0 0 $radius-lg $radius-lg; // 상단 0: 헤더와 한 장처럼
     box-shadow: none;
     padding: 64px 16px 16px 16px; // 상단 패딩 증가: 헤더와 겹침 방지
-    /* 기존: margin: 0 -16px 20px;  -> 헤더 아래 흰 공백 제거 */
     margin: -$pull-up -16px 20px;
 
     /* 2컬럼: 왼쪽 텍스트 / 오른쪽 아바타 */
@@ -92,8 +91,8 @@ $keywords-bottom-space: 24px;
       justify-items: start;
       position: relative;
 
-      /* 아바타를 확실히 아래로 내림 */
-      transform: translateY($avatar-offset) !important;
+      /* ✅ 아바타를 "살짝만" 아래로 (= 위로 올라오게 수정) */
+      transform: translateY($avatar-offset);
       will-change: transform;
 
       .profile-img {
@@ -229,14 +228,9 @@ $keywords-bottom-space: 24px;
 
   /* ✅✅ 메인 TodoBox: 상세 페이지와 동일 폭/모양으로 보이게 */
   .main-todo-section {
-    /* main-page의 좌우 padding(16px)을 이 구간에서만 상쇄 */
     margin-left: -16px;
     margin-right: -16px;
-
-    /* 기존 inline style 대체 */
     margin-top: 12px;
-
-    /* 안전장치 */
     width: auto;
   }
 
@@ -271,14 +265,13 @@ $keywords-bottom-space: 24px;
       grid-template-columns: 1fr 84px;
       column-gap: 12px;
 
-      /* 모바일에서도 아바타 더 내려서 정렬 */
-      .profile-right { transform: translateY($avatar-offset-sm) !important; }
+      /* ✅ 모바일에서도 아바타 위로 */
+      .profile-right { transform: translateY($avatar-offset-sm); }
       .profile-right .profile-img { width: 76px; height: 76px; font-size: 26px; margin-bottom: 0; }
     }
 
     .my-projects .empty-card .empty-img { width: 112px; }
 
-    /* 모바일에서도 동일하게 padding 상쇄 유지 */
     .main-todo-section {
       margin-left: -16px;
       margin-right: -16px;
