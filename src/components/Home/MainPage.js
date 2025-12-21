@@ -203,9 +203,10 @@ const MainPage = () => {
         )}
 
         {!isLoadingProjects && projects.length > 0 && (
-          <div className="project-list">
+          <div className="main-project-carousel">
             {projects.map((project) => (
-               <MainProjectCard key={project.project_id} project={project}   onClick={() => navigate(`/project/${project.project_id}`)} />
+               <MainProjectCard key={project.project_id} project={project}   
+               onClick={() => navigate(`/project/${project.project_id}`)} />
             ))}
           </div>
         )}
