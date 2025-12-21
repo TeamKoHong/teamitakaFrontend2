@@ -1,30 +1,20 @@
 .main-project-card {
-  width: 100%;
   border: 0;
   background: #fff;
-  border-radius: 16px;
-  padding: 16px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  border-radius: 18px;
+  width: 260px;              // ✅ 캐러셀 카드 폭
+  flex: 0 0 auto;            // ✅ 가로 스크롤에서 고정 폭
+  overflow: hidden;
   text-align: left;
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
   cursor: pointer;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
 
-  .card-left {
-    display: flex;
-    gap: 14px;
-    min-width: 0;
-    align-items: center;
-  }
+  display: flex;
+  flex-direction: column;
 
   .thumb {
-    width: 92px;
-    height: 72px;
-    border-radius: 12px;
-    overflow: hidden;
-    background: #f2f2f2;
-    flex-shrink: 0;
+    height: 140px;           // ✅ 위쪽 큰 이미지
+    background: #e5e5e5;
 
     img {
       width: 100%;
@@ -36,40 +26,35 @@
     .thumb-placeholder {
       width: 100%;
       height: 100%;
-      background: #e7e7e7;
+      background: #dcdcdc;
+      display: grid;
+      place-items: center;
     }
   }
 
-  .info {
+  .body {
+    padding: 14px 14px 16px;
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    align-items: center;
+  }
+
+  .left {
     min-width: 0;
     display: flex;
     flex-direction: column;
     gap: 10px;
   }
 
-  .title-row {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    min-width: 0;
-  }
-
   .title {
-    font-size: 16px;
+    margin: 0;
+    font-size: 15px;
     font-weight: 800;
     color: #111;
-    margin: 0;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-  }
-
-  .update-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 999px;
-    background: #ef4423;
-    flex-shrink: 0;
   }
 
   .meta {
@@ -93,21 +78,20 @@
     }
   }
 
-  .card-right {
-    margin-left: 12px;
+  .right {
     flex-shrink: 0;
+  }
 
-    .d-day {
-      width: 56px;
-      height: 56px;
-      border-radius: 999px;
-      border: 4px solid #111;
-      display: grid;
-      place-items: center;
-      font-weight: 800;
-      font-size: 14px;
-      color: #111;
-      background: #fff;
-    }
+  .d-day {
+    width: 52px;
+    height: 52px;
+    border-radius: 999px;
+    border: 4px solid #111;
+    display: grid;
+    place-items: center;
+    font-weight: 800;
+    font-size: 13px;
+    color: #111;
+    background: #fff;
   }
 }
