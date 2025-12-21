@@ -13,8 +13,9 @@ import { getSummary } from "../../services/dashboard";
 import { getMyProjects } from "../../services/projects";
 
 import ProjectCard from "../ProjectManagement/Common/ProjectCard";
+import MainProjectCard from "./MainProjectCard";
 
-// ✅ TODO 컴포넌트 임포트
+
 import TodoBox from "../ProjectDetailPage/TodoBox";
 
 const MainPage = () => {
@@ -204,13 +205,13 @@ const MainPage = () => {
         {!isLoadingProjects && projects.length > 0 && (
           <div className="project-list">
             {projects.map((project) => (
-              <ProjectCard key={project.project_id} project={project} />
+               <MainProjectCard key={project.project_id} project={project}   onClick={() => navigate(`/project/${project.project_id}`)} />
             ))}
           </div>
         )}
       </section>
 
-      {/* ✅ 메인에서는 좌우 padding 영향 제거해서 상세와 폭 동일하게 */}
+      {/* 메인에서는 좌우 padding 영향 제거해서 상세와 폭 동일하게 */}
       <section className="main-todo-section">
         <TodoBox showFeed={false} />
       </section>
