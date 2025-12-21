@@ -3,9 +3,9 @@
   background: #fff;
   border-radius: 18px;
 
-  /* ✅ 가로 캐러셀 핵심: 카드가 부모보다 작아야 옆으로 나열됨 */
-  width: 292px;          /* 기본 카드 폭 */
-  min-width: 292px;      /* flex에서 줄어들지 않게 */
+  /* ✅ 가로 캐러셀에서 옆으로 나열되도록 폭 고정 */
+  width: 280px;
+  min-width: 280px;
   flex: 0 0 auto;
 
   overflow: hidden;
@@ -15,9 +15,6 @@
 
   display: flex;
   flex-direction: column;
-
-  /* 스냅(부모 scroll-snap과 조합) */
-  scroll-snap-align: start;
 
   .thumb {
     width: 100%;
@@ -60,7 +57,6 @@
     font-size: 15px;
     font-weight: 800;
     color: #111;
-
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -109,9 +105,8 @@
   .main-project-card {
     border-radius: 16px;
 
-    /* ✅ 모바일 카드 폭 살짝 줄이기 */
-    width: 264px;
-    min-width: 264px;
+    width: 260px;
+    min-width: 260px;
 
     .thumb {
       height: 150px;
