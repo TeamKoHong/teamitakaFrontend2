@@ -161,7 +161,16 @@ $keywords-bottom-space: 24px;
     padding: 16px;
     margin-bottom: 16px;
 
-    /* 프로젝트 목록 */
+    /* ✅✅ 메인 프로젝트 카드 리스트(세로 스크롤/세로 리스트 강제) */
+    .main-project-carousel {
+      display: flex !important;
+      flex-direction: column !important;  // ✅ 세로
+      gap: 12px !important;
+      overflow-x: hidden !important;      // ✅ 가로 스크롤 차단
+      width: 100%;
+    }
+
+    /* 프로젝트 목록(기존) */
     .project-list {
       display: flex;
       flex-direction: column;
