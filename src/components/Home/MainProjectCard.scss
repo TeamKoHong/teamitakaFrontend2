@@ -2,18 +2,22 @@
   border: 0;
   background: #fff;
   border-radius: 18px;
-  width: 260px;              // ✅ 캐러셀 카드 폭
-  flex: 0 0 auto;            // ✅ 가로 스크롤에서 고정 폭
+
+  width: 100%;
+  flex: none;                
   overflow: hidden;
   text-align: left;
   cursor: pointer;
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
 
+
   display: flex;
   flex-direction: column;
 
+ 
   .thumb {
-    height: 140px;           // ✅ 위쪽 큰 이미지
+    width: 100%;
+    height: 160px;            
     background: #e5e5e5;
 
     img {
@@ -52,6 +56,8 @@
     font-size: 15px;
     font-weight: 800;
     color: #111;
+
+
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -93,5 +99,27 @@
     font-size: 13px;
     color: #111;
     background: #fff;
+  }
+}
+
+
+@media (max-width: 375px) {
+  .main-project-card {
+    border-radius: 16px;
+
+    .thumb {
+      height: 150px;
+    }
+
+    .body {
+      padding: 12px 12px 14px;
+    }
+
+    .d-day {
+      width: 48px;
+      height: 48px;
+      border-width: 3px;
+      font-size: 12px;
+    }
   }
 }
