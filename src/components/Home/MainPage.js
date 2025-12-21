@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import "./main.scss";
 import BottomNav from "../Common/BottomNav/BottomNav";
@@ -15,7 +15,6 @@ import { getMyProjects } from "../../services/projects";
 import ProjectCard from "../ProjectManagement/Common/ProjectCard";
 import MainProjectCard from "./MainProjectCard";
 
-
 import TodoBox from "../ProjectDetailPage/TodoBox";
 
 const MainPage = () => {
@@ -29,6 +28,10 @@ const MainPage = () => {
   const [projects, setProjects] = useState([]);
   const [isLoadingProjects, setIsLoadingProjects] = useState(false);
   const [projectError, setProjectError] = useState(null);
+
+  // ✅ 캐러셀 dots용
+  const carouselRef = useRef(null);
+  const [activeIndex, setActiveIndex] = useState(0);
 
   useEffect(() => {
     let mounted = true;
@@ -95,6 +98,48 @@ const MainPage = () => {
       mounted = false;
     };
   }, []);
+
+  // ✅ 프로젝트가 바뀌면 dot/스크롤 초기화
+  useEffect(() => {
+    setActiveIndex(0);
+    if (carouselRef.current) carouselRef.current.scrollLeft = 0;
+  }, [projects]);
+
+  // ✅ 캐러셀 스크롤 시 현재 인덱스 계산
+  const handleCarouselScroll = () => {
+    const el = carouselRef.current;
+    if (!el) return;
+
+    const firstCard = el.firstElementChild;
+    if (!firstCard) return;
+
+    // 카드 너비 + gap(12px) 기준으로 인덱스 계산
+    const cardWidth = firstCard.getBoundingClientRect().width;
+    const gap = 12;
+    const step = cardWidth + gap;
+
+    const idx = Math.round(el.scrollLeft / step);
+    const safeIdx = Math.max(0, Math.min(idx, projects.length - 1));
+    setActiveIndex(safeIdx);
+  };
+
+  // ✅ dot 클릭 시 해당 카드로 이동(선택 기능)
+  const scrollToIndex = (idx) => {
+    const el = carouselRef.current;
+    if (!el) return;
+
+    const firstCard = el.firstElementChild;
+    if (!firstCard) return;
+
+    const cardWidth = firstCard.getBoundingClientRect().width;
+    const gap = 12;
+    const step = cardWidth + gap;
+
+    el.scrollTo({
+      left: idx * step,
+      behavior: "smooth",
+    });
+  };
 
   const ongoingCount = summary?.projects?.ongoing ?? "N";
   const unreadCount = summary?.notifications?.unread ?? "0";
@@ -203,12 +248,34 @@ const MainPage = () => {
         )}
 
         {!isLoadingProjects && projects.length > 0 && (
-          <div className="main-project-carousel">
-            {projects.map((project) => (
-               <MainProjectCard key={project.project_id} project={project}   
-               onClick={() => navigate(`/project/${project.project_id}`)} />
-            ))}
-          </div>
+          <>
+            <div
+              className="main-project-carousel"
+              ref={carouselRef}
+              onScroll={handleCarouselScroll}
+            >
+              {projects.map((project) => (
+                <MainProjectCard
+                  key={project.project_id}
+                  project={project}
+                  onClick={() => navigate(`/project/${project.project_id}`)}
+                />
+              ))}
+            </div>
+
+            {/* ✅ dots (●●●) */}
+            <div className="carousel-dots" aria-label="프로젝트 캐러셀 페이지 표시">
+              {projects.map((_, i) => (
+                <button
+                  key={i}
+                  type="button"
+                  className={`dot ${i === activeIndex ? "is-active" : ""}`}
+                  aria-label={`프로젝트 ${i + 1}로 이동`}
+                  onClick={() => scrollToIndex(i)}
+                />
+              ))}
+            </div>
+          </>
         )}
       </section>
 

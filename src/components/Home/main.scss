@@ -138,14 +138,12 @@ $keywords-bottom-space: 24px;
   }
 
   .my-projects {
-    /* ✅ CHANGED: 맨 겉 흰 박스 제거 */
     background: transparent;
     border-radius: 0;
     box-shadow: none;
     padding: 0;
     margin-bottom: 16px;
 
-    /* ✅ CHANGED: 캐러셀 잘림이 "화면 끝" 기준으로 보이게 */
     .main-project-carousel {
       display: flex !important;
       flex-direction: row !important;
@@ -155,17 +153,14 @@ $keywords-bottom-space: 24px;
       overflow-y: hidden !important;
       -webkit-overflow-scrolling: touch;
 
-      /* ✅ 화면 좌우 끝까지 닿게 당김 (main-page padding: 0 16px 상쇄) */
       margin-left: -16px;
       margin-right: -16px;
 
-      /* ✅ 첫 카드 시작은 화면 안쪽 16px, 끝은 다음 카드가 살짝 보이도록 여유 */
       padding-left: 16px;
-      padding-right: 32px; /* ✅ CHANGED: 다음 카드 살짝 보이게 */
+      padding-right: 32px;
 
       scroll-snap-type: x mandatory;
 
-      /* 스크롤바 숨김 */
       &::-webkit-scrollbar { display: none; }
       scrollbar-width: none;
 
@@ -175,6 +170,42 @@ $keywords-bottom-space: 24px;
         max-width: none !important;
         scroll-snap-align: start;
       }
+    }
+
+    /* ✅ dots (덮임 방지 + 보이는 높이 확보) */
+    .carousel-dots {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 6px;
+
+      margin-top: 10px;
+      padding-bottom: 6px;
+
+      min-height: 14px;       /* ✅ 높이 보장 */
+      position: relative;     /* ✅ z-index 적용 */
+      z-index: 5;             /* ✅ 아래 섹션에 가려지지 않게 */
+      pointer-events: auto;
+    }
+
+    .carousel-dots .dot {
+      border: 0;
+      padding: 0;
+      cursor: pointer;
+
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: #cfcfd4;
+      opacity: 0.95;
+
+      transition: width 0.15s ease, opacity 0.15s ease;
+    }
+
+    .carousel-dots .dot.is-active {
+      width: 16px;
+      background: #111;
+      opacity: 1;
     }
 
     .loading-state,

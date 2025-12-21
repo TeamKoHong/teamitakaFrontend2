@@ -3,7 +3,6 @@
   background: #fff;
   border-radius: 18px;
 
-  /* ✅ 가로 캐러셀에서 옆으로 나열되도록 폭 고정 */
   width: 280px;
   min-width: 280px;
   flex: 0 0 auto;
@@ -43,7 +42,6 @@
     justify-content: space-between;
     gap: 12px;
 
-    /* ✅ 텍스트 시작점(위/왼쪽) 고정 */
     align-items: flex-start;
   }
 
@@ -53,8 +51,8 @@
     flex-direction: column;
     gap: 10px;
 
-    /* ✅ 왼쪽 정렬 강제 */
     text-align: left;
+    align-items: flex-start; /* ✅ 추가 */
   }
 
   .title {
@@ -73,6 +71,7 @@
     gap: 6px;
     color: #6b7280;
     font-size: 12px;
+    width: 100%; /* ✅ 추가: 라인 시작점 안정 */
   }
 
   .meta-row {
@@ -80,11 +79,20 @@
     align-items: center;
     gap: 6px;
     min-width: 0;
-
-    /* ✅ 아이콘+텍스트도 왼쪽에서 시작 */
     justify-content: flex-start;
 
+    /* ✅ 아이콘 폭 고정 → 텍스트 시작점 고정 */
+    .meta-icon {
+      width: 16px;
+      flex: 0 0 16px;
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+    }
+
     .meta-text {
+      flex: 1;
+      text-align: left;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -93,8 +101,6 @@
 
   .right {
     flex-shrink: 0;
-
-    /* ✅ D-day는 가운데로만 예쁘게 */
     align-self: center;
   }
 
