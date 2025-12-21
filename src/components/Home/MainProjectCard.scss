@@ -41,7 +41,6 @@
     display: flex;
     justify-content: space-between;
     gap: 12px;
-
     align-items: flex-start;
   }
 
@@ -52,7 +51,7 @@
     gap: 10px;
 
     text-align: left;
-    align-items: flex-start; /* ✅ 추가 */
+    align-items: flex-start;
   }
 
   .title {
@@ -63,6 +62,7 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    width: 100%;
   }
 
   .meta {
@@ -71,23 +71,28 @@
     gap: 6px;
     color: #6b7280;
     font-size: 12px;
-    width: 100%; /* ✅ 추가: 라인 시작점 안정 */
+    width: 100%;
   }
 
   .meta-row {
     display: flex;
     align-items: center;
-    gap: 6px;
     min-width: 0;
-    justify-content: flex-start;
 
-    /* ✅ 아이콘 폭 고정 → 텍스트 시작점 고정 */
+    /* ✅ 핵심: 아이콘과 텍스트 사이 간격 고정 */
+    gap: 6px;
+
     .meta-icon {
-      width: 16px;
-      flex: 0 0 16px;
+      /* ✅ 핵심: 아이콘 칸 고정폭 + 가운데 정렬 */
+      width: 18px;              /* 아이콘 영역 폭 고정(여기값만 맞추면 됨) */
+      height: 18px;
       display: inline-flex;
-      justify-content: center;
       align-items: center;
+      justify-content: center;
+
+      font-size: 16px;          /* react-icons 크기 */
+      flex: 0 0 18px;           /* 줄마다 아이콘 칸 동일 */
+      line-height: 1;
     }
 
     .meta-text {
@@ -96,6 +101,7 @@
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      min-width: 0;
     }
   }
 
@@ -131,6 +137,18 @@
 
     .body {
       padding: 12px 12px 14px;
+    }
+
+    /* ✅ 모바일에서는 아이콘 칸도 조금 줄이기 */
+    .meta-row {
+      gap: 6px;
+
+      .meta-icon {
+        width: 16px;
+        height: 16px;
+        flex: 0 0 16px;
+        font-size: 15px;
+      }
     }
 
     .d-day {

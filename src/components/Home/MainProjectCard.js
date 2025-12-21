@@ -1,9 +1,9 @@
 import React from "react";
 import "./MainProjectCard.scss";
+import { IoCalendarOutline, IoTimeOutline } from "react-icons/io5"; 
 
 function formatDate(dateStr) {
   if (!dateStr) return "";
-  // "2025-12-20T00:00:00.000Z" -> "2025.12.20"
   const d = new Date(dateStr);
   if (Number.isNaN(d.getTime())) return dateStr;
   const yyyy = d.getFullYear();
@@ -17,7 +17,6 @@ function calcDDay(endStr) {
   const end = new Date(endStr);
   if (Number.isNaN(end.getTime())) return "D-??";
 
-  // 날짜 단위로 계산 (시간 영향 최소화)
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   end.setHours(0, 0, 0, 0);
@@ -30,29 +29,12 @@ function calcDDay(endStr) {
 }
 
 const MainProjectCard = ({ project, onClick }) => {
-  // 필드 연결
-  const title =
-    project?.title ||
-    project?.name ||
-    project?.project_name ||
-    "프로젝트명";
+  const title = project?.title || project?.name || project?.project_name || "프로젝트명";
 
-  const start =
-    project?.startDate ||
-    project?.start_date ||
-    project?.start ||
-    "";
+  const start = project?.startDate || project?.start_date || project?.start || "";
+  const end = project?.endDate || project?.end_date || project?.end || "";
 
-  const end =
-    project?.endDate ||
-    project?.end_date ||
-    project?.end ||
-    "";
-
-  const meetingTime =
-    project?.meetingTime ||
-    project?.meeting_time ||
-    "고정 회의 시간";
+  const meetingTime = project?.meetingTime || project?.meeting_time || "고정 회의 시간";
 
   const thumbnail =
     project?.thumbnailUrl ||
@@ -64,44 +46,34 @@ const MainProjectCard = ({ project, onClick }) => {
     "";
 
   const periodText =
-    start && end
-      ? `${formatDate(start)} ~ ${formatDate(end)}`
-      : start
-      ? `${formatDate(start)}`
-      : "프로젝트 기간";
+    start && end ? `${formatDate(start)} ~ ${formatDate(end)}` : start ? `${formatDate(start)}` : "프로젝트 기간";
 
   const ddayText = calcDDay(end);
 
   return (
     <button type="button" className="main-project-card" onClick={onClick}>
-      {/* 썸네일: 위쪽 크게 */}
       <div className="thumb">
-        {thumbnail ? (
-          <img src={thumbnail} alt={`${title} 썸네일`} />
-        ) : (
-          <div className="thumb-placeholder" aria-hidden />
-        )}
+        {thumbnail ? <img src={thumbnail} alt={`${title} 썸네일`} /> : <div className="thumb-placeholder" aria-hidden />}
       </div>
 
-      {/* 아래 정보 영역 */}
       <div className="body">
         <div className="left">
           <h3 className="title">{title}</h3>
 
+          {/* ✅ 여기부터 아이콘 교체 + 정렬 안정 구조 */}
           <div className="meta">
             <div className="meta-row">
-              <span className="meta-icon" aria-hidden>📅</span>
+              <IoCalendarOutline className="meta-icon" aria-hidden />
               <span className="meta-text">{periodText}</span>
             </div>
 
             <div className="meta-row">
-              <span className="meta-icon" aria-hidden>⏰</span>
+              <IoTimeOutline className="meta-icon" aria-hidden />
               <span className="meta-text">{meetingTime}</span>
             </div>
           </div>
         </div>
 
-        {/* D-day: 오른쪽 원형 */}
         <div className="right">
           <div className="d-day">{ddayText}</div>
         </div>
