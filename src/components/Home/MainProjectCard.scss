@@ -122,4 +122,21 @@
       font-size: 12px;
     }
   }
+
+.main-project-carousel {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 12px !important;
+
+  overflow-x: hidden !important;
+  overflow-y: visible !important;
+
+  width: 100% !important;
+}
+
+.main-project-carousel > * {
+  width: 100% !important;
+  flex: none !important;
+  max-width: 100% !important;
+}
 }
