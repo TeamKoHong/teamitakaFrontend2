@@ -1,0 +1,126 @@
+.main-project-card {
+  border: 0;
+  background: #fff;
+  border-radius: 18px;
+
+  /* ✅ 가로 캐러셀에서 옆으로 나열되도록 폭 고정 */
+  width: 280px;
+  min-width: 280px;
+  flex: 0 0 auto;
+
+  overflow: hidden;
+  text-align: left;
+  cursor: pointer;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
+
+  display: flex;
+  flex-direction: column;
+
+  .thumb {
+    width: 100%;
+    height: 160px;
+    background: #e5e5e5;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .thumb-placeholder {
+      width: 100%;
+      height: 100%;
+      background: #dcdcdc;
+      display: grid;
+      place-items: center;
+    }
+  }
+
+  .body {
+    padding: 14px 14px 16px;
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    align-items: center;
+  }
+
+  .left {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .title {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 800;
+    color: #111;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .meta {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    color: #6b7280;
+    font-size: 12px;
+  }
+
+  .meta-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 0;
+
+    .meta-text {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+
+  .right {
+    flex-shrink: 0;
+  }
+
+  .d-day {
+    width: 52px;
+    height: 52px;
+    border-radius: 999px;
+    border: 4px solid #111;
+    display: grid;
+    place-items: center;
+    font-weight: 800;
+    font-size: 13px;
+    color: #111;
+    background: #fff;
+  }
+}
+
+@media (max-width: 375px) {
+  .main-project-card {
+    border-radius: 16px;
+
+    width: 260px;
+    min-width: 260px;
+
+    .thumb {
+      height: 150px;
+    }
+
+    .body {
+      padding: 12px 12px 14px;
+    }
+
+    .d-day {
+      width: 48px;
+      height: 48px;
+      border-width: 3px;
+      font-size: 12px;
+    }
+  }
+}
