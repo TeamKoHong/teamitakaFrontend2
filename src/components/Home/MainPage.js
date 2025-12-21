@@ -29,7 +29,6 @@ const MainPage = () => {
   const [isLoadingProjects, setIsLoadingProjects] = useState(false);
   const [projectError, setProjectError] = useState(null);
 
-  // 유저/대시보드 요약 로딩
   useEffect(() => {
     let mounted = true;
 
@@ -64,7 +63,6 @@ const MainPage = () => {
     };
   }, [navigate]);
 
-  // 프로젝트 목록 로딩
   useEffect(() => {
     let mounted = true;
 
@@ -84,9 +82,7 @@ const MainPage = () => {
         if (res?.success) setProjects(res.items || []);
       } catch (e) {
         if (!mounted) return;
-
         if (e?.code === "UNAUTHORIZED") return;
-
         setProjectError("프로젝트 목록을 불러오는 데 실패했습니다.");
       } finally {
         if (mounted) setIsLoadingProjects(false);
@@ -108,7 +104,11 @@ const MainPage = () => {
       <div className="top-card">
         <header className="header">
           <h1 className="logo">Teamitaka</h1>
-          <button className="icon-btn" aria-label="알림" onClick={() => navigate("/notifications")}>
+          <button
+            className="icon-btn"
+            aria-label="알림"
+            onClick={() => navigate("/notifications")}
+          >
             <img src={bellIcon} alt="알림" className="alarm-icon" />
             {unreadCount !== "0" && (
               <span className="badge" aria-label={`안 읽은 알림 ${unreadCount}건`}>
@@ -118,9 +118,7 @@ const MainPage = () => {
           </button>
         </header>
 
-        {/* 프로필 카드 */}
         <section className="profile-card" aria-label="프로필 요약">
-          {/* 좌측: 텍스트 정보 */}
           <div className="profile-middle">
             <div className="name">
               {isLoading && <span>불러오는 중...</span>}
@@ -170,7 +168,6 @@ const MainPage = () => {
             )}
           </div>
 
-          {/* 우측: 프로필 이미지 */}
           <div className="profile-right">
             <div className="profile-img" aria-hidden>
               🧍
@@ -179,7 +176,6 @@ const MainPage = () => {
         </section>
       </div>
 
-      {/* ===== 프로젝트 섹션 ===== */}
       <h2 className="section-title">내가 참여 중인 프로젝트</h2>
       <section className="my-projects">
         {isLoadingProjects && <div className="loading-state">프로젝트를 불러오는 중...</div>}
@@ -214,8 +210,8 @@ const MainPage = () => {
         )}
       </section>
 
-      {/* ✅ TODO 박스: my-projects 섹션 "밖", 그리고 메인에서는 피드 숨김 */}
-      <section className="main-todo-section" style={{ marginTop: "12px" }}>
+      {/* ✅ 메인에서는 좌우 padding 영향 제거해서 상세와 폭 동일하게 */}
+      <section className="main-todo-section">
         <TodoBox showFeed={false} />
       </section>
 

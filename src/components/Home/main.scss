@@ -218,6 +218,19 @@ $keywords-bottom-space: 24px;
     }
   }
 
+  /* ✅✅ 메인 TodoBox: 상세 페이지와 동일 폭/모양으로 보이게 */
+  .main-todo-section {
+    /* main-page의 좌우 padding(16px)을 이 구간에서만 상쇄 */
+    margin-left: -16px;
+    margin-right: -16px;
+
+    /* 기존 inline style 대체 */
+    margin-top: 12px;
+
+    /* 안전장치 */
+    width: auto;
+  }
+
   .bottom-spacer { height: 84px; }
 
   /* ===== 프로젝트 지원하기 버튼 ===== */
@@ -255,6 +268,11 @@ $keywords-bottom-space: 24px;
     }
 
     .my-projects .empty-card .empty-img { width: 112px; }
+
+    /* 모바일에서도 동일하게 padding 상쇄 유지 */
+    .main-todo-section {
+      margin-left: -16px;
+      margin-right: -16px;
+    }
   }
 }
-
