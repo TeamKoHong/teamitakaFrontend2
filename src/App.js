@@ -276,8 +276,8 @@ const App = () => {
           <Route path={MAIN_ROUTES.LOGIN} element={<PublicRoute><LoginPage /></PublicRoute>} />
           <Route path={MAIN_ROUTES.REGISTER} element={<PublicRoute><RegisterPage /></PublicRoute>} />
 
-          {/* ===== 게스트 랜딩 페이지 (로그인 불필요) =====*/}
-          <Route path="/guest" element={<GuestLandingPage />} /> 
+          ===== 게스트 랜딩 페이지 (로그인 불필요) =====*/}
+          {/* <Route path="/guest" element={<GuestLandingPage />} /> 
 
         
           {/* ===== 메인/프로필 (인증 필요) =====*/}
@@ -285,8 +285,8 @@ const App = () => {
           <Route path={MAIN_ROUTES.MY} element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
 
 
-          {/* ===== 혜정 테스트 > 게스트 랜딩 페이지 (로그인 불필요) =====
-          <Route path="/main" element={<MainPage />} /> */}
+          {/* ===== 혜정 테스트 > 게스트 랜딩 페이지 (로그인 불필요) =====*/}
+          {/* <Route path="/main" element={<MainPage />} /> */}
 
           {/* ===== 혜정 테스트 용도 // 메인/프로필 (인증 필요 없음음) ===== */}
           {/* <Route path={MAIN_ROUTES.MAIN} element={<MainPage />} />
