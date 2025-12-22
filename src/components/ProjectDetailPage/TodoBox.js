@@ -2,12 +2,13 @@ import React, { useState, useEffect } from "react";
 import axios from "axios"; // API 호출용
 import "./TodoBox.scss";
 
-const API_BASE_URL = "http://localhost:8080/api";
+import { getApiConfig } from "../../services/auth";
 
 // projectId props를 받아야 해당 프로젝트의 투두를 불러올 수 있습니다.
 function TodoBox({ showFeed = true, projectId, projectName = "현재 프로젝트" }) {
   // 초기 상태는 비워둠 (API로 채움)
   const [projects, setProjects] = useState([]); 
+  const { API_BASE_URL } = getApiConfig();
   const [projectFeeds] = useState([
     { id: 1, text: "글자글자글자글자글자글자글자글자글자글자", timestamp: "3시간 전" },
     { id: 2, text: "글자글자글자글자글자글자글자글자글자글자", timestamp: "24시간 전" },
@@ -23,7 +24,7 @@ function TodoBox({ showFeed = true, projectId, projectName = "현재 프로젝�
 
     const fetchTodos = async () => {
       try {
-        const response = await axios.get(`${API_BASE_URL}/todos/${projectId}`);
+        const response = await axios.get(`${API_BASE_URL}/api/todos/${projectId}`);
         // 백엔드 데이터(response.data)를 UI 형식에 맞게 변환
         // 백엔드는 [{ todo_id, title, status, ... }] 형태로 줌
         const fetchedTodos = response.data.map(todo => ({
@@ -54,7 +55,7 @@ function TodoBox({ showFeed = true, projectId, projectName = "현재 프로젝�
     try {
         // 1. 백엔드에 상태 업데이트 요청
         const newStatus = !currentStatus; // true/false 반전
-        await axios.put(`${API_BASE_URL}/todos/${todoId}`, {
+        await axios.put(`${API_BASE_URL}/api/todos/${todoId}`, {
             status: newStatus ? "COMPLETED" : "PENDING" // DB ENUM 값에 맞춤
         }, { withCredentials: true });
 
