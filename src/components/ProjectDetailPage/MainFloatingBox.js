@@ -30,17 +30,6 @@ function MainFloatingBox({ projectId }) {
         <div className="icon-container">
           <div className="icon">
             <img
-              src={voteIcon}
-              alt="투표하기"
-              onClick={() => navigate(`/project/${projectId}/vote`)}
-            />
-          </div>
-          <p>투표하기</p>
-        </div>
-
-        <div className="icon-container">
-          <div className="icon">
-            <img
               src={groupCalendarIcon}
               alt="공유 캘린더"
               onClick={() => navigate(`/project/${projectId}/calender`)}

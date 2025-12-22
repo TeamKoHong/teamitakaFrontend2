@@ -9,7 +9,12 @@
     "eject": "react-scripts eject"
   },
   "dependencies": {
+    "@fullcalendar/core": "^6.1.19",
+    "@fullcalendar/daygrid": "^6.1.19",
+    "@fullcalendar/interaction": "^6.1.19",
+    "@fullcalendar/react": "^6.1.19",
     "@reduxjs/toolkit": "^2.8.2",
+    "axios": "^1.13.2",
     "cookie-parser": "^1.4.7",
     "dayjs": "^1.11.13",
     "firebase": "^12.6.0",

@@ -1,90 +1,58 @@
 // src/components/ProjectCalendar/Calendar.jsx
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import dayjs from "dayjs";
+import axios from "axios"; // axios 추가
 import "./Calendar.scss";
 import userDefaultImg from "../../assets/icons/user_default_img.svg";
 import AddEventModal from "./AddEventModal";
 
 const WEEKDAYS = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"];
+const API_BASE_URL = "http://localhost:8080/api"; // 백엔드 주소 확인 필요
 
-// 일정 데이터
-const dummySchedule = {
-  events: {
-    "2025-10-03": [
-      { 
-        id: 1,
-        title: "프로젝트 회의",
-        desc: "프로젝트 진행 상황 논의",
-        author: "김팀장",
-        authorProfile: "https://via.placeholder.com/36x36/EBEBEB/999?text=김",
-        createdAt: "2025-10-01T09:00:00"
-      },
-    ],
-    "2025-10-04": [
-      { 
-        id: 2,
-        title: "디자인 리뷰",
-        desc: "UI/UX 디자인 검토 및 피드백",
-        author: "박디자이너",
-        authorProfile: "https://via.placeholder.com/36x36/EBEBEB/999?text=박",
-        createdAt: "2025-10-02T14:30:00"
-      },
-      { 
-        id: 3,
-        title: "코드 리뷰",
-        desc: "프론트엔드 코드 품질 검토",
-        author: "이개발자",
-        authorProfile: "https://via.placeholder.com/36x36/EBEBEB/999?text=이",
-        createdAt: "2025-10-03T10:15:00"
-      },
-    ],
-    "2025-10-05": [
-      { 
-        id: 4,
-        title: "클라이언트 미팅",
-        desc: "고객사와의 프로젝트 진행 상황 공유",
-        author: "최PM",
-        authorProfile: "https://via.placeholder.com/36x36/EBEBEB/999?text=최",
-        createdAt: "2025-10-04T16:00:00"
-      },
-    ],
-    "2025-10-06": [
-      { 
-        id: 5,
-        title: "배포 준비",
-        desc: "프로덕션 배포 전 최종 점검",
-        author: "정개발자",
-        authorProfile: "https://via.placeholder.com/36x36/EBEBEB/999?text=정",
-        createdAt: "2025-02-05T11:20:00"
-      },
-    ],
-    "2025-10-23": [
-      { 
-        id: 6,
-        title: "테스트 실행",
-        desc: "전체 시스템 통합 테스트",
-        author: "한테스터",
-        authorProfile: "https://via.placeholder.com/36x36/EBEBEB/999?text=한",
-        createdAt: "2025-02-06T13:45:00"
-      },
-    ],
-    "2025-10-25": [
-      { 
-        id: 7,
-        title: "프로젝트 완료",
-        desc: "프로젝트 최종 완료 및 문서화",
-        author: "김팀장",
-        authorProfile: "https://via.placeholder.com/36x36/EBEBEB/999?text=김",
-        createdAt: "2025-02-07T15:30:00"
-      },
-    ],
-  },
-};
-
-export default function Calendar({ onDayClick, isModalOpen, onCloseModal }) {
+// projectId를 props로 받아야 합니다.
+export default function Calendar({ projectId, onDayClick, isModalOpen, onCloseModal }) {
   const [currentMonth, setCurrentMonth] = useState(dayjs());
   const [selectedDate, setSelectedDate] = useState(null);
-  const [events, setEvents] = useState(dummySchedule.events);
+  const [events, setEvents] = useState({}); // 초기값 빈 객체로 변경
+
+  // ✅ 1. 일정 조회 (월이 바뀌거나 projectId가 바뀌면 실행)
+  useEffect(() => {
+    const fetchSchedules = async () => {
+      if (!projectId) return;
+
+      try {
+        const year = currentMonth.format("YYYY");
+        const month = currentMonth.format("MM");
+
+        const response = await axios.get(`${API_BASE_URL}/schedule/project/${projectId}`, {
+          params: { year, month },
+          withCredentials: true
+        });
+
+        // 서버 데이터를 날짜 키(YYYY-MM-DD) 형태의 객체로 변환
+        const newEvents = {};
+        response.data.forEach((item) => {
+          const dateKey = dayjs(item.date).format("YYYY-MM-DD");
+          if (!newEvents[dateKey]) newEvents[dateKey] = [];
+          
+          newEvents[dateKey].push({
+            id: item.schedule_id,
+            title: item.title,
+            desc: item.description,
+            author: item.author || "사용자", // 백엔드 응답값에 맞춰 수정
+            authorProfile: item.authorProfile || userDefaultImg,
+            createdAt: item.date // 정렬을 위해 날짜 사용
+          });
+        });
+        
+        setEvents(newEvents);
+      } catch (error) {
+        console.error("일정 불러오기 실패:", error);
+      }
+    };
+
+    fetchSchedules();
+  }, [currentMonth, projectId]);
 
   // YYYY.MM 헤더
   const monthLabel = useMemo(
@@ -130,17 +98,54 @@ export default function Calendar({ onDayClick, isModalOpen, onCloseModal }) {
     if (!selectedDate) return [];
     const dateKey = selectedDate.format("YYYY-MM-DD");
     const dateEvents = events[dateKey] || [];
+    // createdAt 기준으로 정렬
     return dateEvents.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
   }, [selectedDate, events]);
 
-  // 일정 추가 함수
-  const handleAddEvent = (newEvent) => {
-    if (!selectedDate) return;
-    const dateKey = selectedDate.format("YYYY-MM-DD");
-    setEvents(prev => ({
-      ...prev,
-      [dateKey]: [...(prev[dateKey] || []), newEvent]
-    }));
+  // ✅ 2. 일정 추가 함수 (서버 연동)
+  const handleAddEvent = async (newEventData) => {
+    if (!selectedDate) {
+        alert("날짜를 선택해주세요.");
+        return;
+    }
+    if (!projectId) {
+        alert("프로젝트 ID가 없습니다.");
+        return;
+    }
+
+    try {
+        const payload = {
+            project_id: projectId,
+            title: newEventData.title,
+            description: newEventData.desc, // 모달에서 desc로 넘어옴
+            date: selectedDate.format("YYYY-MM-DD HH:mm:ss"),
+        };
+
+        const response = await axios.post(`${API_BASE_URL}/schedule/create`, payload, {
+            withCredentials: true
+        });
+
+        // 성공 시 로컬 상태 업데이트 (화면 즉시 반영)
+        const dateKey = selectedDate.format("YYYY-MM-DD");
+        const createdEvent = {
+            id: response.data.schedule_id,
+            title: newEventData.title,
+            desc: newEventData.desc,
+            author: "나", // 현재 로그인한 사용자 정보가 있다면 사용
+            authorProfile: userDefaultImg,
+            createdAt: new Date().toISOString()
+        };
+
+        setEvents(prev => ({
+            ...prev,
+            [dateKey]: [...(prev[dateKey] || []), createdEvent]
+        }));
+        
+        onCloseModal(); // 모달 닫기
+    } catch (error) {
+        console.error("일정 저장 실패:", error);
+        alert("일정 저장 중 오류가 발생했습니다.");
+    }
   };
 
   const prevMonth = () => setCurrentMonth((m) => m.subtract(1, "month"));
@@ -211,7 +216,7 @@ export default function Calendar({ onDayClick, isModalOpen, onCloseModal }) {
             selectedDateEvents.map((event) => (
               <div className="event-item" key={event.id}>
                 <div className="event-profile">
-                  <img src={userDefaultImg} alt={event.author} />
+                  <img src={event.authorProfile || userDefaultImg} alt={event.author} />
                 </div>
                 <div className="event-content">
                   <div className="event-title">{event.title}</div>
