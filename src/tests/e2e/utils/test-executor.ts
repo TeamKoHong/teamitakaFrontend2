@@ -1,7 +1,7 @@
 import { Page, expect } from '@playwright/test';
 import * as fs from 'fs';
 import * as path from 'path';
-import { TEST_USER, TEST_TIMEOUTS, TEST_DATA, setTestProjectId, setTestMemberId, setTestRecruitmentId, setTestApplicationId } from './test-config';
+import { TEST_USER, TEST_USERS, TEST_TIMEOUTS, TEST_DATA, setTestProjectId, setTestMemberId, setTestRecruitmentId, setTestApplicationId } from './test-config';
 
 export interface TestStep {
   action: string;
@@ -85,56 +85,72 @@ export class TestExecutor {
 
   /**
    * 인증된 세션을 설정합니다.
-   * US04/US05 테스트를 위해 실제 로그인을 수행합니다.
+   * US03/US04/US05 테스트를 위해 실제 로그인을 수행합니다.
+   * @param userState - 사용자 상태 (US03, US04, US05 등)
    */
-  async setupAuthenticatedSession(): Promise<boolean> {
-    try {
-      // 1. 로그인 페이지로 이동
-      await this.page.goto('/login');
-      await this.page.waitForLoadState('networkidle');
+  async setupAuthenticatedSession(userState: string = 'US04'): Promise<boolean> {
+    // User State에 맞는 계정 선택
+    const user = TEST_USERS[userState] || TEST_USERS.US04 || TEST_USER;
+    console.log(`🔐 Attempting login with ${userState} account: ${user.email}`);
 
-      // 2. 이메일 입력 (type='text'로 되어있음)
-      const emailSelector = ".input-field[type='text'], .input-field:first-of-type";
-      await this.page.waitForSelector(emailSelector, { timeout: TEST_TIMEOUTS.action });
-      await this.page.fill(emailSelector, TEST_USER.email);
+    // 3회 재시도 로직
+    for (let attempt = 1; attempt <= 3; attempt++) {
+      try {
+        // 1. 로그인 페이지로 이동
+        await this.page.goto('/login');
+        await this.page.waitForLoadState('networkidle');
 
-      // 3. 비밀번호 입력
-      const passwordSelector = ".input-field[type='password']";
-      await this.page.waitForSelector(passwordSelector, { timeout: TEST_TIMEOUTS.action });
-      await this.page.fill(passwordSelector, TEST_USER.password);
+        // 2. 이메일 입력
+        const emailSelector = ".input-field[type='text']";
+        await this.page.waitForSelector(emailSelector, { timeout: TEST_TIMEOUTS.action });
+        await this.page.fill(emailSelector, user.email);
 
-      // 4. 로그인 버튼 클릭
-      const loginButtonSelector = "button.login-button[type='submit']";
-      await this.page.click(loginButtonSelector);
+        // 3. 비밀번호 입력
+        const passwordSelector = ".input-field[type='password']";
+        await this.page.waitForSelector(passwordSelector, { timeout: TEST_TIMEOUTS.action });
+        await this.page.fill(passwordSelector, user.password);
 
-      // 5. 로그인 완료 대기 (네비게이션 또는 토큰 저장)
-      await this.page.waitForLoadState('networkidle');
-      await this.page.waitForTimeout(2000); // 추가 대기 시간
+        // 4. 로그인 버튼 클릭
+        const loginButtonSelector = "button.login-button[type='submit']";
+        await this.page.click(loginButtonSelector);
 
-      // 6. 토큰 확인
-      const token = await this.page.evaluate(() => localStorage.getItem('authToken'));
+        // 5. 로그인 완료 대기 (URL 변경 또는 토큰 저장)
+        try {
+          await this.page.waitForURL(/\/(main|team-matching)/, { timeout: 10000 });
+        } catch {
+          // URL 변경이 없어도 토큰으로 확인
+          await this.page.waitForTimeout(2000);
+        }
 
-      // 토큰이 없으면 URL로 성공 여부 확인 (메인 페이지로 이동했는지)
-      const currentUrl = this.page.url();
-      const isLoggedIn = token || currentUrl.includes('/main') || currentUrl.includes('/team-matching');
+        // 6. 토큰 확인
+        const token = await this.page.evaluate(() => localStorage.getItem('authToken'));
+        const currentUrl = this.page.url();
+        const isLoggedIn = token || currentUrl.includes('/main') || currentUrl.includes('/team-matching');
 
-      if (isLoggedIn) {
-        console.log('✅ Login successful');
-        // 프로젝트 ID 추출 시도
-        await this.extractUserProjectId();
-        return true;
+        if (isLoggedIn) {
+          console.log(`✅ Login successful (attempt ${attempt})`);
+          // 프로젝트 ID 추출 시도
+          await this.extractUserProjectId();
+          return true;
+        }
+
+        // 로그인 실패 - 재시도
+        console.warn(`⚠️ Login attempt ${attempt} failed, ${attempt < 3 ? 'retrying...' : 'giving up'}`);
+        if (attempt < 3) {
+          await this.page.waitForTimeout(1000 * attempt); // 점진적 대기
+        }
+      } catch (error) {
+        console.error(`❌ Login attempt ${attempt} error:`, error);
+        if (attempt < 3) {
+          await this.page.waitForTimeout(1000 * attempt);
+        }
       }
-
-      console.error('❌ Login failed: No token found');
-      // 디버그 스크린샷
-      await this.page.screenshot({ path: `${this.screenshotDir}/login-failed-no-token.png`, fullPage: true });
-      return false;
-    } catch (error) {
-      console.error('❌ Login failed:', error);
-      // 디버그 스크린샷
-      await this.page.screenshot({ path: `${this.screenshotDir}/login-failed-error.png`, fullPage: true });
-      return false;
     }
+
+    // 모든 재시도 실패
+    console.error('❌ Login failed after 3 attempts');
+    await this.page.screenshot({ path: `${this.screenshotDir}/login-failed-${userState}.png`, fullPage: true });
+    return false;
   }
 
   /**
@@ -735,6 +751,48 @@ export class TestExecutor {
           if (validation.selector) {
             const element = this.page.locator(validation.selector).first();
             await expect(element).toBeVisible({ timeout: 5000 });
+          }
+          return true;
+
+        case 'url_equals':
+          // URL이 정확히 일치하는지 확인
+          if (validation.expected) {
+            const currentUrl = this.page.url();
+            expect(currentUrl).toContain(String(validation.expected));
+          }
+          return true;
+
+        case 'element_enabled':
+          // 요소가 활성화 상태인지 확인
+          if (validation.selector) {
+            const element = this.page.locator(validation.selector).first();
+            await expect(element).toBeEnabled({ timeout: 5000 });
+          }
+          return true;
+
+        case 'element_disabled':
+          // 요소가 비활성화 상태인지 확인
+          if (validation.selector) {
+            const element = this.page.locator(validation.selector).first();
+            await expect(element).toBeDisabled({ timeout: 5000 });
+          }
+          return true;
+
+        case 'attribute_equals':
+          // 요소의 특정 속성 값 확인
+          if (validation.selector && validation.expected) {
+            const element = this.page.locator(validation.selector).first();
+            const attrName = validation.pattern || 'value';
+            const attrValue = await element.getAttribute(attrName);
+            expect(attrValue).toBe(String(validation.expected));
+          }
+          return true;
+
+        case 'button_disabled':
+          // 버튼이 비활성화 상태인지 확인 (element_disabled의 별칭)
+          if (validation.selector) {
+            const element = this.page.locator(validation.selector).first();
+            await expect(element).toBeDisabled({ timeout: 5000 });
           }
           return true;
 

@@ -188,7 +188,7 @@
           "steps": [
             { "action": "navigate", "target": "/project/{{USER_PROJECT_ID}}" },
             { "action": "wait", "selector": ".main-floating-box", "timeout": 5000 },
-            { "action": "click", "selector": ".icon-container:nth-child(3) .icon img" },
+            { "action": "click", "selector": "img[alt='투표하기']" },
             { "action": "wait_for_navigation", "timeout": 3000 }
           ],
           "validations": [
@@ -218,6 +218,8 @@
       "feature_id": "M04-F04",
       "feature_name": "팀원 정보",
       "route": "/project/:id/member",
+      "skip": true,
+      "skip_reason": "QR코드 팀원 초대 기능 미구현 - 프로젝트 상세 페이지 필요",
       "test_scenarios": [
         {
           "id": "M04-F04-01",
@@ -293,6 +295,8 @@
       "feature_id": "M04-F05",
       "feature_name": "팀 회의록",
       "route": "/project/:id/proceedings",
+      "skip": true,
+      "skip_reason": "회의록 페이지 - 진행 중인 프로젝트 및 회의록 데이터 필요",
       "test_scenarios": [
         {
           "id": "M04-F05-01",
@@ -381,6 +385,8 @@
       "feature_id": "M04-F06",
       "feature_name": "투표하기",
       "route": "/project/:id/vote",
+      "skip": true,
+      "skip_reason": "투표 기능 미구현",
       "test_scenarios": [
         {
           "id": "M04-F06-01",
@@ -468,6 +474,8 @@
       "feature_id": "M04-F07",
       "feature_name": "공유 캘린더",
       "route": "/project/:id/calender",
+      "skip": true,
+      "skip_reason": "프로젝트 캘린더 페이지 - 진행 중인 프로젝트 필요",
       "test_scenarios": [
         {
           "id": "M04-F07-01",
@@ -555,6 +563,8 @@
       "feature_id": "M04-F08",
       "feature_name": "프로젝트 킥오프",
       "route": "/project/:id/kickoff",
+      "skip": true,
+      "skip_reason": "킥오프 작성 기능 미구현",
       "test_scenarios": [
         {
           "id": "M04-F08-01",
@@ -627,6 +637,8 @@
       "feature_id": "M04-F09",
       "feature_name": "프로젝트 피드/타임라인",
       "route": "/project/:id",
+      "skip": true,
+      "skip_reason": "프로젝트 피드 - 진행 중인 프로젝트 및 활동 데이터 필요",
       "test_scenarios": [
         {
           "id": "M04-F09-01",

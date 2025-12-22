@@ -16,6 +16,8 @@ export default defineConfig({
     trace: 'off',
     screenshot: 'only-on-failure',
     video: 'off',
+    navigationTimeout: 30000,  // 30초 (콜드 스타트 대응)
+    actionTimeout: 10000,      // 10초
   },
   projects: [
     {
@@ -35,8 +37,8 @@ export default defineConfig({
     reuseExistingServer: !process.env.CI,
     timeout: 120000,
   },
-  timeout: 30000,
+  timeout: 60000,  // 60초 (콜드 스타트 대응을 위해 증가)
   expect: {
-    timeout: 10000,
+    timeout: 15000, // 15초
   },
 });
