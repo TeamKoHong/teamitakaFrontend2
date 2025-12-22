@@ -92,7 +92,9 @@ export default function ProjectRecruitDetail() {
   }, [detail, keywords]);
 
   const maxLen = 400;
-  const canNext = detail.length > 0;
+
+  // 상세글 + 키워드 1개 이상일 때만 활성화
+  const canNext = detail.trim().length > 0 && keywords.length > 0;
 
   const saveDraft = () => {
     const base = loadRecruitDraft() || {};
@@ -111,7 +113,13 @@ export default function ProjectRecruitDetail() {
   };
 
   const goNext = () => {
-    if (!canNext) return;
+    // 키워드 없으면 다음 못 가게
+    if (!detail.trim()) return;
+    if (keywords.length === 0) {
+      alert('키워드를 최소 1개 이상 설정해주세요.');
+      return;
+    }
+
     const base = loadRecruitDraft() || {};
     const single = { ...base, detail, keywords };
     saveRecruitDraft(single);
