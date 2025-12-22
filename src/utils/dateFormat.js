@@ -3,6 +3,13 @@
  * ISO 8601 날짜 문자열을 사용자 친화적인 형식으로 변환
  */
 
+import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
+import 'dayjs/locale/ko';
+
+dayjs.extend(relativeTime);
+dayjs.locale('ko');
+
 /**
  * ISO 날짜 문자열을 읽기 쉬운 형식으로 변환
  * @param {string} isoString - ISO 8601 날짜 문자열 (예: "2025-10-26T00:00:00.000Z")
@@ -96,6 +103,30 @@ export const getRelativeDate = (startDate, endDate) => {
     }
   } catch (error) {
     console.error('상대 날짜 계산 실패:', error);
+    return null;
+  }
+};
+
+/**
+ * 상대적인 시간을 반환 (예: "2시간 전", "3일 전")
+ * @param {string} dateString - ISO 8601 날짜 문자열
+ * @returns {string|null} 상대 시간 문자열 또는 null
+ *
+ * @example
+ * getRelativeTime("2025-12-20T10:00:00.000Z") // "2시간 전"
+ */
+export const getRelativeTime = (dateString) => {
+  if (!dateString) return null;
+
+  try {
+    const date = dayjs(dateString);
+    if (!date.isValid()) {
+      console.warn('Invalid date string:', dateString);
+      return null;
+    }
+    return date.fromNow();
+  } catch (error) {
+    console.error('상대 시간 계산 실패:', error);
     return null;
   }
 };
