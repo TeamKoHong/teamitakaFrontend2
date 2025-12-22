@@ -6,6 +6,8 @@
       "feature_id": "M03-F01",
       "feature_name": "알림 목록",
       "route": "/notifications",
+      "skip": true,
+      "skip_reason": "알림 데이터 필요 - 테스트 계정에 알림 없음",
       "test_scenarios": [
         {
           "id": "M03-F01-01",

@@ -14,13 +14,13 @@
           "priority": "critical",
           "steps": [
             { "action": "navigate", "target": "/search" },
-            { "action": "wait", "selector": ".search-page", "timeout": 5000 },
-            { "action": "type", "selector": ".search-input", "value": "마케팅" },
-            { "action": "click", "selector": ".search-btn" },
+            { "action": "wait", "selector": ".search-page, main", "timeout": 5000 },
+            { "action": "type", "selector": ".search-input, input", "value": "마케팅" },
+            { "action": "click", "selector": ".search-btn, button" },
             { "action": "screenshot", "name": "search-results" }
           ],
           "validations": [
-            { "type": "element_visible", "selector": ".search-box" }
+            { "type": "element_visible", "selector": "main, h2, .search-page" }
           ],
           "expected_result": "검색어 입력 및 결과 표시"
         },

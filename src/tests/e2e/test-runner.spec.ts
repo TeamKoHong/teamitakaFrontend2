@@ -10,7 +10,7 @@ import {
   Feature,
   TestScenario,
 } from './utils/test-executor';
-import { initializeTestData, TEST_DATA, setTestApplicationId } from './utils/test-config';
+import { initializeTestData, TEST_DATA, setTestApplicationId, warmupBackend } from './utils/test-config';
 
 const MODULES_DIR = path.join(__dirname, 'modules');
 const SCREENSHOTS_DIR = path.join(process.cwd(), 'test-results', 'screenshots');
@@ -32,9 +32,12 @@ try {
   console.error('Failed to load modules:', error);
 }
 
-// 테스트 시작 전 동적 데이터 추출 (Guest 테스트용 recruitment ID 등)
+// 테스트 시작 전 백엔드 웜업 및 동적 데이터 추출 (Guest 테스트용 recruitment ID 등)
 test.beforeAll(async ({ browser }) => {
   console.log('🚀 Setting up test environment...');
+
+  // Render 콜드 스타트 대응: 백엔드 웜업
+  await warmupBackend();
 
   const page = await browser.newPage();
   try {
@@ -92,11 +95,11 @@ for (const module of modules) {
                 await page.evaluate(() => {
                   localStorage.setItem('onboardingComplete', 'true');
                 });
-              } else if (scenario.user_state === 'US04' || scenario.user_state === 'US05') {
-                // Logged in user - perform actual login
-                const loginSuccess = await executor.setupAuthenticatedSession();
+              } else if (['US03', 'US04', 'US05'].includes(scenario.user_state)) {
+                // Logged in user - perform actual login with state-specific account
+                const loginSuccess = await executor.setupAuthenticatedSession(scenario.user_state);
                 if (!loginSuccess) {
-                  console.log(`⏭️ Skipping ${scenario.id}: Login failed`);
+                  console.log(`⏭️ Skipping ${scenario.id}: Login failed for ${scenario.user_state}`);
                   test.skip();
                   return;
                 }

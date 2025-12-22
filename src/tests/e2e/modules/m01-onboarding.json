@@ -158,6 +158,8 @@
       "feature_id": "M01-F03",
       "feature_name": "회원가입 - 약관동의",
       "route": "/register",
+      "skip": true,
+      "skip_reason": "회원가입 플로우는 실제 SMS/이메일 인증이 필요하여 E2E 자동화 불가",
       "test_scenarios": [
         {
           "id": "M01-F03-01",
@@ -258,6 +260,8 @@
       "feature_id": "M01-F04",
       "feature_name": "회원가입 - 본인인증",
       "route": "/phone-verify",
+      "skip": true,
+      "skip_reason": "SMS 인증 필요 - E2E 자동화 불가",
       "test_scenarios": [
         {
           "id": "M01-F04-01",
@@ -356,6 +360,8 @@
       "feature_id": "M01-F05",
       "feature_name": "회원가입 - 학교 이메일 인증",
       "route": "/register",
+      "skip": true,
+      "skip_reason": "이메일 인증 필요 - E2E 자동화 불가",
       "test_scenarios": [
         {
           "id": "M01-F05-01",
@@ -461,6 +467,8 @@
       "feature_id": "M01-F06",
       "feature_name": "회원가입 - 비밀번호 설정",
       "route": "/register",
+      "skip": true,
+      "skip_reason": "회원가입 플로우 중간 단계 - 이전 단계 인증 필요",
       "test_scenarios": [
         {
           "id": "M01-F06-01",
@@ -531,6 +539,8 @@
       "feature_id": "M01-F07",
       "feature_name": "회원가입 - 프로필 정보 입력",
       "route": "/profile-setup",
+      "skip": true,
+      "skip_reason": "회원가입 완료 후 프로필 설정 단계 - 이전 단계 인증 필요",
       "test_scenarios": [
         {
           "id": "M01-F07-01",

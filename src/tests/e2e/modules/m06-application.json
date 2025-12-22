@@ -6,6 +6,8 @@
       "feature_id": "M06-F01",
       "feature_name": "지원하기",
       "route": "/apply2",
+      "skip": true,
+      "skip_reason": "지원하기 플로우 - 활성 모집글 및 지원 컨텍스트 필요",
       "test_scenarios": [
         {
           "id": "M06-F01-01",
@@ -180,6 +182,8 @@
       "feature_id": "M06-F03",
       "feature_name": "지원자 목록 (모집자용)",
       "route": "/recruitment/:id/applicants",
+      "skip": true,
+      "skip_reason": "모집자 권한 및 지원자 데이터 필요 - 테스트 계정에 모집글 없음",
       "test_scenarios": [
         {
           "id": "M06-F03-01",
@@ -257,6 +261,8 @@
       "feature_id": "M06-F04",
       "feature_name": "지원자 이력서",
       "route": "/recruitment/:id/applicant/:applicantId",
+      "skip": true,
+      "skip_reason": "지원자 데이터 필요 - 테스트 계정에 지원자 없음",
       "test_scenarios": [
         {
           "id": "M06-F04-01",
@@ -392,6 +398,8 @@
       "feature_id": "M06-F05",
       "feature_name": "팀 매칭 완료",
       "route": "/recruitment/:id/team-complete",
+      "skip": true,
+      "skip_reason": "팀 매칭 완료 상태 필요 - 테스트 계정에 완료된 매칭 없음",
       "test_scenarios": [
         {
           "id": "M06-F05-01",
@@ -457,6 +465,8 @@
       "feature_id": "M06-F06",
       "feature_name": "모집 결과 처리",
       "route": "/recruitment/:id",
+      "skip": true,
+      "skip_reason": "모집 결과 상태 필요 - 테스트 계정에 완료된 모집글 없음",
       "test_scenarios": [
         {
           "id": "M06-F06-01",

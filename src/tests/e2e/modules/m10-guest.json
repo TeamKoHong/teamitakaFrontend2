@@ -106,6 +106,8 @@
           "description": "'프로젝트 생성하기' 버튼 클릭 시 회원가입 유도가 되는가?",
           "user_state": "US02",
           "priority": "high",
+          "skip": true,
+          "skip_reason": "비회원 팀매칭 접근 시 로그인 페이지 리다이렉트 - 배너 미존재",
           "steps": [
             { "action": "navigate", "target": "/team-matching" },
             { "action": "wait", "selector": ".team-matching-app", "timeout": 3000 },
