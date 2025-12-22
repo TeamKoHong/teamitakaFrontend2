@@ -20,7 +20,6 @@ export default function ProjectCalendar() {
       <DefaultHeader
         title="공유 캘린더"
         showChat={false}
-        backPath="/project/1"
       />
 
       <div className="calendar-container">

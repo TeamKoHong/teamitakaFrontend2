@@ -404,15 +404,20 @@ export const getMyRecruitments = async ({ limit = 10, offset = 0 } = {}) => {
 };
 
 /**
- * Gets all recruitments (Public) - 추가됨
+ * Gets all recruitments (Public, but returns is_scrapped if logged in)
  */
 export const getAllRecruitments = async () => {
     const { API_BASE_URL, headers } = getApiConfig();
+    const token = localStorage.getItem('authToken');
 
-    // 백엔드 라우터: router.get("/", recruitmentController.getAllRecruitments);
+    // 로그인한 경우 토큰 전달 (백엔드에서 is_scrapped 반환용)
+    const requestHeaders = token
+        ? { ...headers, Authorization: `Bearer ${token}` }
+        : headers;
+
     const res = await fetch(`${API_BASE_URL}/api/recruitments`, {
         method: 'GET',
-        headers,
+        headers: requestHeaders,
     });
 
     if (!res.ok) {

@@ -28,6 +28,14 @@ function LoginPage() {
         navigate('/guest');
     };
 
+    const handleFindId = () => {
+        navigate('/find-id');
+    };
+
+    const handleFindPassword = () => {
+        navigate('/find-password');
+    };
+
     // 단일 화면 사용: 별도의 폼 전환 없이 동일 화면에서 제출 처리
 
     const handleLogin = async (e) => {
@@ -133,11 +141,11 @@ function LoginPage() {
                 </form>
 
                 <div className="find-links">
-                    <button className="find-links-button">
+                    <button className="find-links-button" onClick={handleFindId}>
                         아이디 찾기
                     </button>
                     <span className="find-links-separator">|</span>
-                    <button className="find-links-button">
+                    <button className="find-links-button" onClick={handleFindPassword}>
                         비밀번호 찾기
                     </button>
                     <span className="find-links-separator">|</span>

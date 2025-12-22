@@ -2,7 +2,12 @@
   
   height: 100%;
   overflow-y: auto;
-  margin-bottom: 100px;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
 
   hr {
     width: 100%;
@@ -16,6 +21,7 @@
 
     .recruiting-cards-wrapper {
       padding: 0 1rem;
+      margin-bottom: 0.5rem;
     }
 
     .loading-state,
@@ -275,6 +281,7 @@
 
   .recruiting-deadline-container {
     padding: 1rem;
+    margin-bottom: 100px;
 
     .recruiting-deadline-card {
       margin-bottom: 1rem;

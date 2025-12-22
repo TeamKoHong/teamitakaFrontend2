@@ -75,36 +75,43 @@ const CompletedComponent = () => {
     try {
       if (!user || !user.userId) {
         console.error('사용자 정보 없음');
+        alert('로그인이 필요합니다.');
+        navigate('/login');
         return;
       }
 
       const evalData = await fetchEvaluationTargets(project.project_id, user.userId);
+      console.log('🔍 Evaluation targets:', evalData);
 
       if (evalData.nextPendingMember) {
+        // 평가할 팀원이 있음 → 평가 폼으로 이동
+        console.log('🔀 Navigating to evaluation form for:', evalData.nextPendingMember);
         navigate(getTeamMemberEvaluationUrl(project.project_id, evalData.nextPendingMember.id), {
           state: { projectSummary: project, from: { path: '/project-management', tab: 'completed' } },
         });
       } else if (evalData.allCompleted) {
-        // 모든 평가 완료 - 프로젝트 평가 결과 페이지로
+        // 모든 평가 완료 → 프로젝트 평가 결과 페이지로
+        console.log('🔀 All evaluations completed, navigating to results');
+        navigate(`/evaluation/project/${project.project_id}`, {
+          state: { projectSummary: project, from: { path: '/project-management', tab: 'completed' } },
+        });
+      } else if (evalData.targets && evalData.targets.length === 0) {
+        // 평가할 팀원이 없음 (1인 프로젝트) → 결과 페이지로
+        console.log('🔀 No team members to evaluate (solo project)');
         navigate(`/evaluation/project/${project.project_id}`, {
           state: { projectSummary: project, from: { path: '/project-management', tab: 'completed' } },
         });
       } else {
-        // 평가할 팀원이 없으면 프로젝트 평가 페이지로
-        const url = `/evaluation/project/${project.project_id}`;
-        console.log('🔀 Navigating to:', url);
-        navigate(url, {
+        // 예상치 못한 상태 - 평가 상태 페이지로 이동
+        console.warn('⚠️ Unexpected evaluation state:', evalData);
+        navigate(`/evaluation/status/${project.project_id}/received`, {
           state: { projectSummary: project, from: { path: '/project-management', tab: 'completed' } },
         });
       }
     } catch (error) {
       console.error('❌ 평가 대상 조회 실패:', error);
-      // 에러 발생 시에도 프로젝트 평가 페이지로 이동
-      const url = `/evaluation/project/${project.project_id}`;
-      console.log('🔀 Navigating to (fallback):', url);
-      navigate(url, {
-        state: { projectSummary: project, from: { path: '/project-management', tab: 'completed' } },
-      });
+      // 에러 발생 시 사용자에게 알림
+      alert('평가 정보를 불러오는데 실패했습니다. 다시 시도해주세요.');
     }
   };
 

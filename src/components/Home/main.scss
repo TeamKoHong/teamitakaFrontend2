@@ -1,11 +1,11 @@
 /* ========== Tokens ========== */
-$brand:        #ef4423;         // 주황
+$brand:        #ef4423;
 $brand-strong: #ef4423;
 $ink:          #111;
 $ink-2:        #373737;
 $ink-3:        #6b7280;
 $ink-4:        #9ca3af;
-$bg:           #f7f7fb;         // 페이지 배경
+$bg:           #f7f7fb;
 $card:         #ffffff;
 $shadow:       0 6px 16px rgba(0, 0, 0, 0.06);
 $line:         #e5e7eb;
@@ -13,28 +13,23 @@ $radius-lg:    16px;
 $radius-md:    12px;
 $header-h:     56px;
 
-/* 프로필 아바타 내리는 정도 */
-$avatar-offset: 102px;     // 기본
-$avatar-offset-sm: 106px;  // 360px 이하
+/* ✅ 프로필 아바타 위치 */
+$avatar-offset: 16px;
+$avatar-offset-sm: 12px;
 
-/* 헤더 아래 흰 공백(카드와 헤더 사이 간격) 조절 */
 $card-gap-top: 0px;
-/* 56px 만큼 프로필 카드 위로 당김 (헤더 바로 아래 정렬) */
 $pull-up: $header-h;
 
-/* ✅ 키워드(.tags) 아래 흰색 공백 크기 */
 $keywords-bottom-space: 24px;
 
-/* ========== MainPage 컨테이너 ========== */
 .main-page {
   background: $bg;
   min-height: 100vh;
   padding: 0 16px;
-  padding-top: $header-h; // 고정 헤더 높이만큼 밀기
+  padding-top: $header-h;
   font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
   color: $ink;
 
-  /* ===== Header(AppBar) ===== */
   .header {
     position: fixed; top: 0; left: 0; right: 0;
     z-index: 100;
@@ -42,7 +37,7 @@ $keywords-bottom-space: 24px;
     display: flex; align-items: center; justify-content: space-between;
     background: $card;
     padding: 0 16px;
-    border-bottom: none; // 프로필 카드와 경계 제거
+    border-bottom: none;
   }
 
   .logo {
@@ -62,29 +57,23 @@ $keywords-bottom-space: 24px;
       height: 18.461538314819336px;
       display: block;
       opacity: 1;
-      transform: none; /* angle: 0deg */
+      transform: none;
     }
   }
 
-  /* ===== 프로필 카드 ===== */
   .profile-card {
     position: relative;
     background: $card;
-    border-radius: 0 0 $radius-lg $radius-lg; // 상단 0: 헤더와 한 장처럼
+    border-radius: 0 0 $radius-lg $radius-lg;
     box-shadow: none;
-    padding: 64px 16px 16px 16px; // 상단 패딩 증가: 헤더와 겹침 방지
-    /* 기존: margin: 0 -16px 20px;  -> 헤더 아래 흰 공백 제거 */
+    padding: 64px 16px 16px 16px;
     margin: -$pull-up -16px 20px;
 
-    /* 2컬럼: 왼쪽 텍스트 / 오른쪽 아바타 */
     display: grid;
     grid-template-columns: 1fr 108px;
     column-gap: 14px;
-
-    /* 정확히 상단 정렬 */
     align-items: start;
 
-    /* 오른쪽: 프로필 이미지  */
     .profile-right {
       grid-column: 2;
       display: grid;
@@ -92,8 +81,7 @@ $keywords-bottom-space: 24px;
       justify-items: start;
       position: relative;
 
-      /* 아바타를 확실히 아래로 내림 */
-      transform: translateY($avatar-offset) !important;
+      transform: translateY($avatar-offset);
       will-change: transform;
 
       .profile-img {
@@ -106,14 +94,11 @@ $keywords-bottom-space: 24px;
       }
     }
 
-    /* 왼쪽: 텍스트 */
     .profile-middle {
       grid-column: 1;
       display: flex; flex-direction: column; gap: 6px; min-width: 0;
       align-self: start;
       padding-top: 0;
-
-      /* ✅ 키워드 아래 흰색 공백 */
       padding-bottom: $keywords-bottom-space;
 
       .name {
@@ -147,28 +132,82 @@ $keywords-bottom-space: 24px;
     }
   }
 
-  /* ===== 섹션 타이틀 ===== */
   > h2.section-title {
     font-size: 15px; font-weight: 800; color: $ink;
     margin: 8px 0 16px;
   }
 
-  /* ===== 내가 참여 중인 프로젝트 ===== */
   .my-projects {
-    background: $card;
-    border-radius: $radius-lg;
-    box-shadow: none; /* ✅ 그림자 제거 */
-    padding: 16px;
+    background: transparent;
+    border-radius: 0;
+    box-shadow: none;
+    padding: 0;
     margin-bottom: 16px;
 
-    /* 프로젝트 목록 */
-    .project-list {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
+    .main-project-carousel {
+      display: flex !important;
+      flex-direction: row !important;
+      gap: 12px !important;
+
+      overflow-x: auto !important;
+      overflow-y: hidden !important;
+      -webkit-overflow-scrolling: touch;
+
+      margin-left: -16px;
+      margin-right: -16px;
+
+      padding-left: 16px;
+      padding-right: 32px;
+
+      scroll-snap-type: x mandatory;
+
+      &::-webkit-scrollbar { display: none; }
+      scrollbar-width: none;
+
+      > * {
+        flex: 0 0 auto !important;
+        width: auto !important;
+        max-width: none !important;
+        scroll-snap-align: start;
+      }
     }
 
-    /* 로딩/에러 상태 */
+    /* ✅ dots (덮임 방지 + 보이는 높이 확보) */
+    .carousel-dots {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 6px;
+
+      margin-top: 10px;
+      padding-bottom: 6px;
+
+      min-height: 14px;       /* ✅ 높이 보장 */
+      position: relative;     /* ✅ z-index 적용 */
+      z-index: 5;             /* ✅ 아래 섹션에 가려지지 않게 */
+      pointer-events: auto;
+    }
+
+    .carousel-dots .dot {
+      border: 0;
+      padding: 0;
+      cursor: pointer;
+
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: #cfcfd4;
+      opacity: 0.95;
+
+      transition: width 0.15s ease, opacity 0.15s ease;
+    }
+
+    .carousel-dots .dot.is-active {
+      width: 16px;
+      background: #111;
+      opacity: 1;
+    }
+
     .loading-state,
     .error-state {
       padding: 40px 16px;
@@ -211,16 +250,22 @@ $keywords-bottom-space: 24px;
         border-radius: 999px;
         font-size: 14px; font-weight: 800; color: #fff;
         cursor: pointer; background: $brand;
-        box-shadow: none; /* ✅ 버튼 그림자 제거 */
+        box-shadow: none;
         transition: transform .06s ease;
-        &:active { transform: translateY(1px); /* 그림자 제거 유지 */ }
+        &:active { transform: translateY(1px); }
       }
     }
   }
 
+  .main-todo-section {
+    margin-left: -16px;
+    margin-right: -16px;
+    margin-top: 12px;
+    width: auto;
+  }
+
   .bottom-spacer { height: 84px; }
 
-  /* ===== 프로젝트 지원하기 버튼 ===== */
   .support-btn-wrap {
     display: flex;
     justify-content: center;
@@ -237,10 +282,9 @@ $keywords-bottom-space: 24px;
     font-weight: 800;
     color: #fff;
     cursor: pointer;
-    box-shadow: none; /* ✅ 버튼 그림자 제거 */
+    box-shadow: none;
     transition: transform 0.06s ease;
 
-    &:hover { /* 그림자 효과 제거 상태 유지 */ }
     &:active { transform: translateY(1px); }
   }
 
@@ -249,12 +293,15 @@ $keywords-bottom-space: 24px;
       grid-template-columns: 1fr 84px;
       column-gap: 12px;
 
-      /* 모바일에서도 아바타 더 내려서 정렬 */
-      .profile-right { transform: translateY($avatar-offset-sm) !important; }
+      .profile-right { transform: translateY($avatar-offset-sm); }
       .profile-right .profile-img { width: 76px; height: 76px; font-size: 26px; margin-bottom: 0; }
     }
 
     .my-projects .empty-card .empty-img { width: 112px; }
+
+    .main-todo-section {
+      margin-left: -16px;
+      margin-right: -16px;
+    }
   }
 }
-

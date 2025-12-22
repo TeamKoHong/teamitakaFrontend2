@@ -47,10 +47,10 @@
 }
 
 .completed-container {
-  flex: 1; // 부모(main)의 남은 공간을 모두 차지
   overflow-y: auto; // 스크롤 가능하게 설정
-  padding-bottom: 100px; // BottomNav 높이(88px) + 여유 공간 확보
-
+  padding: 0 1rem; // 전체 레이아웃 양쪽 여백
+  box-sizing: border-box;
+  
   hr {
     width: 100%;
     border: 3px solid #ececec;
@@ -90,6 +90,7 @@
     justify-content: center;
     height: calc(100dvh - 110px - 88px);
     padding: 0 2rem;
+    margin-bottom: -100px;
     text-align: center;
 
     .empty-title {
@@ -125,13 +126,13 @@
   }
 
   .completed-top {
-    padding: 0 var(--spacing-xxl);
+    padding: 0;
     margin-bottom: var(--spacing-xxl);
   }
 
   .pending-review-card {
     position: relative;
-    margin: 0px var(--spacing-xxl);
+    margin: 0;
     padding: var(--spacing-xxl) var(--spacing-sm) 48px var(--spacing-xxl);
 
     border-radius: var(--border-radius-xl);
@@ -216,7 +217,7 @@
   }
 
   .completed-section {
-    padding: 0px var(--spacing-xxl);
+    padding: 0;
 
     .completed-header {
       display: flex;
@@ -362,12 +363,12 @@
 
   .completed-container {
     .completed-top {
-      padding: 0 var(--spacing-lg);
+      padding: 0;
       margin-bottom: var(--spacing-lg);
     }
 
     .pending-review-card {
-      margin: 0px var(--spacing-lg);
+      margin: 0;
       padding: var(--spacing-lg) var(--padding-xs) 48px var(--spacing-lg);
       border-radius: var(--border-radius-lg);
       margin-bottom: var(--spacing-lg);
@@ -392,7 +393,7 @@
     }
 
     .completed-section {
-      padding: 0px var(--spacing-lg);
+      padding: 0;
 
       .completed-header {
         .completed-section-title {
@@ -466,12 +467,12 @@
 
   .completed-container {
     .completed-top {
-      padding: 0 var(--spacing-xxl);
+      padding: 0;
       margin-bottom: var(--spacing-xxl);
     }
 
     .pending-review-card {
-      margin: 0px var(--spacing-xxl);
+      margin: 0;
       padding: var(--spacing-xxl) var(--spacing-sm) 48px var(--spacing-xxl);
       border-radius: var(--border-radius-xl);
       margin-bottom: var(--spacing-xxl);
@@ -496,7 +497,7 @@
     }
 
     .completed-section {
-      padding: 0px var(--spacing-xxl);
+      padding: 0;
 
       .completed-header {
         .completed-section-title {
@@ -570,12 +571,12 @@
 
   .completed-container {
     .completed-top {
-      padding: 0 var(--spacing-xxxl);
+      padding: 0;
       margin-bottom: var(--spacing-xxxl);
     }
 
     .pending-review-card {
-      margin: 0px var(--spacing-xxxl);
+      margin: 0;
       padding: var(--spacing-xxxl) var(--spacing-md) 48px var(--spacing-xxxl);
       border-radius: var(--border-radius-xxl);
       margin-bottom: var(--spacing-xxxl);
@@ -600,7 +601,7 @@
     }
 
     .completed-section {
-      padding: 0px var(--spacing-xxxl);
+      padding: 0;
 
       .completed-header {
         .completed-section-title {
@@ -674,12 +675,12 @@
 
   .completed-container {
     .completed-top {
-      padding: 0 var(--spacing-xxxl);
+      padding: 0;
       margin-bottom: var(--spacing-xxxl);
     }
 
     .pending-review-card {
-      margin: 0px var(--spacing-xxxl);
+      margin: 0;
       padding: var(--spacing-xxxl) var(--spacing-lg) 48px var(--spacing-xxxl);
       border-radius: var(--border-radius-xxl);
       margin-bottom: var(--spacing-xxxl);
@@ -704,7 +705,7 @@
     }
 
     .completed-section {
-      padding: 0px var(--spacing-xxxl);
+      padding: 0;
 
       .completed-header {
         .completed-section-title {
@@ -775,7 +776,7 @@
 
 @media (prefers-contrast: high) {
   .completed-container {
-
+    
     .pending-review-card,
     .completed-item {
       border: 2px solid currentColor;
@@ -792,9 +793,6 @@
 // 공통 섹션 스타일
 .pending-projects-section,
 .completed-projects-section {
-  padding: 0 16px;
-  margin: 16px auto 0;
-  max-width: 390px;
 
   // sm breakpoint (480px 이상)
   @media (min-width: 480px) {

@@ -3,7 +3,7 @@ import DefaultHeader from "../../components/Common/DefaultHeader";
 export default function ProjectVotePage() {
   return (
     <div className="project-vote-page-container">
-      <DefaultHeader title="투표하기" showChat={false} backPath="/project/1" />
+      <DefaultHeader title="투표하기" showChat={false} />
       <div className="vote-list">
         <div className="vote-item">
           <h3>투표 제목</h3>

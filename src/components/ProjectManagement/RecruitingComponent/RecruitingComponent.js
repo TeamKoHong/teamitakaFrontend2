@@ -122,18 +122,20 @@ const RecruitingComponent = () => {
 
   return (
     <div className="recruiting-container">
-      {!isLoading && !error && items.length > 0 && (
-        <>
-          <div className="recruiting-top">
-            <div className="recruiting-top-info">
-              <SectionHeader
-                explainText={`프로젝트 팀원을 모집하고\n함께 시작해보세요!`}
-                highlightText="모집 중"
-              />
-            </div>
+      {!isLoading && !error && activeRecruitments.length > 0 && (
+        <div className="recruiting-top">
+          <div className="recruiting-top-info">
+            <SectionHeader
+              explainText={`프로젝트 팀원을 모집하고\n함께 시작해보세요!`}
+              highlightText="모집 중"
+            />
           </div>
-          <div className="recruiting-list">
+        </div>
+      )}
+      
+      <div className="recruiting-list">
         {isLoading && items.length === 0 && <div className="loading-state">불러오는 중...</div>}
+        
         {error && (
           <div className="error-state">
             <p style={{ color: '#F76241', marginBottom: '12px' }}>{error}</p>
@@ -141,7 +143,7 @@ const RecruitingComponent = () => {
           </div>
         )}
 
-        {!isLoading && !error && items.length === 0 && (
+        {!isLoading && !error && activeRecruitments.length === 0 && expiredRecruitments.length === 0 && (
           <div className="empty-state">
             <h3 className="empty-title">모집중인 프로젝트가 없어요</h3>
             <p className="empty-description">
@@ -165,7 +167,7 @@ const RecruitingComponent = () => {
       </div>
 
       {/* 마감된 프로젝트 섹션 */}
-      {expiredRecruitments.length > 0 && (
+      {!isLoading && !error && expiredRecruitments.length > 0 && (
         <>
           <hr />
           <div className="recruiting-deadline-container">
@@ -197,9 +199,6 @@ const RecruitingComponent = () => {
               </div>
             ))}
           </div>
-        </>
-      )}
-
         </>
       )}
 

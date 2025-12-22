@@ -420,8 +420,8 @@ export const toggleRecruitmentScrap = async (recruitmentId) => {
         throw err;
     }
 
-    const res = await fetch(`${API_BASE_URL}/api/recruitments/${recruitmentId}/scrap`, {
-        method: 'POST', 
+    const res = await fetch(`${API_BASE_URL}/api/scraps/recruitment/${recruitmentId}/scrap`, {
+        method: 'PUT',
         headers: {
             ...headers,
             Authorization: `Bearer ${token}`,
@@ -430,6 +430,31 @@ export const toggleRecruitmentScrap = async (recruitmentId) => {
 
     if (res.status === 401) throw new Error('UNAUTHORIZED');
     if (!res.ok) throw new Error('북마크 변경 실패');
+
+    // 백엔드가 plain text 반환 ("스크랩 추가" / "스크랩 취소")
+    return res.text();
+};
+
+export const getBookmarkedRecruitments = async () => {
+    const { API_BASE_URL, headers } = getApiConfig();
+    const token = localStorage.getItem('authToken');
+
+    if (!token) {
+        const err = new Error('UNAUTHORIZED');
+        err.code = 'UNAUTHORIZED';
+        throw err;
+    }
+
+    const res = await fetch(`${API_BASE_URL}/api/scraps/recruitments`, {
+        method: 'GET',
+        headers: {
+            ...headers,
+            Authorization: `Bearer ${token}`,
+        },
+    });
+
+    if (res.status === 401) throw new Error('UNAUTHORIZED');
+    if (!res.ok) throw new Error('북마크 목록 조회 실패');
 
     return res.json();
 };

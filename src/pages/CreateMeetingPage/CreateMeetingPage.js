@@ -58,7 +58,7 @@ export default function CreateMeetingPage() {
       <DefaultHeader 
         title="팀 회의록 작성하기" 
         showChat={false} 
-        backPath="/project/1/proceedings" 
+        backPath={`/project/${projectId}/proceedings`} 
       />
       
       <div className="create-meeting-content">

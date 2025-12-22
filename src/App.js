@@ -276,12 +276,23 @@ const App = () => {
           <Route path={MAIN_ROUTES.LOGIN} element={<PublicRoute><LoginPage /></PublicRoute>} />
           <Route path={MAIN_ROUTES.REGISTER} element={<PublicRoute><RegisterPage /></PublicRoute>} />
 
-          {/* ===== 게스트 랜딩 페이지 (로그인 불필요) ===== */}
-          <Route path="/guest" element={<GuestLandingPage />} />
+          {/*===== 게스트 랜딩 페이지 (로그인 불필요) =====*/}
+           {/* <Route path="/guest" element={<GuestLandingPage />} />  */}
 
-          {/* ===== 메인/프로필 (인증 필요) ===== */}
-          <Route path={MAIN_ROUTES.MAIN} element={<ProtectedRoute><MainPage /></ProtectedRoute>} />
-          <Route path={MAIN_ROUTES.MY} element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
+        
+          {/* ===== 메인/프로필 (인증 필요) =====*/}
+          {/* <Route path={MAIN_ROUTES.MAIN} element={<ProtectedRoute><MainPage /></ProtectedRoute>} />
+          <Route path={MAIN_ROUTES.MY} element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} /> */}
+
+
+          {/* ===== 혜정 테스트 > 게스트 랜딩 페이지 (로그인 불필요) =====*/}
+          <Route path="/main" element={<MainPage />} />
+
+          {/* ===== 혜정 테스트 용도 // 메인/프로필 (인증 필요 없음음) ===== */}
+          <Route path={MAIN_ROUTES.MAIN} element={<MainPage />} />
+          <Route path={MAIN_ROUTES.MY} element={<ProfilePage />} />
+
+
 
           {/* ===== 프로젝트 관리 라우트 (로그인 제한 없음) ===== */}
           <Route path={PROJECT_ROUTES.MANAGEMENT} element={<ProjectManagement />} />
@@ -339,17 +350,23 @@ const App = () => {
           <Route path="/notifications" element={<NotificationsPage />} />
           <Route path="/notifications/settings" element={<NotificationSettings />} />
 
-          {/* 프로젝트 생성하기 */}
-          <Route path="/recruit" element={<ProjectRecruit />} />
+          {/* 프로젝트 생성하기(로그인 필요 없) */}
+          {/* <Route path="/recruit" element={<ProjectRecruit />} />
           <Route path="/recruit/detail" element={<ProjectRecruitDetail />} />
           <Route path="/recruit/image" element={<ProjectRecruitImage />} />
           <Route path="/recruit/drafts" element={<ProjectDrafts />} />
           <Route path="/recruit/preview" element={<ProjectRecruitPreview />} />
           <Route path="/recruit/publish" element={<ProjectRecruitPublish />} />
-          <Route path="/recruit/publish/done" element={<ProjectRecruitPublishDone />} />
+          <Route path="/recruit/publish/done" element={<ProjectRecruitPublishDone />} /> */}
 
-
-
+         {/* 프로젝트 생성하기(로그인 필요) */}
+          <Route path="/recruit" element={<ProtectedRoute><ProjectRecruit /></ProtectedRoute>} />
+          <Route path="/recruit/detail" element={<ProtectedRoute><ProjectRecruitDetail /></ProtectedRoute>} />
+          <Route path="/recruit/image" element={<ProtectedRoute><ProjectRecruitImage /></ProtectedRoute>} />
+          <Route path="/recruit/drafts" element={<ProtectedRoute><ProjectDrafts /></ProtectedRoute>} />
+          <Route path="/recruit/preview" element={<ProtectedRoute><ProjectRecruitPreview /></ProtectedRoute>} />
+          <Route path="/recruit/publish" element={<ProtectedRoute><ProjectRecruitPublish /></ProtectedRoute>} />
+          <Route path="/recruit/publish/done" element={<ProtectedRoute><ProjectRecruitPublishDone /></ProtectedRoute>} />
         </Routes>
       </AuthProvider>
     </Router>
