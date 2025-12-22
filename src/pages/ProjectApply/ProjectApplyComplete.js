@@ -1,5 +1,6 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { cancelApplication } from "../../services/recruitment";
 import "./ProjectApply.scss";
 
 // 아이콘
@@ -9,9 +10,18 @@ import closeIcon from "../../assets/close.png";
 
 export default function ProjectApplyComplete() {
   const nav = useNavigate();
+  const location = useLocation();
+
+  // location.state에서 applicationId와 기타 정보 추출
+  // localStorage를 fallback으로 사용 (E2E 테스트 지원)
+  const applicationId = location.state?.applicationId || localStorage.getItem('testApplicationId');
+  const recruitmentTitle = location.state?.recruitmentTitle || localStorage.getItem('testRecruitmentTitle') || "지원한 프로젝트 제목";
+  const recruitmentDescription = location.state?.recruitmentDescription || localStorage.getItem('testRecruitmentDescription') || "프로젝트 설명";
 
   const [showModal, setShowModal] = useState(false);
   const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState("지원이 취소되었습니다.");
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (!showToast) return;
@@ -19,10 +29,30 @@ export default function ProjectApplyComplete() {
     return () => clearTimeout(t);
   }, [showToast]);
 
-  const confirmCancel = () => {
-    setShowModal(false);
-    // TODO: 취소 API 호출
-    setShowToast(true);
+  const confirmCancel = async () => {
+    if (!applicationId) {
+      setShowModal(false);
+      setToastMessage("지원 정보를 찾을 수 없습니다.");
+      setShowToast(true);
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      await cancelApplication(applicationId);
+      setShowModal(false);
+      setToastMessage("지원이 취소되었습니다.");
+      setShowToast(true);
+      // 잠시 후 메인 페이지로 이동
+      setTimeout(() => nav("/"), 1500);
+    } catch (err) {
+      console.error('Cancel failed:', err);
+      setShowModal(false);
+      setToastMessage(err.message || "지원 취소에 실패했습니다.");
+      setShowToast(true);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -45,8 +75,8 @@ export default function ProjectApplyComplete() {
         <div className="applied-card">
           <div className="thumb" />
           <div className="texts">
-            <div className="t1">지원한 프로젝트 제목</div>
-            <div className="t2">프로젝트 설명</div>
+            <div className="t1">{recruitmentTitle}</div>
+            <div className="t2">{recruitmentDescription}</div>
           </div>
         </div>
 
@@ -74,7 +104,7 @@ export default function ProjectApplyComplete() {
           className="modal-overlay"
           role="dialog"
           aria-modal="true"
-          onClick={() => setShowModal(false)}
+          onClick={() => !isLoading && setShowModal(false)}
         >
           <div
             className="modal confirm"
@@ -86,11 +116,19 @@ export default function ProjectApplyComplete() {
             </div>
 
             <div className="modal-actions-row">
-              <button className="bar-btn cancel" onClick={() => setShowModal(false)}>
+              <button
+                className="bar-btn cancel"
+                onClick={() => setShowModal(false)}
+                disabled={isLoading}
+              >
                 취소
               </button>
-              <button className="bar-btn danger" onClick={confirmCancel}>
-                지원 취소
+              <button
+                className="bar-btn danger"
+                onClick={confirmCancel}
+                disabled={isLoading}
+              >
+                {isLoading ? "처리중..." : "지원 취소"}
               </button>
             </div>
           </div>
@@ -102,7 +140,7 @@ export default function ProjectApplyComplete() {
         <div className="toast" role="status" aria-live="polite">
           <div className="toast-box">
             <div className="ok-icon" aria-hidden="true" />
-            <div className="toast-text">지원이 취소되었습니다.</div>
+            <div className="toast-text">{toastMessage}</div>
           </div>
         </div>
       )}
