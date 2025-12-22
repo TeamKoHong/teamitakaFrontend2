@@ -1,17 +1,77 @@
 import { Page } from '@playwright/test';
 
-// E2E 테스트 설정
-export const TEST_USER = {
-  email: 'sjwoo1999@korea.ac.kr',
-  password: 'password!'
+// 다중 테스트 계정 설정 (User State별)
+export const TEST_USERS: Record<string, { email: string; password: string }> = {
+  US04: {
+    email: 'testuser1@korea.ac.kr',
+    password: 'Test1234!'
+  },
+  US04_ALT: {
+    email: 'testuser2@g.hongik.ac.kr',
+    password: 'Test1234!'
+  },
+  US03: {
+    email: 'testuser3@yonsei.ac.kr',
+    password: 'Test1234!'
+  },
+  US05: {
+    email: 'testuser4@snu.ac.kr',
+    password: 'Test1234!'
+  }
 };
 
-// 테스트 타임아웃 설정
+// 레거시 호환성 유지
+export const TEST_USER = TEST_USERS.US04;
+
+// 테스트 타임아웃 설정 (콜드 스타트 대응을 위해 증가)
 export const TEST_TIMEOUTS = {
-  navigation: 10000,
-  action: 5000,
-  login: 15000
+  navigation: 30000,  // 30초
+  action: 10000,      // 10초
+  login: 30000,       // 30초
+  warmup: 60000,      // 60초
 };
+
+/**
+ * 백엔드 서버 웜업 (Render 콜드 스타트 대응)
+ * 무료 티어는 15분 비활성 후 슬립, 첫 요청에 30-60초 소요
+ */
+export async function warmupBackend(): Promise<boolean> {
+  const apiBaseUrl = 'https://teamitakabackend.onrender.com';
+  const maxAttempts = 5;
+  const initialDelay = 5000; // 5초
+
+  console.log('🔥 Warming up backend server (Render cold start)...');
+
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 30000);
+
+      const response = await fetch(`${apiBaseUrl}/api/recruitments`, {
+        signal: controller.signal
+      });
+
+      clearTimeout(timeoutId);
+
+      if (response.ok) {
+        console.log(`✅ Backend ready (attempt ${attempt})`);
+        return true;
+      }
+
+      console.log(`⚠️ Backend responded with status ${response.status}`);
+    } catch (error: any) {
+      const isAbort = error?.name === 'AbortError';
+      console.log(`⏳ Warmup attempt ${attempt}/${maxAttempts} - ${isAbort ? 'timeout' : 'waiting for cold start'}...`);
+
+      if (attempt < maxAttempts) {
+        await new Promise(r => setTimeout(r, initialDelay * attempt));
+      }
+    }
+  }
+
+  console.warn('⚠️ Backend warmup failed after all attempts, proceeding anyway...');
+  return false;
+}
 
 // 동적으로 가져온 테스트 데이터 (런타임에 설정됨)
 export const TEST_DATA = {

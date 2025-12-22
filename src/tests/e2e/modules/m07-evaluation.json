@@ -300,6 +300,8 @@
       "feature_id": "M07-F04",
       "feature_name": "내가 받은 평가",
       "route": "/evaluation/project/:projectId",
+      "skip": true,
+      "skip_reason": "평가 데이터 필요 - 테스트 계정에 평가 데이터 없음",
       "test_scenarios": [
         {
           "id": "M07-F04-01",
@@ -406,6 +408,8 @@
       "feature_id": "M07-F05",
       "feature_name": "내가 한 평가",
       "route": "/evaluation/project/:projectId/given",
+      "skip": true,
+      "skip_reason": "평가 데이터 필요 - 테스트 계정에 평가 데이터 없음",
       "test_scenarios": [
         {
           "id": "M07-F05-01",
