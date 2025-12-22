@@ -11,6 +11,7 @@ export default function DateRangePickerSheet({
   initialStart = null,
   initialEnd = null,
   maxRangeWeeks = 2,
+  title = "모집 기간을 선택해주세요.", // 커스터마이징 가능한 타이틀
 }) {
   const [startDate, setStartDate] = useState(initialStart);
   const [endDate, setEndDate] = useState(initialEnd);
@@ -46,7 +47,7 @@ export default function DateRangePickerSheet({
       <div className="picker-sheet-container">
         {/* Header */}
         <div className="picker-sheet-header">
-          <h3 className="picker-sheet-title">모집 기간을 선택해주세요.</h3>
+          <h3 className="picker-sheet-title">{title}</h3>
           <button
             className={`complete-btn ${!bothSelected ? 'disabled' : ''}`}
             onClick={handleComplete}

@@ -3,7 +3,27 @@ import "./ProjectCard.scss";
 import { useNavigate } from "react-router-dom";
 import { IoCalendarOutline, IoTimeOutline, IoPeopleOutline } from "react-icons/io5";
 import CircularProgress from "../../Common/CircularProgress";
-import { formatDateRange } from "../../../utils/dateFormat";
+import { formatDateRange, getRelativeTime } from "../../../utils/dateFormat";
+
+// 진행률 계산 (시작일~종료일 기준)
+const calculateProgress = (startDate, endDate) => {
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+  const now = new Date();
+  if (now < start) return 0;
+  if (now > end) return 100;
+  const total = end - start;
+  const elapsed = now - start;
+  return Math.round((elapsed / total) * 100);
+};
+
+// 남은 일수 계산
+const calculateRemainingDays = (endDate) => {
+  const end = new Date(endDate);
+  const now = new Date();
+  const diff = Math.ceil((end - now) / (1000 * 60 * 60 * 24));
+  return diff > 0 ? diff : 0;
+};
 
 const ProjectCard = ({ project, type = "project" }) => {
   const navigate = useNavigate();
@@ -19,7 +39,7 @@ const ProjectCard = ({ project, type = "project" }) => {
     recruitment_start,
     recruitment_end,
     meeting_time,
-    updated_at,
+    last_feed_at,
     progress_percent,
     applicant_count
   } = project;
@@ -33,7 +53,20 @@ const ProjectCard = ({ project, type = "project" }) => {
   const period = formattedPeriod ||
                  (isRecruitment ? "모집 기간 미정" : "프로젝트 기간 미정");
   const meetingTimeDisplay = meeting_time || "회의 시간 미정";
-  const progressValue = Number(progress_percent) || 0;
+  
+  // Calculate progress and remaining days
+  const progressValue = startDate && endDate 
+    ? Number(calculateProgress(startDate, endDate)) 
+    : (Number(progress_percent) || 0);
+  
+  const remainingDays = endDate ? calculateRemainingDays(endDate) : null;
+  
+  // Format D-Day text
+  const getDdayText = () => {
+    if (remainingDays === null) return '완료';
+    if (remainingDays === 0) return 'D-Day';
+    return `D-${remainingDays}`;
+  };
 
   const handleClick = () => {
     if (isRecruitment) {
@@ -75,9 +108,11 @@ const ProjectCard = ({ project, type = "project" }) => {
 
       {/* D-Day 원형 프로그레스 */}
       <div className="projectCard-right">
-        <p className="time-ago">
-          {updated_at ? '업데이트됨' : ''} <span className="dot" />
-        </p>
+        {last_feed_at && (
+          <p className="time-ago">
+            {getRelativeTime(last_feed_at)}
+          </p>
+        )}
         <CircularProgress percentage={progressValue} />
       </div>
     </div>
