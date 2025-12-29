@@ -1,12 +1,13 @@
 .create-meeting-page-container {
   background-color: #f2f2f2;
   min-height: 100vh;
+  padding-top: 64px; // DefaultHeader 높이만큼
   
   .create-meeting-content {
     padding: 24px 16px;
     display: flex;
     flex-direction: column;
-    height: calc(100vh - 60px); // 헤더 높이 제외
+    height: calc(100vh - 64px); // 헤더 높이 제외
     box-sizing: border-box;
     
     .form-section {

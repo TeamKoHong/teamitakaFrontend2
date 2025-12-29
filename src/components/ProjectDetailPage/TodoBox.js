@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios"; // API 호출용
 import "./TodoBox.scss";
 
@@ -6,6 +7,7 @@ import { getApiConfig } from "../../services/auth";
 
 // projectId props를 받아야 해당 프로젝트의 투두를 불러올 수 있습니다.
 function TodoBox({ showFeed = true, projectId, projectName = "현재 프로젝트" }) {
+  const navigate = useNavigate();
   // 초기 상태는 비워둠 (API로 채움)
   const [projects, setProjects] = useState([]); 
   const { API_BASE_URL } = getApiConfig();
@@ -89,6 +91,15 @@ function TodoBox({ showFeed = true, projectId, projectName = "현재 프로젝�
     (total, project) => total + project.todos.filter((todo) => !todo.checked).length,
     0
   );
+
+  // 팀 회의록 작성하기 페이지로 이동
+  const handleCreateMeeting = () => {
+    if (!projectId) {
+      alert("프로젝트 정보가 없습니다.");
+      return;
+    }
+    navigate(`/project/${projectId}/proceedings/create`);
+  };
 
   return (
     <div className="todo-box-container">
@@ -177,12 +188,12 @@ function TodoBox({ showFeed = true, projectId, projectName = "현재 프로젝�
         </div>
       )}
 
-      {/* 프로젝트 피드 섹션 */}
+      {/* 팀 회의록 섹션 */}
       {showFeed && (
         <div className="project-feed-section">
           <div className="project-feed-header">
-            <h3>프로젝트 피드</h3>
-            <button className="add-feed-btn">+</button>
+            <h3>팀 회의록</h3>
+            <button className="add-feed-btn" onClick={handleCreateMeeting}>+</button>
           </div>
 
           <div className="project-feed-list">
