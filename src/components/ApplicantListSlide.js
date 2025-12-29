@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import DefaultHeader from "./Common/DefaultHeader";
 import ApplicantDetailModal from "./ApplicantDetailModal";
 import TeamMatchingComplete from "./TeamMatchingComplete";
-import { getRecruitmentApplicants} from "../services/recruitment";
+import { getRecruitmentApplicants, getRecruitment } from "../services/recruitment";
 import userDefaultImg from "../assets/icons/user_default_img.svg";
 import deleteIcon from "../assets/icons/deleteIcon.svg";
 import arrowIcon from "../assets/icons/arrow_back_ios.svg";
@@ -17,6 +17,8 @@ export default function ApplicantListSlide({ open, onClose, recruitmentId }) {
   const [applicants, setApplicants] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [currentUsername, setCurrentUsername] = useState("모집자");
+  const [projectName, setProjectName] = useState("프로젝트명");
   const contentRef = useRef(null);
   
   // Team Matching Complete state
@@ -30,6 +32,19 @@ export default function ApplicantListSlide({ open, onClose, recruitmentId }) {
   const longPressTimer = useRef(null);
   const dragStartPos = useRef({ x: 0, y: 0 });
 
+  // 로컬스토리지에서 사용자 정보 가져오기
+  useEffect(() => {
+    const userStr = localStorage.getItem('user');
+    if (userStr) {
+      try {
+        const user = JSON.parse(userStr);
+        setCurrentUsername(user.username || "모집자");
+      } catch (err) {
+        console.error('로컬스토리지 user 파싱 실패:', err);
+      }
+    }
+  }, []);
+
   useEffect(() => {
     const fetchApplicants = async () => {
       if (!open || !recruitmentId) return;
@@ -38,6 +53,16 @@ export default function ApplicantListSlide({ open, onClose, recruitmentId }) {
       setError(null);
 
       try {
+        // 프로젝트명(recruitment 정보)을 먼저 가져오기
+        const recruitmentData = await getRecruitment(recruitmentId);
+        console.log('🔍 [ApplicantListSlide] Recruitment 정보:', recruitmentData);
+        if (recruitmentData?.data?.title) {
+          setProjectName(recruitmentData.data.title);
+        } else if (recruitmentData?.title) {
+          setProjectName(recruitmentData.title);
+        }
+
+        // 지원자 목록 가져오기
         const data = await getRecruitmentApplicants(recruitmentId);
         console.log('🔍 [ApplicantListSlide] API 응답 전체:', data);
         console.log('🔍 [ApplicantListSlide] recruitmentId:', recruitmentId);
@@ -272,7 +297,7 @@ export default function ApplicantListSlide({ open, onClose, recruitmentId }) {
             <>
               {hasSelection ? (
                 <div className="selected-banner">
-                  <p className="selected-title">[모집자]님이 선정했어요.</p>
+                  <p className="selected-title">[{currentUsername}]님이 선정했어요.</p>
                   <p className="selected-sub">함께하게 될 팀원들<span>이에요!</span></p>
                   <div className="selected-avatars">
                     {selectedTeamMembers.map((m) => {
@@ -303,7 +328,7 @@ export default function ApplicantListSlide({ open, onClose, recruitmentId }) {
               )}
               <hr />
               <p className="highlight-text">
-                <span className="project-name">[프로젝트명]</span>에 지원한 <br />
+                <span className="project-name">[{projectName}]</span>에 지원한 <br />
                 <span className="red">예비 팀원 목록</span>이에요.
               </p>
               <div className="avatars-container">
