@@ -38,7 +38,6 @@ export default function MemberDetailCard({ member }) {
         <img src={avatar1} alt="이미지" className="avatar-large" />
       </div>
       <p className="member-name">{memberData.name}</p>
-      <p className="member-role">{memberData.role}</p>
 
       <ul className="member-meta">
         <li>

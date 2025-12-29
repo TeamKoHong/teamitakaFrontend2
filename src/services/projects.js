@@ -101,3 +101,48 @@ export const fetchProjectDetails = async (projectId) => {
 
     return res.json();
 };
+
+/**
+ * Fetches project members by project ID
+ * @param {string} projectId - Project UUID
+ * @returns {Promise<Object>} Project members list
+ */
+export const fetchProjectMembers = async (projectId) => {
+    const { API_BASE_URL, headers } = getApiConfig();
+    const token = localStorage.getItem('authToken');
+
+    if (!token) {
+        const err = new Error('UNAUTHORIZED');
+        err.code = 'UNAUTHORIZED';
+        throw err;
+    }
+
+    const res = await fetch(`${API_BASE_URL}/api/projects/${projectId}/members`, {
+        method: 'GET',
+        headers: {
+            ...headers,
+            Authorization: `Bearer ${token}`,
+        },
+    });
+
+    if (res.status === 401 || res.status === 403) {
+        const err = new Error('UNAUTHORIZED');
+        err.code = 'UNAUTHORIZED';
+        throw err;
+    }
+
+    if (res.status === 404) {
+        const err = new Error('RESOURCE_NOT_FOUND');
+        err.code = 'RESOURCE_NOT_FOUND';
+        throw err;
+    }
+
+    if (!res.ok) {
+        const errorData = await res.json();
+        const err = new Error(errorData.message || errorData.error || 'Failed to fetch project members');
+        err.code = errorData.error?.code || 'SERVER_ERROR';
+        throw err;
+    }
+
+    return res.json();
+};
