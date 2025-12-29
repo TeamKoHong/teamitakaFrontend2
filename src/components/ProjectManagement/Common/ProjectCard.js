@@ -1,9 +1,10 @@
 import React from "react";
 import "./ProjectCard.scss";
 import { useNavigate } from "react-router-dom";
-import { IoCalendarOutline, IoTimeOutline, IoPeopleOutline } from "react-icons/io5";
+import { IoCalendarOutline, IoPeopleOutline } from "react-icons/io5";
 import CircularProgress from "../../Common/CircularProgress";
 import { formatDateRange, getRelativeTime } from "../../../utils/dateFormat";
+import defaultProfile from "../../../assets/default_profile.png";
 
 // 진행률 계산 (시작일~종료일 기준)
 const calculateProgress = (startDate, endDate) => {
@@ -41,7 +42,8 @@ const ProjectCard = ({ project, type = "project" }) => {
     meeting_time,
     last_feed_at,
     progress_percent,
-    applicant_count
+    applicant_count,
+    members = []
   } = project;
 
   // Use recruitment dates if available, otherwise use project dates
@@ -85,15 +87,13 @@ const ProjectCard = ({ project, type = "project" }) => {
         {/* 프로젝트 정보 */}
         <div className="info">
           <h3 className="title">{title || '프로젝트명'}</h3>
-        </div>
-
-        <div className="details">
           <p>
             <IoCalendarOutline className="details-icon" /> {period}
           </p>
-          <p>
-            <IoTimeOutline className="details-icon" /> {meetingTimeDisplay}
-          </p>
+        </div>
+
+        <div className="details">
+          
           {isRecruitment && (
             <p className="applicant-info">
               <IoPeopleOutline className="details-icon" /> {applicant_count || 0}명 지원
@@ -101,19 +101,26 @@ const ProjectCard = ({ project, type = "project" }) => {
           )}
         </div>
 
-        {/* 팀원 리스트: 서버가 제공 시 추후 적용 */}
+        {/* 팀원 아바타 */}
         <div className="team">
+          {members.slice(0, 4).map((member, index) => (
+            <img
+              key={member.id}
+              src={member.avatar || defaultProfile}
+              alt={member.name}
+              className="team-avatar"
+              style={{ zIndex: 4 - index }}
+            />
+          ))}
         </div>
       </div>
 
       {/* D-Day 원형 프로그레스 */}
       <div className="projectCard-right">
-        {last_feed_at && (
-          <p className="time-ago">
-            {getRelativeTime(last_feed_at)}
-          </p>
-        )}
-        <CircularProgress percentage={progressValue} />
+        <p className="time-ago">2시간 전</p>
+        <CircularProgress percentage={progressValue}>
+          {getDdayText()}
+        </CircularProgress>
       </div>
     </div>
   );

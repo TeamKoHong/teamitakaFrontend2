@@ -1,7 +1,7 @@
 .project-card {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  
   padding: 0.75rem 1rem;
   border-radius: 0.75rem;
   background: #fff;
@@ -13,14 +13,12 @@
   position: relative;
 
   .card-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
     flex: 1;
-
+    height: 100%;
     .info {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 0.5rem;
-
       .title {
         font-size: 16px;
         font-family: Pretendard;
@@ -28,7 +26,23 @@
         color: #000;
         font-weight: 600;
         font-style: normal;
+        margin-bottom: 0.5rem;
       }
+
+      p {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 0.25rem;
+  
+        svg {
+          width: 16px;
+          height: 16px;
+          padding: 4px;
+          background-color: #403e3e;
+          border-radius: 5px;
+          color: #fffdfc;
+        }
     }
   }
 
@@ -37,20 +51,7 @@
     color: #555;
     margin-bottom: 1rem;
 
-    p {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      margin-bottom: 0.25rem;
-
-      svg {
-        width: 16px;
-        height: 16px;
-        padding: 4px;
-        background-color: #403e3e;
-        border-radius: 5px;
-        color: #fffdfc;
-      }
+    
     }
 
     .applicant-info {
@@ -65,16 +66,23 @@
 
   .team {
     display: flex;
+    flex-direction: row-reverse;
+    justify-content: flex-end;
     align-items: center;
     position: relative;
     height: 2rem;
 
-    .member {
-      flex-shrink: 0;
-      width: 35px;
-      height: 35px;
+    .team-avatar {
+      width: 2.25rem; 
+      height: 2.25rem;
       border-radius: 50%;
-      position: absolute;
+      border: 2px solid #fff;
+      object-fit: cover;
+      position: relative;
+      
+      &:not(:last-child) {
+        margin-left: -12px;
+      }
     }
   }
 }
@@ -82,25 +90,16 @@
 .projectCard-right {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
+  justify-content: flex-end;
+  align-items: flex-end;
   height: 100%;
+  position: relative;
+  
   .time-ago {
-    position: relative;
+    position: absolute;
+    top: 0;
+    right: 0;
     font-size: 11px;
     color: #888;
-    display: flex;
-    align-items: center;
-
-    .dot {
-      position: absolute;
-      top: 0px;
-      right: -3px;
-      width: 0.2rem;
-      height: 0.2rem;
-      background: red;
-      border-radius: 50%;
-      margin-left: 0.25rem;
-    }
   }
 }
