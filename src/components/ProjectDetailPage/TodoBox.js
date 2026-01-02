@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
 import axios from "axios"; // API 호출용
 import "./TodoBox.scss";
 
@@ -7,7 +6,6 @@ import { getApiConfig } from "../../services/auth";
 
 // projectId props를 받아야 해당 프로젝트의 투두를 불러올 수 있습니다.
 function TodoBox({ showFeed = true, projectId }) {
-  const navigate = useNavigate();
   // 초기 상태는 비워둠 (API로 채움)
   const [projects, setProjects] = useState([]); 
   const { API_BASE_URL } = getApiConfig();
@@ -52,6 +50,7 @@ function TodoBox({ showFeed = true, projectId }) {
     };
 
     fetchTodos();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [projectId]);
 
 
@@ -94,15 +93,6 @@ function TodoBox({ showFeed = true, projectId }) {
     (total, project) => total + project.todos.filter((todo) => !todo.checked).length,
     0
   );
-
-  // 팀 회의록 작성하기 페이지로 이동
-  const handleCreateMeeting = () => {
-    if (!projectId) {
-      alert("프로젝트 정보가 없습니다.");
-      return;
-    }
-    navigate(`/project/${projectId}/proceedings/create`);
-  };
 
   // 새 투두 추가 (로컬 상태만)
   const handleAddTodo = () => {

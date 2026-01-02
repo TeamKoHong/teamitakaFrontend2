@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import DefaultHeader from "../../components/Common/DefaultHeader";
 import "./ProjectMemberPage.scss";
@@ -15,7 +15,7 @@ export default function ProjectMemberPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const loadMembers = async () => {
+  const loadMembers = useCallback(async () => {
     if (!projectId) {
       setError("프로젝트 ID가 없습니다.");
       setLoading(false);
@@ -89,11 +89,11 @@ export default function ProjectMemberPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [projectId]);
 
   useEffect(() => {
     loadMembers();
-  }, [projectId]);
+  }, [loadMembers]);
 
   return (
     <div className="team-page">
