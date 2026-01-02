@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios"; // API 호출용
 import "./TodoBox.scss";
@@ -21,6 +21,7 @@ function TodoBox({ showFeed = true, projectId }) {
   const [isTodoExpanded, setIsTodoExpanded] = useState(false);
   const [newTodoText, setNewTodoText] = useState("");
   const [isAddingTodo, setIsAddingTodo] = useState(false);
+  const inputRef = useRef(null);
 
   // ✅ 1. 투두 리스트 불러오기 (Read)
   useEffect(() => {
@@ -150,19 +151,30 @@ function TodoBox({ showFeed = true, projectId }) {
     setIsAddingTodo(true);
   };
 
+  // 입력창 포커스
+  useEffect(() => {
+    if (isAddingTodo && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [isAddingTodo]);
+
   return (
     <div className="todo-box-container">
       {/* 할 일 요약 섹션 */}
       <div className="todo-summary">
         <div className="todo-summary-content">
           <span className="todo-summary-text" onClick={() => setIsTodoExpanded(!isTodoExpanded)}>
-            오늘 총 <span className="todo-count-highlight">{totalIncompleteTodos}건</span>의 할 일이 있어요.
+            {totalIncompleteTodos === 0 ? (
+              "할 일을 추가해보세요."
+            ) : (
+              <>오늘 총 <span className="todo-count-highlight">{totalIncompleteTodos}건</span>의 할 일이 있어요.</>
+            )}
           </span>
           <button className="todo-add-btn" onClick={handlePlusClick}>
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
               <path
                 d="M12 5V19M5 12H19"
-                stroke="white"
+                stroke="#F76241"
                 strokeWidth="2"
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -180,16 +192,24 @@ function TodoBox({ showFeed = true, projectId }) {
               <div key={project.id} className="project-section">
                 {/* 투두 입력 창 */}
                 {isAddingTodo && (
-                  <div className="todo-input-wrapper">
-                    <input
-                      type="text"
-                      className="todo-input"
-                      placeholder="할 일을 입력하세요..."
-                      value={newTodoText}
-                      onChange={(e) => setNewTodoText(e.target.value)}
-                      onKeyPress={handleKeyPress}
-                      autoFocus
-                    />
+                  <div className="todo-item todo-input-item">
+                    <div className="todo-content">
+                      <input
+                        ref={inputRef}
+                        type="text"
+                        className="todo-input"
+                        placeholder="할 일을 입력하세요..."
+                        value={newTodoText}
+                        onChange={(e) => setNewTodoText(e.target.value)}
+                        onKeyPress={handleKeyPress}
+                        maxLength={25}
+                      />
+                    </div>
+                    <div className="todo-checkbox-container">
+                      <div className="checkbox-label">
+                        <div className="custom-checkbox"></div>
+                      </div>
+                    </div>
                   </div>
                 )}
 
