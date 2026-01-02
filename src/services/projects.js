@@ -291,3 +291,69 @@ export const getProjectSchedules = async (projectId) => {
     // 백엔드 응답이 배열이면 그대로, 객체면 data 추출
     return Array.isArray(result) ? result : (result.data || result);
 };
+
+/**
+ * Updates project member roles and tasks
+ * @param {string} projectId - Project UUID
+ * @param {Array} members - Array of members to update
+ * @param {string} members[].user_id - User UUID
+ * @param {string} [members[].role] - Role ('팀장' or '팀원')
+ * @param {string} [members[].task] - Task description
+ * @returns {Promise<Object>} Update result
+ */
+export const updateProjectMembers = async (projectId, members) => {
+    const { API_BASE_URL, headers } = getApiConfig();
+    const token = localStorage.getItem('authToken');
+
+    if (!token) {
+        const err = new Error('UNAUTHORIZED');
+        err.code = 'UNAUTHORIZED';
+        throw err;
+    }
+
+    const res = await fetch(`${API_BASE_URL}/api/projects/${projectId}/members`, {
+        method: 'PUT',
+        headers: {
+            ...headers,
+            Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ members }),
+    });
+
+    if (res.status === 401) {
+        const err = new Error('UNAUTHORIZED');
+        err.code = 'UNAUTHORIZED';
+        throw err;
+    }
+
+    if (res.status === 403) {
+        const errorData = await res.json();
+        const err = new Error(errorData.message || '팀장만 멤버 역할을 수정할 수 있습니다');
+        err.code = 'NOT_PROJECT_LEADER';
+        throw err;
+    }
+
+    if (res.status === 404) {
+        const errorData = await res.json();
+        const err = new Error(errorData.message || '해당 멤버를 찾을 수 없습니다');
+        err.code = 'MEMBER_NOT_FOUND';
+        throw err;
+    }
+
+    if (res.status === 400) {
+        const errorData = await res.json();
+        const err = new Error(errorData.message || '유효성 검사 실패');
+        err.code = 'VALIDATION_ERROR';
+        err.errors = errorData.errors;
+        throw err;
+    }
+
+    if (!res.ok) {
+        const errorData = await res.json();
+        const err = new Error(errorData.message || errorData.error || 'Failed to update members');
+        err.code = errorData.error?.code || 'SERVER_ERROR';
+        throw err;
+    }
+
+    return res.json();
+};
