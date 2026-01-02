@@ -4,8 +4,7 @@ import "./MemberDetailCard.scss";
 import avatar1 from "../../assets/icons/avatar1.png";
 // import UnderArrow from "../Common/UI/UnderArrow"; // 현재 사용 안 함
 
-export default function MemberDetailCard({ member }) {
-  const [isEditing, setIsEditing] = useState(false);
+export default function MemberDetailCard({ member, isEditing, setIsEditing }) {
   const [memberData, setMemberData] = useState({
     name: "팀원명",
     role: "담당파트명",
@@ -31,9 +30,11 @@ export default function MemberDetailCard({ member }) {
 
   return (
     <div className="member-detail-card">
-      <button className="edit-btn" onClick={handleEditToggle}>
-        <EditIcon />
-      </button>
+      {!isEditing && (
+        <button className="edit-btn" onClick={handleEditToggle}>
+          <EditIcon />
+        </button>
+      )}
       <div className="avatar-wrapper">
         <img src={avatar1} alt="이미지" className="avatar-large" />
       </div>

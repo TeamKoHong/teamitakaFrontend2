@@ -6,7 +6,7 @@ import "./TodoBox.scss";
 import { getApiConfig } from "../../services/auth";
 
 // projectId props를 받아야 해당 프로젝트의 투두를 불러올 수 있습니다.
-function TodoBox({ showFeed = true, projectId, projectName = "현재 프로젝트" }) {
+function TodoBox({ showFeed = true, projectId }) {
   const navigate = useNavigate();
   // 초기 상태는 비워둠 (API로 채움)
   const [projects, setProjects] = useState([]); 
@@ -19,6 +19,8 @@ function TodoBox({ showFeed = true, projectId, projectName = "현재 프로젝�
   ]);
 
   const [isTodoExpanded, setIsTodoExpanded] = useState(false);
+  const [newTodoText, setNewTodoText] = useState("");
+  const [isAddingTodo, setIsAddingTodo] = useState(false);
 
   // ✅ 1. 투두 리스트 불러오기 (Read)
   useEffect(() => {
@@ -39,7 +41,7 @@ function TodoBox({ showFeed = true, projectId, projectName = "현재 프로젝�
         setProjects([
             {
                 id: projectId,
-                name: projectName,
+                
                 todos: fetchedTodos
             }
         ]);
@@ -49,7 +51,7 @@ function TodoBox({ showFeed = true, projectId, projectName = "현재 프로젝�
     };
 
     fetchTodos();
-  }, [projectId, projectName]);
+  }, [projectId]);
 
 
   // ✅ 2. 투두 체크/해제 (Update)
@@ -101,31 +103,72 @@ function TodoBox({ showFeed = true, projectId, projectName = "현재 프로젝�
     navigate(`/project/${projectId}/proceedings/create`);
   };
 
+  // 새 투두 추가 (로컬 상태만)
+  const handleAddTodo = () => {
+    if (!newTodoText.trim()) return;
+
+    const newTodo = {
+      id: Date.now(), // 임시 ID
+      text: newTodoText.trim(),
+      checked: false
+    };
+
+    setProjects(prevProjects => {
+      if (prevProjects.length === 0) {
+        // 프로젝트가 없으면 새로 만들기
+        return [{
+          id: projectId,
+          todos: [newTodo]
+        }];
+      }
+      // 첫 번째 프로젝트에 투두 추가
+      return prevProjects.map((project, index) => {
+        if (index === 0) {
+          return {
+            ...project,
+            todos: [newTodo, ...project.todos] // 맨 위에 추가
+          };
+        }
+        return project;
+      });
+    });
+
+    setNewTodoText("");
+    setIsAddingTodo(false);
+  };
+
+  // 엔터 키 핸들러
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      handleAddTodo();
+    }
+  };
+
+  // 플러스 버튼 클릭
+  const handlePlusClick = () => {
+    setIsTodoExpanded(true);
+    setIsAddingTodo(true);
+  };
+
   return (
     <div className="todo-box-container">
       {/* 할 일 요약 섹션 */}
-      <div className="todo-summary" onClick={() => setIsTodoExpanded(!isTodoExpanded)}>
+      <div className="todo-summary">
         <div className="todo-summary-content">
-          <span className="todo-summary-text">
+          <span className="todo-summary-text" onClick={() => setIsTodoExpanded(!isTodoExpanded)}>
             오늘 총 <span className="todo-count-highlight">{totalIncompleteTodos}건</span>의 할 일이 있어요.
           </span>
-          <div className="todo-summary-icon">
-            <svg
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              className={`chevron-icon ${isTodoExpanded ? "expanded" : ""}`}
-            >
+          <button className="todo-add-btn" onClick={handlePlusClick}>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
               <path
-                d="M6 9L12 15L18 9"
+                d="M12 5V19M5 12H19"
                 stroke="white"
                 strokeWidth="2"
                 strokeLinecap="round"
                 strokeLinejoin="round"
               />
             </svg>
-          </div>
+          </button>
         </div>
       </div>
 
@@ -135,9 +178,20 @@ function TodoBox({ showFeed = true, projectId, projectName = "현재 프로젝�
           <div className="project-todo-box">
             {projects.length > 0 ? projects.map((project) => (
               <div key={project.id} className="project-section">
-                <div className="project-header">
-                  <h3>{project.name}</h3>
-                </div>
+                {/* 투두 입력 창 */}
+                {isAddingTodo && (
+                  <div className="todo-input-wrapper">
+                    <input
+                      type="text"
+                      className="todo-input"
+                      placeholder="할 일을 입력하세요..."
+                      value={newTodoText}
+                      onChange={(e) => setNewTodoText(e.target.value)}
+                      onKeyPress={handleKeyPress}
+                      autoFocus
+                    />
+                  </div>
+                )}
 
                 <div className="project-todos-list">
                   {project.todos.length > 0 ? project.todos.map((todo) => (
@@ -188,12 +242,12 @@ function TodoBox({ showFeed = true, projectId, projectName = "현재 프로젝�
         </div>
       )}
 
-      {/* 팀 회의록 섹션 */}
+      {/* 팀원 활동 로그 섹션 */}
       {showFeed && (
         <div className="project-feed-section">
           <div className="project-feed-header">
-            <h3>팀 회의록</h3>
-            <button className="add-feed-btn" onClick={handleCreateMeeting}>+</button>
+            <h3>팀원 활동 로그</h3>
+            <p>팀원들이 완료한 투두리스트를 살펴보세요.</p>
           </div>
 
           <div className="project-feed-list">

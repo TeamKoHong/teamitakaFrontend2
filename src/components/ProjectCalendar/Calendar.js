@@ -1,17 +1,21 @@
 import React, { useState, useMemo, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
 import axios from "axios";
 import "./Calendar.scss";
 import userDefaultImg from "../../assets/icons/user_default_img.svg";
 import AddEventModal from "./AddEventModal";
 import { getApiConfig } from "../../services/auth";
+import { getProjectSchedules } from "../../services/projects";
 
 const WEEKDAYS = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"];
 
 export default function Calendar({ projectId, onDayClick, isModalOpen, onCloseModal }) {
+  const navigate = useNavigate();
   const [currentMonth, setCurrentMonth] = useState(dayjs());
   const [selectedDate, setSelectedDate] = useState(null);
   const [events, setEvents] = useState({});
+  const [loading, setLoading] = useState(false);
 
   const { API_BASE_URL } = getApiConfig();
 
@@ -20,51 +24,49 @@ export default function Calendar({ projectId, onDayClick, isModalOpen, onCloseMo
     return token ? { Authorization: `Bearer ${token}` } : {};
   };
 
-  // ✅ 1. 일정 조회 (GET)
+  // ✅ 1. 일정 조회 (GET) - 새로운 API 함수 사용
   useEffect(() => {
     const fetchSchedules = async () => {
       if (!projectId) return;
 
       try {
-        // 백엔드가 year, month 파라미터를 안 받지만, 보내도 문제는 없습니다.
-        // 다만 URL은 정확해야 합니다.
+        setLoading(true);
         console.log(`📅 일정 조회 요청: Project ID ${projectId}`);
 
-        const response = await axios.get(
-          `${API_BASE_URL}/api/schedule/project/${projectId}`, 
-          {
-            headers: getAuthHeader(),
-            withCredentials: true
-          }
-        );
-
-        console.log("✅ 불러온 일정:", response.data);
+        const schedules = await getProjectSchedules(projectId);
+        console.log("✅ 불러온 일정:", schedules);
 
         const newEvents = {};
-        if (response.data && Array.isArray(response.data)) {
-            response.data.forEach((item) => {
+        if (Array.isArray(schedules)) {
+          schedules.forEach((item) => {
             const dateKey = dayjs(item.date).format("YYYY-MM-DD");
             if (!newEvents[dateKey]) newEvents[dateKey] = [];
             
             newEvents[dateKey].push({
-                // 백엔드 DB 컬럼명을 추측하여 매핑 (보통 id 아니면 schedule_id)
-                id: item.id || item.schedule_id, 
-                title: item.title,
-                desc: item.description,
-                author: item.author || "사용자", // 백엔드에서 author 정보를 안 주면 기본값
-                authorProfile: userDefaultImg,
-                createdAt: item.date 
+              id: item.id || item.schedule_id, 
+              title: item.title,
+              desc: item.description,
+              author: item.author || "사용자",
+              authorProfile: userDefaultImg,
+              createdAt: item.date 
             });
-            });
+          });
         }
         setEvents(newEvents);
       } catch (error) {
         console.error("❌ 일정 불러오기 실패:", error);
+        
+        if (error.code === 'UNAUTHORIZED') {
+          alert("로그인이 필요합니다.");
+          navigate("/login");
+        }
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchSchedules();
-  }, [currentMonth, projectId]);
+  }, [currentMonth, projectId, navigate]);
 
   // (중간 달력 계산 로직은 기존과 동일)
   const monthLabel = useMemo(() => currentMonth.format("YYYY.MM"), [currentMonth]);
@@ -83,7 +85,7 @@ export default function Calendar({ projectId, onDayClick, isModalOpen, onCloseMo
   }, [selectedDate, events]);
 
 
-  // ✅ 2. 일정 추가 (POST) - 백엔드 형식에 완벽히 맞춤
+  // ✅ 2. 일정 추가 (POST)
   const handleAddEvent = async (newEventData) => {
     if (!selectedDate || !projectId) {
         alert("필수 정보가 누락되었습니다.");
@@ -91,12 +93,16 @@ export default function Calendar({ projectId, onDayClick, isModalOpen, onCloseMo
     }
 
     try {
-        // 👇 백엔드 컨트롤러(createSchedule)가 원하는 키 이름과 형식
+        // ISO 8601 형식으로 변환 (백엔드 요구사항)
+        const startTime = selectedDate.format("YYYY-MM-DDTHH:mm:ss") + "Z";
+        const endTime = selectedDate.add(1, 'hour').format("YYYY-MM-DDTHH:mm:ss") + "Z"; // 기본 1시간 후
+        
         const payload = {
-            project_id: projectId,          // ✅ 스네이크 케이스 필수
+            project_id: projectId,
             title: newEventData.title,
             description: newEventData.desc,
-            date: selectedDate.format("YYYY-MM-DD HH:mm:ss"), // ✅ 'T' 없는 포맷
+            start_time: startTime,
+            end_time: endTime
         };
 
         console.log("📝 전송 데이터:", payload);
@@ -115,12 +121,12 @@ export default function Calendar({ projectId, onDayClick, isModalOpen, onCloseMo
         // 성공 시 화면 즉시 반영
         const dateKey = selectedDate.format("YYYY-MM-DD");
         const createdEvent = {
-            id: response.data.id || response.data.schedule_id, // 응답값 확인 필요
+            id: response.data.id || response.data.schedule_id,
             title: newEventData.title,
             desc: newEventData.desc,
             author: "나", 
             authorProfile: userDefaultImg,
-            createdAt: selectedDate.format("YYYY-MM-DD HH:mm:ss")
+            createdAt: startTime
         };
 
         setEvents(prev => ({
@@ -154,19 +160,25 @@ export default function Calendar({ projectId, onDayClick, isModalOpen, onCloseMo
           {WEEKDAYS.map((wd) => (<div key={wd} className="weekday">{wd}</div>))}
         </div>
         <div className="dates-grid">
-          {monthDays.map((day, idx) => {
-            const inMonth = day.isSame(currentMonth, "month");
-            const isSelected = day.isSame(selectedDate, "date");
-            const isTodayDate = isToday(day);
-            const hasEventsForDate = hasEvents(day);
-            return (
-              <div key={idx} className={`date-cell ${inMonth ? "" : "disabled"} ${isSelected ? "selected" : ""} ${isTodayDate ? "today" : ""}`}
-                onClick={() => { if (inMonth) { setSelectedDate(day); onDayClick?.(day.toDate()); } }}>
-                <div className="date-number">{day.format("DD")}</div>
-                {hasEventsForDate && <div className="event-dot"></div>}
-              </div>
-            );
-          })}
+          {loading ? (
+            <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '2rem', color: '#999' }}>
+              일정을 불러오는 중...
+            </div>
+          ) : (
+            monthDays.map((day, idx) => {
+              const inMonth = day.isSame(currentMonth, "month");
+              const isSelected = day.isSame(selectedDate, "date");
+              const isTodayDate = isToday(day);
+              const hasEventsForDate = hasEvents(day);
+              return (
+                <div key={idx} className={`date-cell ${inMonth ? "" : "disabled"} ${isSelected ? "selected" : ""} ${isTodayDate ? "today" : ""}`}
+                  onClick={() => { if (inMonth) { setSelectedDate(day); onDayClick?.(day.toDate()); } }}>
+                  <div className="date-number">{day.format("DD")}</div>
+                  {hasEventsForDate && <div className="event-dot"></div>}
+                </div>
+              );
+            })
+          )}
         </div>
       </div>
       {selectedDate && (

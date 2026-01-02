@@ -93,6 +93,14 @@
     margin-top: 16px;
     padding-right: 4px;
 
+    .empty-message {
+      text-align: center;
+      padding: 20px 0;
+      color: #999;
+      font-size: 14px;
+      font-family: Pretendard;
+    }
+
     .event-item {
       display: flex;
       align-items: flex-start;
