@@ -10,7 +10,7 @@ import { getProjectSchedules } from "../../services/projects";
 
 const WEEKDAYS = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"];
 
-export default function Calendar({ projectId, onDayClick, isModalOpen, onCloseModal }) {
+export default function Calendar({ projectId, onDayClick, isModalOpen, onCloseModal, selectedDate: externalSelectedDate }) {
   const navigate = useNavigate();
   const [currentMonth, setCurrentMonth] = useState(dayjs());
   const [selectedDate, setSelectedDate] = useState(null);
@@ -78,72 +78,14 @@ export default function Calendar({ projectId, onDayClick, isModalOpen, onCloseMo
   const monthDays = useMemo(() => Array.from({ length: weekCount * 7 }).map((_, i) => gridStart.add(i, "day")), [gridStart, weekCount]);
   const isToday = (date) => date.isSame(dayjs(), "day");
   const hasEvents = (date) => { const k = date.format("YYYY-MM-DD"); return events[k] && events[k].length > 0; };
+  // externalSelectedDate 또는 내부 selectedDate 사용
+  const currentSelectedDate = externalSelectedDate ? dayjs(externalSelectedDate) : selectedDate;
+  
   const selectedDateEvents = useMemo(() => {
-    if (!selectedDate) return [];
-    const k = selectedDate.format("YYYY-MM-DD");
+    if (!currentSelectedDate) return [];
+    const k = currentSelectedDate.format("YYYY-MM-DD");
     return (events[k] || []).sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
-  }, [selectedDate, events]);
-
-
-  // ✅ 2. 일정 추가 (POST)
-  const handleAddEvent = async (newEventData) => {
-    if (!selectedDate || !projectId) {
-        alert("필수 정보가 누락되었습니다.");
-        return;
-    }
-
-    try {
-        // ISO 8601 형식으로 변환 (백엔드 요구사항)
-        const startTime = selectedDate.format("YYYY-MM-DDTHH:mm:ss") + "Z";
-        const endTime = selectedDate.add(1, 'hour').format("YYYY-MM-DDTHH:mm:ss") + "Z"; // 기본 1시간 후
-        
-        const payload = {
-            project_id: projectId,
-            title: newEventData.title,
-            description: newEventData.desc,
-            start_time: startTime,
-            end_time: endTime
-        };
-
-        console.log("📝 전송 데이터:", payload);
-
-        const response = await axios.post(
-            `${API_BASE_URL}/api/schedule/create`, 
-            payload, 
-            {
-                headers: getAuthHeader(),
-                withCredentials: true
-            }
-        );
-
-        console.log("✅ 저장 성공:", response.data);
-
-        // 성공 시 화면 즉시 반영
-        const dateKey = selectedDate.format("YYYY-MM-DD");
-        const createdEvent = {
-            id: response.data.id || response.data.schedule_id,
-            title: newEventData.title,
-            desc: newEventData.desc,
-            author: "나", 
-            authorProfile: userDefaultImg,
-            createdAt: startTime
-        };
-
-        setEvents(prev => ({
-            ...prev,
-            [dateKey]: [...(prev[dateKey] || []), createdEvent]
-        }));
-        
-        onCloseModal(); 
-    } catch (error) {
-        console.error("❌ 일정 저장 실패:", error);
-        if (error.response) {
-             alert(`저장 실패 (${error.response.status}): ${error.response.data.message || "오류 발생"}`);
-        } else {
-             alert("서버와 통신할 수 없습니다.");
-        }
-    }
-  };
+  }, [currentSelectedDate, events]);
 
   const prevMonth = () => setCurrentMonth((m) => m.subtract(1, "month"));
   const nextMonth = () => setCurrentMonth((m) => m.add(1, "month"));
@@ -167,7 +109,7 @@ export default function Calendar({ projectId, onDayClick, isModalOpen, onCloseMo
           ) : (
             monthDays.map((day, idx) => {
               const inMonth = day.isSame(currentMonth, "month");
-              const isSelected = day.isSame(selectedDate, "date");
+              const isSelected = currentSelectedDate && day.isSame(currentSelectedDate, "date");
               const isTodayDate = isToday(day);
               const hasEventsForDate = hasEvents(day);
               return (
@@ -181,10 +123,10 @@ export default function Calendar({ projectId, onDayClick, isModalOpen, onCloseMo
           )}
         </div>
       </div>
-      {selectedDate && (
+      {currentSelectedDate && (
         <div className="selected-date-container">
           <div className="selected-date-info">
-            <div className="date-label">{selectedDate.format("MM")}월 {selectedDate.format("DD")}일</div>
+            <div className="date-label">{currentSelectedDate.format("MM")}월 {currentSelectedDate.format("DD")}일</div>
           </div>
           <div className="events-list">
             {selectedDateEvents.length > 0 ? (
@@ -198,7 +140,18 @@ export default function Calendar({ projectId, onDayClick, isModalOpen, onCloseMo
           </div>
         </div>
       )}
-      <AddEventModal isOpen={isModalOpen} onClose={onCloseModal} onSave={handleAddEvent} />
+      <AddEventModal 
+        isOpen={isModalOpen} 
+        onClose={onCloseModal}
+        projectId={projectId}
+        selectedDate={currentSelectedDate ? currentSelectedDate.toDate() : null}
+        onEventCreated={(newEvent, dateKey) => {
+          setEvents(prev => ({
+            ...prev,
+            [dateKey]: [...(prev[dateKey] || []), newEvent]
+          }));
+        }}
+      />
     </>
   );
 }
