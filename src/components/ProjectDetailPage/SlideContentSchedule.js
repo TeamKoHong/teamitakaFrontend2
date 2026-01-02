@@ -118,7 +118,6 @@ export default function SlideContentSchedule({ projectId }) {
     <div className="slide-card schedule-slide">
       <div className="schedule-header-container">
         <div className="schedule-header">{headerLabel}</div>
-        <button className="add-schedule-btn">+</button>
       </div>
 
       <div className="week-row">

@@ -8,7 +8,7 @@
   
   .schedule-header-container {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
     margin-bottom: 22px;
     
@@ -103,7 +103,8 @@
 
     .event-item {
       display: flex;
-      align-items: flex-start;
+      align-items: center;
+  
       gap: 8px;
       padding: 5px 0;
 
