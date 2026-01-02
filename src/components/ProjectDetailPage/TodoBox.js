@@ -178,31 +178,33 @@ function TodoBox({ showFeed = true, projectId }) {
       {isTodoExpanded && (
         <div className="todo-expanded-container">
           <div className="project-todo-box">
-            {projects.length > 0 ? projects.map((project) => (
-              <div key={project.id} className="project-section">
-                {/* 투두 입력 창 */}
-                {isAddingTodo && (
-                  <div className="todo-item todo-input-item">
-                    <div className="todo-content">
-                      <input
-                        ref={inputRef}
-                        type="text"
-                        className="todo-input"
-                        placeholder="할 일을 입력하세요..."
-                        value={newTodoText}
-                        onChange={(e) => setNewTodoText(e.target.value)}
-                        onKeyPress={handleKeyPress}
-                        maxLength={25}
-                      />
-                    </div>
-                    <div className="todo-checkbox-container">
-                      <div className="checkbox-label">
-                        <div className="custom-checkbox"></div>
-                      </div>
+            {/* 투두 입력 창 - projects와 상관없이 항상 표시 */}
+            {isAddingTodo && (
+              <div className="project-section">
+                <div className="todo-item todo-input-item">
+                  <div className="todo-content">
+                    <input
+                      ref={inputRef}
+                      type="text"
+                      className="todo-input"
+                      placeholder="할 일을 입력하세요..."
+                      value={newTodoText}
+                      onChange={(e) => setNewTodoText(e.target.value)}
+                      onKeyPress={handleKeyPress}
+                      maxLength={25}
+                    />
+                  </div>
+                  <div className="todo-checkbox-container">
+                    <div className="checkbox-label">
+                      <div className="custom-checkbox"></div>
                     </div>
                   </div>
-                )}
+                </div>
+              </div>
+            )}
 
+            {projects.length > 0 ? projects.map((project) => (
+              <div key={project.id} className="project-section">
                 <div className="project-todos-list">
                   {project.todos.length > 0 ? project.todos.map((todo) => (
                     <div key={todo.id} className={`todo-item ${todo.checked ? "completed" : ""}`}>
