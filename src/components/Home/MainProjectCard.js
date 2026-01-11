@@ -1,18 +1,26 @@
+// [src/components/MainPage/MainProjectCard.js]
 import React from "react";
 import "./MainProjectCard.scss";
-import { IoCalendarOutline, IoTimeOutline } from "react-icons/io5"; 
+import { IoCalendarOutline, IoTimeOutline } from "react-icons/io5";
 
-function formatDate(dateStr) {
-  if (!dateStr) return "";
-  const d = new Date(dateStr);
-  if (Number.isNaN(d.getTime())) return dateStr;
-  const yyyy = d.getFullYear();
-  const mm = String(d.getMonth() + 1).padStart(2, "0");
-  const dd = String(d.getDate()).padStart(2, "0");
-  return `${yyyy}.${mm}.${dd}`;
-}
+import CircularProgress from "../Common/CircularProgress";
 
-function calcDDay(endStr) {
+import { formatDateRange } from "../../utils/dateFormat"; //
+
+// 진행률 계산 (시작일~종료일 기준)
+const calculateProgress = (startDate, endDate) => {
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+  const now = new Date();
+  if (now < start) return 0;
+  if (now > end) return 100;
+  const total = end - start;
+  const elapsed = now - start;
+  return Math.round((elapsed / total) * 100);
+};
+
+// D-day 텍스트
+const calcDDay = (endStr) => {
   if (!endStr) return "D-??";
   const end = new Date(endStr);
   if (Number.isNaN(end.getTime())) return "D-??";
@@ -22,20 +30,35 @@ function calcDDay(endStr) {
   end.setHours(0, 0, 0, 0);
 
   const diff = Math.ceil((end.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
-
   if (diff > 0) return `D-${String(diff).padStart(2, "0")}`;
   if (diff === 0) return "D-DAY";
   return `D+${String(Math.abs(diff)).padStart(2, "0")}`;
-}
+};
 
 const MainProjectCard = ({ project, onClick }) => {
+  if (!project) return null;
+
+  //  title 후보들
   const title = project?.title || project?.name || project?.project_name || "프로젝트명";
 
-  const start = project?.startDate || project?.start_date || project?.start || "";
-  const end = project?.endDate || project?.end_date || project?.end || "";
+  // (ProjectCard와 동일) 모집/프로젝트 날짜 둘 다 지원
+  const startDate =
+    project?.recruitment_start ||
+    project?.startDate ||
+    project?.start_date ||
+    project?.start ||
+    "";
+
+  const endDate =
+    project?.recruitment_end ||
+    project?.endDate ||
+    project?.end_date ||
+    project?.end ||
+    "";
 
   const meetingTime = project?.meetingTime || project?.meeting_time || "고정 회의 시간";
 
+  // 썸네일 후보들
   const thumbnail =
     project?.thumbnailUrl ||
     project?.thumbnail_url ||
@@ -45,22 +68,35 @@ const MainProjectCard = ({ project, onClick }) => {
     project?.cover_image ||
     "";
 
+  // 기간 표기: 유틸 우선, 없으면 fallback
+  const formattedPeriod = formatDateRange?.(startDate, endDate);
   const periodText =
-    start && end ? `${formatDate(start)} ~ ${formatDate(end)}` : start ? `${formatDate(start)}` : "프로젝트 기간";
+    formattedPeriod ||
+    (startDate && endDate ? `${startDate} ~ ${endDate}` : startDate ? `${startDate}` : "프로젝트 기간");
 
-  const ddayText = calcDDay(end);
+  //  D-day
+  const ddayText = calcDDay(endDate);
+
+  // 원형 진행률(없으면 서버값 progress_percent 사용)
+  const progressValue =
+    startDate && endDate
+      ? Number(calculateProgress(startDate, endDate))
+      : Number(project?.progress_percent || 0);
 
   return (
     <button type="button" className="main-project-card" onClick={onClick}>
       <div className="thumb">
-        {thumbnail ? <img src={thumbnail} alt={`${title} 썸네일`} /> : <div className="thumb-placeholder" aria-hidden />}
+        {thumbnail ? (
+          <img src={thumbnail} alt={`${title} 썸네일`} />
+        ) : (
+          <div className="thumb-placeholder" aria-hidden />
+        )}
       </div>
 
       <div className="body">
         <div className="left">
           <h3 className="title">{title}</h3>
 
-          {/* ✅ 여기부터 아이콘 교체 + 정렬 안정 구조 */}
           <div className="meta">
             <div className="meta-row">
               <IoCalendarOutline className="meta-icon" aria-hidden />
@@ -74,8 +110,12 @@ const MainProjectCard = ({ project, onClick }) => {
           </div>
         </div>
 
+        {/* 오른쪽: D-day + 원형 프로그레스 */}
         <div className="right">
           <div className="d-day">{ddayText}</div>
+          <div className="progress-ring" aria-label={`진행률 ${progressValue}%`}>
+            <CircularProgress percentage={progressValue} />
+          </div>
         </div>
       </div>
     </button>

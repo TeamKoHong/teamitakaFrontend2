@@ -16,7 +16,6 @@ import { getMyProjects } from "../../services/projects";
 import ProjectCard from "../ProjectManagement/Common/ProjectCard";
 import MainProjectCard from "./MainProjectCard";
 
-import TodoBox from "../ProjectDetailPage/TodoBox";
 
 const MainPage = () => {
   const navigate = useNavigate();
@@ -30,7 +29,7 @@ const MainPage = () => {
   const [isLoadingProjects, setIsLoadingProjects] = useState(false);
   const [projectError, setProjectError] = useState(null);
 
-  // ✅ 캐러셀 dots용
+
   const carouselRef = useRef(null);
   const [activeIndex, setActiveIndex] = useState(0);
 
@@ -124,7 +123,7 @@ const MainPage = () => {
     setActiveIndex(safeIdx);
   };
 
-  // ✅ dot 클릭 시 해당 카드로 이동(선택 기능)
+  //dot 클릭 시 해당 카드로 이동
   const scrollToIndex = (idx) => {
     const el = carouselRef.current;
     if (!el) return;
@@ -277,11 +276,6 @@ const MainPage = () => {
             </div>
           </>
         )}
-      </section>
-
-      {/* 메인에서는 좌우 padding 영향 제거해서 상세와 폭 동일하게 */}
-      <section className="main-todo-section">
-        <TodoBox showFeed={false} />
       </section>
 
       <div className="bottom-spacer" />
