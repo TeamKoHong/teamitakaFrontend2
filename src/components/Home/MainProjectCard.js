@@ -112,9 +112,9 @@ const MainProjectCard = ({ project, onClick }) => {
 
         {/* 오른쪽: D-day + 원형 프로그레스 */}
         <div className="right">
-          <div className="d-day">{ddayText}</div>
-          <div className="progress-ring" aria-label={`진행률 ${progressValue}%`}>
-            <CircularProgress percentage={progressValue} />
+           <div className="progress-wrap" aria-label={`진행률 ${progressValue}%`}>
+    <CircularProgress percentage={progressValue} />
+    <span className="progress-center-text">{ddayText}</span>
           </div>
         </div>
       </div>

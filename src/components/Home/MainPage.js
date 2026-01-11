@@ -105,7 +105,7 @@ const MainPage = () => {
     if (carouselRef.current) carouselRef.current.scrollLeft = 0;
   }, [projects]);
 
-  // ✅ 캐러셀 스크롤 시 현재 인덱스 계산
+  // 캐러셀 스크롤 시 현재 인덱스 계산
   const handleCarouselScroll = () => {
     const el = carouselRef.current;
     if (!el) return;
