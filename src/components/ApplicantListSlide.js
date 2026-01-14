@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import DefaultHeader from "./Common/DefaultHeader";
 import ApplicantDetailModal from "./ApplicantDetailModal";
 import TeamMatchingComplete from "./TeamMatchingComplete";
-import { getRecruitmentApplicants} from "../services/recruitment";
+import { getRecruitmentApplicants, getRecruitment } from "../services/recruitment";
 import userDefaultImg from "../assets/icons/user_default_img.svg";
 import deleteIcon from "../assets/icons/deleteIcon.svg";
 import arrowIcon from "../assets/icons/arrow_back_ios.svg";
@@ -17,6 +17,8 @@ export default function ApplicantListSlide({ open, onClose, recruitmentId }) {
   const [applicants, setApplicants] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [currentUsername, setCurrentUsername] = useState("모집자");
+  const [projectName, setProjectName] = useState("프로젝트명");
   const contentRef = useRef(null);
   
   // Team Matching Complete state
@@ -27,8 +29,24 @@ export default function ApplicantListSlide({ open, onClose, recruitmentId }) {
   const [dragPosition, setDragPosition] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
   const [isOverDeleteZone, setIsOverDeleteZone] = useState(false);
+  const [isOverSelectZone, setIsOverSelectZone] = useState(false);
   const longPressTimer = useRef(null);
   const dragStartPos = useRef({ x: 0, y: 0 });
+  const selectZoneRef = useRef(null);
+  const bannerZoneRef = useRef(null);
+
+  // 로컬스토리지에서 사용자 정보 가져오기
+  useEffect(() => {
+    const userStr = localStorage.getItem('user');
+    if (userStr) {
+      try {
+        const user = JSON.parse(userStr);
+        setCurrentUsername(user.username || "모집자");
+      } catch (err) {
+        console.error('로컬스토리지 user 파싱 실패:', err);
+      }
+    }
+  }, []);
 
   useEffect(() => {
     const fetchApplicants = async () => {
@@ -38,6 +56,16 @@ export default function ApplicantListSlide({ open, onClose, recruitmentId }) {
       setError(null);
 
       try {
+        // 프로젝트명(recruitment 정보)을 먼저 가져오기
+        const recruitmentData = await getRecruitment(recruitmentId);
+        console.log('🔍 [ApplicantListSlide] Recruitment 정보:', recruitmentData);
+        if (recruitmentData?.data?.title) {
+          setProjectName(recruitmentData.data.title);
+        } else if (recruitmentData?.title) {
+          setProjectName(recruitmentData.title);
+        }
+
+        // 지원자 목록 가져오기
         const data = await getRecruitmentApplicants(recruitmentId);
         console.log('🔍 [ApplicantListSlide] API 응답 전체:', data);
         console.log('🔍 [ApplicantListSlide] recruitmentId:', recruitmentId);
@@ -163,7 +191,7 @@ export default function ApplicantListSlide({ open, onClose, recruitmentId }) {
     onClose();
   };
 
-  // Drag handlers (for selected team members only)
+  // Drag handlers (for both applicants and selected team members)
   const handleLongPressStart = (e, applicant) => {
     e.stopPropagation();
     
@@ -207,9 +235,39 @@ export default function ApplicantListSlide({ open, onClose, recruitmentId }) {
 
     setDragPosition({ x: clientX, y: clientY });
 
-    // Check if over delete zone (bottom 150px)
+    // Check if over delete zone (bottom 150px) - 선택된 팀원만 삭제 가능
     const windowHeight = window.innerHeight;
-    setIsOverDeleteZone(clientY > windowHeight - 150);
+    const isSelectedMember = selectedTeamMembers.some(m => m.id === draggedApplicant.id);
+    setIsOverDeleteZone(isSelectedMember && clientY > windowHeight - 150);
+
+    // Check if over select zone (팀원을 선정해주세요 영역 또는 배너 영역)
+    if (!isSelectedMember) {
+      let isOverZone = false;
+      
+      // "팀원을 선정해주세요" 영역 체크
+      if (selectZoneRef.current) {
+        const zoneRect = selectZoneRef.current.getBoundingClientRect();
+        isOverZone = 
+          clientX >= zoneRect.left &&
+          clientX <= zoneRect.right &&
+          clientY >= zoneRect.top &&
+          clientY <= zoneRect.bottom;
+      }
+      
+      // 배너 영역 체크 (이미 선택된 팀원이 있을 때)
+      if (!isOverZone && bannerZoneRef.current) {
+        const bannerRect = bannerZoneRef.current.getBoundingClientRect();
+        isOverZone = 
+          clientX >= bannerRect.left &&
+          clientX <= bannerRect.right &&
+          clientY >= bannerRect.top &&
+          clientY <= bannerRect.bottom;
+      }
+      
+      setIsOverSelectZone(isOverZone);
+    } else {
+      setIsOverSelectZone(false);
+    }
   };
 
   const handleDragEnd = () => {
@@ -222,8 +280,10 @@ export default function ApplicantListSlide({ open, onClose, recruitmentId }) {
 
     if (!isDragging || !draggedApplicant) return;
 
-    // If over delete zone, remove from selected team members
-    if (isOverDeleteZone) {
+    const isSelectedMember = selectedTeamMembers.some(m => m.id === draggedApplicant.id);
+
+    // If over delete zone, remove from selected team members (선택된 팀원만)
+    if (isOverDeleteZone && isSelectedMember) {
       setSelectedTeamMembers((prev) => 
         prev.filter((m) => m.id !== draggedApplicant.id)
       );
@@ -237,11 +297,16 @@ export default function ApplicantListSlide({ open, onClose, recruitmentId }) {
         )
       );
     }
+    // If over select zone, add to selected team members (지원자만)
+    else if (isOverSelectZone && !isSelectedMember) {
+      handleInvite(draggedApplicant);
+    }
 
     // Reset drag state
     setDraggedApplicant(null);
     setIsDragging(false);
     setIsOverDeleteZone(false);
+    setIsOverSelectZone(false);
     handleLongPressEnd();
   };
 
@@ -271,8 +336,11 @@ export default function ApplicantListSlide({ open, onClose, recruitmentId }) {
           {!loading && !error && (
             <>
               {hasSelection ? (
-                <div className="selected-banner">
-                  <p className="selected-title">[모집자]님이 선정했어요.</p>
+                <div 
+                  ref={bannerZoneRef}
+                  className={`selected-banner ${isDragging && draggedApplicant && !selectedTeamMembers.some(m => m.id === draggedApplicant.id) && isOverSelectZone ? "drop-zone-active" : ""}`}
+                >
+                  <p className="selected-title">[{currentUsername}]님이 선정했어요.</p>
                   <p className="selected-sub">함께하게 될 팀원들<span>이에요!</span></p>
                   <div className="selected-avatars">
                     {selectedTeamMembers.map((m) => {
@@ -295,7 +363,10 @@ export default function ApplicantListSlide({ open, onClose, recruitmentId }) {
                   </div>
                 </div>
               ) : (
-                <div className="description-container">
+                <div 
+                  ref={selectZoneRef}
+                  className={`description-container ${isDragging && draggedApplicant && !selectedTeamMembers.some(m => m.id === draggedApplicant.id) && isOverSelectZone ? "drop-zone-active" : ""}`}
+                >
                   <p className="description-title">함께 할 팀원을 선정해주세요.</p>
                   <p className="description-text">원하는 지원자 프로필을 꾹 눌러 드래그 해보세요!</p>
                 </div>
@@ -303,18 +374,24 @@ export default function ApplicantListSlide({ open, onClose, recruitmentId }) {
               )}
               <hr />
               <p className="highlight-text">
-                <span className="project-name">[프로젝트명]</span>에 지원한 <br />
+                <span className="project-name">[{projectName}]</span>에 지원한 <br />
                 <span className="red">예비 팀원 목록</span>이에요.
               </p>
               <div className="avatars-container">
                 <div className="avatars-grid">
                    {applicants.map((a) => {
                      const isSelected = selectedTeamMembers.some((m) => m.id === a.id);
+                     const isBeingDragged = draggedApplicant?.id === a.id;
                      return (
                        <div
                          key={a.id}
-                         className={`avatar-card ${isSelected ? "selected" : ""}`}
-                         onClick={() => handleApplicantClick(a)}
+                         className={`avatar-card ${isSelected ? "selected" : ""} ${isBeingDragged ? "dragging" : ""}`}
+                         onClick={() => !isDragging && handleApplicantClick(a)}
+                         onMouseDown={(e) => handleLongPressStart(e, a)}
+                         onMouseUp={handleLongPressEnd}
+                         onMouseLeave={handleLongPressEnd}
+                         onTouchStart={(e) => handleLongPressStart(e, a)}
+                         onTouchCancel={handleLongPressEnd}
                        >
                          <img src={a.img} alt={a.name} />
                          <p>{a.name}</p>
@@ -327,8 +404,8 @@ export default function ApplicantListSlide({ open, onClose, recruitmentId }) {
           )}
         </div>
         
-        {/* Delete Zone - 드래그 중일 때만 표시 */}
-        {isDragging ? (
+        {/* Delete Zone - 선택된 팀원을 드래그할 때만 표시 */}
+        {isDragging && draggedApplicant && selectedTeamMembers.some(m => m.id === draggedApplicant.id) ? (
           <div className={`bottom-fixed-button dragging-mode ${isOverDeleteZone ? "delete-zone-active" : ""}`}>
             <div className="delete-zone-content">
               <div className="arrow-indicators">

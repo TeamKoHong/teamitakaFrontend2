@@ -4,6 +4,7 @@ import dayjs from 'dayjs';
 import './KickoffSlide.scss';
 import DefaultHeader from '../Common/DefaultHeader';
 import DateRangePickerSheet from '../ProjectRecruit/DateRangePicker/DateRangePickerSheet';
+import TeamMemberInfoSlide from './TeamMemberInfoSlide';
 import { createProjectFromRecruitment } from '../../services/recruitment';
 
 export default function KickoffSlide({ open, onClose, selectedMembers, recruitmentId }) {
@@ -14,6 +15,8 @@ export default function KickoffSlide({ open, onClose, selectedMembers, recruitme
   const [end, setEnd] = useState('');
   const [datePickerOpen, setDatePickerOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [createdProjectId, setCreatedProjectId] = useState(null);
+  const [teamInfoOpen, setTeamInfoOpen] = useState(false);
 
   const isValidRange = useMemo(() => {
     if (!start || !end) return false;
@@ -61,13 +64,16 @@ export default function KickoffSlide({ open, onClose, selectedMembers, recruitme
       const result = await createProjectFromRecruitment(recruitmentId, requestData);
       
       console.log('✅ 프로젝트 생성 성공:', result);
-      alert('프로젝트가 생성되었습니다!');
+      
+      // 프로젝트 ID 저장 (data.project_id 또는 result.project_id)
+      const projectId = result.data?.project_id || result.project_id;
+      console.log('📌 생성된 프로젝트 ID:', projectId);
+      setCreatedProjectId(projectId);
 
-      // 슬라이드 닫기
-      onClose();
-
-      // 내 프로젝트 관리 페이지로 이동
-      navigate('/project-management');
+      // 팀원 정보 입력 슬라이드 열기
+      console.log('📌 팀원 정보 슬라이드 열기 시도');
+      setTeamInfoOpen(true);
+      console.log('📌 teamInfoOpen 상태 설정 완료');
       
     } catch (err) {
       console.error('❌ 프로젝트 생성 실패:', err);
@@ -144,10 +150,21 @@ export default function KickoffSlide({ open, onClose, selectedMembers, recruitme
             onClick={handleNext}
             disabled={!isReady || loading}
           >
-            {loading ? '프로젝트 생성 중...' : '프로젝트 시작하기!'}
+            {loading ? '프로젝트 생성 중...' : '다음'}
           </button>
         </div>
       </div>
+
+      {/* 팀원 정보 입력 슬라이드 */}
+      <TeamMemberInfoSlide
+        open={teamInfoOpen}
+        onClose={() => {
+          setTeamInfoOpen(false);
+          onClose();
+        }}
+        selectedMembers={selectedMembers}
+        projectId={createdProjectId}
+      />
 
       {/* Date Range Picker Bottom Sheet */}
       <DateRangePickerSheet

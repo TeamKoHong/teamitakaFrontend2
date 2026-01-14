@@ -75,7 +75,7 @@ function ProjectDetailSlideBox({ project }) {
           </div>
         </SwiperSlide>
         <SwiperSlide className="slide-wrapper">
-          <SlideContentSchedule />
+          <SlideContentSchedule projectId={project?.project_id} />
         </SwiperSlide>
         {/* 3번째 슬라이드 (알림) - 기능적으로 제외 */}
         {/* <SwiperSlide className="slide-wrapper">
