@@ -76,7 +76,7 @@ export default function ProjectRecruitImage() {
       </div>
 
       <div className="container">
-        <h2 className="h2">모집글의 대표 이미지를{'\n'}추가해주세요!</h2>
+        <h2 className="h2">모집글의 대표 이미지를 {"\n"} 추가해주세요!</h2>
 
         {/* 업로드 카드 */}
         <button type="button" className="cover-card" onClick={openSheet} aria-label="대표 이미지 업로드">
