@@ -14,17 +14,18 @@ export default function ProjectCalendar() {
   const projectId = id; 
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedDate, setSelectedDate] = useState(null);
 
   const handleDayClick = (date) => {
     console.log("선택된 날짜:", date);
+    setSelectedDate(date);
   };
 
   const handleAddButtonClick = () => {
     setIsModalOpen(true);
   };
   
-  // ✅ 이제 콘솔에 숫자가 잘 찍힐 겁니다.
-  console.log("현재 페이지의 Project ID:", projectId);
+
 
   return (
     <div className="project-calendar-page-container">
@@ -40,6 +41,7 @@ export default function ProjectCalendar() {
           onDayClick={handleDayClick}
           isModalOpen={isModalOpen}
           onCloseModal={() => setIsModalOpen(false)}
+          selectedDate={selectedDate}
         />
       </div>
       <AddFloatingButton onClick={handleAddButtonClick} />

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import DefaultHeader from "../../components/Common/DefaultHeader";
+import { createMeeting } from "../../services/projects";
 import "./CreateMeetingPage.scss";
 
 export default function CreateMeetingPage() {
@@ -11,6 +12,7 @@ export default function CreateMeetingPage() {
     title: "",
     description: ""
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleInputChange = (field, value) => {
     setFormData(prev => ({
@@ -23,33 +25,42 @@ export default function CreateMeetingPage() {
 
   const getCurrentDate = () => {
     const today = new Date();
-    const month = String(today.getMonth() + 1).padStart(2, '0');
-    const day = String(today.getDate()).padStart(2, '0');
-    return {
-      month: `${month}월`,
-      day: `${day}일`,
-      fullDate: today.toISOString().split('T')[0]
-    };
+    return today.toISOString().split('T')[0]; // YYYY-MM-DD 형식
   };
 
-  const handleNext = () => {
-    if (isFormValid) {
-      const currentDate = getCurrentDate();
-      const newMeeting = {
-        id: Date.now(), // 임시 ID 생성
-        title: formData.title,
-        author: "작성자 닉네임", // 실제로는 현재 사용자 정보
-        description: formData.description,
-        createdAt: currentDate.fullDate
+  const handleNext = async () => {
+    if (!isFormValid || isSubmitting) return;
+    
+    try {
+      setIsSubmitting(true);
+      
+      const meetingData = {
+        title: formData.title.trim(),
+        content: formData.description.trim(),
+        meeting_date: getCurrentDate()
       };
 
-      // 로컬 스토리지에 새 회의록 저장
-      const existingMeetings = JSON.parse(localStorage.getItem('meetings') || '[]');
-      const updatedMeetings = [...existingMeetings, newMeeting];
-      localStorage.setItem('meetings', JSON.stringify(updatedMeetings));
-
-      // 회의록 목록 페이지로 이동
+      await createMeeting(projectId, meetingData);
+      
+      // 성공 시 회의록 목록 페이지로 이동
       navigate(`/project/${projectId}/proceedings`);
+    } catch (err) {
+      console.error("Failed to create meeting:", err);
+      
+      if (err.code === 'UNAUTHORIZED') {
+        alert("로그인이 필요합니다.");
+        navigate("/login");
+        return;
+      }
+      
+      if (err.code === 'VALIDATION_ERROR') {
+        alert(err.message || "입력 내용을 확인해주세요.");
+        return;
+      }
+      
+      alert("회의록 생성에 실패했습니다. 다시 시도해주세요.");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -71,6 +82,7 @@ export default function CreateMeetingPage() {
               placeholder="내용을 입력하세요."
               value={formData.title}
               onChange={(e) => handleInputChange('title', e.target.value)}
+              maxLength={18}
             />
           </div>
 
@@ -89,9 +101,9 @@ export default function CreateMeetingPage() {
         <button 
           className={`next-button ${isFormValid ? 'active' : 'disabled'}`}
           onClick={handleNext}
-          disabled={!isFormValid}
+          disabled={!isFormValid || isSubmitting}
         >
-          다음
+          {isSubmitting ? "생성 중..." : "다음"}
         </button>
       </div>
     </div>
