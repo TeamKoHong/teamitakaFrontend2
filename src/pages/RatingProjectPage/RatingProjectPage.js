@@ -49,15 +49,12 @@ function RatingProjectPage(props) {
       try {
         // AuthContext에서 사용자 정보 가져오기 (더 신뢰할 수 있음)
         // 백엔드에서 올 수 있는 모든 필드명 체크: user_id, userId, id
-        console.log('[DEBUG] authUser:', authUser);
         const currentUserId = authUser?.user_id || authUser?.userId || authUser?.id;
-        console.log('[DEBUG] currentUserId:', currentUserId);
 
         if (!currentUserId) {
           // fallback: localStorage에서 가져오기
           const userStr = localStorage.getItem('user');
           const user = userStr ? JSON.parse(userStr) : null;
-          console.log('[DEBUG] localStorage user:', user);
           const fallbackUserId = user?.user_id || user?.userId || user?.id;
 
           if (!fallbackUserId) {

@@ -112,30 +112,12 @@ export async function fetchRatingProjectData(projectId, currentUserId) {
       fetchMyGivenReviews(projectId, currentUserId),
     ]);
 
-    // ===== 디버그 로깅: API 원본 응답 =====
-    console.log('=== RatingProjectPage API 응답 디버그 ===');
-    console.log('1. projectRes:', JSON.stringify(projectRes, null, 2));
-    console.log('2. membersRes:', JSON.stringify(membersRes, null, 2));
-    console.log('3. reviewsRes:', JSON.stringify(reviewsRes, null, 2));
-    console.log('4. summaryRes:', JSON.stringify(summaryRes, null, 2));
-    console.log('5. myReviewsRes:', JSON.stringify(myReviewsRes, null, 2));
-
     // 프로젝트 정보
     const project = projectRes.data || projectRes;
     const members = membersRes.data || membersRes;
     const allReviews = reviewsRes.data || reviewsRes;
     const summary = summaryRes.data || summaryRes;
     const myGivenReviewsRaw = myReviewsRes.data?.reviews || myReviewsRes.reviews || [];
-
-    // ===== 디버그 로깅: 파싱 후 데이터 =====
-    console.log('=== 파싱된 데이터 ===');
-    console.log('project:', project);
-    console.log('members (배열?):', Array.isArray(members), members);
-    console.log('allReviews (배열?):', Array.isArray(allReviews), allReviews);
-    console.log('summary:', summary);
-    console.log('summary.categoryAverages:', summary?.categoryAverages);
-    console.log('myGivenReviewsRaw:', myGivenReviewsRaw);
-    console.log('project.ProjectMembers:', project.ProjectMembers);
 
     // 내가 받은 평가 필터링
     const myReceivedReviews = allReviews.filter(r => r.reviewee_id === currentUserId);

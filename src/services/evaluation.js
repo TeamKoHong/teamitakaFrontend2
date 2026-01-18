@@ -159,9 +159,6 @@ export async function fetchEvaluationTargets(projectId, currentUserId) {
     const members = Array.isArray(membersRes) ? membersRes : (membersRes?.data || []);
     const reviews = Array.isArray(reviewsRes) ? reviewsRes : (reviewsRes?.data || []);
 
-    console.log('🔍 [fetchEvaluationTargets] members:', members);
-    console.log('🔍 [fetchEvaluationTargets] reviews:', reviews);
-
     // Filter out current user from evaluation targets
     const targets = members.filter(member => member.user_id !== currentUserId);
 
