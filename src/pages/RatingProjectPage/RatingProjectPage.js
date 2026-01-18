@@ -131,8 +131,8 @@ function RatingProjectPage(props) {
   // 선택된 팀원의 평가 데이터 찾기
   const givenRating = isGivenMode && myGivenRatings.length > 0
     ? (selectedMemberId
-        ? myGivenRatings.find(r => r.targetMember?.id === selectedMemberId)
-        : myGivenRatings[0])
+      ? myGivenRatings.find(r => r.targetMember?.id === selectedMemberId)
+      : myGivenRatings[0])
     : null;
 
   const handleNavigateToGiven = () => {
@@ -245,14 +245,20 @@ function RatingProjectPage(props) {
               text={givenRating.comment}
             />
           ) : (
-            comments.map((c, i) => (
-              <EvaluationCommentCard
-                key={i}
-                avatar={c.avatar}
-                text={c.text}
-                onClick={() => navigate(`/evaluation/project/${projectId}/feedback/${c.memberId || i}`)}
-              />
-            ))
+            comments.length > 0 ? (
+              comments.map((c, i) => (
+                <EvaluationCommentCard
+                  key={i}
+                  avatar={c.avatar}
+                  text={c.text}
+                  onClick={() => navigate(`/evaluation/project/${projectId}/feedback/${c.memberId || i}`)}
+                />
+              ))
+            ) : (
+              <div className={styles.emptyComments}>
+                받은 평가가 없습니다
+              </div>
+            )
           )}
         </div>
       </div>
