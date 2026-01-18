@@ -140,8 +140,34 @@ export async function fetchRatingProjectData(projectId, currentUserId) {
     // 내가 받은 평가 필터링
     const myReceivedReviews = allReviews.filter(r => r.reviewee_id === currentUserId);
 
-    // 슬라이더 데이터 (카테고리 평균)
-    const sliders = mapCategoryAveragesToSliders(summary.categoryAverages);
+    // [New] 평가가 하나도 없으면 모든 수치를 0 또는 빈 값으로 강제 초기화
+    let finalSliders = [];
+    let finalRatingSummary = { average: 0, totalReviews: 0 };
+    let finalSummary = { good: [], improve: [] };
+
+    if (myReceivedReviews.length === 0) {
+      // 평가 없음 -> 0점 처리
+      finalSliders = mapCategoryAveragesToSliders({
+        effort: 0,
+        communication: 0,
+        commitment: 0,
+        reflection: 0,
+        ability: 0,
+      });
+      finalRatingSummary = { average: 0, totalReviews: 0 };
+      finalSummary = { good: [], improve: [] };
+    } else {
+      // 평가 있음 -> API 데이터 사용
+      finalSliders = mapCategoryAveragesToSliders(summary.categoryAverages);
+      finalRatingSummary = {
+        average: summary.averageRating || 0,
+        totalReviews: summary.totalReviews || 0,
+      };
+      finalSummary = {
+        good: summary.summary?.strengths || [],
+        improve: summary.summary?.improvements || [],
+      };
+    }
 
     // 받은 평가 코멘트
     const comments = myReceivedReviews.map(review => ({
@@ -195,16 +221,10 @@ export async function fetchRatingProjectData(projectId, currentUserId) {
         role: m.role || 'MEMBER',
         avatar: m.User?.avatar || null,
       })),
-      sliders,
+      sliders: finalSliders,
       comments,
-      summary: {
-        good: summary.summary?.strengths || [],
-        improve: summary.summary?.improvements || [],
-      },
-      ratingSummary: {
-        average: summary.averageRating || 0,
-        totalReviews: summary.totalReviews || 0,
-      },
+      summary: finalSummary,
+      ratingSummary: finalRatingSummary,
       myGivenRatings,
     };
   } catch (error) {
@@ -360,7 +380,7 @@ export async function fetchProjectStatus(projectId) {
   // 네트워크 지연 시뮬레이션
   await new Promise(res => setTimeout(res, 300));
   return dummyStatus;
-} 
+}
 
 // Re-export evaluation service functions for backward compatibility
 // The real implementation is now in evaluation.js
