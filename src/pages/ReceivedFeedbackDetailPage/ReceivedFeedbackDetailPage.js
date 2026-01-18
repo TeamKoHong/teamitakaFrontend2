@@ -27,6 +27,10 @@ export default function ReceivedFeedbackDetailPage() {
         // Since we don't have a single review fetch endpoint yet, fetches all and filters
         const reviews = await fetchProjectReviews(projectId);
 
+        if (!Array.isArray(reviews)) {
+          throw new Error('평가 데이터 형식이 올바르지 않습니다.');
+        }
+
         // Find the specific review where the reviewer is 'memberId'
         // Note: memberId param seems to be reviewer's ID based on previous usage
         const foundReview = reviews.find(r => r.reviewer_id === memberId);
