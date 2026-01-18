@@ -40,11 +40,11 @@ const CategorySlider = ({
   // 위치에서 값 계산
   const getValueFromPosition = useCallback((clientX) => {
     if (!sliderRef.current) return value;
-    
+
     const rect = sliderRef.current.getBoundingClientRect();
     const percentage = Math.max(0, Math.min(100, ((clientX - rect.left) / rect.width) * 100));
     const newValue = getValueFromPercentage(percentage);
-    
+
     return Math.max(min, Math.min(max, newValue));
   }, [value, min, max, getValueFromPercentage]);
 
@@ -56,7 +56,7 @@ const CategorySlider = ({
     thresholdExceededRef.current = false;
     downOnThumbRef.current = false;
     setIsPressed(false);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handlePointerMove = useCallback((e) => {
@@ -115,9 +115,9 @@ const CategorySlider = ({
   // 키보드 이벤트 핸들러
   const handleKeyDown = useCallback((e) => {
     if (disabled) return;
-    
+
     let newValue = value;
-    
+
     switch (e.key) {
       case 'ArrowLeft':
       case 'ArrowDown':
@@ -140,7 +140,7 @@ const CategorySlider = ({
       default:
         return;
     }
-    
+
     onChange(newValue);
   }, [disabled, value, min, max, onChange]);
 
@@ -164,9 +164,9 @@ const CategorySlider = ({
           <div className={styles.categoryDescription}>{description}</div>
         )}
       </div>
-      
+
       <div className={styles.sliderContainer}>
-        <div 
+        <div
           ref={sliderRef}
           className={`${styles.sliderTrack} ${isPressed ? styles.pressed : ''}`}
           onPointerDown={handlePointerDown}
@@ -179,19 +179,19 @@ const CategorySlider = ({
           tabIndex={disabled ? -1 : 0}
           onKeyDown={handleKeyDown}
         >
-          <div 
-            className={styles.sliderFill} 
+          <div
+            className={styles.sliderFill}
             style={{ width: `${percentage}%` }}
           />
           {showThumb && (
-            <div 
+            <div
               ref={thumbRef}
               className={`${styles.sliderThumb} ${isPressed ? styles.pressed : ''}`}
               style={{ left: `${percentage}%` }}
             />
           )}
         </div>
-        
+
         <div className={styles.sliderLabels}>
           {labels.map((labelValue) => (
             <button
@@ -200,6 +200,7 @@ const CategorySlider = ({
               className={`${styles.labelButton} ${value === labelValue ? styles.active : ''}`}
               onClick={() => handleLabelClick(labelValue)}
               disabled={disabled}
+              style={{ left: `${getPercentage(labelValue)}%` }} // Absolute positioning
               aria-label={`${labelValue}점으로 설정`}
             >
               {labelValue}
@@ -207,7 +208,7 @@ const CategorySlider = ({
           ))}
         </div>
       </div>
-      
+
     </div>
   );
 };
