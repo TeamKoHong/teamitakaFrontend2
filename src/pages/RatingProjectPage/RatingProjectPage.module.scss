@@ -451,6 +451,13 @@ $border-light: #e0e0e0;
   padding: 16px 16px 8px;
 }
 
+.emptyComments {
+  text-align: center;
+  color: #999;
+  font-size: 14px;
+  padding: 32px 0;
+}
+
 // Hide title inside MyRatingSection without editing its code
 .myRatingNoTitle {
   section[aria-label="내가 받은 별점"]>h2 {
