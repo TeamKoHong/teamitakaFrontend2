@@ -1,7 +1,7 @@
 import React from 'react';
 import './UnratedProjectCard.module.scss';
 import styles from './UnratedProjectCard.module.scss';
-import { IoPeopleOutline } from "react-icons/io5";
+
 
 // 더미 아바타 이미지
 const DEFAULT_AVATARS = [

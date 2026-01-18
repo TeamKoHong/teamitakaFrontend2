@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import "./CompletedComponent.scss";
-import EvaluationAlert from "./EvaluationAlert";
+
 import UnratedProjectCard from "../UnratedProjectCard/UnratedProjectCard";
 import CompletedProjectSimpleCard from "../CompletedProjectSimpleCard/CompletedProjectSimpleCard";
 import { useNavigate } from 'react-router-dom';

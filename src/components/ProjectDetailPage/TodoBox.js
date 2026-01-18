@@ -1,15 +1,15 @@
 import React, { useState, useEffect, useRef } from "react";
-import axios from "axios"; // API 호출용
+
 import "./TodoBox.scss";
 
-import { getApiConfig } from "../../services/auth";
+
 import { getProjectActivityLogs, getProjectTodos, createProjectTodo, updateProjectTodo } from "../../services/projects";
 
 // projectId props를 받아야 해당 프로젝트의 투두를 불러올 수 있습니다.
 function TodoBox({ showFeed = true, projectId }) {
   // 초기 상태는 비워둠 (API로 채움)
-  const [projects, setProjects] = useState([]); 
-  const { API_BASE_URL } = getApiConfig();
+  const [projects, setProjects] = useState([]);
+
   const [projectFeeds, setProjectFeeds] = useState([]);
   const [isLoadingFeeds, setIsLoadingFeeds] = useState(false);
 
@@ -38,20 +38,20 @@ function TodoBox({ showFeed = true, projectId }) {
           // { data: [...] } 형식
           todosArray = response.data;
         }
-        
+
         // [{ todo_id, title, status, ... }] 형태를 UI 형식으로 변환
         const fetchedTodos = todosArray.map(todo => ({
-            id: todo.todo_id,
-            text: todo.title,
-            checked: todo.status === 'COMPLETED' || todo.is_completed === true
+          id: todo.todo_id,
+          text: todo.title,
+          checked: todo.status === 'COMPLETED' || todo.is_completed === true
         }));
 
         // 화면 구성을 위해 projects 배열 형태로 설정
         setProjects([
-            {
-                id: projectId,
-                todos: fetchedTodos
-            }
+          {
+            id: projectId,
+            todos: fetchedTodos
+          }
         ]);
       } catch (error) {
         console.error("투두 불러오기 실패:", error);
@@ -68,10 +68,10 @@ function TodoBox({ showFeed = true, projectId }) {
   // 활동 로그 다시 불러오기 함수
   const refreshActivityLogs = async () => {
     if (!projectId || !showFeed) return;
-    
+
     try {
       const response = await getProjectActivityLogs(projectId, 5, 0);
-      
+
       // API 응답을 UI 형식에 맞게 변환
       const feeds = response.activity_logs?.map((log) => ({
         id: log.todo_id,
@@ -93,54 +93,54 @@ function TodoBox({ showFeed = true, projectId }) {
   // ✅ 2. 투두 체크/해제 (Update)
   const toggleTodo = async (projId, todoId, currentStatus) => {
     try {
-        // 1. 백엔드에 상태 업데이트 요청
-        const newStatus = !currentStatus; // true/false 반전
-        await updateProjectTodo(projId, todoId, {
-            status: newStatus ? "COMPLETED" : "PENDING"
-        });
+      // 1. 백엔드에 상태 업데이트 요청
+      const newStatus = !currentStatus; // true/false 반전
+      await updateProjectTodo(projId, todoId, {
+        status: newStatus ? "COMPLETED" : "PENDING"
+      });
 
-        // 2. Todo 목록 다시 불러오기 (최신 상태 반영)
-        const response = await getProjectTodos(projId);
-        
-        // 백엔드 응답 형식 확인
-        let todosArray = [];
-        if (Array.isArray(response)) {
-          todosArray = response;
-        } else if (response.data?.items) {
-          todosArray = response.data.items;
-        } else if (response.data && Array.isArray(response.data)) {
-          todosArray = response.data;
+      // 2. Todo 목록 다시 불러오기 (최신 상태 반영)
+      const response = await getProjectTodos(projId);
+
+      // 백엔드 응답 형식 확인
+      let todosArray = [];
+      if (Array.isArray(response)) {
+        todosArray = response;
+      } else if (response.data?.items) {
+        todosArray = response.data.items;
+      } else if (response.data && Array.isArray(response.data)) {
+        todosArray = response.data;
+      }
+
+      // UI 형식으로 변환
+      const fetchedTodos = todosArray.map(todo => ({
+        id: todo.todo_id,
+        text: todo.title,
+        checked: todo.status === 'COMPLETED' || todo.is_completed === true
+      }));
+
+      // 완료된 투두를 맨 아래로 정렬
+      const sortedTodos = fetchedTodos.sort((a, b) => {
+        if (a.checked === b.checked) return 0;
+        return a.checked ? 1 : -1;
+      });
+
+      // 상태 업데이트
+      setProjects([
+        {
+          id: projId,
+          todos: sortedTodos
         }
-        
-        // UI 형식으로 변환
-        const fetchedTodos = todosArray.map(todo => ({
-            id: todo.todo_id,
-            text: todo.title,
-            checked: todo.status === 'COMPLETED' || todo.is_completed === true
-        }));
+      ]);
 
-        // 완료된 투두를 맨 아래로 정렬
-        const sortedTodos = fetchedTodos.sort((a, b) => {
-          if (a.checked === b.checked) return 0;
-          return a.checked ? 1 : -1;
-        });
-
-        // 상태 업데이트
-        setProjects([
-            {
-                id: projId,
-                todos: sortedTodos
-            }
-        ]);
-
-        // 3. 완료된 경우 활동 로그도 새로고침
-        if (newStatus) {
-          await refreshActivityLogs();
-        }
+      // 3. 완료된 경우 활동 로그도 새로고침
+      if (newStatus) {
+        await refreshActivityLogs();
+      }
 
     } catch (error) {
-        console.error("투두 상태 업데이트 실패:", error);
-        alert("상태 변경에 실패했습니다.");
+      console.error("투두 상태 업데이트 실패:", error);
+      alert("상태 변경에 실패했습니다.");
     }
   };
 
@@ -156,10 +156,10 @@ function TodoBox({ showFeed = true, projectId }) {
     setIsCreatingTodo(true);
     try {
       await createProjectTodo(projectId, newTodoText.trim());
-      
+
       // Todo 생성 성공 후 목록 다시 불러오기
       const response = await getProjectTodos(projectId);
-      
+
       // 백엔드 응답 형식 확인: 배열이 직접 오거나 { data: { items: [...] } } 형식
       let todosArray = [];
       if (Array.isArray(response)) {
@@ -169,20 +169,20 @@ function TodoBox({ showFeed = true, projectId }) {
       } else if (response.data && Array.isArray(response.data)) {
         todosArray = response.data;
       }
-      
+
       // [{ todo_id, title, status, ... }] 형태를 UI 형식으로 변환
       const fetchedTodos = todosArray.map(todo => ({
-          id: todo.todo_id,
-          text: todo.title,
-          checked: todo.status === 'COMPLETED' || todo.is_completed === true
+        id: todo.todo_id,
+        text: todo.title,
+        checked: todo.status === 'COMPLETED' || todo.is_completed === true
       }));
 
       // 화면 구성을 위해 projects 배열 형태로 설정
       setProjects([
-          {
-              id: projectId,
-              todos: fetchedTodos
-          }
+        {
+          id: projectId,
+          todos: fetchedTodos
+        }
       ]);
 
       setNewTodoText("");
@@ -190,7 +190,7 @@ function TodoBox({ showFeed = true, projectId }) {
     } catch (error) {
       // 에러 메시지 표시
       if (error.code === 'VALIDATION_ERROR') {
-        const errorMsg = error.errors && error.errors.length > 0 
+        const errorMsg = error.errors && error.errors.length > 0
           ? error.errors.map(e => e.message).join('\n')
           : error.message || "내용을 입력해주세요.";
         alert(errorMsg);
@@ -229,7 +229,7 @@ function TodoBox({ showFeed = true, projectId }) {
   // 날짜를 상대 시간으로 변환하는 함수
   const formatRelativeTime = (dateString) => {
     if (!dateString) return "";
-    
+
     const now = new Date();
     const date = new Date(dateString);
     const diffInMs = now - date;
@@ -266,7 +266,7 @@ function TodoBox({ showFeed = true, projectId }) {
       setIsLoadingFeeds(true);
       try {
         const response = await getProjectActivityLogs(projectId, 5, 0);
-        
+
         // API 응답을 UI 형식에 맞게 변환
         const feeds = response.activity_logs?.map((log) => ({
           id: log.todo_id,
@@ -385,14 +385,14 @@ function TodoBox({ showFeed = true, projectId }) {
                       </div>
                     </div>
                   )) : (
-                    <div style={{padding: '10px', color: '#999'}}>등록된 할 일이 없습니다.</div>
+                    <div style={{ padding: '10px', color: '#999' }}>등록된 할 일이 없습니다.</div>
                   )}
                 </div>
               </div>
             )) : (
-                 <div style={{padding: '20px', textAlign: 'center', color: '#666'}}>
-                    불러올 프로젝트가 없거나 로딩 중입니다.
-                 </div>
+              <div style={{ padding: '20px', textAlign: 'center', color: '#666' }}>
+                불러올 프로젝트가 없거나 로딩 중입니다.
+              </div>
             )}
           </div>
         </div>
@@ -416,12 +416,12 @@ function TodoBox({ showFeed = true, projectId }) {
                 <div key={feed.id} className="feed-item">
                   <div className="feed-avatar">
                     {feed.avatar ? (
-                      <img 
-                        src={feed.avatar} 
+                      <img
+                        src={feed.avatar}
                         alt={feed.username}
-                        style={{ 
-                          width: '36px', 
-                          height: '36px', 
+                        style={{
+                          width: '36px',
+                          height: '36px',
                           borderRadius: '50%',
                           objectFit: 'cover'
                         }}
