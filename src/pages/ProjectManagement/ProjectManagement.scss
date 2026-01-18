@@ -9,8 +9,9 @@
 
   main {
     width: 100%;
-    
-    overflow: hidden; // 자식 요소에서 스크롤 처리하도록
+
+    overflow-y: auto; // Allow vertical scrolling
+    flex: 1; // Fill remaining space
     display: flex;
     flex-direction: column;
   }
