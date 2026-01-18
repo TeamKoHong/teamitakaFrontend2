@@ -100,7 +100,7 @@ export async function fetchProjectReviews(projectId) {
     }
 
     const reviews = await response.json();
-    return reviews;
+    return reviews.data || reviews;
   } catch (error) {
     console.error('평가 조회 오류:', error);
     throw error;
