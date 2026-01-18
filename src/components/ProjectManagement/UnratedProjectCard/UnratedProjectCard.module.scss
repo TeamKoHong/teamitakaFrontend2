@@ -1,0 +1,95 @@
+.unratedCard {
+    background-color: #FFFFFF;
+    border-radius: 8px;
+    padding: 16px;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.06);
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    transition: transform 0.2s ease;
+
+    &:hover {
+        transform: translateY(-2px);
+    }
+}
+
+.badge {
+    align-self: flex-start;
+    background-color: #FF4D4F;
+    color: #FFFFFF;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 4px 8px;
+    border-radius: 4px;
+}
+
+.content {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+}
+
+.info {
+    flex: 1;
+    margin-right: 16px;
+}
+
+.title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #000000;
+    margin: 0;
+    margin-top: 8px;
+    line-height: 1.4;
+}
+
+.subtitle {
+    font-size: 14px;
+    font-weight: 400;
+    color: #807C7C;
+    margin: 0;
+    margin-top: 4px;
+    line-height: 1.4;
+
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.avatars {
+    display: flex;
+    align-items: center;
+    position: relative;
+    height: 48px;
+    /* Minimal width to hold avatars */
+    min-width: 80px;
+    justify-content: flex-end;
+}
+
+.avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: 2px solid #FFFFFF;
+    margin-left: -16px;
+    /* Overlap */
+    object-fit: cover;
+
+    &:first-child {
+        margin-left: 0;
+    }
+}
+
+.moreIndicator {
+    width: 7.5px;
+    height: 14.68px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 4px;
+    color: #807C7C;
+}
