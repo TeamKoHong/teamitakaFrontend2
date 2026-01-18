@@ -668,12 +668,16 @@ $border-light: #e0e0e0;
   }
 }
 
-// 별점(별 아이콘) 크기 키우기
-.ratingForm .star-rating,
-.overallRatingSection .star-rating {
+// 별점(별 아이콘) 크기 및 간격 강제 오버라이드 (모듈 격리 우회)
+.ratingSection>section>div>div>span {
   font-size: 16.08px !important;
-  line-height: 1.2;
-  margin: 2px 0 8px 0;
+  width: 16.08px !important;
+  height: 16.08px !important;
+  margin-right: 8px !important;
+
+  &:last-child {
+    margin-right: 0 !important;
+  }
 }
 
 // 슬라이더 스타일 (세 번째 이미지 참고)
