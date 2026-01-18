@@ -7,6 +7,7 @@ import BottomNav from "../Common/BottomNav/BottomNav";
 import bellIcon from "../../assets/icons/bell.png";
 import schoolIcon from "../../assets/icons/school.png";
 import mascotImg from "../../assets/icons/project_empty.png";
+import mainlogo from "../../assets/icons/Teamitaka_main_logo.png";
 
 import { getMe } from "../../services/user";
 import { getSummary } from "../../services/dashboard";
@@ -15,7 +16,6 @@ import { getMyProjects } from "../../services/projects";
 import ProjectCard from "../ProjectManagement/Common/ProjectCard";
 import MainProjectCard from "./MainProjectCard";
 
-import TodoBox from "../ProjectDetailPage/TodoBox";
 
 const MainPage = () => {
   const navigate = useNavigate();
@@ -29,7 +29,7 @@ const MainPage = () => {
   const [isLoadingProjects, setIsLoadingProjects] = useState(false);
   const [projectError, setProjectError] = useState(null);
 
-  // ✅ 캐러셀 dots용
+
   const carouselRef = useRef(null);
   const [activeIndex, setActiveIndex] = useState(0);
 
@@ -105,7 +105,7 @@ const MainPage = () => {
     if (carouselRef.current) carouselRef.current.scrollLeft = 0;
   }, [projects]);
 
-  // ✅ 캐러셀 스크롤 시 현재 인덱스 계산
+  // 캐러셀 스크롤 시 현재 인덱스 계산
   const handleCarouselScroll = () => {
     const el = carouselRef.current;
     if (!el) return;
@@ -123,7 +123,7 @@ const MainPage = () => {
     setActiveIndex(safeIdx);
   };
 
-  // ✅ dot 클릭 시 해당 카드로 이동(선택 기능)
+  //dot 클릭 시 해당 카드로 이동
   const scrollToIndex = (idx) => {
     const el = carouselRef.current;
     if (!el) return;
@@ -149,7 +149,7 @@ const MainPage = () => {
     <div className="main-page">
       <div className="top-card">
         <header className="header">
-          <h1 className="logo">Teamitaka</h1>
+          <h1 className="logo">  <img src={mainlogo} alt="Teamitaka" className="logo-img" /> </h1>
           <button
             className="icon-btn"
             aria-label="알림"
@@ -170,9 +170,8 @@ const MainPage = () => {
               {isLoading && <span>불러오는 중...</span>}
               {!isLoading && user && (
                 <>
-                  <span className="name-regular">사용자명</span>{" "}
                   <span className="name-strong">{user.username || user.email}</span>
-                  <span className="name-regular">님</span>
+                  <span className="name-regular">티미님</span>{" "}
                 </>
               )}
               {!isLoading && !user && !error && <span>사용자 정보를 불러올 수 없습니다.</span>}
@@ -263,7 +262,7 @@ const MainPage = () => {
               ))}
             </div>
 
-            {/* ✅ dots (●●●) */}
+            {/* dots (●●●) */}
             <div className="carousel-dots" aria-label="프로젝트 캐러셀 페이지 표시">
               {projects.map((_, i) => (
                 <button
@@ -277,11 +276,6 @@ const MainPage = () => {
             </div>
           </>
         )}
-      </section>
-
-      {/* 메인에서는 좌우 padding 영향 제거해서 상세와 폭 동일하게 */}
-      <section className="main-todo-section">
-        <TodoBox showFeed={false} />
       </section>
 
       <div className="bottom-spacer" />
