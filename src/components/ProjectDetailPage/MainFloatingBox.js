@@ -3,7 +3,7 @@ import "./MainFloatingBox.scss";
 import groupCalendarIcon from "../../assets/icons/groupCalendarIcon.png";
 import meetingNoteIcon from "../../assets/icons/meetingNoteIcon.png";
 import teamMemberIcon from "../../assets/icons/teamMemberIcon.png";
-import voteIcon from "../../assets/icons/voteIcon.png";
+
 import { useNavigate } from "react-router-dom";
 function MainFloatingBox({ projectId }) {
   const navigate = useNavigate();

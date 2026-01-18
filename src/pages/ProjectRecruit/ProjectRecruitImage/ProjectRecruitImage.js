@@ -136,7 +136,7 @@ export default function ProjectRecruitImage() {
           <div className="recruit-action-sheet__backdrop" onClick={closeSheet} />
           <div
             className="recruit-action-sheet"
-            role="presentation"
+            role="dialog"
             aria-modal="true"
             style={{
               position: 'fixed',

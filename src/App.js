@@ -34,7 +34,7 @@ import TeamSelectPage from './pages/TeamSelectPage/TeamSelectPage';
 
 // 메인 페이지 임포트
 import MainPage from './components/Home/MainPage';
-import GuestLandingPage from './pages/GuestLandingPage/GuestLandingPage';
+
 
 // 프로젝트 지원하기 임포트
 import ProjectApply from "./pages/ProjectApply/ProjectApply";
@@ -283,9 +283,9 @@ const App = () => {
           <Route path="/find-password" element={<PublicRoute><FindPasswordPage /></PublicRoute>} />
 
           {/*===== 게스트 랜딩 페이지 (로그인 불필요) =====*/}
-           {/* <Route path="/guest" element={<GuestLandingPage />} />  */}
+          {/* <Route path="/guest" element={<GuestLandingPage />} />  */}
 
-        
+
           {/* ===== 메인/프로필 (인증 필요) =====*/}
           {/* <Route path={MAIN_ROUTES.MAIN} element={<ProtectedRoute><MainPage /></ProtectedRoute>} />
           <Route path={MAIN_ROUTES.MY} element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} /> */}
@@ -366,7 +366,7 @@ const App = () => {
           <Route path="/recruit/publish" element={<ProjectRecruitPublish />} />
           <Route path="/recruit/publish/done" element={<ProjectRecruitPublishDone />} /> */}
 
-         {/* 프로젝트 생성하기(로그인 필요) */}
+          {/* 프로젝트 생성하기(로그인 필요) */}
           <Route path="/recruit" element={<ProtectedRoute><ProjectRecruit /></ProtectedRoute>} />
           <Route path="/recruit/detail" element={<ProtectedRoute><ProjectRecruitDetail /></ProtectedRoute>} />
           <Route path="/recruit/image" element={<ProtectedRoute><ProjectRecruitImage /></ProtectedRoute>} />

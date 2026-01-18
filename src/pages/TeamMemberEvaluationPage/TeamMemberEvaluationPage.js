@@ -141,6 +141,7 @@ function TeamMemberEvaluationPage() {
     if (projectId && user) {
       fetchData();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [projectId, memberId, user]);
 
   const handleNextStep = () => {
