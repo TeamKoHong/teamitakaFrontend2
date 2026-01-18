@@ -1,11 +1,11 @@
 import React, { useState, useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
-import axios from "axios";
+
 import "./Calendar.scss";
 import userDefaultImg from "../../assets/icons/user_default_img.svg";
 import AddEventModal from "./AddEventModal";
-import { getApiConfig } from "../../services/auth";
+
 import { getProjectSchedules } from "../../services/projects";
 
 const WEEKDAYS = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"];
@@ -17,12 +17,7 @@ export default function Calendar({ projectId, onDayClick, isModalOpen, onCloseMo
   const [events, setEvents] = useState({});
   const [loading, setLoading] = useState(false);
 
-  const { API_BASE_URL } = getApiConfig();
 
-  const getAuthHeader = () => {
-    const token = localStorage.getItem('authToken');
-    return token ? { Authorization: `Bearer ${token}` } : {};
-  };
 
   // ✅ 1. 일정 조회 (GET) - 새로운 API 함수 사용
   useEffect(() => {
@@ -41,21 +36,21 @@ export default function Calendar({ projectId, onDayClick, isModalOpen, onCloseMo
           schedules.forEach((item) => {
             const dateKey = dayjs(item.date).format("YYYY-MM-DD");
             if (!newEvents[dateKey]) newEvents[dateKey] = [];
-            
+
             newEvents[dateKey].push({
-              id: item.id || item.schedule_id, 
+              id: item.id || item.schedule_id,
               title: item.title,
               desc: item.description,
               author: item.author || "사용자",
               authorProfile: userDefaultImg,
-              createdAt: item.date 
+              createdAt: item.date
             });
           });
         }
         setEvents(newEvents);
       } catch (error) {
         console.error("❌ 일정 불러오기 실패:", error);
-        
+
         if (error.code === 'UNAUTHORIZED') {
           alert("로그인이 필요합니다.");
           navigate("/login");
@@ -71,7 +66,7 @@ export default function Calendar({ projectId, onDayClick, isModalOpen, onCloseMo
   // (중간 달력 계산 로직은 기존과 동일)
   const monthLabel = useMemo(() => currentMonth.format("YYYY.MM"), [currentMonth]);
   const monthStart = currentMonth.startOf("month");
-  const offset = (monthStart.day() + 6) % 7; 
+  const offset = (monthStart.day() + 6) % 7;
   const daysInMonth = monthStart.endOf("month").date();
   const weekCount = Math.ceil((offset + daysInMonth) / 7);
   const gridStart = monthStart.subtract(offset, "day");
@@ -80,7 +75,7 @@ export default function Calendar({ projectId, onDayClick, isModalOpen, onCloseMo
   const hasEvents = (date) => { const k = date.format("YYYY-MM-DD"); return events[k] && events[k].length > 0; };
   // externalSelectedDate 또는 내부 selectedDate 사용
   const currentSelectedDate = externalSelectedDate ? dayjs(externalSelectedDate) : selectedDate;
-  
+
   const selectedDateEvents = useMemo(() => {
     if (!currentSelectedDate) return [];
     const k = currentSelectedDate.format("YYYY-MM-DD");
@@ -140,8 +135,8 @@ export default function Calendar({ projectId, onDayClick, isModalOpen, onCloseMo
           </div>
         </div>
       )}
-      <AddEventModal 
-        isOpen={isModalOpen} 
+      <AddEventModal
+        isOpen={isModalOpen}
         onClose={onCloseModal}
         projectId={projectId}
         selectedDate={currentSelectedDate ? currentSelectedDate.toDate() : null}

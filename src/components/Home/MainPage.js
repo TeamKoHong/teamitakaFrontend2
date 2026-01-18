@@ -13,7 +13,7 @@ import { getMe } from "../../services/user";
 import { getSummary } from "../../services/dashboard";
 import { getMyProjects } from "../../services/projects";
 
-import ProjectCard from "../ProjectManagement/Common/ProjectCard";
+
 import MainProjectCard from "./MainProjectCard";
 
 

@@ -2,14 +2,14 @@ import React, { useState, useEffect, useRef } from "react";
 
 import "./TodoBox.scss";
 
-import { getApiConfig } from "../../services/auth";
+
 import { getProjectActivityLogs, getProjectTodos, createProjectTodo, updateProjectTodo } from "../../services/projects";
 
 // projectId props를 받아야 해당 프로젝트의 투두를 불러올 수 있습니다.
 function TodoBox({ showFeed = true, projectId }) {
   // 초기 상태는 비워둠 (API로 채움)
   const [projects, setProjects] = useState([]);
-  const { API_BASE_URL } = getApiConfig();
+
   const [projectFeeds, setProjectFeeds] = useState([]);
   const [isLoadingFeeds, setIsLoadingFeeds] = useState(false);
 
