@@ -12,7 +12,7 @@ import EvaluationCommentCard from '../../components/RatingProjectPage/Evaluation
 import BottomNav from '../../components/Common/BottomNav/BottomNav';
 import MyRatingSection from '../../components/RatingProjectPage/MyRatingSection';
 import { fetchRatingProjectData } from '../../services/rating';
-import { getMockProjectSummary } from '../../fixtures/projectSummary';
+// Fixture import removed
 
 function RatingProjectPage(props) {
   const { projectId: propProjectId, mode = 'received' } = props;
@@ -73,12 +73,8 @@ function RatingProjectPage(props) {
           setData(result);
         }
       } catch (err) {
-        console.error('API 호출 실패, Mock 데이터 사용:', err);
-        // API 실패 시 Mock 데이터로 fallback
-        const mock = getMockProjectSummary(projectId);
-        setData(mock);
-        // 개발 중에는 에러를 표시하지 않고 Mock 사용
-        // setError(err.message);
+        console.error('API 호출 실패:', err);
+        setError('데이터를 불러오는데 실패했습니다.');
       } finally {
         setLoading(false);
       }
