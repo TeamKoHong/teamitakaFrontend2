@@ -33,7 +33,7 @@ function BottomNav() {
   ];
 
   return (
-    <nav className={styles.bottomNavRoot} aria-label="Bottom Navigation">
+    <nav className={styles.bottomNavRoot} aria-label="Bottom Navigation" role="navigation">
       <div className={styles.visualRail}>
         <div className={styles.navItems}>
           {navItems.map(({ path, label, icon: Icon }) => {
