@@ -20,18 +20,21 @@ import CategorySliderDemo from './components/Common/CategorySliderDemo';
 import OnboardingPage from './pages/OnboardingPage/OnboardingPage';
 import LoginPage from './pages/LoginPage/LoginPage';
 import RegisterPage from './pages/RegisterPage/RegisterPage';
+import FindIdPage from './pages/FindIdPage/FindIdPage';
+import FindPasswordPage from './pages/FindPasswordPage/FindPasswordPage';
 // 새로 추가된 팀 매칭 페이지 임포트
 import TeamMatchingPage from './pages/TeamMatchingPage/TeamMatchingPage';
 import RecruitmentPage from './pages/RecruitmentPage/RecruitmentPage';
 import SearchPage from './pages/SearchPage/SearchPage';
-import ProfilePage from './pages/Profile/ProfilePage';
+import ProfileMainPage from './pages/Profile/ProfileMainPage';
+import ProfileEditPage from './pages/Profile/ProfileEditPage';
 import BookmarkPage from './pages/BookmarkPage/BookmarkPage';
 import RecruitmentViewPage from './pages/RecruitmentViewPage/RecruitmentViewPage';
 import TeamSelectPage from './pages/TeamSelectPage/TeamSelectPage';
 
 // 메인 페이지 임포트
 import MainPage from './components/Home/MainPage';
-import GuestLandingPage from './pages/GuestLandingPage/GuestLandingPage';
+
 
 // 프로젝트 지원하기 임포트
 import ProjectApply from "./pages/ProjectApply/ProjectApply";
@@ -74,6 +77,7 @@ import {
   LEGACY_EVALUATION_ROUTES,
   OTHER_ROUTES,
   DEMO_ROUTES,
+  PROFILE_ROUTES,
   isEvaluationRoute
 } from './constants/routes';
 
@@ -275,11 +279,13 @@ const App = () => {
           <Route path={MAIN_ROUTES.HOME} element={<PublicRoute><OnboardingPage /></PublicRoute>} />
           <Route path={MAIN_ROUTES.LOGIN} element={<PublicRoute><LoginPage /></PublicRoute>} />
           <Route path={MAIN_ROUTES.REGISTER} element={<PublicRoute><RegisterPage /></PublicRoute>} />
+          <Route path="/find-id" element={<PublicRoute><FindIdPage /></PublicRoute>} />
+          <Route path="/find-password" element={<PublicRoute><FindPasswordPage /></PublicRoute>} />
 
           {/*===== 게스트 랜딩 페이지 (로그인 불필요) =====*/}
-           {/* <Route path="/guest" element={<GuestLandingPage />} />  */}
+          {/* <Route path="/guest" element={<GuestLandingPage />} />  */}
 
-        
+
           {/* ===== 메인/프로필 (인증 필요) =====*/}
           {/* <Route path={MAIN_ROUTES.MAIN} element={<ProtectedRoute><MainPage /></ProtectedRoute>} />
           <Route path={MAIN_ROUTES.MY} element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} /> */}
@@ -290,7 +296,8 @@ const App = () => {
 
           {/* ===== 혜정 테스트 용도 // 메인/프로필 (인증 필요 없음음) ===== */}
           <Route path={MAIN_ROUTES.MAIN} element={<MainPage />} />
-          <Route path={MAIN_ROUTES.MY} element={<ProfilePage />} />
+          <Route path={PROFILE_ROUTES.MAIN} element={<ProfileMainPage />} />
+          <Route path={PROFILE_ROUTES.EDIT} element={<ProfileEditPage />} />
 
 
 
@@ -359,7 +366,7 @@ const App = () => {
           <Route path="/recruit/publish" element={<ProjectRecruitPublish />} />
           <Route path="/recruit/publish/done" element={<ProjectRecruitPublishDone />} /> */}
 
-         {/* 프로젝트 생성하기(로그인 필요) */}
+          {/* 프로젝트 생성하기(로그인 필요) */}
           <Route path="/recruit" element={<ProtectedRoute><ProjectRecruit /></ProtectedRoute>} />
           <Route path="/recruit/detail" element={<ProtectedRoute><ProjectRecruitDetail /></ProtectedRoute>} />
           <Route path="/recruit/image" element={<ProtectedRoute><ProjectRecruitImage /></ProtectedRoute>} />

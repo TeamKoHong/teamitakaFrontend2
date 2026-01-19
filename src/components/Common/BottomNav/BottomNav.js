@@ -1,4 +1,4 @@
-// src/components/BottomNav.js (또는 src/components/Common/BottomNav/BottomNav.js)
+// src/components/Common/BottomNav/BottomNav.js
 import React from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { RiHome2Line } from "react-icons/ri";
@@ -6,60 +6,55 @@ import { FaRegFolder } from "react-icons/fa6";
 import { MdOutlinePerson } from "react-icons/md";
 import { PiShareNetworkLight } from "react-icons/pi";
 
-import "./BottomNav.scss";
+import styles from "./BottomNav.module.scss";
 
 function BottomNav() {
   const location = useLocation();
 
-  // 각 탭의 활성화 여부를 결정하는 헬퍼 함수
+  // Helper to determine active state
   const isTabActive = (path) => {
-    // '/project-management' 탭의 경우, '/project-management' 또는 '/project/'로 시작하는 모든 경로에서 활성화
     if (path === '/project-management') {
       return location.pathname.startsWith('/project-management') || location.pathname.startsWith('/project/');
     }
-    // '/team-matching' 탭의 경우, '/team-matching'으로 시작하는 모든 경로에서 활성화
     if (path === '/team-matching') {
       return location.pathname.startsWith('/team-matching');
     }
-    // '/profile' 탭의 경우, '/profile'으로 시작하는 모든 경로에서 활성화
     if (path === '/profile') {
       return location.pathname.startsWith('/profile');
     }
-    // 다른 탭들은 정확히 일치할 때만 활성화 (또는 필요에 따라 startsWith 사용)
-    return location.pathname === path;
+    return location.pathname === path; // For /main
   };
 
+  const navItems = [
+    { path: '/main', label: '메인', icon: RiHome2Line },
+    { path: '/project-management', label: '프로젝트 관리', icon: FaRegFolder },
+    { path: '/team-matching', label: '팀매칭', icon: PiShareNetworkLight },
+    { path: '/profile', label: '프로필', icon: MdOutlinePerson },
+  ];
+
   return (
-    <nav className="bottom-nav">
-      <NavLink
-        to="/main"
-        className={isTabActive('/main') ? "nav-item active" : "nav-item"}
-      >
-        <RiHome2Line className="nav-icon" />
-        <span>메인</span>
-      </NavLink>
-      <NavLink
-        to="/project-management"
-        className={isTabActive('/project-management') ? "nav-item active" : "nav-item"}
-      >
-        <FaRegFolder className="nav-icon" />
-        <span>프로젝트 관리</span>
-      </NavLink>
-      {/* 팀매칭 탭의 to 경로를 /team-matching으로 변경하고, isTabActive 로직도 업데이트 */}
-      <NavLink
-        to="/team-matching" // <-- 이 부분을 /team-matching으로 변경
-        className={isTabActive('/team-matching') ? "nav-item active" : "nav-item"} // <-- isTabActive 로직도 /team-matching으로 변경
-      >
-        <PiShareNetworkLight className="nav-icon" />
-        <span>팀매칭</span>
-      </NavLink>
-      <NavLink
-        to="/profile"
-        className={isTabActive('/profile') ? "nav-item active" : "nav-item"}
-      >
-        <MdOutlinePerson className="nav-icon" />
-        <span>프로필</span>
-      </NavLink>
+    <nav className={styles.bottomNavRoot} aria-label="Bottom Navigation" role="navigation">
+      <div className={styles.visualRail}>
+        <div className={styles.navItems}>
+          {navItems.map(({ path, label, icon: Icon }) => {
+            const isActive = isTabActive(path);
+            return (
+              <NavLink
+                key={path}
+                to={path}
+                className={({ isActive: linkActive }) =>
+                  `${styles.navItem} ${isActive || linkActive ? styles.active : ""}`
+                }
+                aria-current={isActive ? "page" : undefined}
+              >
+                <Icon className={styles.navIcon} aria-hidden="true" />
+                <span>{label}</span>
+              </NavLink>
+            );
+          })}
+        </div>
+      </div>
+      <div className={styles.safeInset} />
     </nav>
   );
 }

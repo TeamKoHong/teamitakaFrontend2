@@ -1,19 +1,20 @@
+@use '../../styles/variables' as *;
 /* ========== Tokens ========== */
-$brand:        #ef4423;
-$brand-strong: #ef4423;
-$ink:          #111;
-$ink-2:        #373737;
-$ink-3:        #6b7280;
-$ink-4:        #9ca3af;
-$bg:           #f7f7fb;
-$card:         #ffffff;
-$shadow:       0 6px 16px rgba(0, 0, 0, 0.06);
-$line:         #e5e7eb;
-$radius-lg:    16px;
-$radius-md:    12px;
-$header-h:     56px;
+$brand: $primary-color; // CHANGED: #ef4423 -> $primary-color
+$brand-strong: $primary-color;
+$ink: #111;
+$ink-2: #373737;
+$ink-3: #6b7280;
+$ink-4: #9ca3af;
+$bg: #f7f7fb;
+$card: #ffffff;
+$shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
+$line: #e5e7eb;
+$radius-lg: 16px;
+$radius-md: 12px;
+$header-h: 56px;
 
-/* ✅ 프로필 아바타 위치 */
+/* 프로필 아바타 위치 */
 $avatar-offset: 16px;
 $avatar-offset-sm: 12px;
 
@@ -27,14 +28,19 @@ $keywords-bottom-space: 24px;
   min-height: 100vh;
   padding: 0 16px;
   padding-top: $header-h;
-  font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  //font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
   color: $ink;
 
   .header {
-    position: fixed; top: 0; left: 0; right: 0;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
     z-index: 100;
     height: $header-h;
-    display: flex; align-items: center; justify-content: space-between;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     background: $card;
     padding: 0 16px;
     border-bottom: none;
@@ -48,9 +54,13 @@ $keywords-bottom-space: 24px;
   }
 
   .icon-btn {
-    border: 0; background: transparent;
-    width: 44px; height: 44px;
-    display: grid; place-items: center; cursor: pointer;
+    border: 0;
+    background: transparent;
+    width: 44px;
+    height: 44px;
+    display: grid;
+    place-items: center;
+    cursor: pointer;
 
     .alarm-icon {
       width: 14.999924659729004px;
@@ -85,55 +95,108 @@ $keywords-bottom-space: 24px;
       will-change: transform;
 
       .profile-img {
-        width: 100px; height: 100px;
+        width: 100px;
+        height: 100px;
         border-radius: 12%;
         background: #e9e9ec;
-        display: grid; place-items: center;
-        font-size: 32px; color: $ink-3;
+        display: grid;
+        place-items: center;
+        font-size: 32px;
+        color: $ink-3;
         margin-bottom: 0;
       }
     }
 
     .profile-middle {
       grid-column: 1;
-      display: flex; flex-direction: column; gap: 6px; min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      min-width: 0;
       align-self: start;
       padding-top: 0;
       padding-bottom: $keywords-bottom-space;
 
       .name {
-        display: flex; align-items: baseline; gap: 6px;
-        line-height: 1.25; margin-bottom: 2px;
-        .name-strong   { font-size: 17px; font-weight: 800; color: $ink; }
-        .name-regular  { font-size: 17px; font-weight: 400; color: $ink; }
+        display: flex;
+        align-items: baseline;
+        gap: 6px;
+        line-height: 1.25;
+        margin-bottom: 2px;
+
+        .name-strong {
+          font-size: 17px;
+          font-weight: 800;
+          color: $ink;
+        }
+
+        .name-regular {
+          font-size: 17px;
+          font-weight: 400;
+          color: $ink;
+        }
       }
 
       .school {
-        display: flex; align-items: center; gap: 6px;
-        font-size: 12px; color: $ink-4; line-height: 1.35; margin-bottom: 10px;
-        .school-icon { width: 14px; height: 14px; object-fit: contain; }
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 12px;
+        color: $ink-4;
+        line-height: 1.35;
+        margin-bottom: 10px;
+
+        .school-icon {
+          width: 14px;
+          height: 14px;
+          object-fit: contain;
+        }
       }
 
       .stats {
-        font-size: 13px; color: $ink-2; line-height: 1.5; margin-top: 6px;
-        .stats-strong { font-weight: 800; color: $ink; }
-        .count        { margin-left: 4px; color: $brand; font-weight: 800; }
-        .muted        { color: $ink-4; }
+        font-size: 13px;
+        color: $ink-2;
+        line-height: 1.5;
+        margin-top: 6px;
+
+        .stats-strong {
+          font-weight: 800;
+          color: $ink;
+        }
+
+        .count {
+          margin-left: 4px;
+          color: $brand;
+          font-weight: 800;
+        }
+
+        .muted {
+          color: $ink-4;
+        }
       }
 
       .tags {
-        display: flex; gap: 8px; margin-top: 10px;
+        display: flex;
+        gap: 8px;
+        margin-top: 10px;
+
         .tag.pill {
-          padding: 6px 10px; font-size: 12px; font-weight: 600;
-          border-radius: 999px; background: #fff4ef; color: $brand;
+          padding: 4px 8px;
+          font-size: 11px;
+          font-weight: 600; // CHANGED: 12px -> 11px, Padding
+          border-radius: 999px;
+          background: #fff4ef;
+          color: $brand;
           white-space: nowrap;
         }
       }
     }
   }
 
-  > h2.section-title {
-    font-size: 15px; font-weight: 800; color: $ink;
+  >h2.section-title {
+    font-size: 15px;
+    font-weight: 800;
+    color: $ink;
     margin: 8px 0 16px;
   }
 
@@ -161,10 +224,13 @@ $keywords-bottom-space: 24px;
 
       scroll-snap-type: x mandatory;
 
-      &::-webkit-scrollbar { display: none; }
+      &::-webkit-scrollbar {
+        display: none;
+      }
+
       scrollbar-width: none;
 
-      > * {
+      >* {
         flex: 0 0 auto !important;
         width: auto !important;
         max-width: none !important;
@@ -182,9 +248,12 @@ $keywords-bottom-space: 24px;
       margin-top: 10px;
       padding-bottom: 6px;
 
-      min-height: 14px;       /* ✅ 높이 보장 */
-      position: relative;     /* ✅ z-index 적용 */
-      z-index: 5;             /* ✅ 아래 섹션에 가려지지 않게 */
+      min-height: 14px;
+      /* ✅ 높이 보장 */
+      position: relative;
+      /* ✅ z-index 적용 */
+      z-index: 5;
+      /* ✅ 아래 섹션에 가려지지 않게 */
       pointer-events: auto;
     }
 
@@ -237,10 +306,22 @@ $keywords-bottom-space: 24px;
       border-radius: $radius-lg;
       padding: 24px 16px;
       text-align: center;
-      display: grid; place-items: center; row-gap: 12px;
+      display: grid;
+      place-items: center;
+      row-gap: 12px;
 
-      .empty-img { width: 128px; height: auto; display: block; margin-bottom: 4px; }
-      .empty-text { font-size: 13px; color: #444; line-height: 1.6; }
+      .empty-img {
+        width: 128px;
+        height: auto;
+        display: block;
+        margin-bottom: 4px;
+      }
+
+      .empty-text {
+        font-size: 13px;
+        color: #444;
+        line-height: 1.6;
+      }
 
       .primary-btn {
         margin-top: 8px;
@@ -248,11 +329,17 @@ $keywords-bottom-space: 24px;
         height: 44px;
         border: 0;
         border-radius: 999px;
-        font-size: 14px; font-weight: 800; color: #fff;
-        cursor: pointer; background: $brand;
+        font-size: 14px;
+        font-weight: 800;
+        color: #fff;
+        cursor: pointer;
+        background: $brand;
         box-shadow: none;
         transition: transform .06s ease;
-        &:active { transform: translateY(1px); }
+
+        &:active {
+          transform: translateY(1px);
+        }
       }
     }
   }
@@ -264,7 +351,10 @@ $keywords-bottom-space: 24px;
     width: auto;
   }
 
-  .bottom-spacer { height: 84px; }
+  .bottom-spacer {
+    height: calc(88px + env(safe-area-inset-bottom) + 16px);
+  }
+
 
   .support-btn-wrap {
     display: flex;
@@ -285,7 +375,9 @@ $keywords-bottom-space: 24px;
     box-shadow: none;
     transition: transform 0.06s ease;
 
-    &:active { transform: translateY(1px); }
+    &:active {
+      transform: translateY(1px);
+    }
   }
 
   @media (max-width: 360px) {
@@ -293,11 +385,21 @@ $keywords-bottom-space: 24px;
       grid-template-columns: 1fr 84px;
       column-gap: 12px;
 
-      .profile-right { transform: translateY($avatar-offset-sm); }
-      .profile-right .profile-img { width: 76px; height: 76px; font-size: 26px; margin-bottom: 0; }
+      .profile-right {
+        transform: translateY($avatar-offset-sm);
+      }
+
+      .profile-right .profile-img {
+        width: 76px;
+        height: 76px;
+        font-size: 26px;
+        margin-bottom: 0;
+      }
     }
 
-    .my-projects .empty-card .empty-img { width: 112px; }
+    .my-projects .empty-card .empty-img {
+      width: 112px;
+    }
 
     .main-todo-section {
       margin-left: -16px;

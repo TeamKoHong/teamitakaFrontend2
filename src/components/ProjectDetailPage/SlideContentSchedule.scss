@@ -8,7 +8,7 @@
   
   .schedule-header-container {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
     margin-bottom: 22px;
     
@@ -93,9 +93,18 @@
     margin-top: 16px;
     padding-right: 4px;
 
+    .empty-message {
+      text-align: center;
+      padding: 20px 0;
+      color: #999;
+      font-size: 14px;
+      font-family: Pretendard;
+    }
+
     .event-item {
       display: flex;
-      align-items: flex-start;
+      align-items: center;
+  
       gap: 8px;
       padding: 5px 0;
 

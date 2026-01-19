@@ -12,7 +12,7 @@ import EvaluationCommentCard from '../../components/RatingProjectPage/Evaluation
 import BottomNav from '../../components/Common/BottomNav/BottomNav';
 import MyRatingSection from '../../components/RatingProjectPage/MyRatingSection';
 import { fetchRatingProjectData } from '../../services/rating';
-import { getMockProjectSummary } from '../../fixtures/projectSummary';
+// Fixture import removed
 
 function RatingProjectPage(props) {
   const { projectId: propProjectId, mode = 'received' } = props;
@@ -49,15 +49,12 @@ function RatingProjectPage(props) {
       try {
         // AuthContext에서 사용자 정보 가져오기 (더 신뢰할 수 있음)
         // 백엔드에서 올 수 있는 모든 필드명 체크: user_id, userId, id
-        console.log('[DEBUG] authUser:', authUser);
         const currentUserId = authUser?.user_id || authUser?.userId || authUser?.id;
-        console.log('[DEBUG] currentUserId:', currentUserId);
 
         if (!currentUserId) {
           // fallback: localStorage에서 가져오기
           const userStr = localStorage.getItem('user');
           const user = userStr ? JSON.parse(userStr) : null;
-          console.log('[DEBUG] localStorage user:', user);
           const fallbackUserId = user?.user_id || user?.userId || user?.id;
 
           if (!fallbackUserId) {
@@ -73,12 +70,8 @@ function RatingProjectPage(props) {
           setData(result);
         }
       } catch (err) {
-        console.error('API 호출 실패, Mock 데이터 사용:', err);
-        // API 실패 시 Mock 데이터로 fallback
-        const mock = getMockProjectSummary(projectId);
-        setData(mock);
-        // 개발 중에는 에러를 표시하지 않고 Mock 사용
-        // setError(err.message);
+        console.error('API 호출 실패:', err);
+        setError('데이터를 불러오는데 실패했습니다.');
       } finally {
         setLoading(false);
       }
@@ -131,8 +124,8 @@ function RatingProjectPage(props) {
   // 선택된 팀원의 평가 데이터 찾기
   const givenRating = isGivenMode && myGivenRatings.length > 0
     ? (selectedMemberId
-        ? myGivenRatings.find(r => r.targetMember?.id === selectedMemberId)
-        : myGivenRatings[0])
+      ? myGivenRatings.find(r => r.targetMember?.id === selectedMemberId)
+      : myGivenRatings[0])
     : null;
 
   const handleNavigateToGiven = () => {
@@ -245,14 +238,20 @@ function RatingProjectPage(props) {
               text={givenRating.comment}
             />
           ) : (
-            comments.map((c, i) => (
-              <EvaluationCommentCard
-                key={i}
-                avatar={c.avatar}
-                text={c.text}
-                onClick={() => navigate(`/evaluation/project/${projectId}/feedback/${c.memberId || i}`)}
-              />
-            ))
+            comments.length > 0 ? (
+              comments.map((c, i) => (
+                <EvaluationCommentCard
+                  key={i}
+                  avatar={c.avatar}
+                  text={c.text}
+                  onClick={() => navigate(`/evaluation/project/${projectId}/feedback/${c.memberId || i}`)}
+                />
+              ))
+            ) : (
+              <div className={styles.emptyComments}>
+                받은 평가가 없습니다
+              </div>
+            )
           )}
         </div>
       </div>

@@ -52,12 +52,27 @@
 
   .description-container {
     margin: 48px 0;
+    transition: all 0.3s ease;
+    
+    &.drop-zone-active {
+      background-color: rgba(247, 98, 65, 0.1);
+      border: 2px dashed #F76241;
+      border-radius: 12px;
+      padding: 20px;
+      
+      .description-title,
+      .description-text {
+        color: #F76241;
+      }
+    }
+    
     .description-title {
       color: #403E3E;
       font-size: 15px;
       font-style: normal;
       font-weight: 600px;
       text-align: center;
+      transition: color 0.3s ease;
     }
     .description-text {
       color: #807C7C;
@@ -65,6 +80,7 @@
       font-style: normal;
       font-weight: 600;
       text-align: center;
+      transition: color 0.3s ease;
     }
   }
 
@@ -102,7 +118,7 @@
         align-items: center;
         text-align: center;
         cursor: pointer;
-        transition: transform 0.2s ease;
+        transition: transform 0.2s ease, opacity 0.2s ease;
 
         &:hover {
           transform: scale(1.05);
@@ -110,6 +126,11 @@
 
         &:active {
           transform: scale(0.95);
+        }
+
+        &.dragging {
+          opacity: 0.5;
+          transform: scale(0.9);
         }
 
         img {
@@ -197,20 +218,37 @@
     padding: 0;
     border-radius: 0;
     box-shadow: none;
+    transition: all 0.3s ease;
+
+    &.drop-zone-active {
+      background-color: rgba(247, 98, 65, 0.1);
+      border: 2px dashed #F76241;
+      border-radius: 12px;
+      padding: 20px;
+    }
 
     .selected-title {
       font-weight: 700;
       font-size: 14px;
       margin: 0 0 4px 0;
       color: #333;
+      transition: color 0.3s ease;
     }
     .selected-sub {
       font-size: 12px;
       color: #f76241;
       margin: 0 0 12px 0;
+      transition: color 0.3s ease;
 
       span {
         color: #333; // 타이틀과 같은 색상
+      }
+    }
+
+    &.drop-zone-active {
+      .selected-title,
+      .selected-sub {
+        color: #F76241;
       }
     }
     .selected-avatars {

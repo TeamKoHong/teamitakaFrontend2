@@ -245,6 +245,73 @@ export const submitApplication = async (recruitmentId, applicationData) => {
 };
 
 /**
+ * Cancels an application
+ * @param {string} applicationId - The application ID to cancel
+ */
+export const cancelApplication = async (applicationId) => {
+    const { API_BASE_URL, headers } = getApiConfig();
+    const token = localStorage.getItem('authToken');
+
+    if (!token) {
+        const err = new Error('로그인이 필요합니다.');
+        err.code = 'UNAUTHORIZED';
+        throw err;
+    }
+
+    const res = await fetch(`${API_BASE_URL}/api/applications/${applicationId}/cancel`, {
+        method: 'POST',
+        headers: {
+            ...headers,
+            Authorization: `Bearer ${token}`,
+        },
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+        const err = new Error(data.message || '지원 취소에 실패했습니다.');
+        err.code = data.error || 'SERVER_ERROR';
+        err.statusCode = res.status;
+        throw err;
+    }
+
+    return data;
+};
+
+/**
+ * Gets user's own applications
+ */
+export const getMyApplications = async () => {
+    const { API_BASE_URL, headers } = getApiConfig();
+    const token = localStorage.getItem('authToken');
+
+    if (!token) {
+        const err = new Error('로그인이 필요합니다.');
+        err.code = 'UNAUTHORIZED';
+        throw err;
+    }
+
+    const res = await fetch(`${API_BASE_URL}/api/applications/mine`, {
+        method: 'GET',
+        headers: {
+            ...headers,
+            Authorization: `Bearer ${token}`,
+        },
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+        const err = new Error(data.message || '지원 목록 조회에 실패했습니다.');
+        err.code = data.error || 'SERVER_ERROR';
+        err.statusCode = res.status;
+        throw err;
+    }
+
+    return data;
+};
+
+/**
  * Converts recruitment to project
  */
 export const convertToProject = async (recruitmentId) => {
