@@ -352,8 +352,9 @@ $keywords-bottom-space: 24px;
   }
 
   .bottom-spacer {
-    height: calc(56px + env(safe-area-inset-bottom) + 16px);
+    height: calc(88px + env(safe-area-inset-bottom) + 16px);
   }
+
 
   .support-btn-wrap {
     display: flex;
