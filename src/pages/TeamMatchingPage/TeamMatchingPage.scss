@@ -57,16 +57,17 @@
 
 .section-more {
     font-size: 13px;
-    color: #888;
+    color:#403E3E;
     cursor: pointer;
     display: flex; // 아이콘 정렬용
     align-items: center;
-    gap: 4px;
+    gap: 10px;
     text-decoration: none;
 
     img {
-        width: 12px;
-        height: 12px;
+        width: 4px;
+        height: 8px;
+        color:#403E3E;
         transform: rotate(180deg); // back.png를 오른쪽 화살표처럼 회전
     }
 }
