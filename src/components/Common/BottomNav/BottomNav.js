@@ -6,7 +6,7 @@ import { FaRegFolder } from "react-icons/fa6";
 import { MdOutlinePerson } from "react-icons/md";
 import { PiShareNetworkLight } from "react-icons/pi";
 
-import "./BottomNav.scss";
+import styles from "./BottomNav.module.scss";
 
 function BottomNav() {
   const location = useLocation();
@@ -33,21 +33,28 @@ function BottomNav() {
   ];
 
   return (
-    <nav className="bottom-nav" role="navigation" aria-label="Bottom Navigation">
-      {navItems.map(({ path, label, icon: Icon }) => {
-        const isActive = isTabActive(path);
-        return (
-          <NavLink
-            key={path}
-            to={path}
-            className={`nav-item ${isActive ? "active" : ""}`}
-            aria-current={isActive ? "page" : undefined}
-          >
-            <Icon className="nav-icon" aria-hidden="true" />
-            <span>{label}</span>
-          </NavLink>
-        );
-      })}
+    <nav className={styles.bottomNavRoot} aria-label="Bottom Navigation" role="navigation">
+      <div className={styles.visualRail}>
+        <div className={styles.navItems}>
+          {navItems.map(({ path, label, icon: Icon }) => {
+            const isActive = isTabActive(path);
+            return (
+              <NavLink
+                key={path}
+                to={path}
+                className={({ isActive: linkActive }) =>
+                  `${styles.navItem} ${isActive || linkActive ? styles.active : ""}`
+                }
+                aria-current={isActive ? "page" : undefined}
+              >
+                <Icon className={styles.navIcon} aria-hidden="true" />
+                <span>{label}</span>
+              </NavLink>
+            );
+          })}
+        </div>
+      </div>
+      <div className={styles.safeInset} />
     </nav>
   );
 }
