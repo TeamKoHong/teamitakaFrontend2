@@ -8,6 +8,7 @@
     z-index: 100;
     display: flex;
     flex-direction: column;
+    box-sizing: border-box; // Explicit box model
 }
 
 .visualRail {
@@ -18,6 +19,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    box-sizing: border-box; // Explicit box model
 }
 
 .navItems {
@@ -36,7 +38,11 @@
     align-items: center;
     text-decoration: none;
     color: #9ca3af; // Inactive color (darker than #807b79)
-    padding-bottom: 20px;
+    // Dynamic Optical Compensation:
+    // Reduces padding-bottom when safe-area exists (env > 0) to avoid "floating" feel.
+    // Coefficient 0.5 means for 34px safe-area, we start shrinking padding to bring items lower.
+    // Clamped to minimum 12px to prevent touching the bottom edge of rail.
+    padding-bottom: max(12px, calc(20px - env(safe-area-inset-bottom) * 0.5));
     gap: 6px;
     min-height: 44px; // Touch target
 
@@ -70,4 +76,5 @@
     height: env(safe-area-inset-bottom);
     background-color: #ffffff; // Extend background visual through safe area
     margin-top: -1px; // Prevent sub-pixel gap
+    box-sizing: border-box; // Explicit box model
 }
