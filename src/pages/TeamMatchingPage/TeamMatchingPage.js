@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { AiOutlineArrowLeft } from 'react-icons/ai'; // 뒤로가기 아이콘
+import { useLocation, useNavigate, Link } from 'react-router-dom';
+import { AiOutlineArrowLeft } from 'react-icons/ai';
 import './TeamMatchingPage.scss';
 
 // --- 컴포넌트 및 에셋 임포트 ---
@@ -11,7 +11,7 @@ import bookmark from "../../assets/bookmark.png";
 import bookmarkActive from "../../assets/bookmark_active.png";
 import view from "../../assets/view.png";
 import apply from "../../assets/apply.png";
-import { Link } from 'react-router-dom';
+import back from "../../assets/back.png"; // 수정: back.png 사용을 위해 임포트
 import defaultProjectImg from "../../assets/icons/Teamitaka.png"; 
 
 import { getAllRecruitments } from '../../api/recruit';
@@ -94,8 +94,6 @@ const MatchingCard = ({ item }) => {
 export default function TeamMatchingPage() {
     const location = useLocation();
     const navigate = useNavigate();
-    
-    // 검색어 확인
     const passedSearchQuery = location.state?.searchQuery || '';
 
     const [activeFilter, setActiveFilter] = useState('전체');
@@ -111,29 +109,24 @@ export default function TeamMatchingPage() {
             try {
                 setIsLoading(true);
                 const data = await getAllRecruitments();
-                
                 const formattedData = data.map(post => {
                     const viewCount = Number(post.views || 0);
                     const appCount = Number(post.applicationCount || 0);
-                    const rawImage = post.photo_url || post.imageUrl || null;
-
                     return {
                         id: post.recruitment_id,
                         title: post.title,
                         description: post.description,
-                        imageUrl: rawImage,
+                        imageUrl: post.photo_url || post.imageUrl || null,
                         views: viewCount,
                         applicantCount: appCount,
                         date: post.created_at ? (typeof post.created_at === 'string' ? post.created_at.substring(0, 10) : '') : '',
-                        category: post.project_type === 'course' ? '수업' : '사이드',
                         tags: (post.Hashtags || post.hashtags || []).map(h => h.name || h),
                         score: viewCount + (appCount * 10),
-                        isBookmarked: !!post.is_scrapped,  // API에서 북마크 상태 로드
+                        isBookmarked: !!post.is_scrapped,
                         isBest: appCount >= 5
                     };
                 });
 
-                // Hot 공고 및 키워드 설정 로직
                 const sortedByScore = [...formattedData].sort((a, b) => b.score - a.score);
                 setHotProjects(sortedByScore.slice(0, 3));
 
@@ -148,18 +141,11 @@ export default function TeamMatchingPage() {
                     .map(([tag]) => tag)
                     .slice(0, 5);
 
-                if (sortedTags.length > 0) {
-                    setFilterTabs(sortedTags);
-                    setActiveFilter(sortedTags[0]);
-                } else {
-                    setFilterTabs(['전체']);
-                    setActiveFilter('전체');
-                }
-
+                setFilterTabs(sortedTags.length > 0 ? sortedTags : ['전체']);
+                setActiveFilter(sortedTags.length > 0 ? sortedTags[0] : '전체');
                 setAllPosts(formattedData);
             } catch (error) {
                 console.error("❌ 데이터 불러오기 실패:", error);
-                setAllPosts([]);
             } finally {
                 setIsLoading(false);
             }
@@ -168,53 +154,25 @@ export default function TeamMatchingPage() {
     }, []);
 
     const handleBookmarkToggle = async (id) => {
-        if (!currentUser) {
-            alert('로그인이 필요합니다.');
-            return;
-        }
-
-        // 이전 상태 저장 (롤백용)
-        const prevHot = [...hotProjects];
-        const prevAll = [...allPosts];
-
-        // 낙관적 업데이트
+        if (!currentUser) return alert('로그인이 필요합니다.');
         setHotProjects(prev => prev.map(item => item.id === id ? { ...item, isBookmarked: !item.isBookmarked } : item));
         setAllPosts(prev => prev.map(item => item.id === id ? { ...item, isBookmarked: !item.isBookmarked } : item));
-
-        try {
-            await toggleRecruitmentScrap(id);
-        } catch (error) {
-            console.error('북마크 변경 실패:', error);
-            // 에러 시 롤백
-            setHotProjects(prevHot);
-            setAllPosts(prevAll);
-            alert('북마크 변경에 실패했습니다.');
-        }
+        try { await toggleRecruitmentScrap(id); } catch (error) { console.error('북마크 실패', error); }
     };
 
     const filteredMatching = allPosts.filter(item => {
         if (passedSearchQuery) {
             const query = passedSearchQuery.toLowerCase();
-            const titleMatch = item.title.toLowerCase().includes(query);
-            const descMatch = item.description ? item.description.toLowerCase().includes(query) : false;
-            const tagMatch = item.tags ? item.tags.some(t => t.toLowerCase().includes(query)) : false;
-            return titleMatch || descMatch || tagMatch;
+            return item.title.toLowerCase().includes(query) || (item.description?.toLowerCase().includes(query)) || (item.tags?.some(t => t.toLowerCase().includes(query)));
         }
-        if (activeFilter === '전체') return true; 
-        return item.tags && item.tags.includes(activeFilter);
+        return activeFilter === '전체' || (item.tags && item.tags.includes(activeFilter));
     });
-
-    const handleBackToSearch = () => {
-        navigate('/search'); 
-    };
 
     return (
         <div className="team-matching-app">
             {!passedSearchQuery && <Header />}
 
             <main className="app-content">
-                
-                {/* 검색 중이 아닐 때만 배너 & Hot 공고 표시 */}
                 {!passedSearchQuery && (
                     <>
                         <section className="section section-project-banner">
@@ -228,23 +186,16 @@ export default function TeamMatchingPage() {
                                 {isLoading ? <div style={{padding:'20px', color:'#999'}}>로딩 중...</div> : 
                                  hotProjects.length > 0 ? hotProjects.map(item => (
                                     <HotTopicCard key={item.id} item={item} onBookmarkToggle={handleBookmarkToggle} />
-                                 )) : 
-                                 <div style={{padding:'20px', color:'#999'}}>등록된 공고가 없습니다.</div>}
+                                 )) : <div style={{padding:'20px', color:'#999'}}>등록된 공고가 없습니다.</div>}
                             </div>
                         </section>
                     </>
                 )}
                 
-                {/* 메인 리스트 섹션 */}
                 <section className="section">
                     {passedSearchQuery ? (
                         <div style={{padding: '10px 20px', display:'flex', alignItems:'center'}}>
-                            <button 
-                                onClick={handleBackToSearch} 
-                                style={{background:'none', border:'none', cursor:'pointer', marginRight:'8px', display:'flex', alignItems:'center', padding:'4px'}}
-                            >
-                                <AiOutlineArrowLeft size={24} color="#333" />
-                            </button>
+                            <button onClick={() => navigate('/search')} style={{background:'none', border:'none', cursor:'pointer', marginRight:'8px', display:'flex', alignItems:'center', padding:'4px'}}><AiOutlineArrowLeft size={24} color="#333" /></button>
                             <h2 className="section-title" style={{margin: 0}}>"{passedSearchQuery}" 검색 결과</h2>
                         </div>
                     ) : (
@@ -254,8 +205,8 @@ export default function TeamMatchingPage() {
                                     <h2 className="section-title">키워드 별 모집</h2>
                                     <p className="banner-description">가장 인기 있는 키워드를 모아봤어요!</p>
                                 </div>
-                            <Link to="/recruitment" state={{ filter: activeFilter }} className="section-more">
-                                     자세히보기 &gt;
+                                <Link to="/recruitment" state={{ filter: activeFilter }} className="section-more">
+                                    자세히보기 <img src={back} alt="아이콘" />
                                 </Link>
                             </div>
                             <div className="horizontal-scroll-list filter-tags">
@@ -267,16 +218,9 @@ export default function TeamMatchingPage() {
                     )}
 
                     <div className="matching-list">
-                        {isLoading ? 
-                            <div style={{textAlign:'center', padding:'20px'}}>로딩 중...</div> : 
-                         filteredMatching.length > 0 ? 
-                            filteredMatching.map(item => <MatchingCard key={item.id} item={item} />) : 
-                            <div style={{padding:'40px 0', textAlign:'center', color:'#999'}}>
-                                {passedSearchQuery 
-                                    ? `'${passedSearchQuery}'에 대한 검색 결과가 없습니다.` 
-                                    : '해당하는 모집글이 없습니다.'}
-                            </div>
-                        }
+                        {isLoading ? <div style={{textAlign:'center', padding:'20px'}}>로딩 중...</div> : 
+                         filteredMatching.length > 0 ? filteredMatching.map(item => <MatchingCard key={item.id} item={item} />) : 
+                         <div style={{padding:'40px 0', textAlign:'center', color:'#999'}}>{passedSearchQuery ? `'${passedSearchQuery}' 결과 없음` : '모집글 없음'}</div>}
                     </div>
                 </section>
             </main>
