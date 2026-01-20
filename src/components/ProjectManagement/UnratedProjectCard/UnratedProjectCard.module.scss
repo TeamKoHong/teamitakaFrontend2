@@ -1,4 +1,5 @@
 .unratedCard {
+    position: relative; // For absolute badge positioning
     background-color: #FFFFFF;
     border-radius: 10px; // Updated radius
     padding: 16px; // Updated padding
@@ -17,7 +18,10 @@
 }
 
 .badge {
-    align-self: flex-start;
+    position: absolute;
+    top: -10px; // Half overlapped
+    left: 11px;
+    // align-self: flex-start; // Removed
     background-color: #FF4D4F;
     color: #FFFFFF;
     font-size: 12px;

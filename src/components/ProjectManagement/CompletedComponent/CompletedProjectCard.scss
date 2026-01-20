@@ -22,7 +22,7 @@
   // 배지 스타일
   .evaluation-badge {
     position: absolute;
-    top: -0.75rem;
+    top: -10px; // Half overlapped (20px height / 2)
     left: 11px;
     background: #FFE6E6; // Redesigned bg
     color: #FF4D4F; // Redesigned color
