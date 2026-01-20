@@ -24,7 +24,7 @@
 .project-list-grid {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 0; // Removed gap to rely on card margins (10px + 10px = 20px)
 }
 
 .load-more-btn {

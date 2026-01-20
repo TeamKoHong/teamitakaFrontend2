@@ -39,19 +39,19 @@ const HotTopicCard = ({ item, onBookmarkToggle }) => {
         <div className="hot-topic-card" onClick={handleCardClick}>
             <div className="hot-topic-card-header">
                 <span className="tag marketing">{displayTag}</span>
-                <img 
-                    src={item.isBookmarked ? bookmarkActive : bookmark} 
-                    alt="북마크" 
-                    className="bookmark-icon" 
-                    onClick={(e) => { e.stopPropagation(); onBookmarkToggle(item.id); }} 
+                <img
+                    src={item.isBookmarked ? bookmarkActive : bookmark}
+                    alt="북마크"
+                    className="bookmark-icon"
+                    onClick={(e) => { e.stopPropagation(); onBookmarkToggle(item.id); }}
                 />
             </div>
             <div className="hot-topic-card-title">{item.title}</div>
             <div className="hot-topic-card-desc">{item.description}</div>
             <div className="hot-topic-card-info">
                 <div className="twoicons">
-                    <div className="view-icon"><img src={view} alt="조회수"/> {item.views}</div>
-                    <div className="apply-icon"><img src={apply} alt="지원자"/> {item.applicantCount} </div>
+                    <div className="view-icon"><img src={view} alt="조회수" /> {item.views}</div>
+                    <div className="apply-icon"><img src={apply} alt="지원자" /> {item.applicantCount} </div>
                 </div>
             </div>
         </div>
@@ -62,15 +62,15 @@ const MatchingCard = ({ item }) => {
     const navigate = useNavigate();
     const handleCardClick = () => navigate(`/recruitment/${item.id}`);
     const imageSource = item.imageUrl || task_empty;
-    
+
     return (
         <div className="matching-card" onClick={handleCardClick}>
             <div className="matching-card-thumbnail">
-                <img 
-                    src={imageSource} 
-                    alt={item.title} 
-                    className="card-img" 
-                    onError={(e) => { e.target.src = task_empty; }}                />
+                <img
+                    src={imageSource}
+                    alt={item.title}
+                    className="card-img"
+                    onError={(e) => { e.target.src = task_empty; }} />
                 {item.isBest && <span className="best-badge">Best</span>}
             </div>
             <div className="matching-card-content">
@@ -79,12 +79,12 @@ const MatchingCard = ({ item }) => {
                     {item.description || "설명 없음"}
                 </div>
                 <div className="card-footer">
-                <div className="twoicons">
-                    <div className="view-icon"><img src={view} alt="조회수"/> {item.views}</div>
-                    <div className="apply-icon"><img src={apply} alt="지원자"/> {item.applicantCount} </div>
-                </div>
-                <div className="date-icon">{item.date}</div>
-            </div></div>
+                    <div className="twoicons">
+                        <div className="view-icon"><img src={view} alt="조회수" /> {item.views}</div>
+                        <div className="apply-icon"><img src={apply} alt="지원자" /> {item.applicantCount} </div>
+                    </div>
+                    <div className="date-icon">{item.date}</div>
+                </div></div>
         </div>
     );
 };
@@ -130,8 +130,8 @@ export default function TeamMatchingPage() {
 
                 const tagCounts = {};
                 formattedData.forEach(post => {
-                    if (post.tags) post.tags.forEach(tag => { 
-                        if(tag) tagCounts[tag] = (tagCounts[tag] || 0) + 1; 
+                    if (post.tags) post.tags.forEach(tag => {
+                        if (tag) tagCounts[tag] = (tagCounts[tag] || 0) + 1;
                     });
                 });
                 const sortedTags = Object.entries(tagCounts)
@@ -179,22 +179,22 @@ export default function TeamMatchingPage() {
                         </section>
 
                         <section className="section section--panel">
-                            <div className="section-header"><h2 className="section-title">홍익대 HOT 교내 공고</h2></div>
+                            <div className="section-header"><h2 className="section-title">{currentUser?.university || '대학교'} HOT 교내 공고</h2></div>
                             <div className="horizontal-scroll-list">
-                                {isLoading ? <div style={{padding:'20px', color:'#999'}}>로딩 중...</div> : 
-                                 hotProjects.length > 0 ? hotProjects.map(item => (
-                                    <HotTopicCard key={item.id} item={item} onBookmarkToggle={handleBookmarkToggle} />
-                                 )) : <div style={{padding:'20px', color:'#999'}}>등록된 공고가 없습니다.</div>}
+                                {isLoading ? <div style={{ padding: '20px', color: '#999' }}>로딩 중...</div> :
+                                    hotProjects.length > 0 ? hotProjects.map(item => (
+                                        <HotTopicCard key={item.id} item={item} onBookmarkToggle={handleBookmarkToggle} />
+                                    )) : <div style={{ padding: '20px', color: '#999' }}>등록된 공고가 없습니다.</div>}
                             </div>
                         </section>
                     </>
                 )}
-                
+
                 <section className="section">
                     {passedSearchQuery ? (
-                        <div style={{padding: '10px 20px', display:'flex', alignItems:'center'}}>
-                            <button onClick={() => navigate('/search')} style={{background:'none', border:'none', cursor:'pointer', marginRight:'8px', display:'flex', alignItems:'center', padding:'4px'}}><AiOutlineArrowLeft size={24} color="#333" /></button>
-                            <h2 className="section-title" style={{margin: 0}}>"{passedSearchQuery}" 검색 결과</h2>
+                        <div style={{ padding: '10px 20px', display: 'flex', alignItems: 'center' }}>
+                            <button onClick={() => navigate('/search')} style={{ background: 'none', border: 'none', cursor: 'pointer', marginRight: '8px', display: 'flex', alignItems: 'center', padding: '4px' }}><AiOutlineArrowLeft size={24} color="#333" /></button>
+                            <h2 className="section-title" style={{ margin: 0 }}>"{passedSearchQuery}" 검색 결과</h2>
                         </div>
                     ) : (
                         <div className="section-top">
@@ -216,9 +216,9 @@ export default function TeamMatchingPage() {
                     )}
 
                     <div className="matching-list">
-                        {isLoading ? <div style={{textAlign:'center', padding:'20px'}}>로딩 중...</div> : 
-                         filteredMatching.length > 0 ? filteredMatching.map(item => <MatchingCard key={item.id} item={item} />) : 
-                         <div style={{padding:'40px 0', textAlign:'center', color:'#999'}}>{passedSearchQuery ? `'${passedSearchQuery}' 결과 없음` : '모집글 없음'}</div>}
+                        {isLoading ? <div style={{ textAlign: 'center', padding: '20px' }}>로딩 중...</div> :
+                            filteredMatching.length > 0 ? filteredMatching.map(item => <MatchingCard key={item.id} item={item} />) :
+                                <div style={{ padding: '40px 0', textAlign: 'center', color: '#999' }}>{passedSearchQuery ? `'${passedSearchQuery}' 결과 없음` : '모집글 없음'}</div>}
                     </div>
                 </section>
             </main>

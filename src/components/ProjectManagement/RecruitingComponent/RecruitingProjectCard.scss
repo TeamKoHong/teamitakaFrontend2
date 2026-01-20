@@ -1,14 +1,18 @@
 .recruiting-project-card {
-  margin-bottom: 20px; // Spacing between cards
-  width: calc(100% - 40px); // Updated width
-  margin: 20px auto; // Center with margin
+  margin-bottom: 0; // Handled by margin below
+  width: calc(100% - 8px); // Width - 8px (4px margin + 16px parent = 20px)
+  margin: 10px auto; // 10px top/bottom margin
+
+  @media (max-width: 480px) {
+    width: 100%; // Use parent padding (16px) only
+  }
 
 
   .recruiting-card {
     background-color: #fff;
-    border-radius: 10px; // Updated radius
+    border-radius: 20px; // Updated radius (was 10px)
     padding: 16px; // Updated padding
-    min-height: 98px; // Min height
+    min-height: 130px; // Min height 130px
     border: 2px solid transparent; // 기본은 투명
     cursor: pointer;
     transition: transform 0.2s ease;

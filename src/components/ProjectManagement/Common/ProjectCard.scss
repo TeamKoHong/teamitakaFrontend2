@@ -3,14 +3,18 @@
   justify-content: space-between;
 
   padding: 16px; // Updated padding
-  border-radius: 10px; // Updated radius
+  border-radius: 20px; // Updated radius (was 10px)
   background: #fff;
-  width: calc(100% - 40px); // Width - 40px (20px margin each side)
-  margin: 20px auto; // Center with margin
-  min-height: 98px; // Min height instead of fixed height
+  width: calc(100% - 8px); // Width - 8px (4px margin + 16px parent = 20px)
+  margin: 10px auto; // 10px top/bottom margin
+  min-height: 130px; // Min height 130px
   // height: 166px; // Removed fixed height
 
   cursor: pointer;
+
+  @media (max-width: 480px) {
+    width: 100%; // Use parent padding (16px) only
+  }
 
   position: relative;
 

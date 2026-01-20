@@ -1,7 +1,14 @@
 .completedCard {
     background-color: #FFFFFF;
-    border-radius: 8px;
+    border-radius: 20px;
     padding: 16px;
+    width: calc(100% - 8px); // Desktop: 20px margins (16px parent + 4px card)
+    margin: 10px auto; // Vertical spacing: 10px + 10px = 20px
+
+    @media (max-width: 480px) {
+        width: 100%; // Mobile: 16px margins (16px parent only)
+    }
+
     box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.06);
     cursor: pointer;
     transition: transform 0.2s ease;
@@ -56,4 +63,5 @@
     width: 21px;
     height: 22px;
     color: #807C7C;
+    margin-right: 8px; // Added margin to move icon further inside
 }
