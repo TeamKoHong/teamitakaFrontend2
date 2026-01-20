@@ -3,6 +3,10 @@
   width: calc(100% - 40px); // Updated width
   margin: 20px auto; // Center with margin
 
+  @media (max-width: 480px) {
+    width: calc(100% - 32px); // 16px margin each side
+  }
+
 
   .recruiting-card {
     background-color: #fff;

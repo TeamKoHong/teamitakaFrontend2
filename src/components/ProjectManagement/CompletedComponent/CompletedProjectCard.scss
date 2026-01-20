@@ -8,8 +8,14 @@
   padding: 16px; // Updated padding
   width: calc(100% - 40px); // Updated width
   margin: 20px auto; // Added margin
+
+  @media (max-width: 480px) {
+    width: calc(100% - 32px); // 16px margin each side
+  }
+
   cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: transform 0.2s ease,
+  box-shadow 0.2s ease;
 
   &:hover {
     transform: translateY(-2px);
