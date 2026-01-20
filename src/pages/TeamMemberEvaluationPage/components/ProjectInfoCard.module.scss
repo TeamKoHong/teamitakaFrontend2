@@ -150,15 +150,20 @@
 
 .memberInfo {
     text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 2px; // Reduced spacing
 
     .memberName {
         font-size: $font-size-body;
         font-weight: $font-weight-bold;
         color: $text-primary;
+        line-height: 1.2; // tighter line height
     }
 
     .memberRole {
-        font-size: $font-size-tiny;
+        font-size: 11px; // Increased from tiny (likely 10px) to match visual hierarchy
         color: $text-tertiary;
+        line-height: 1.2;
     }
 }
