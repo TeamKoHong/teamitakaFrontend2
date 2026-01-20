@@ -8,7 +8,7 @@ import { OTHER_ROUTES } from "../../../constants/routes";
 function Header({ onTabChange, activeTabIndex }) {
   const navigate = useNavigate();
 
- 
+
 
   const handleBookmarkClick = () => {
     navigate(OTHER_ROUTES.BOOKMARK);
@@ -18,10 +18,10 @@ function Header({ onTabChange, activeTabIndex }) {
     <header className="pm-header">
       <div className="header-first">
         <div className="header-left">
-          <h1 className="title">내 프로젝트 관리</h1>
+          <h1 className="title">프로젝트 관리</h1>
         </div>
         <div className="header-right">
-         
+
           <button className="btn-bookmark" onClick={handleBookmarkClick}>
             <img src={bookmarkIcon} alt="북마크" />
           </button>
