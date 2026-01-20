@@ -5,6 +5,11 @@
     padding: 16px; // Updated padding
     width: calc(100% - 40px); // Updated width
     margin: 20px auto; // Added margin
+
+    @media (max-width: 480px) {
+        width: calc(100% - 32px); // 16px margin each side
+    }
+
     box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.06);
     cursor: pointer;
     display: flex;

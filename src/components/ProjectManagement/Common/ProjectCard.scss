@@ -12,6 +12,10 @@
 
   cursor: pointer;
 
+  @media (max-width: 480px) {
+    width: calc(100% - 32px); // 16px margin each side
+  }
+
   position: relative;
 
   .card-content {
