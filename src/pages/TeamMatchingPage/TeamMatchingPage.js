@@ -24,7 +24,7 @@ const CreateProjectBanner = () => {
             <img src={recruit_write} alt="생성" className="banner-icon" />
             <div className="banner-text">
                 <div className="banner-title">프로젝트 생성하기</div>
-                <p className="banner-description">잘 맞는 팀을 구하고 싶다면 직접 생성해보세요!</p>
+                <p className="banner-description">잘 맞는 티미를 구하고 싶다면 직접 생성해보세요!</p>
             </div>
         </div>
     );
