@@ -1,8 +1,13 @@
 .completed-project-card {
   position: relative;
   background: #fff;
-  border-radius: 20px;
-  padding: 1rem;
+  border-radius: 8px;
+  position: relative;
+  background: #fff;
+  border-radius: 10px; // Updated radius
+  padding: 16px; // Updated padding
+  width: calc(100% - 40px); // Updated width
+  margin: 20px auto; // Added margin
   cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 
@@ -17,12 +22,15 @@
   // 배지 스타일
   .evaluation-badge {
     position: absolute;
-    top: -0.75rem;
+    top: -10px; // Half overlapped (20px height / 2)
     left: 11px;
     background: #FFE6E6; // Redesigned bg
     color: #FF4D4F; // Redesigned color
-    padding: 4px 8px;
-    border-radius: 8px; // Rounded corners
+    padding: 0 9px; // Adjusted padding for fixed height centering
+    height: 20px; // Fixed height
+    display: flex; // Flex for centering
+    align-items: center; // Center vertically
+    border-radius: 4px; // Rounded corners
     font-size: 12px;
     font-weight: 600;
     text-transform: capitalize;

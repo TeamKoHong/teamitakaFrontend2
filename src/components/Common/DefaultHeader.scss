@@ -47,6 +47,8 @@
     font-weight: 600;
     letter-spacing: -0.2px;
     margin: 0;
+    padding: 0; // Ensure no padding
+    text-indent: 0; // Ensure no indent
     position: absolute;
     left: 50%;
     top: 50%;

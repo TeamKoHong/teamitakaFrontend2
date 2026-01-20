@@ -1,10 +1,14 @@
 .recruiting-project-card {
-  margin-bottom: 1rem;
+  margin-bottom: 20px; // Spacing between cards
+  width: calc(100% - 40px); // Updated width
+  margin: 20px auto; // Center with margin
+
 
   .recruiting-card {
     background-color: #fff;
-    border-radius: 20px;
-    padding: 16px;
+    border-radius: 10px; // Updated radius
+    padding: 16px; // Updated padding
+    min-height: 98px; // Min height
     border: 2px solid transparent; // 기본은 투명
     cursor: pointer;
     transition: transform 0.2s ease;
@@ -30,6 +34,7 @@
       text-overflow: ellipsis;
       display: -webkit-box;
       -webkit-line-clamp: 2;
+      line-clamp: 2;
       -webkit-box-orient: vertical;
     }
 
@@ -41,6 +46,7 @@
       text-overflow: ellipsis;
       display: -webkit-box;
       -webkit-line-clamp: 2;
+      line-clamp: 2;
       -webkit-box-orient: vertical;
       line-height: 1.4;
     }
@@ -60,12 +66,12 @@
           align-items: center;
           color: #bbb;
           margin-right: 1rem;
-          
+
           .info-view-icon {
             font-size: 14px;
             margin-right: 4px;
           }
-          
+
           span {
             font-size: 12px;
           }
@@ -80,7 +86,7 @@
             font-size: 14px;
             margin-right: 4px;
           }
-          
+
           span {
             font-size: 12px;
           }
@@ -99,4 +105,3 @@
     }
   }
 }
-

@@ -1,7 +1,10 @@
 .unratedCard {
+    position: relative; // For absolute badge positioning
     background-color: #FFFFFF;
-    border-radius: 8px;
-    padding: 16px;
+    border-radius: 10px; // Updated radius
+    padding: 16px; // Updated padding
+    width: calc(100% - 40px); // Updated width
+    margin: 20px auto; // Added margin
     box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.06);
     cursor: pointer;
     display: flex;
@@ -15,12 +18,18 @@
 }
 
 .badge {
-    align-self: flex-start;
+    position: absolute;
+    top: -10px; // Half overlapped
+    left: 11px;
+    // align-self: flex-start; // Removed
     background-color: #FF4D4F;
     color: #FFFFFF;
     font-size: 12px;
     font-weight: 600;
-    padding: 4px 8px;
+    padding: 0 9px; // Adjusted padding
+    height: 20px; // Fixed height
+    display: flex; // Flex for centering
+    align-items: center; // Center vertically
     border-radius: 4px;
 }
 
