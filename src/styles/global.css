@@ -1,18 +1,37 @@
-html, body, #root {
+@font-face {
+  font-family: 'KIMM_Bold';
+  src: url('../assets/fonts/KIMM_bold.ttf') format('truetype');
+  font-weight: bold;
+  font-style: normal;
+}
+
+html,
+body,
+#root {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
   min-height: 100vh;
-  font-family: 'Pretendard', 'SF Pro Text', 'Inter', sans-serif;
+  font-family: 'Pretendard', 'SF Pro Text', 'Inter', 'KIMM_Bold', sans-serif;
   color: #222;
   background: #f8f8f8;
 }
 
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: inherit;
 }
 
-ul, li, p, h1, h2, h3, h4, h5, h6 {
+ul,
+li,
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   margin: 0;
   padding: 0;
   list-style: none;
@@ -20,4 +39,4 @@ ul, li, p, h1, h2, h3, h4, h5, h6 {
 
 body {
   font-size: 15px;
-} 
+}
