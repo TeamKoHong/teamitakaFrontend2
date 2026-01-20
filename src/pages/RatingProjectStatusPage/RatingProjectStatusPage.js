@@ -9,6 +9,7 @@ import RatingSummaryCard from '../../components/RatingManagement/RatingSummaryCa
 import ProjectSummaryCard from '../../components/RatingProjectPage/ProjectSummaryCard';
 import ProjectResultCard from '../../components/RatingProjectPage/ProjectResultCard';
 import RatingInputStars from '../../components/RatingManagement/RatingInputStars/RatingInputStars';
+import EvaluationCompletedInfoCard from '../../components/RatingProjectPage/EvaluationCompletedInfoCard';
 
 function RatingProjectStatusPage() {
   const { projectId } = useParams();
@@ -126,35 +127,14 @@ function RatingProjectStatusPage() {
               <h2 className={styles.sectionTitle}>팀원별 평가 상세</h2>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
                 {(projectStatus.individualReviews || []).map((review, idx) => (
-                  <div className={styles.reviewCard + ' ' + styles.card + ' ' + styles.memberReviewCard} key={review.id || idx}>
-                    <div className={styles.memberCategoryTable}>
-                      <div className={styles.categoryRow + ' ' + styles.reviewerRow}>
-                        <span className={styles.reviewerName}>{review.reviewerName || `익명${idx + 1}`}</span>
-                        <span></span>
-                        <span></span>
-                      </div>
-                      {(review.categories || []).map(cat => (
-                        <CategoryRatingRow
-                          key={cat.name}
-                          label={cat.name}
-                          value={(cat.score ?? 0).toFixed(1)}
-                          stars={cat.score ?? 0}
-                        />
-                      ))}
-                      <CategoryRatingRow
-                        label="총점"
-                        value={(review.averageScore ?? 0).toFixed(1)}
-                        stars={review.averageScore ?? 0}
-                        bold
-                      />
-                    </div>
-                    {review.comment && (
-                      <div className={styles.reviewComment}>
-                        <span>💬</span>
-                        <span>{review.comment}</span>
-                      </div>
-                    )}
-                  </div>
+                  <EvaluationCompletedInfoCard
+                    key={review.id || idx}
+                    reviewerName={review.reviewerName || `익명${idx + 1}`}
+                    categories={review.categories || []}
+                    averageScore={review.averageScore}
+                    comment={review.comment}
+                    reviewId={review.id}
+                  />
                 ))}
               </div>
             </div>
