@@ -4,7 +4,7 @@ import styles from './RatingProjectStatusPage.module.scss';
 import DefaultHeader from '../../components/Common/DefaultHeader';
 import { fetchProjectStatus } from '../../services/rating';
 import ProjectInfoCard from '../../components/RatingProjectPage/ProjectInfoCard';
-import CategoryRatingRow from '../../components/RatingProjectPage/CategoryRatingRow';
+
 import RatingSummaryCard from '../../components/RatingManagement/RatingSummaryCard/RatingSummaryCard';
 import ProjectSummaryCard from '../../components/RatingProjectPage/ProjectSummaryCard';
 import ProjectResultCard from '../../components/RatingProjectPage/ProjectResultCard';
