@@ -1,12 +1,14 @@
 .project-card {
   display: flex;
   justify-content: space-between;
-  
-  padding: 0.75rem 1rem;
-  border-radius: 8px;
+
+  padding: 16px; // Updated padding
+  border-radius: 10px; // Updated radius
   background: #fff;
-  width: 100%;
-  height: 166px;
+  width: calc(100% - 40px); // Width - 40px (20px margin each side)
+  margin: 20px auto; // Center with margin
+  min-height: 98px; // Min height instead of fixed height
+  // height: 166px; // Removed fixed height
 
   cursor: pointer;
 
@@ -18,6 +20,7 @@
     justify-content: space-between;
     flex: 1;
     height: 100%;
+
     .info {
       .title {
         font-size: 16px;
@@ -34,7 +37,7 @@
         align-items: center;
         gap: 0.5rem;
         margin-bottom: 0.25rem;
-  
+
         svg {
           width: 16px;
           height: 16px;
@@ -43,15 +46,15 @@
           border-radius: 5px;
           color: #fffdfc;
         }
+      }
     }
-  }
 
-  .details {
-    font-size: 0.875rem;
-    color: #555;
-    margin-bottom: 1rem;
+    .details {
+      font-size: 0.875rem;
+      color: #555;
+      margin-bottom: 1rem;
 
-    
+
     }
 
     .applicant-info {
@@ -73,13 +76,13 @@
     height: 2rem;
 
     .team-avatar {
-      width: 2.25rem; 
+      width: 2.25rem;
       height: 2.25rem;
       border-radius: 50%;
       border: 2px solid #fff;
       object-fit: cover;
       position: relative;
-      
+
       &:not(:last-child) {
         margin-left: -12px;
       }
@@ -94,7 +97,7 @@
   align-items: flex-end;
   height: 100%;
   position: relative;
-  
+
   .time-ago {
     position: absolute;
     top: 0;
