@@ -1,9 +1,9 @@
-// Google Fonts에서 Noto Sans KR 폰트를 가져옵니다.
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap');
+// Google Fonts에서 Noto Sans KR 대신 Pretendard 적용
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css');
 
 // --- 기본 앱 스타일 ---
 .team-matching-app {
-    font-family: 'Noto Sans KR', sans-serif;
+    font-family: 'Pretendard Variable', -apple-system, sans-serif;
     background-color: #f2f2f2;
     margin: 0 auto;
     border: 1px solid #e0e0e0;
@@ -57,8 +57,19 @@
 
 .section-more {
     font-size: 13px;
-    color: #888;
+    color:#403E3E;
     cursor: pointer;
+    display: flex; // 아이콘 정렬용
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+
+    img {
+        width: 4px;
+        height: 8px;
+        color:#403E3E;
+        transform: rotate(180deg); // back.png를 오른쪽 화살표처럼 회전
+    }
 }
 
 // --- 가로 스크롤 리스트 ---
@@ -66,10 +77,10 @@
     display: flex;
     overflow-x: auto;
     padding: 0 20px 16px 20px;
-    -ms-overflow-style: none; /* IE and Edge */
-    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none;
+    scrollbar-width: none;
     &::-webkit-scrollbar {
-        display: none; /* Chrome, Safari, and Opera */
+        display: none;
     }
     margin-top: 16px;
 }
@@ -106,7 +117,7 @@
     }
     .banner-title {
         font-size: 16px;
-        font-weight: 600;
+        font-weight: 400;
         margin-bottom: 0px;
     }
     .banner-description {
@@ -133,7 +144,6 @@
     width: 14px;
     height: 8px;
     gap: 3px;
-
     }
 
 // 홍익 HOT 교내 공고 카드
@@ -149,7 +159,8 @@
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
-    position: relative; // 절대 위치 배치를 위해
+    position: relative;
+    flex-shrink: 0; // 가로스크롤 시 크기 유지
     
     .hot-topic-card-header {
         display: flex;
@@ -158,22 +169,16 @@
         margin-bottom: 10px;
     }
     .tag {
-        padding: 1px 9px;
+        padding: 4px 12px; // 수정: 패딩 4, 12 적용
         border-radius: 20px;
         background-color: #F76241;
         font-size: 11px;
         color: #ffffff;
     }
     .bookmark-icon {
-        font-size: 22px;
-        color: #aaa;
-        cursor: pointer;
-        transition: color 0.2s ease-in-out;
-        &.bookmarked {
-            color: #FF6B00;
-        }
         width: 16px;
         height: 24px;
+        cursor: pointer;
     }    
     .hot-topic-card-title {
         font-size: 15px;
@@ -187,36 +192,34 @@
         font-size: 11px;
         color: #666;
         line-height: 1.4;
-        
-        // 멀티라인 말줄임표 처리
         display: -webkit-box;
-        -webkit-line-clamp: 2; // 2줄 제한
+        -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
         overflow: hidden;
         text-overflow: ellipsis;
-        white-space: normal; // wrap 허용
+        white-space: normal;
     }
 }
 .hot-topic-card-info {
-        margin-top: auto; // 위쪽 여백을 다 차지하여 바닥으로 밈
+    margin-top: auto;
+    display: flex;
+    justify-content: flex-end;
+    padding-right: 15px; // 수정: 오른쪽 공간 30px 확보
+    
+    .twoicons {
         display: flex;
-        justify-content: flex-end; // 우측 정렬
+        gap: 8px;
+        font-size: 9px;
+        color: #999;
         
-        .twoicons {
+        .view-icon, .apply-icon {
             display: flex;
-            gap: 8px;
-            font-size: 9px;
-            color: #999;
-            
-            .view-icon, .apply-icon {
-                display: flex;
-                align-items: center;
-                gap: 2px;
-                img { width: 12px; height: auto; }
-            }
+            align-items: center;
+            gap: 2px;
+            img { width: 12px; height: auto; }
         }
     }
-
+}
 
 // 필터 태그
 .filter-tags {
@@ -225,7 +228,7 @@
 .filter-tag {
     padding: 4px 12px;
     border-radius: 20px;
-    border: 1px solid #000000;
+    border: 1px solid #403E3E; // 수정: 테두리 색상 변경
     font-size: 14px;
     color: #000000;
     cursor: pointer;
@@ -257,24 +260,22 @@
     .matching-card-thumbnail {
         flex-shrink: 0;
         position: relative;
-        width: 84px;      // 고정 너비
-        height: 79px;     // 고정 높이
+        width: 84px;
+        height: 79px;
         border-radius: 8px;
-        overflow: hidden; // 이미지가 둥근 모서리 밖으로 나가지 않게 자름
+        overflow: hidden;
 
-        // 1. 실제 이미지
         .card-img {
             width: 100%;
             height: 100%;
-            object-fit: cover; // 비율 유지하며 꽉 채움
-            display: block;    // 이미지 하단 공백 제거
+            object-fit: cover;
+            display: block;
         }
 
-        // 2. 이미지가 없을 때 (Placeholder)
         .no-image-placeholder {
             width: 100%;
             height: 100%;
-            background-color: #f0f0f0; // 연한 회색 배경
+            background-color: #f0f0f0;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -286,51 +287,47 @@
             }
         }
 
-        // Best 뱃지
         .best-badge {
             position: absolute;
             top: 6px;
             left: 6px;
-            background-color: #F76241; // 배너 색상과 통일감 있게 수정 (원하면 F79341 유지)
+            background-color: #F76241;
             color: white;
             padding: 2px 6px;
             font-size: 9px;
             font-weight: 700;
             border-radius: 4px;
-            z-index: 2; // 이미지 위에 뜨도록
+            z-index: 2;
         }
     }
 
-    // 컨텐츠 영역
     .matching-card-content {
         flex-grow: 1;
-        min-width: 0; // flex 자식의 말줄임표 작동 필수 조건
+        min-width: 0;
         display: flex;
         flex-direction: column;
-        justify-content: space-between; // 상하 분배
-        height: 79px; // 썸네일 높이와 맞춤
-        padding: 4px 0; // 내부 여백
+        justify-content: space-between;
+        height: 79px;
+        padding: 4px 0;
 
         .matching-card-title {
             font-size: 14px;
             font-weight: 600;
             color: #333;
             margin-bottom: 0;
-            
-            // 한 줄 말줄임표
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
 
         .matching-card-desc{
-            font-size: 11px;;
+            font-size: 11px;
         }
 
         .card-footer {
             display: flex;
-            justify-content: space-between; // 양쪽 끝 정렬
-            align-items: flex-end; // 바닥 라인 맞춤
+            justify-content: space-between;
+            align-items: flex-end;
             width: 100%;
 
             .twoicons {
@@ -341,10 +338,9 @@
                 .view-icon, .apply-icon {
                     display: flex;
                     align-items: center;
-                    font-size: 10px; // 글씨 크기 조정
+                    font-size: 10px;
                     color: #888;
                     gap: 3px;
-                    
                     img { width: 12px; height: auto; }
                 }
             }
@@ -352,12 +348,13 @@
             .date-icon {
                 font-size: 10px;
                 color: #aaa;
-                white-space: nowrap; // 날짜 줄바꿈 방지
+                white-space: nowrap;
             }
         }
-    }}
+    }
+}
 
-// --- FAB (Floating Action Button) ---
+// --- FAB ---
 .fab-container {
     position: absolute;
     bottom: 110px;
