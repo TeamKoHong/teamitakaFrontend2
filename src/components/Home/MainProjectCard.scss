@@ -4,7 +4,7 @@
 
   border: 0;
   background: #fff;
-  border-radius: 18px;
+  border-radius: 8px;
 
   width: 280px;
   min-width: 280px;
@@ -120,7 +120,8 @@
   /* ✅ 주황 원형 프로그레스 + 중앙 D-day 텍스트 오버레이 */
   .progress-wrap {
     position: relative;
-    width: 60px;   /* CircularProgress 기본 크기에 맞춤 */
+    width: 60px;
+    /* CircularProgress 기본 크기에 맞춤 */
     height: 60px;
     display: grid;
     place-items: center;
@@ -142,7 +143,7 @@
 
 @media (max-width: 375px) {
   .main-project-card {
-    border-radius: 16px;
+    border-radius: 8px;
 
     width: 260px;
     min-width: 260px;
