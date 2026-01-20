@@ -6,9 +6,9 @@
 
   .recruiting-card {
     background-color: #fff;
-    border-radius: 10px; // Updated radius
+    border-radius: 20px; // Updated radius (was 10px)
     padding: 16px; // Updated padding
-    min-height: 98px; // Min height
+    min-height: 130px; // Min height 130px
     border: 2px solid transparent; // 기본은 투명
     cursor: pointer;
     transition: transform 0.2s ease;
