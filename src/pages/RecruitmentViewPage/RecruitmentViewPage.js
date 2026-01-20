@@ -29,6 +29,7 @@ export default function RecruitmentViewPage() {
     const [error, setError] = useState(null);
 
     const [isBookmarked, setIsBookmarked] = useState(false);
+    const [showToast, setShowToast] = useState(false);
 
     useEffect(() => {
         const userData = getCurrentUser();
@@ -51,9 +52,6 @@ export default function RecruitmentViewPage() {
         const fetchRecruitment = async () => {
             try {
                 const response = await getRecruitment(id);
-                console.log("📝 API 원본 응답:", response);
-
-                // response.data가 있으면 그것을 쓰고, 없으면 response 자체를 씁니다.
                 const data = response.data || response;
 
                 const hashtags = data.Hashtags || data.hashtags || [];
@@ -66,19 +64,19 @@ export default function RecruitmentViewPage() {
                     period: (data.recruitment_start && data.recruitment_end)
                         ? formatKoreanDateRange(data.recruitment_start, data.recruitment_end)
                         : '모집 기간 미정',
-                    projectInfo: data.description || '', // 필요한 경우 다른 필드로 매핑
+                    projectInfo: data.description || '', 
                     projectType: data.project_type === 'course'
                         ? '수업 프로젝트'
                         : data.project_type === 'side'
                         ? '사이드 프로젝트'
                         : '프로젝트',
-                    imageUrl: data.photo_url || data.photo, // 필드명 불일치 대비
+                    imageUrl: data.photo_url || data.photo, 
                     views: data.views || 0,
                     applicantCount: data.applicant_count || 0,
                     bookmarkCount: data.scrap_count || 0,
                     date: data.created_at ? formatRelativeTime(data.created_at) : '',
                     keywords: keywordList,
-                    createdBy: data.user_id, // Owner 체크용 ID
+                    createdBy: data.user_id,
                     recruitmentInfo: { count: data.recruit_count || '-', activity: '-' },
                     activityMethod: data.activity_method || '-'
                 };
@@ -117,83 +115,59 @@ export default function RecruitmentViewPage() {
     const handleBookmarkToggle = async () => {
         if (!currentUser) {
             alert("로그인이 필요합니다.");
-            // 로그인 페이지 이동 로직이 있다면 추가
             return;
         }
 
-        // 1. 현재 상태 저장 (에러 시 복구용 - 낙관적 업데이트)
         const previousState = isBookmarked;
         const previousCount = post.bookmarkCount;
-
-        // 2. 화면 즉시 갱신 (반응 속도 향상)
         const newState = !previousState;
+
         setIsBookmarked(newState);
         setPost(prev => ({
             ...prev,
-            // true가 되면 +1, false가 되면 -1 (음수 방지)
             bookmarkCount: Math.max(0, newState ? prev.bookmarkCount + 1 : prev.bookmarkCount - 1)
         }));
 
-        try {
-        // 백엔드가 알아서 판단해서 처리함
-            await toggleRecruitmentScrap(id);
+        if (newState) {
+            setShowToast(true);
+            setTimeout(() => setShowToast(false), 2000);
+        }
 
+        try {
+            await toggleRecruitmentScrap(id);
         } catch (error) {
-            console.error("북마크 변경 실패:", error);
-            alert("요청 처리에 실패했습니다.");
-        
-            // 3. 에러 발생 시 원상복구 (Rollback)
             setIsBookmarked(previousState);
             setPost(prev => ({ ...prev, bookmarkCount: previousCount }));
+            setShowToast(false);
         }
     };
 
-    const handleCloseApplicantList = () => {
-        setShowApplicantList(false);
-    };
+    const handleCloseApplicantList = () => setShowApplicantList(false);
 
     const handleEdit = () => {
         setShowMoreMenu(false);
-        alert('게시글 수정 페이지는 아직 준비 중입니다.\n\n수정 페이지 라우트: /recruit/edit/' + id);
+        alert('게시글 수정 페이지는 아직 준비 중입니다.');
     };
 
     const handleDelete = async () => {
         setShowMoreMenu(false);
-
-        if (!window.confirm('정말 삭제하시겠습니까?\n삭제된 게시글은 복구할 수 없습니다.')) {
-            return;
-        }
-
+        if (!window.confirm('정말 삭제하시겠습니까?')) return;
         try {
             await deleteRecruitment(id);
-            alert('게시글이 성공적으로 삭제되었습니다.');
+            alert('게시글이 삭제되었습니다.');
             navigate('/team-matching');
         } catch (err) {
-            console.error('❌ Delete recruitment failed:', err);
-            let errorMessage = '게시글 삭제에 실패했습니다.';
-            if (err.code === 'UNAUTHORIZED') {
-                errorMessage = '로그인이 필요하거나 권한이 없습니다.';
-            } else if (err.code === 'NOT_FOUND') {
-                errorMessage = '게시글을 찾을 수 없습니다.';
-            } else if (err.message) {
-                errorMessage = err.message;
-            }
-            alert(errorMessage);
+            alert('삭제에 실패했습니다.');
         }
     };
 
-    if (error) {
-        return <div className="view-page" style={{padding:'20px', textAlign:'center'}}>{error} <br/><button onClick={()=>navigate(-1)}>뒤로가기</button></div>;
-    }
-
-    if (!post) {
-        return <div className="view-page" style={{padding:'20px', textAlign:'center'}}>로딩 중...</div>;
-    }
+    if (error) return <div className="view-page-status">{error}</div>;
+    if (!post) return <div className="view-page-status">로딩 중...</div>;
 
     return (
         <div className="view-page">
             <header className="topbar">
-                <button onClick={() => navigate(-1)} className="back-button" aria-label="뒤로가기">
+                <button onClick={() => navigate(-1)} className="back-button">
                     <IoChevronBack size={24} />
                 </button>
                 <h1 className="title">모집글</h1>
@@ -211,32 +185,21 @@ export default function RecruitmentViewPage() {
                     </div>
                 )}
             </header>
-                <hr className="divider" />
+            <hr className="divider" />
 
             <main className="content">
-                <div className="image-container">
-                    {post.imageUrl ? (
+                {post.imageUrl && (
+                    <div className="image-container">
                         <img src={post.imageUrl} alt="대표 이미지" className="cover-image" />
-                    ) : (
-                        <div className="no-image-placeholder">
-                            <span>No Image</span>
-                        </div>
-                    )}
-                </div>
+                    </div>
+                )}
                 
                 <section className="post-header">
                     <h2 className="post-title">{post.title}</h2>
                     <div className="meta-info">
                         <div className="twoicons">
-                            <div className="view-icon">
-                                <img src={viewIcon} alt="조회수" /> {post.views}
-                            </div>
-                            <div className="apply-icon"
-                                onClick={handleViewApplicants}
-                                style={{cursor: 'pointer'}}
-                            >
-                                <img src={applyIcon} alt="지원자" /> {post.applicantCount}
-                            </div>
+                            <div className="view-icon"><img src={viewIcon} alt="v" /> {post.views}</div>
+                            <div className="apply-icon" onClick={handleViewApplicants}><img src={applyIcon} alt="a" /> {post.applicantCount}</div>
                         </div>
                         <span className="date">{post.date}</span>
                     </div>
@@ -258,57 +221,40 @@ export default function RecruitmentViewPage() {
                 </section>
 
                 <hr className="divider" />
-
-                <section className="post-body">
-                    <p>{post.description}</p>
-                </section>
+                <section className="post-body"><p>{post.description}</p></section>
                 <hr className="divider" />
 
                 <section className="keywords-section">
                     <h3 className="keywords-label">키워드</h3>
                     <div className="keywords-tags">
-                        {post.keywords.length > 0 ? (
-                            post.keywords.map((tag, index) => (
-                                <span key={index} className="keyword-tag">#{tag}</span>
-                            ))
-                        ) : (
-                            <span style={{color:'#999', fontSize:'13px'}}>등록된 키워드가 없습니다.</span>
-                        )}
+                        {post.keywords.length > 0 ? post.keywords.map((tag, index) => (
+                            <span key={index} className="keyword-tag">#{tag}</span>
+                        )) : <span className="no-keywords">등록된 키워드가 없습니다.</span>}
                     </div>
                 </section>
             </main>
 
+            {showToast && (
+                <div className="toast-overlay">
+                    <div className="toast-box">
+                        <div className="check-circle">✓</div>
+                        <p>현재 게시글을 스크랩 했습니다.</p>
+                    </div>
+                </div>
+            )}
+
             <footer className="footer">
                 <div className="footer-buttons-new">
-                    <button 
-                        onClick={handleBookmarkToggle} 
-                        className="bookmark-btn"
-                        aria-label="북마크"
-                    >
-                        <img 
-                            src={isBookmarked ? bookmarkActiveIcon : bookmarkIcon} 
-                            alt="bookmark" 
-                            style={{width: '24px', height: '24px'}}
-                        />
-                        <span className="bookmark-count">
-                            {post ? post.bookmarkCount : 0}
-                        </span>
+                    <button onClick={handleBookmarkToggle} className="bookmark-btn">
+                        <img src={isBookmarked ? bookmarkActiveIcon : bookmarkIcon} alt="b" />
+                        <span className="bookmark-count">{post.bookmarkCount}</span>
                     </button>
-
-                    
-                        <button onClick={handleApply} className="apply-btn-expanded">
-                            지원하기
-                        </button>
-                    
+                    <button onClick={handleApply} className="apply-btn-expanded">지원하기</button>
                 </div>
             </footer>
 
             {showApplicantList && (
-                <ApplicantListSlide
-                    open={showApplicantList}
-                    onClose={handleCloseApplicantList}
-                    recruitmentId={id}
-                />
+                <ApplicantListSlide open={showApplicantList} onClose={handleCloseApplicantList} recruitmentId={id} />
             )}
         </div>
     );
