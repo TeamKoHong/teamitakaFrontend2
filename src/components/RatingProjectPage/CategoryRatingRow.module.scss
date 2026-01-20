@@ -2,7 +2,9 @@
   display: flex;
   align-items: center;
   min-height: 32px;
+  margin-bottom: 8px; // Added consistent vertical spacing
 }
+
 .categoryName {
   flex: 0 0 90px;
   max-width: 120px;
@@ -13,12 +15,14 @@
   color: #222;
   margin-right: 8px;
 }
+
 .starsAndScore {
   display: flex;
   align-items: center;
   gap: 4px;
   flex: 1 1 auto;
 }
+
 .categoryScore {
   min-width: 28px;
   margin-left: 6px;
@@ -27,8 +31,9 @@
   color: #222;
   white-space: nowrap;
 }
+
 .bold .categoryName,
 .bold .categoryScore {
   font-weight: 700;
   color: #222;
-} 
+}
