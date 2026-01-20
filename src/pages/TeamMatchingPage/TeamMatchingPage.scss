@@ -1,9 +1,6 @@
-// Google Fonts에서 Noto Sans KR 대신 Pretendard 적용
-@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css');
-
 // --- 기본 앱 스타일 ---
 .team-matching-app {
-    font-family: 'Pretendard Variable', -apple-system, sans-serif;
+    font-family: Pretendard;
     background-color: #f2f2f2;
     margin: 0 auto;
     border: 1px solid #e0e0e0;
@@ -14,6 +11,10 @@
     height: 100vh;
     display: flex;
     flex-direction: column;
+    .section-title {
+    font-size: 18px !important; 
+    font-weight: 600;
+}
 }
 
 // --- 메인 컨텐츠 ---
@@ -25,7 +26,7 @@
 
 // --- 공통 섹션 스타일 ---
 .section {
-    margin-bottom: 10px;
+    margin-bottom: 0px;
 }
 
 .section-header {
@@ -33,7 +34,7 @@
     justify-content: space-between;
     align-items: center;
     padding: 0 20px;
-    margin-bottom: 4px;
+    margin: 0;
 
     .keyword-text {
         display: flex;
@@ -48,11 +49,6 @@
     .view-all-link {
         font-size: 11px;
     }
-}
-
-.section-title {
-    font-size: 18px;
-    font-weight: 700;
 }
 
 .section-more {
@@ -82,7 +78,8 @@
     &::-webkit-scrollbar {
         display: none;
     }
-    margin-top: 16px;
+    margin-top:8px;
+    margin-bottom: 10px;
 }
 
 // --- 카드 스타일 ---
@@ -117,7 +114,7 @@
     }
     .banner-title {
         font-size: 16px;
-        font-weight: 600;
+        font-weight: 500;
         margin-bottom: 0px;
     }
     .banner-description {
@@ -152,7 +149,7 @@
     border: 1px solid #eee;
     border-radius: 24px;
     padding: 16px;
-    margin-right: 12px;
+    margin-right: 5px;
     width: 202px;
     height: 160px;
     margin-bottom: 10px;
@@ -192,8 +189,6 @@
         font-size: 11px;
         color: #666;
         line-height: 1.4;
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -224,6 +219,8 @@
 // 필터 태그
 .filter-tags {
     gap: 8px;
+    margin-bottom: 0;
+    padding-bottom: 0;
 }
 .filter-tag {
     padding: 4px 12px;
@@ -252,10 +249,10 @@
 
 .matching-card {
     display: flex;
-    border-radius: 12px;
     padding: 12px;
     gap: 12px;
     align-items: center;
+    border-bottom: 2px solid #ECECEC;
 
     .matching-card-thumbnail {
         flex-shrink: 0;
@@ -339,7 +336,7 @@
                     display: flex;
                     align-items: center;
                     font-size: 10px;
-                    color: #888;
+                    color: #807C7C;
                     gap: 3px;
                     img { width: 12px; height: auto; }
                 }
@@ -347,7 +344,7 @@
 
             .date-icon {
                 font-size: 10px;
-                color: #aaa;
+                color: #403E3E;
                 white-space: nowrap;
             }
         }
