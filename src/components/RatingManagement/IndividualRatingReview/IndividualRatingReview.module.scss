@@ -15,7 +15,7 @@
 .reviewHeader {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: baseline; // Changed from center
   margin-bottom: 10px;
   padding-bottom: 8px;
   border-bottom: 1px dashed $border-light; // Changed variable name
