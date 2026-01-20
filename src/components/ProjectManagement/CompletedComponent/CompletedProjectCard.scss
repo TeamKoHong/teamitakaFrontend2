@@ -204,6 +204,7 @@
         flex-shrink: 0;
         cursor: pointer;
         transition: transform 0.2s ease;
+        margin-right: 8px; // Added margin to move icon further inside
 
         &:hover {
           transform: scale(1.1);
