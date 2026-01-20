@@ -12,8 +12,7 @@ import bookmarkActive from "../../assets/bookmark_active.png";
 import view from "../../assets/view.png";
 import apply from "../../assets/apply.png";
 import back from "../../assets/back.png"; // 수정: back.png 사용을 위해 임포트
-import defaultProjectImg from "../../assets/icons/Teamitaka.png"; 
-
+import task_empty from "../../assets/task_empty.png";
 import { getAllRecruitments } from '../../api/recruit';
 import { toggleRecruitmentScrap } from '../../services/recruitment';
 import { useAuth } from '../../contexts/AuthContext';
@@ -62,8 +61,8 @@ const HotTopicCard = ({ item, onBookmarkToggle }) => {
 const MatchingCard = ({ item }) => {
     const navigate = useNavigate();
     const handleCardClick = () => navigate(`/recruitment/${item.id}`);
-    const imageSource = item.imageUrl || defaultProjectImg;
-
+    const imageSource = item.imageUrl || task_empty;
+    
     return (
         <div className="matching-card" onClick={handleCardClick}>
             <div className="matching-card-thumbnail">
@@ -71,8 +70,7 @@ const MatchingCard = ({ item }) => {
                     src={imageSource} 
                     alt={item.title} 
                     className="card-img" 
-                    onError={(e) => { e.target.src = defaultProjectImg; }}
-                />
+                    onError={(e) => { e.target.src = task_empty; }}                />
                 {item.isBest && <span className="best-badge">Best</span>}
             </div>
             <div className="matching-card-content">
