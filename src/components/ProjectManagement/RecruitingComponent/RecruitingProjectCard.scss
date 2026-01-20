@@ -3,7 +3,7 @@
 
   .recruiting-card {
     background-color: #fff;
-    border-radius: 20px;
+    border-radius: 8px;
     padding: 16px;
     border: 2px solid transparent; // 기본은 투명
     cursor: pointer;
@@ -60,12 +60,12 @@
           align-items: center;
           color: #bbb;
           margin-right: 1rem;
-          
+
           .info-view-icon {
             font-size: 14px;
             margin-right: 4px;
           }
-          
+
           span {
             font-size: 12px;
           }
@@ -80,7 +80,7 @@
             font-size: 14px;
             margin-right: 4px;
           }
-          
+
           span {
             font-size: 12px;
           }
@@ -99,4 +99,3 @@
     }
   }
 }
-
