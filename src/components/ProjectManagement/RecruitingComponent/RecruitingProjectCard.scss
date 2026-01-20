@@ -1,10 +1,10 @@
 .recruiting-project-card {
   margin-bottom: 20px; // Spacing between cards
-  width: calc(100% - 40px); // Updated width
+  width: calc(100% - 8px); // Width - 8px (4px margin + 16px parent = 20px)
   margin: 20px auto; // Center with margin
 
   @media (max-width: 480px) {
-    width: calc(100% - 32px); // 16px margin each side
+    width: 100%; // Use parent padding (16px) only
   }
 
 

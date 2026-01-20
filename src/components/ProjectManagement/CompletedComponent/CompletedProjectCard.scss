@@ -6,11 +6,11 @@
   background: #fff;
   border-radius: 20px; // Updated radius (was 10px)
   padding: 16px; // Updated padding
-  width: calc(100% - 40px); // Updated width
+  width: calc(100% - 8px); // Width - 8px (4px margin + 16px parent = 20px)
   margin: 20px auto; // Added margin
 
   @media (max-width: 480px) {
-    width: calc(100% - 32px); // 16px margin each side
+    width: 100%; // Use parent padding (16px) only
   }
 
   cursor: pointer;
