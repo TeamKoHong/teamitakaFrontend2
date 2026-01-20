@@ -4,7 +4,7 @@
   border-radius: 8px;
   position: relative;
   background: #fff;
-  border-radius: 10px; // Updated radius
+  border-radius: 20px; // Updated radius (was 10px)
   padding: 16px; // Updated padding
   width: calc(100% - 40px); // Updated width
   margin: 20px auto; // Added margin
@@ -24,8 +24,8 @@
     position: absolute;
     top: -10px; // Half overlapped (20px height / 2)
     left: 11px;
-    background: #FFE6E6; // Redesigned bg
-    color: #FF4D4F; // Redesigned color
+    background: linear-gradient(239.04deg, #F76241 0%, #FF390D 100%); // Gradient bg
+    color: #FFFFFF; // White text
     padding: 0 9px; // Adjusted padding for fixed height centering
     height: 20px; // Fixed height
     display: flex; // Flex for centering

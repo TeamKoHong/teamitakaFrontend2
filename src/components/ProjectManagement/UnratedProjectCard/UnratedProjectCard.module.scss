@@ -1,7 +1,7 @@
 .unratedCard {
     position: relative; // For absolute badge positioning
     background-color: #FFFFFF;
-    border-radius: 10px; // Updated radius
+    border-radius: 20px; // Updated radius (was 10px)
     padding: 16px; // Updated padding
     width: calc(100% - 40px); // Updated width
     margin: 20px auto; // Added margin
@@ -22,7 +22,7 @@
     top: -10px; // Half overlapped
     left: 11px;
     // align-self: flex-start; // Removed
-    background-color: #FF4D4F;
+    background: linear-gradient(239.04deg, #F76241 0%, #FF390D 100%); // Gradient bg
     color: #FFFFFF;
     font-size: 12px;
     font-weight: 600;

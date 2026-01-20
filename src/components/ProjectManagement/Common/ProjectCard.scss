@@ -3,11 +3,11 @@
   justify-content: space-between;
 
   padding: 16px; // Updated padding
-  border-radius: 10px; // Updated radius
+  border-radius: 20px; // Updated radius (was 10px)
   background: #fff;
   width: calc(100% - 40px); // Width - 40px (20px margin each side)
   margin: 20px auto; // Center with margin
-  min-height: 98px; // Min height instead of fixed height
+  min-height: 130px; // Min height 130px
   // height: 166px; // Removed fixed height
 
   cursor: pointer;
