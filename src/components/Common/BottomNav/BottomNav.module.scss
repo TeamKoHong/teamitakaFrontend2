@@ -37,7 +37,7 @@
     justify-content: flex-end; // Bottom align inside the 88px rail
     align-items: center;
     text-decoration: none;
-    color: #9ca3af; // Inactive color (darker than #807b79)
+    color: #807B79; // Inactive color (Warm Gray)
     // Dynamic Optical Compensation:
     // Reduces padding-bottom when safe-area exists (env > 0) to avoid "floating" feel.
     // Coefficient 0.5 means for 34px safe-area, we start shrinking padding to bring items lower.
