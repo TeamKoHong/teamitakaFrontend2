@@ -23,7 +23,7 @@ const EvaluationStep2 = ({
     <>
       <ProjectInfoCard projectData={projectData} memberData={memberData} onMemberSelect={onMemberSelect} isLocked={isLocked} />
 
-      <div style={{ margin: '20px 0', display: 'flex', justifyContent: 'flex-start', width: '100%', alignSelf: 'flex-start' }}>
+      <div className={styles.stepIndicatorContainer}>
         <StepIndicator currentStep={2} totalSteps={2} />
       </div>
 
