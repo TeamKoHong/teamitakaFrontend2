@@ -573,7 +573,7 @@ $track-bg: #ececec;
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
-  padding: 24px 16px;
+  padding: 24px 16px 32px; // Increased bottom padding for better button positioning
   background-color: inherit; // Inherits #f2f2f2 from page
 
   // Centered content wrapper (check icon + message)
@@ -583,7 +583,7 @@ $track-bg: #ececec;
     align-items: center;
     justify-content: center;
     flex: 1; // Takes up available space for centering
-    gap: 16px;
+    gap: 12px; // Reduced from 16px per QA feedback
   }
 
   // Check icon styles  
