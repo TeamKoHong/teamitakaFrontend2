@@ -88,7 +88,7 @@
         width: 5px;
         height: 11px;
         flex-shrink: 0;
-        margin-right: 0;
+        margin-right: 4px; // Add right margin
         object-fit: contain;
         display: block; // Ensure block display to prevent line-height issues
       }
@@ -208,8 +208,8 @@
       }
 
       .star-icon {
-        width: 1rem;
-        height: 1rem;
+        width: 17px;
+        height: 17px;
         flex-shrink: 0;
         cursor: pointer;
         transition: transform 0.2s ease;

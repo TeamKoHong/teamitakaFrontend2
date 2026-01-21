@@ -2,7 +2,7 @@
     position: relative;
     background-color: #FFFFFF;
     border-radius: 20px;
-    padding: 16px;
+    padding: 16px 20px 16px 16px; // Updated padding (Right: 20px)
     width: calc(100% - 8px);
     height: 130px; // Spec: 130px fixed height
     box-sizing: border-box;
@@ -96,6 +96,7 @@
     flex-shrink: 0;
     object-fit: contain;
     display: block;
+    margin-right: 4px; // Add margin-right
 }
 
 .subtitle {

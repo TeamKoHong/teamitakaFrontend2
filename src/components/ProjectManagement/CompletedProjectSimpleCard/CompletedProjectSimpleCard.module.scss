@@ -1,7 +1,7 @@
 .completedCard {
     background-color: #FFFFFF;
     border-radius: 20px;
-    padding: 16px;
+    padding: 16px 20px 16px 16px; // Updated padding (Right: 20px)
     width: calc(100% - 8px); // Desktop: 20px margins (16px parent + 4px card)
     margin: 10px auto; // Vertical spacing: 10px + 10px = 20px
 
@@ -60,13 +60,13 @@
 }
 
 .starIcon {
-    width: 24px;
-    height: 24px;
+    width: 17px;
+    height: 17px;
     cursor: pointer;
     transition: transform 0.2s ease;
     padding: 8px; // Touch target: 24 + 16 = 40px ~ 44px
     box-sizing: content-box; // Padding adds to size
-    margin-right: 0; // Removed offset to move icon inward
+    margin-right: 4px; // Add margin to move icon inward
 
     &:hover {
         transform: scale(1.1);
