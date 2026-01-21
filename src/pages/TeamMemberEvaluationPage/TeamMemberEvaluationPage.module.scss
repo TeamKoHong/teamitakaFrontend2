@@ -64,7 +64,7 @@ $track-bg: #ececec;
   width: 100%;
   background-color: $card-bg;
   border-radius: 20px;
-  padding: 12px 26px;
+  padding: 8px 16px;
   box-sizing: border-box;
   margin-bottom: 16px;
   display: flex;
@@ -142,7 +142,7 @@ $track-bg: #ececec;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 4px;
+      gap: 8px;
 
       .avatar {
         width: 55px;
@@ -263,7 +263,7 @@ $track-bg: #ececec;
   padding: 16px 20px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 8px; // Reduced from 12px for tighter spacing
   box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.05);
 
   .categoryHeader {
@@ -369,12 +369,13 @@ $track-bg: #ececec;
 .nextButton,
 .button {
   width: 100%;
+  max-width: 358px;
   height: 59px;
   background-color: $primary-orange;
-  color: white;
+  color: #fffdfc;
   border: none;
   border-radius: 8px;
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 600;
   cursor: pointer;
   display: flex;
@@ -382,7 +383,8 @@ $track-bg: #ececec;
   justify-content: center;
 
   &:disabled {
-    background-color: #d1cccb;
+    background-color: #dadada;
+    color: #807c7c;
     cursor: not-allowed;
   }
 
@@ -397,21 +399,23 @@ $track-bg: #ececec;
   // Removed @extend .categoryItem to remove border/box
   display: flex;
   flex-direction: column;
-  align-items: center;
-  text-align: center;
-  padding: 24px 16px;
-  gap: 12px;
+  align-items: flex-start; // Changed to Left align
+  text-align: left; // Changed to Left align
+  padding: 0px 16px;
+  gap: 4px; // Reduced gap from 8px to 4px
 
   .overallLabel {
     font-size: 18px;
     font-weight: 600;
-    color: $text-dark;
-    margin-bottom: 4px;
+    color: #140805;
+    line-height: 140.98%;
+    margin-bottom: 0;
   }
 
   .overallSubtitle {
     font-size: 12px;
-    color: $text-gray;
+    color: #807c7c;
+    letter-spacing: -0.01em;
     margin-bottom: 20px;
   }
 }
@@ -479,9 +483,10 @@ $track-bg: #ececec;
   .cardHeader {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-end; // Bottom align like in design
     width: 100%;
     padding-left: 67px; // Align with member name (55px avatar + 12px gap)
+    margin-bottom: 4px; // Add small spacing between header and body
 
     .roleTag {
       font-size: 12px;
@@ -561,9 +566,9 @@ $track-bg: #ececec;
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 12px; // Reduced gap
+  gap: 12px;
   align-items: center;
-  margin-top: 10px; // Adjust top margin
+  margin-top: 40px; // Pushed down further
 }
 
 .homeLink {
