@@ -63,6 +63,9 @@ import VerificationCodePage from './pages/VerificationCodePage/VerificationCodeP
 import ProfileSetupPage from './pages/ProfileSetupPage/ProfileSetupPage';
 import WelcomePage from './pages/WelcomePage/WelcomePage';
 
+// 테스트 페이지
+import EvaluationCompletionTest from './pages/TestPages/EvaluationCompletionTest';
+
 // 인증 관련 임포트
 import { AuthProvider } from './contexts/AuthContext';
 import GlobalToastSystem from './components/Common/GlobalToastSystem';
@@ -339,6 +342,9 @@ const App = () => {
           {/* ===== 데모 및 개발 도구 라우트 (개발용) ===== */}
           <Route path={DEMO_ROUTES.CATEGORY_SLIDER} element={<CategorySliderDemo />} />
           <Route path="/phone-auth-test" element={<PhoneAuthTestPage />} />
+
+          {/* ===== 테스트 페이지 (빠른 디자인 확인용) ===== */}
+          <Route path="/test/evaluation-completion" element={<EvaluationCompletionTest />} />
 
           {/* ===== 휴대폰 본인인증 라우트 ===== */}
           <Route path="/phone-verify" element={<PublicRoute><PhoneVerifyPage /></PublicRoute>} />
