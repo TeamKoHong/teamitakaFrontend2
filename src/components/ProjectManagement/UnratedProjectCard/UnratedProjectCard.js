@@ -1,7 +1,6 @@
 import React from 'react';
-import './UnratedProjectCard.module.scss';
 import styles from './UnratedProjectCard.module.scss';
-
+import rightArrow from '../../../assets/icons/right-arrow.svg';
 
 // 더미 아바타 이미지
 const DEFAULT_AVATARS = [
@@ -28,7 +27,10 @@ const UnratedProjectCard = ({ project, onClick }) => {
 
             <div className={styles.content}>
                 <div className={styles.info}>
-                    <h3 className={styles.title}>{project.title}</h3>
+                    <div className={styles.titleRow}>
+                        <h3 className={styles.title}>{project.title}</h3>
+                        <img src={rightArrow} alt="arrow" className={styles.nextArrow} />
+                    </div>
                     <p className={styles.subtitle}>{project.description || '프로젝트 설명이 없습니다.'}</p>
                 </div>
 
