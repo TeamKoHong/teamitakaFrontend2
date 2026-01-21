@@ -227,6 +227,15 @@ $track-bg: #ececec;
   align-items: center;
 }
 
+.stepIndicatorContainer {
+  margin: 20px 0;
+  display: flex;
+  justify-content: flex-start;
+  width: 100%;
+  align-self: flex-start;
+}
+
+
 // Question Text
 .questionText {
   font-size: 18px;
@@ -251,28 +260,28 @@ $track-bg: #ececec;
 .categoryItem {
   background-color: $card-bg;
   border-radius: 20px;
-  padding: 16px 20px; // Standardized padding
+  padding: 16px 20px;
   display: flex;
   flex-direction: column;
-  gap: 12px; // Reduced gap from 16px
+  gap: 12px;
   box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.05);
 
   .categoryHeader {
     display: flex;
     flex-direction: column;
-    gap: 0; // Removed gap
-    align-items: flex-start; // Ensure left alignment
+    gap: 0;
+    align-items: flex-start;
 
     .categoryName {
-      font-size: 14px; // Increased from 13px
+      font-size: 14px;
       font-weight: 600;
       letter-spacing: -0.01em;
       color: $text-dark;
-      margin-bottom: 2px; // Add slight bottom margin
+      margin-bottom: 2px;
     }
 
     .categoryDescription {
-      font-size: 11px; // Increased from 10px
+      font-size: 11px;
       letter-spacing: -0.01em;
       color: $text-gray;
       line-height: 1.4;
@@ -385,10 +394,13 @@ $track-bg: #ececec;
 
 // Step 2 Styles
 .overallRatingSection {
-  @extend .categoryItem;
+  // Removed @extend .categoryItem to remove border/box
+  display: flex;
+  flex-direction: column;
   align-items: center;
   text-align: center;
   padding: 24px 16px;
+  gap: 12px;
 
   .overallLabel {
     font-size: 18px;
@@ -415,39 +427,32 @@ $track-bg: #ececec;
     margin-bottom: 16px;
     line-height: 1.4;
   }
+}
 
-  .textareaWrapper {
-    width: 100%;
-    position: relative;
-    border: 1px solid #d1cccb;
-    border-radius: 20px;
-    padding: 16px;
-    box-sizing: border-box;
-    min-height: 162px;
-    display: flex;
-    flex-direction: column;
+// Custom class for TextArea component to override internal styles
+.customTextArea {
+  // Target the inputWrapper class inside the TextArea component
+  // Since we can't target child modules easily without :global or similar if they are hashed,
+  // we rely on the fact that we're passing this className to the wrapper div or we might need a deep selector. 
+  // However, looking at TextArea.js, it puts className on the outer div container.
+  // The border is on .inputWrapper.
 
-    .roleInput {
-      width: 100%;
-      border: none;
-      resize: none;
-      font-size: 14px;
-      color: $text-dark;
-      font-family: inherit;
-      flex: 1;
-      outline: none;
+  // We need to target the .inputWrapper child of this container.
+  // Assuming the structure is <div className="... customTextArea"> <div className="... inputWrapper"> ... </div> </div>
 
-      &::placeholder {
-        color: #d1cccb;
-      }
-    }
+  // Since we don't know the hashed class name of inputWrapper here, strictly speaking, 
+  // we might need to use the `inputWrapper` prop if it existed, or rely on CSS cascade if we can.
+  // BUT, TextArea.js applies styles.inputWrapper.
 
-    .charCounter {
-      align-self: flex-end;
-      font-size: 12px;
-      color: #d1cccb;
-      margin-top: 8px;
-    }
+  // Let's try to override using a deep selector or simple class if it's not fully scoped (it is module scss though).
+  // Strategy: The constraint says "pass a custom className prop". 
+  // If TextArea.js implementation: <div className={`${styles.container} ${className || ''}`}>
+  // then we are styling the container. The border is on inputWrapper.
+  // We need to style `div > div`.
+
+  &>div {
+    border-width: 0.5px !important; // Reduce border width
+    border-color: #d1cccb;
   }
 }
 
@@ -461,11 +466,11 @@ $track-bg: #ececec;
 }
 
 .completedMemberCard {
-  width: 360px;
+  width: 327px; // Adjusted to match design
   background-color: #fffdfc;
   border: 1px solid #d1cccb;
   border-radius: 16px;
-  padding: 22px 24px;
+  padding: 20px 24px; // Adjusted padding
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
@@ -527,17 +532,20 @@ $track-bg: #ececec;
   margin: 10px 0 30px 0; // Adjusted margins
 
   .checkIconCircle {
-    width: 57px;
-    height: 57px;
+    width: 52px; // Adjusted size
+    height: 52px;
     border-radius: 50%;
     background-color: $primary-orange;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 24px;
-    font-size: 24px;
-    color: white;
-    margin: 0; // Removed margin
+    margin: 0;
+
+    // Ensure SVG centers correctly
+    svg {
+      width: 24px;
+      height: 24px;
+    }
   }
 
   .successMessage {
