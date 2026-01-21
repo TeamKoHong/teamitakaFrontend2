@@ -12,7 +12,7 @@
 }
 
 .visualRail {
-    height: 88px;
+    height: 60px; // Adjusted: content height (excluding safe area)
     background-color: #ffffff;
     box-shadow: 0 0 4px rgba(0, 0, 0, 0.25); // As per design intent
     width: 100%;
@@ -34,15 +34,11 @@
     width: 25%; // Distribute evenly
     display: flex;
     flex-direction: column;
-    justify-content: flex-end; // Bottom align inside the 88px rail
+    justify-content: center; // Center vertically
     align-items: center;
     text-decoration: none;
-    color: #9ca3af; // Inactive color (darker than #807b79)
-    // Dynamic Optical Compensation:
-    // Reduces padding-bottom when safe-area exists (env > 0) to avoid "floating" feel.
-    // Coefficient 0.5 means for 34px safe-area, we start shrinking padding to bring items lower.
-    // Clamped to minimum 12px to prevent touching the bottom edge of rail.
-    padding-bottom: max(12px, calc(20px - env(safe-area-inset-bottom) * 0.5));
+    color: #807B79; // Inactive color (Warm Gray)
+    padding-bottom: 0; // Reset padding for true centering
     gap: 6px;
     min-height: 44px; // Touch target
 
