@@ -59,9 +59,28 @@
     justify-content: center;
 }
 
-.chevronIcon {
-    width: 21px;
-    height: 22px;
-    color: #807C7C;
-    margin-right: 8px; // Added margin to move icon further inside
+.starIcon {
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+    padding: 8px; // Touch target: 24 + 16 = 40px ~ 44px
+    box-sizing: content-box; // Padding adds to size
+    margin-right: -8px; // Offset padding to align visual edge
+
+    &:hover {
+        transform: scale(1.1);
+    }
+
+    &:active {
+        transform: scale(0.95);
+    }
+
+    &.filled {
+        color: #FFD700; // Gold/Yellow
+    }
+
+    &.outline {
+        color: #D1CCCB;
+    }
 }
