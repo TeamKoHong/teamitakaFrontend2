@@ -334,6 +334,7 @@ function TeamMemberEvaluationPage() {
             remainingCount={remainingCount}
             onGoNext={handleGoNext}
             onGoHome={handleGoHome}
+            onClose={handleGoHome}
           />
         );
       default:

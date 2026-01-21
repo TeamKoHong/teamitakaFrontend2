@@ -221,6 +221,7 @@ $track-bg: #ececec;
 
 // Step Container
 .stepContainer {
+  position: relative; // Required for absolute-positioned topBackgroundBox
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -463,102 +464,132 @@ $track-bg: #ececec;
   }
 }
 
-// Step 3 Styles
-.topBackgroundBox {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 275px;
+// Step 3 Styles - Simplified flex-based layout
+
+// Top Section - White background with header, card and date
+.topSection {
+  width: calc(100% + 32px);
+  margin-left: -16px;
+  margin-right: -16px;
   background-color: #fffdfc;
   box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.15);
-  z-index: 0;
-}
-
-.successWrap {
-  position: relative;
-  z-index: 1;
-  width: 100%;
+  padding: 0 16px 16px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 30px; // Increased gap between card and message
+  gap: 8px;
+
+  // Modal header with title and close button
+  .modalHeader {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    height: 47px;
+    margin-bottom: 12px;
+
+    .headerTitle {
+      font-size: 17px;
+      font-weight: 600;
+      color: #140805;
+    }
+
+    .closeButton {
+      position: absolute;
+      right: 16px;
+      background: none;
+      border: none;
+      font-size: 22px;
+      cursor: pointer;
+      color: #140805;
+      padding: 0;
+      line-height: 1;
+    }
+  }
 }
 
+// Member card inside top section
 .completedMemberCard {
   width: 360px;
-  max-width: calc(100% - 30px); // Responsive safety
+  max-width: calc(100% - 30px);
   background-color: #fffdfc;
   border: 1px solid #d1cccb;
   border-radius: 16px;
-  padding: 22px 24px; // Figma spec
+  padding: 22px 24px;
   box-sizing: border-box;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  align-items: center;
   gap: 12px;
 
-  .cardHeader {
+  .memberAvatar {
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+  }
+
+  .memberTextContainer {
     display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    width: 100%;
-    padding-left: 67px; // Align with member name (55px avatar + 12px gap)
-    margin-bottom: 4px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    flex: 1;
 
     .roleTag {
       font-size: 12px;
       color: #807c7c;
       text-transform: capitalize;
     }
-  }
 
-  .cardBody {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-
-    .memberAvatar {
-      width: 55px;
-      height: 55px;
-      border-radius: 50%;
-      object-fit: cover;
-    }
-
-    .memberInfo {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-
-      .memberName {
-        font-size: 15px;
-        font-weight: 600;
-        color: $text-dark;
-      }
+    .memberName {
+      font-size: 15px;
+      font-weight: 600;
+      color: $text-dark;
     }
   }
 }
 
+// Evaluation date below card
 .evaluationDate {
-  width: 358px;
-  max-width: calc(100% - 32px); // Responsive safety
+  width: 360px;
+  max-width: calc(100% - 32px);
   font-size: 12px;
   color: #403e3e;
   text-align: right;
   text-transform: capitalize;
-  margin-top: -14px; // Adjust spacing after card
 }
 
-.successContent {
+// Bottom Section - Gray background with centered content
+.bottomSection {
+  width: calc(100% + 32px);
+  margin-left: -16px;
+  margin-right: -16px;
+  flex: 1;
+  min-height: calc(100vh - 280px);
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center; // Center content vertically if needed
-  gap: 12px; // Reduced gap
-  margin: 10px 0 30px 0; // Adjusted margins
+  justify-content: space-between;
+  padding: 24px 16px;
+  background-color: inherit; // Inherits #f2f2f2 from page
 
+  // Centered content wrapper (check icon + message)
+  .centeredContent {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: 1; // Takes up available space for centering
+    gap: 16px;
+  }
+
+  // Check icon styles  
   .checkIconCircle {
-    width: 52px; // Adjusted size
-    height: 52px;
+    width: 57px;
+    height: 57px;
     border-radius: 50%;
     background-color: $primary-orange;
     display: flex;
@@ -566,29 +597,29 @@ $track-bg: #ececec;
     justify-content: center;
     margin: 0;
 
-    // Ensure SVG centers correctly
     svg {
       width: 24px;
       height: 24px;
     }
   }
 
+  // Success message below check icon
   .successMessage {
     font-size: 18px;
     font-weight: 600;
-    color: $text-dark;
+    color: #140805;
     line-height: 140.98%;
-    margin-bottom: 0; // Removed margin
   }
-}
 
-.buttonBlock {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  align-items: center;
-  margin-top: 40px; // Pushed down further
+  // Button group at bottom of section
+  .buttonGroup {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    max-width: 358px;
+  }
 }
 
 .homeLink {
