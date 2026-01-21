@@ -47,10 +47,15 @@ export const createProject = async (projectData) => {
     return res.json();
 };
 
-export const getMyProjects = async ({ status = 'ongoing', limit = 10, offset = 0 } = {}) => {
+export const getMyProjects = async ({ status = 'ongoing', limit = 10, offset = 0, isFavorite, evaluation_status } = {}) => {
     const { API_BASE_URL, headers } = getApiConfig();
     const token = localStorage.getItem('authToken');
-    const qs = new URLSearchParams({ status, limit: String(limit), offset: String(offset) }).toString();
+
+    const params = { status, limit: String(limit), offset: String(offset) };
+    if (isFavorite !== undefined) params.isFavorite = String(isFavorite);
+    if (evaluation_status) params.evaluation_status = evaluation_status;
+
+    const qs = new URLSearchParams(params).toString();
     const res = await fetch(`${API_BASE_URL}/api/projects/mine?${qs}`, {
         headers: { ...headers, Authorization: `Bearer ${token}` },
     });
@@ -65,6 +70,54 @@ export const getMyProjects = async ({ status = 'ongoing', limit = 10, offset = 0
         throw err;
     }
     return res.json(); // { success, items, page }
+};
+
+/**
+ * Fetches favorite projects
+ * @param {Object} options - Pagination options
+ * @returns {Promise<Object>} Project list
+ */
+export const getFavoriteProjects = async (options = {}) => {
+    return getMyProjects({ ...options, isFavorite: true });
+};
+
+/**
+ * Toggles project favorite status
+ * @param {string} projectId - Project UUID
+ * @returns {Promise<Object>} Updated favorite status
+ */
+export const toggleProjectFavorite = async (projectId) => {
+    const { API_BASE_URL, headers } = getApiConfig();
+    const token = localStorage.getItem('authToken');
+
+    if (!token) {
+        const err = new Error('UNAUTHORIZED');
+        err.code = 'UNAUTHORIZED';
+        throw err;
+    }
+
+    const res = await fetch(`${API_BASE_URL}/api/projects/${projectId}/favorite`, {
+        method: 'PUT',
+        headers: {
+            ...headers,
+            Authorization: `Bearer ${token}`,
+        },
+    });
+
+    if (res.status === 401 || res.status === 403) {
+        const err = new Error('UNAUTHORIZED');
+        err.code = 'UNAUTHORIZED';
+        throw err;
+    }
+
+    if (!res.ok) {
+        const errorData = await res.json();
+        const err = new Error(errorData.error || 'Failed to toggle favorite');
+        err.code = 'SERVER_ERROR';
+        throw err;
+    }
+
+    return res.json();
 };
 
 /**
@@ -477,7 +530,7 @@ export const createProjectTodo = async (projectId, content) => {
     }
 
     const requestBody = { title: content.trim() };
-    
+
     const res = await fetch(`${API_BASE_URL}/api/projects/${projectId}/todo`, {
         method: 'POST',
         headers: {
@@ -534,9 +587,9 @@ export const getProjectActivityLogs = async (projectId, limit = 5, offset = 0) =
         throw err;
     }
 
-    const qs = new URLSearchParams({ 
-        limit: String(limit), 
-        offset: String(offset) 
+    const qs = new URLSearchParams({
+        limit: String(limit),
+        offset: String(offset)
     }).toString();
 
     const res = await fetch(`${API_BASE_URL}/api/projects/${projectId}/activity-log?${qs}`, {

@@ -229,7 +229,7 @@ $track-bg: #ececec;
 }
 
 .stepIndicatorContainer {
-  margin: 20px 0;
+  margin: 12px 0; // Reduced from 20px
   display: flex;
   justify-content: flex-start;
   width: 100%;
@@ -243,7 +243,7 @@ $track-bg: #ececec;
   font-weight: 600;
   line-height: 140.98%;
   color: $text-dark;
-  margin: 20px 0 10px;
+  margin: 12px 0 10px; // Reduced top margin
   text-align: left;
   width: 100%;
 }
@@ -253,146 +253,114 @@ $track-bg: #ececec;
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 12px; // Reduced from 16px
   margin-bottom: 30px;
 }
 
-// Category Item (Card)
+// Category Item
 .categoryItem {
-  background-color: $card-bg;
-  border-radius: 20px;
-  padding: 16px 20px;
   display: flex;
   flex-direction: column;
-  gap: 8px; // Reduced from 12px for tighter spacing
-  box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.05);
+  gap: 8px;
+  padding: 12px 16px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  border: 1px solid #ececec;
+}
 
-  .categoryHeader {
-    display: flex;
-    flex-direction: column;
-    gap: 0;
-    align-items: flex-start;
+.categoryHeader {
+  display: flex;
+  flex-direction: column; // Stack title and description
+  align-items: flex-start;
+  gap: 4px; // Reduce gap for tighter stacking
 
-    .categoryName {
-      font-size: 14px;
-      font-weight: 600;
-      letter-spacing: -0.01em;
-      color: $text-dark;
-      margin-bottom: 2px;
-    }
+  .categoryName {
+    font-size: 13px; // Requested: 13px
+    font-weight: 600; // Requested: semibold
+    color: #140805;
+  }
 
-    .categoryDescription {
-      font-size: 11px;
-      letter-spacing: -0.01em;
-      color: $text-gray;
-      line-height: 1.4;
-    }
+  .categoryDescription {
+    font-size: 10px; // Requested: 10px
+    font-weight: 400; // Requested: regular
+    color: #807c7c;
   }
 }
 
-// Rating Input (Custom Slider)
+// Rating Input Styles
 .ratingInputContainer {
   width: 100%;
-  position: relative;
-  height: 35px;
-
-  .ratingTrackArea {
-    position: relative;
-    width: 100%;
-    height: 20px;
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-    touch-action: none;
-  }
-
-  .ratingTrackBackground {
-    position: absolute;
-    left: 0;
-    width: 100%;
-    height: 7px;
-    background-color: $track-bg;
-    border-radius: 50px;
-  }
-
-  .ratingTrackFill {
-    position: absolute;
-    left: 0;
-    height: 7px;
-    background-color: $primary-orange;
-    border-radius: 50px;
-    pointer-events: none;
-  }
-
-  .ratingKnob {
-    position: absolute;
-    width: 17px;
-    height: 17px;
-    background-color: $primary-orange;
-    border-radius: 50%;
-    box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.25);
-    transform: translateX(-50%);
-    pointer-events: none;
-    top: 1.5px;
-  }
-
-  .ratingLabels {
-    position: absolute;
-    top: 20px;
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    padding: 0 2px;
-
-    .ratingLabel {
-      font-size: 10px;
-      color: $text-gray;
-      cursor: pointer;
-      width: 20px;
-      text-align: center;
-
-      &.active {
-        color: $primary-orange;
-        font-weight: bold;
-      }
-    }
-  }
-}
-
-// Button
-.buttonContainer {
-  width: 100%;
   display: flex;
-  justify-content: center;
-  margin-top: 20px;
+  flex-direction: column;
+  gap: 8px;
+  padding: 0 10px; // Provide some side padding for knob overhang
 }
 
-.nextButton,
-.button {
+.ratingTrackArea {
+  position: relative;
   width: 100%;
-  max-width: 358px;
-  height: 59px;
-  background-color: $primary-orange;
-  color: #fffdfc;
-  border: none;
-  border-radius: 8px;
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
+  height: 24px;
   display: flex;
   align-items: center;
-  justify-content: center;
+  cursor: pointer;
+  touch-action: none;
+}
 
-  &:disabled {
-    background-color: #dadada;
-    color: #807c7c;
-    cursor: not-allowed;
-  }
+.ratingTrackBackground {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 6px;
+  background-color: #ECECEC;
+  border-radius: 3px;
+}
 
-  &.secondary {
-    background-color: #dadada;
-    color: $text-gray;
+.ratingTrackFill {
+  position: absolute;
+  left: 0;
+  height: 6px;
+  background-color: #F76241;
+  border-radius: 3px;
+}
+
+.ratingKnob {
+  position: absolute;
+  top: 50%;
+  width: 20px;
+  height: 20px;
+  background-color: #FFFFFF;
+  border: 2px solid #F76241;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+}
+
+.ratingLabels {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin-top: 4px;
+}
+
+.ratingLabel {
+  font-size: 14px;
+  color: #807C7C;
+  cursor: pointer;
+  text-align: center;
+  width: 24px; // Ensure touch target
+  transition: color 0.2s;
+
+  &.active {
+    color: #F76241;
+    font-weight: 700;
   }
+}
+
+// Button Styles
+.button {
+  // Basic shared button styles if any specific to this page
+  // Assuming DesignSystem usage but restoring if it was custom
 }
 
 // Step 2 Styles
@@ -400,10 +368,10 @@ $track-bg: #ececec;
   // Removed @extend .categoryItem to remove border/box
   display: flex;
   flex-direction: column;
-  align-items: flex-start; // Changed to Left align
-  text-align: left; // Changed to Left align
+  align-items: flex-start;
+  text-align: left;
   padding: 0px 16px;
-  gap: 4px; // Reduced gap from 8px to 4px
+  gap: 4px;
 
   .overallLabel {
     font-size: 18px;
@@ -421,48 +389,7 @@ $track-bg: #ececec;
   }
 }
 
-.roleSection {
-  // No box styling - just content spacing to match Figma
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  padding: 0px 16px;
-  gap: 16px;
-
-  .roleLabel {
-    font-size: 16px;
-    font-weight: 600;
-    color: $text-dark;
-    line-height: 1.4;
-  }
-}
-
-// Custom class for TextArea component to override internal styles
-.customTextArea {
-  // Target the inputWrapper class inside the TextArea component
-  // Since we can't target child modules easily without :global or similar if they are hashed,
-  // we rely on the fact that we're passing this className to the wrapper div or we might need a deep selector. 
-  // However, looking at TextArea.js, it puts className on the outer div container.
-  // The border is on .inputWrapper.
-
-  // We need to target the .inputWrapper child of this container.
-  // Assuming the structure is <div className="... customTextArea"> <div className="... inputWrapper"> ... </div> </div>
-
-  // Since we don't know the hashed class name of inputWrapper here, strictly speaking, 
-  // we might need to use the `inputWrapper` prop if it existed, or rely on CSS cascade if we can.
-  // BUT, TextArea.js applies styles.inputWrapper.
-
-  // Let's try to override using a deep selector or simple class if it's not fully scoped (it is module scss though).
-  // Strategy: The constraint says "pass a custom className prop". 
-  // If TextArea.js implementation: <div className={`${styles.container} ${className || ''}`}>
-  // then we are styling the container. The border is on inputWrapper.
-  // We need to style `div > div`.
-
-  &>div {
-    border-width: 0.5px !important; // Reduce border width
-    border-color: #d1cccb;
-  }
-}
+// ... (Role Section unchanged) ...
 
 // Step 3 Styles - Simplified flex-based layout
 
@@ -473,11 +400,11 @@ $track-bg: #ececec;
   margin-right: -16px;
   background-color: #fffdfc;
   box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.15);
-  padding: 0 16px 16px;
+  padding: 0 16px 20px; // Increased bottom padding
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
+  gap: 12px; // Increased gap between elements
 
   // Modal header with title and close button
   .modalHeader {
@@ -486,8 +413,8 @@ $track-bg: #ececec;
     justify-content: center;
     align-items: center;
     position: relative;
-    height: 47px;
-    margin-bottom: 12px;
+    height: 56px; // Slightly taller for better spacing
+    margin-bottom: 4px; // Reduced bottom margin
 
     .headerTitle {
       font-size: 17px;
@@ -511,55 +438,75 @@ $track-bg: #ececec;
 
 // Member card inside top section
 .completedMemberCard {
-  width: 360px;
-  max-width: calc(100% - 30px);
+  width: 100%;
+  max-width: 420px; // Slightly wider
   background-color: #fffdfc;
   border: 1px solid #d1cccb;
-  border-radius: 16px;
-  padding: 22px 24px;
+  border-radius: 20px; // More rounded corners
+  padding: 20px 24px; // Adjusted padding
   box-sizing: border-box;
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 12px;
 
   .memberAvatar {
-    width: 55px;
-    height: 55px;
+    width: 63px;
+    height: 63px;
     border-radius: 50%;
     object-fit: cover;
-    flex-shrink: 0;
+    margin-right: 16px;
+    background-color: #fcece9; // Placeholder color
   }
 
   .memberTextContainer {
     display: flex;
     flex-direction: column;
+    justify-content: center;
     align-items: flex-start;
-    gap: 4px;
     flex: 1;
+    gap: 2px;
+  }
 
-    .roleTag {
-      font-size: 12px;
-      color: #807c7c;
-      text-transform: capitalize;
-    }
+  .roleTag {
+    font-size: 13px;
+    color: #807c7c;
+    font-weight: 500;
+    line-height: 1.2;
+  }
 
-    .memberName {
-      font-size: 15px;
-      font-weight: 600;
-      color: $text-dark;
+  .memberName {
+    font-size: 18px;
+    font-weight: 700;
+    color: #140805;
+    line-height: 1.2;
+    margin-bottom: 4px;
+  }
+
+  .starRating {
+    display: flex;
+    align-items: center;
+
+    // Override star size for Step 3 completion card
+    :global(.RatingStars_starIcon__TQVGM) {
+      font-size: 23.6px !important;
+      width: 23.6px;
+      height: 23.6px;
     }
   }
 }
 
 // Evaluation date below card
 .evaluationDate {
-  width: 360px;
-  max-width: calc(100% - 32px);
-  font-size: 12px;
-  color: #403e3e;
+  width: 100%;
+  max-width: 420px;
+  font-size: 13px; // Slightly larger
+  color: #666666; // Slightly lighter gray
   text-align: right;
-  text-transform: capitalize;
+  margin-top: -8px; // Pull closer to card
+  // User wanted position fix. Usually right aligned below card is standard, 
+  // but if user says "position fix", maybe they want it inside? 
+  // For now keeping right aligned but ensuring margin.
+  margin-top: 4px;
 }
 
 // Bottom Section - Gray background with centered content
@@ -573,8 +520,8 @@ $track-bg: #ececec;
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
-  padding: 24px 16px;
-  background-color: inherit; // Inherits #f2f2f2 from page
+  padding: 24px 16px 34px; // Adjusted padding-bottom for Safari balance
+  background-color: inherit;
 
   // Centered content wrapper (check icon + message)
   .centeredContent {
@@ -582,8 +529,8 @@ $track-bg: #ececec;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    flex: 1; // Takes up available space for centering
-    gap: 16px;
+    flex: 1;
+    gap: 4px; // Reduced gap per QA (8px -> 4px)
   }
 
   // Check icon styles  

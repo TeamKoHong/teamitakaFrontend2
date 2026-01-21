@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { IoStar, IoStarOutline } from 'react-icons/io5';
+import { IoStar, IoStarOutline, IoChevronForward } from 'react-icons/io5';
 import './CompletedProjectCard.scss';
-import nextArrow from '../../../assets/icons/next_arrow.svg';
+// import { ReactComponent as NextArrow } from '../../../assets/icons/next_arrow.svg';
 
 // 더미 아바타 이미지 (실제 프로젝트에서는 API에서 가져올 수 있음)
 const DEFAULT_AVATARS = [
@@ -10,6 +10,9 @@ const DEFAULT_AVATARS = [
   'https://api.dicebear.com/7.x/avataaars/svg?seed=3',
   'https://api.dicebear.com/7.x/avataaars/svg?seed=4',
 ];
+
+// Hardcoded SVG to ensure visibility
+import rightArrow from '../../../assets/icons/right-arrow.svg';
 
 const CompletedProjectCard = ({ project, onClick }) => {
   const isPending = project.evaluation_status === 'PENDING';
@@ -82,9 +85,9 @@ const CompletedProjectCard = ({ project, onClick }) => {
         <div className="completed-project-info">
           <div className="title-row">
             <h3 className="project-title">{project.title}</h3>
-            <img src={nextArrow} alt="" className="next-arrow" />
+            <img src={rightArrow} alt="arrow" className="next-arrow" />
           </div>
-        
+
           {/* 설명 텍스트 */}
           <p className="project-description">{description}</p>
         </div>

@@ -38,6 +38,7 @@ function BottomNav() {
         <div className={styles.navItems}>
           {navItems.map(({ path, label, icon: Icon }) => {
             const isActive = isTabActive(path);
+
             return (
               <NavLink
                 key={path}
