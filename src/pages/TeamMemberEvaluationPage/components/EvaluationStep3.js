@@ -10,54 +10,58 @@ const EvaluationStep3 = ({
   evaluationData,
   nextPendingMember,
   onGoNext,
-  onGoHome
+  onGoHome,
+  onClose
 }) => {
   const today = formatDate(new Date().toISOString(), 'dot');
 
   return (
     <div className={styles.stepContainer}>
-      {/* Top Background Box - Figma Design */}
-      <div className={styles.topBackgroundBox} />
+      {/* White Section - Header + Card + Date */}
+      <div className={styles.topSection}>
+        {/* Modal Header */}
+        <div className={styles.modalHeader}>
+          <span className={styles.headerTitle}>팀원 평가</span>
+          <button className={styles.closeButton} onClick={onClose || onGoHome}>
+            ✕
+          </button>
+        </div>
 
-      <div className={styles.successWrap}>
-        {/* Completed Member Card */}
         {memberData && (
           <>
             <div className={styles.completedMemberCard}>
-              <div className={styles.cardHeader}>
+              <img src={memberData.avatar} alt={memberData.name} className={styles.memberAvatar} />
+              <div className={styles.memberTextContainer}>
                 <div className={styles.roleTag}>담당 업무</div>
-              </div>
-              <div className={styles.cardBody}>
-                <img src={memberData.avatar} alt={memberData.name} className={styles.memberAvatar} />
-                <div className={styles.memberInfo}>
-                  <div className={styles.memberName}>{memberData.name}</div>
-                  <div className={styles.starRating}>
-                    <RatingStars value={evaluationData?.overallRating || 0} readOnly size="md" />
-                  </div>
+                <div className={styles.memberName}>{memberData.name}</div>
+                <div className={styles.starRating}>
+                  <RatingStars value={evaluationData?.overallRating || 0} readOnly size="md" />
                 </div>
               </div>
             </div>
 
-            {/* Evaluation Date - Separate element per Figma */}
             <div className={styles.evaluationDate}>
               {today} (평가날짜)
             </div>
           </>
         )}
+      </div>
 
-        {/* Success Message */}
-        <div className={styles.successContent}>
-          <div className={styles.checkIconCircle}>
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M20 6L9 17L4 12" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
+      {/* Gray Section - Check Icon + Message + Buttons */}
+      <BottomCTA>
+        <div className={styles.bottomSection}>
+          {/* Centered content: Check Icon and Message */}
+          <div className={styles.centeredContent}>
+            <div className={styles.checkIconCircle}>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M20 6L9 17L4 12" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </div>
+            <div className={styles.successMessage}>팀원 평가를 완료했어요!</div>
           </div>
-          <div className={styles.successMessage}>팀원 평가를 완료했어요!</div>
-        </div>
 
-        {/* Buttons */}
-        <BottomCTA>
-          <div className={styles.buttonBlock}>
+          {/* Bottom buttons */}
+          <div className={styles.buttonGroup}>
             {nextPendingMember ? (
               <Button
                 variant="primary"
@@ -85,8 +89,8 @@ const EvaluationStep3 = ({
               프로젝트 관리 홈으로
             </button>
           </div>
-        </BottomCTA>
-      </div>
+        </div>
+      </BottomCTA>
     </div>
   );
 };
