@@ -16,24 +16,33 @@ const EvaluationStep3 = ({
 
   return (
     <div className={styles.stepContainer}>
+      {/* Top Background Box - Figma Design */}
+      <div className={styles.topBackgroundBox} />
+
       <div className={styles.successWrap}>
         {/* Completed Member Card */}
         {memberData && (
-          <div className={styles.completedMemberCard}>
-            <div className={styles.cardHeader}>
-              <div className={styles.roleTag}>담당 업무</div>
-              <div className={styles.evalDate}>{today} (평가날짜)</div>
-            </div>
-            <div className={styles.cardBody}>
-              <img src={memberData.avatar} alt={memberData.name} className={styles.memberAvatar} />
-              <div className={styles.memberInfo}>
-                <div className={styles.memberName}>{memberData.name}</div>
-                <div className={styles.starRating}>
-                  <RatingStars value={evaluationData?.overallRating || 0} readOnly size="md" />
+          <>
+            <div className={styles.completedMemberCard}>
+              <div className={styles.cardHeader}>
+                <div className={styles.roleTag}>담당 업무</div>
+              </div>
+              <div className={styles.cardBody}>
+                <img src={memberData.avatar} alt={memberData.name} className={styles.memberAvatar} />
+                <div className={styles.memberInfo}>
+                  <div className={styles.memberName}>{memberData.name}</div>
+                  <div className={styles.starRating}>
+                    <RatingStars value={evaluationData?.overallRating || 0} readOnly size="md" />
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
+
+            {/* Evaluation Date - Separate element per Figma */}
+            <div className={styles.evaluationDate}>
+              {today} (평가날짜)
+            </div>
+          </>
         )}
 
         {/* Success Message */}

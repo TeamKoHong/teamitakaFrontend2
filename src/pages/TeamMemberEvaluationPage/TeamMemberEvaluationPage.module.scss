@@ -464,7 +464,20 @@ $track-bg: #ececec;
 }
 
 // Step 3 Styles
+.topBackgroundBox {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 275px;
+  background-color: #fffdfc;
+  box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.15);
+  z-index: 0;
+}
+
 .successWrap {
+  position: relative;
+  z-index: 1;
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -473,11 +486,12 @@ $track-bg: #ececec;
 }
 
 .completedMemberCard {
-  width: 327px; // Adjusted to match design
+  width: 360px;
+  max-width: calc(100% - 30px); // Responsive safety
   background-color: #fffdfc;
   border: 1px solid #d1cccb;
   border-radius: 16px;
-  padding: 20px 24px; // Adjusted padding
+  padding: 22px 24px; // Figma spec
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
@@ -485,22 +499,15 @@ $track-bg: #ececec;
 
   .cardHeader {
     display: flex;
-    justify-content: space-between;
-    align-items: flex-end; // Bottom align like in design
+    justify-content: flex-start;
+    align-items: center;
     width: 100%;
     padding-left: 67px; // Align with member name (55px avatar + 12px gap)
-    margin-bottom: 4px; // Add small spacing between header and body
+    margin-bottom: 4px;
 
     .roleTag {
       font-size: 12px;
       color: #807c7c;
-      text-transform: capitalize;
-    }
-
-    .evalDate {
-      font-size: 12px;
-      color: #403e3e;
-      text-align: right;
       text-transform: capitalize;
     }
   }
@@ -529,6 +536,16 @@ $track-bg: #ececec;
       }
     }
   }
+}
+
+.evaluationDate {
+  width: 358px;
+  max-width: calc(100% - 32px); // Responsive safety
+  font-size: 12px;
+  color: #403e3e;
+  text-align: right;
+  text-transform: capitalize;
+  margin-top: -14px; // Adjust spacing after card
 }
 
 .successContent {
