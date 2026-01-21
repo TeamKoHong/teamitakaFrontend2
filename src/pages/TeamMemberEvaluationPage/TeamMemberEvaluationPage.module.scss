@@ -421,14 +421,17 @@ $track-bg: #ececec;
 }
 
 .roleSection {
-  @extend .categoryItem;
-  padding: 16px;
+  // No box styling - just content spacing to match Figma
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 0px 16px;
+  gap: 16px;
 
   .roleLabel {
     font-size: 16px;
     font-weight: 600;
     color: $text-dark;
-    margin-bottom: 16px;
     line-height: 1.4;
   }
 }
