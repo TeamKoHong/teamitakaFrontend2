@@ -2,12 +2,13 @@ import React from 'react';
 import styles from './PageLayout.module.scss';
 import DefaultHeader from '../../Common/DefaultHeader';
 
-const PageLayout = ({ title, onBack, onClose, children }) => {
+const PageLayout = ({ title, onBack, onClose, backPath, children }) => {
     return (
         <div className={styles.pageContainer}>
             <DefaultHeader
                 title={title}
                 onBack={onBack}
+                backPath={backPath}
                 rightElement={onClose && (
                     <button className={styles.closeButton} onClick={onClose} aria-label="Close">
                         ✕

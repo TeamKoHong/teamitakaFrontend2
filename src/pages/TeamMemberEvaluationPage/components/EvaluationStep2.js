@@ -48,6 +48,7 @@ const EvaluationStep2 = ({
             onChange={(e) => onRoleDescriptionChange(e.target.value)}
             maxLength={100}
             showCount
+            className={styles.customTextArea}
           />
         </div>
       </div>
