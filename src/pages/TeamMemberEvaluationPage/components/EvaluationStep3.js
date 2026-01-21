@@ -32,8 +32,10 @@ const EvaluationStep3 = ({
             <div className={styles.completedMemberCard}>
               <img src={memberData.avatar} alt={memberData.name} className={styles.memberAvatar} />
               <div className={styles.memberTextContainer}>
-                <div className={styles.roleTag}>담당 업무</div>
-                <div className={styles.memberName}>{memberData.name}</div>
+                <div className={styles.headerRow}>
+                  <div className={styles.memberName}>{memberData.name}</div>
+                  <div className={styles.roleTag}>{memberData.role || '팀원'}</div>
+                </div>
                 <div className={styles.starRating}>
                   <RatingStars value={evaluationData?.overallRating || 0} readOnly size="md" />
                 </div>
