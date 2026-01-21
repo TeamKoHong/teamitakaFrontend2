@@ -346,6 +346,7 @@ function TeamMemberEvaluationPage() {
       title="팀원 평가"
       onBack={currentStep < 3 ? handleBack : undefined}
       onClose={currentStep === 3 ? handleGoHome : undefined}
+      backPath={currentStep === 3 ? null : undefined}
     >
       {renderCurrentStep()}
     </PageLayout>
