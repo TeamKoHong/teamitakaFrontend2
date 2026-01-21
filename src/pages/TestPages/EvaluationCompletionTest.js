@@ -46,33 +46,14 @@ const EvaluationCompletionTest = () => {
             backgroundColor: '#f2f2f2',
             position: 'relative'
         }}>
-            {/* 테스트 모드 표시 배너 */}
-            <div style={{
-                position: 'fixed',
-                top: 0,
-                left: 0,
-                right: 0,
-                backgroundColor: '#FF6B6B',
-                color: 'white',
-                padding: '8px',
-                textAlign: 'center',
-                fontSize: '14px',
-                fontWeight: '600',
-                zIndex: 9999,
-            }}>
-                🧪 테스트 모드 - 평가 완료 화면 미리보기
-            </div>
-
-            {/* 실제 컴포넌트 (테스트 배너 높이만큼 아래로) */}
-            <div style={{ paddingTop: '32px' }}>
-                <EvaluationStep3
-                    memberData={mockMemberData}
-                    evaluationData={mockEvaluationData}
-                    nextPendingMember={true}  // true로 설정하면 "다음 팀원" 버튼 표시
-                    onGoNext={handleGoNext}
-                    onGoHome={handleGoHome}
-                />
-            </div>
+            <EvaluationStep3
+                memberData={mockMemberData}
+                evaluationData={mockEvaluationData}
+                nextPendingMember={true}
+                onGoNext={handleGoNext}
+                onGoHome={handleGoHome}
+                onClose={handleGoHome}
+            />
         </div>
     );
 };

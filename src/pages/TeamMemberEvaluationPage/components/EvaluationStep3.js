@@ -10,14 +10,23 @@ const EvaluationStep3 = ({
   evaluationData,
   nextPendingMember,
   onGoNext,
-  onGoHome
+  onGoHome,
+  onClose
 }) => {
   const today = formatDate(new Date().toISOString(), 'dot');
 
   return (
     <div className={styles.stepContainer}>
-      {/* White Section - Card + Date */}
+      {/* White Section - Header + Card + Date */}
       <div className={styles.topSection}>
+        {/* Modal Header */}
+        <div className={styles.modalHeader}>
+          <span className={styles.headerTitle}>팀원 평가</span>
+          <button className={styles.closeButton} onClick={onClose || onGoHome}>
+            ✕
+          </button>
+        </div>
+
         {memberData && (
           <>
             <div className={styles.completedMemberCard}>
