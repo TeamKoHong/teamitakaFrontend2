@@ -19,7 +19,7 @@ const EvaluationStep3 = ({
     <div className={styles.stepContainer}>
       {/* White Section - Header + Card + Date */}
       <div className={styles.topSection}>
-        {/* Modal Header */}
+        {/* Integrated Modal Header */}
         <div className={styles.modalHeader}>
           <span className={styles.headerTitle}>팀원 평가</span>
           <button className={styles.closeButton} onClick={onClose || onGoHome}>
@@ -32,10 +32,9 @@ const EvaluationStep3 = ({
             <div className={styles.completedMemberCard}>
               <img src={memberData.avatar} alt={memberData.name} className={styles.memberAvatar} />
               <div className={styles.memberTextContainer}>
-                <div className={styles.headerRow}>
-                  <div className={styles.memberName}>{memberData.name}</div>
-                  <div className={styles.roleTag}>{memberData.role || '팀원'}</div>
-                </div>
+                {/* Role Label / Role */}
+                <div className={styles.roleTag}>담당 업무</div>
+                <div className={styles.memberName}>{memberData.name}</div>
                 <div className={styles.starRating}>
                   <RatingStars value={evaluationData?.overallRating || 0} readOnly size="md" />
                 </div>

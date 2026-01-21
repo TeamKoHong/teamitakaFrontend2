@@ -344,10 +344,11 @@ function TeamMemberEvaluationPage() {
 
   return (
     <PageLayout
-      title="팀원 평가"
+      title={currentStep === 3 ? "" : "팀원 평가"}
       onBack={currentStep < 3 ? handleBack : undefined}
-      onClose={currentStep === 3 ? handleGoHome : undefined}
+      onClose={currentStep === 3 ? undefined : undefined}
       backPath={currentStep === 3 ? null : undefined}
+      hideHeader={currentStep === 3}
     >
       {renderCurrentStep()}
     </PageLayout>
