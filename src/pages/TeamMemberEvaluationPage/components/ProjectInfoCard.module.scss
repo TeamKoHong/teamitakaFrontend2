@@ -3,8 +3,8 @@
 .projectInfoCard {
     width: 100%;
     background-color: $card-bg;
-    border-radius: $border-radius-card;
-    padding: 16px;
+    border-radius: 8px;
+    padding: 24px 16px 8px;
     box-sizing: border-box;
     margin-bottom: 16px;
     display: flex;
@@ -22,7 +22,7 @@
     background-size: cover;
     background-position: center;
     position: relative;
-    padding: 16px;
+    padding: 23px 26px;
     box-sizing: border-box;
     margin-bottom: 20px;
     display: flex;
@@ -42,12 +42,12 @@
 .projectInfo {
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 16px;
 }
 
 .projectTitle {
-    font-size: $font-size-h2;
-    font-weight: $font-weight-bold;
+    font-size: 16px;
+    font-weight: 600;
     color: $text-primary;
     margin-bottom: 8px;
 }
@@ -55,25 +55,25 @@
 .infoRow {
     display: flex;
     align-items: center;
-    gap: 6px;
-    font-size: $font-size-caption;
-    color: $text-secondary;
-    padding-left: 4px; // Added indentation
+    gap: 8px;
+    font-size: 11px;
+    color: #403e3e;
+    padding-left: 12px; // Increased indentation
 }
 
 .dDayBadge {
     position: absolute;
     bottom: 16px;
     right: 16px;
-    width: 50px;
-    height: 50px;
+    width: 64px;
+    height: 64px;
     border-radius: 50%;
     background-color: $white;
-    border: 2px solid $primary-color;
+    border: 2px solid #f76241;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: $primary-color;
+    color: #f76241;
     font-weight: $font-weight-bold;
     font-size: 14px;
     box-shadow: $shadow-sm;
@@ -90,7 +90,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 4px;
+    gap: 8px;
     cursor: pointer;
     transition: opacity 0.2s;
 
@@ -156,15 +156,15 @@
     gap: 2px; // Reduced spacing
 
     .memberName {
-        font-size: $font-size-body;
-        font-weight: $font-weight-bold;
+        font-size: 14px;
+        font-weight: 600;
         color: $text-primary;
         line-height: 1.2; // tighter line height
     }
 
     .memberRole {
-        font-size: 11px; // Increased from tiny (likely 10px) to match visual hierarchy
-        color: $text-tertiary;
+        font-size: 12px;
+        color: #403e3e;
         line-height: 1.2;
     }
 }
