@@ -5,7 +5,7 @@
   position: relative;
   background: #fff;
   border-radius: 20px; // Updated radius (was 10px)
-  padding: 16px; // Updated padding
+  padding: 16px 20px 16px 16px; // Updated padding (Right: 20px)
   width: calc(100% - 8px); // Width - 8px (4px margin + 16px parent = 20px)
   margin: 10px auto; // 10px top/bottom margin
 
@@ -82,6 +82,7 @@
         width: 7px;
         height: 13px;
         flex-shrink: 0;
+        margin-right: 4px; // Add slight spacing from absolute edge if needed, but padding handles most
       }
     }
 
@@ -126,7 +127,7 @@
   .card-footer {
     position: absolute;
     bottom: 12px;
-    right: 16px;
+    right: 20px; // Match card padding
   }
 
   .team-avatars {
@@ -204,7 +205,9 @@
         flex-shrink: 0;
         cursor: pointer;
         transition: transform 0.2s ease;
-        margin-right: 8px; // Added margin to move icon further inside
+        margin-right: 4px; // Slight inner spacing
+        padding: 4px; // Increase touch area
+        box-sizing: content-box; // Padding adds to size
 
         &:hover {
           transform: scale(1.1);
