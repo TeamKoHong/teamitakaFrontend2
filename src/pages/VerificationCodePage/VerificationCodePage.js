@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
-import ProgressIndicator from '../../components/auth/ProgressIndicator';
+import StepIndicator from '../../components/DesignSystem/Feedback/StepIndicator';
 import VerificationCodeInput from '../../components/auth/VerificationCodeInput';
 import Button from '../../components/DesignSystem/Button/Button';
 import useTimer from '../../hooks/useTimer';
@@ -105,7 +105,7 @@ function VerificationCodePage() {
 
             {/* 메인 컨텐츠 */}
             <div className={styles.content}>
-                <ProgressIndicator currentStep={2} totalSteps={5} />
+                <StepIndicator currentStep={2} totalSteps={5} />
 
                 <div className={styles.description}>
                     <p>문자로 전송된</p>
