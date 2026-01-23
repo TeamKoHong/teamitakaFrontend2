@@ -48,21 +48,45 @@ const toE164Format = (phone) => {
  * reCAPTCHA 초기화
  */
 const setupRecaptcha = () => {
-    if (!window.recaptchaVerifier) {
+    // 1. Clear existing verifier if present
+    if (window.recaptchaVerifier) {
+        try {
+            window.recaptchaVerifier.clear();
+        } catch (e) {
+            console.warn('⚠️ RecaptchaVerifier clear failed:', e);
+        }
+        window.recaptchaVerifier = null;
+    }
+
+    // 2. Check for container element
+    const container = document.getElementById('recaptcha-container');
+    if (!container) {
+        console.error('❌ recaptcha-container element not found');
+        return null;
+    }
+
+    // 3. Create new verifier
+    try {
         window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
-            size: 'normal', // visible 모드 (더 안정적)
+            size: 'normal', // visible mode
             callback: () => {
-                console.log('✅ reCAPTCHA 검증 완료');
+                console.log('✅ reCAPTCHA solved');
             },
             'expired-callback': () => {
-                console.log('⚠️ reCAPTCHA 만료됨');
+                console.log('⚠️ reCAPTCHA expired');
                 if (window.recaptchaVerifier) {
-                    window.recaptchaVerifier.clear();
+                    try {
+                        window.recaptchaVerifier.clear();
+                    } catch (e) { }
                     window.recaptchaVerifier = null;
                 }
             }
         });
+    } catch (e) {
+        console.error('❌ RecaptchaVerifier creation failed:', e);
+        return null;
     }
+
     return window.recaptchaVerifier;
 };
 
@@ -130,6 +154,9 @@ export const requestPhoneVerification = async (formData) => {
     // 🔥 Firebase Phone Auth
     try {
         const appVerifier = setupRecaptcha();
+        if (!appVerifier) {
+            throw new Error('reCAPTCHA initialization failed. Please refresh the page.');
+        }
         const result = await signInWithPhoneNumber(auth, formattedPhone, appVerifier);
         confirmationResult = result;
 
