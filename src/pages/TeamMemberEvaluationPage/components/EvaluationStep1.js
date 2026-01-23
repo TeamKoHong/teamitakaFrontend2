@@ -30,7 +30,7 @@ const EvaluationStep1 = ({
       <ProjectInfoCard projectData={projectData} memberData={memberData} onMemberSelect={onMemberSelect} isLocked={isLocked} />
 
       <div className={styles.stepIndicatorContainer}>
-        <StepIndicator currentStep={1} totalSteps={2} />
+        <StepIndicator currentStep={1} totalSteps={5} />
       </div>
 
       <div className={styles.questionText}>

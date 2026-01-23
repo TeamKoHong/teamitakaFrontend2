@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import ProgressIndicator from '../../components/auth/ProgressIndicator';
+import StepIndicator from '../../components/DesignSystem/Feedback/StepIndicator';
 import CarrierSelect from '../../components/auth/CarrierSelect';
 import SSNInput from '../../components/auth/SSNInput';
 import TermsBottomSheet from '../../components/auth/TermsBottomSheet';
@@ -88,7 +88,7 @@ function PhoneVerifyPage() {
 
             {/* 메인 컨텐츠 */}
             <div className={styles.content}>
-                <ProgressIndicator currentStep={2} totalSteps={5} />
+                <StepIndicator currentStep={1} totalSteps={5} />
 
                 <div className={styles.description}>
                     <p>본인 확인을 위해</p>
