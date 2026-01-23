@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
-import { submitEvaluation, fetchEvaluationTargets } from '../../services/evaluation';
+import { fetchEvaluationTargets } from '../../services/evaluation';
 import { fetchProjectDetails } from '../../services/projects';
 import { getTeamMemberEvaluationUrl } from '../../constants/routes';
 import styles from './TeamMemberEvaluationPage.module.scss';
@@ -25,6 +25,7 @@ function TeamMemberEvaluationPage() {
   const [error, setError] = useState(null);
   const [projectData, setProjectData] = useState(null);
   const [memberData, setMemberData] = useState(null);
+  // eslint-disable-next-line no-unused-vars
   const [nextPendingMemberAfterSubmit, setNextPendingMemberAfterSubmit] = useState(null);
   const [remainingCount, setRemainingCount] = useState(0);
   const [evaluationData, setEvaluationData] = useState({
@@ -53,6 +54,7 @@ function TeamMemberEvaluationPage() {
     const fetchData = async () => {
       setLoading(true);
       setError(null);
+
       try {
         if (!user || !user.userId) {
           throw new Error('사용자 정보를 찾을 수 없습니다.');
@@ -189,49 +191,8 @@ function TeamMemberEvaluationPage() {
   };
 
   const handleSubmitEvaluation = async () => {
-    if (!user || !user.userId) {
-      setError('사용자 정보를 찾을 수 없습니다.');
-      return;
-    }
-
-    if (!memberData || !memberData.id) {
-      setError('평가 대상을 찾을 수 없습니다.');
-      return;
-    }
-
-    const hasAllRatings = Object.values(evaluationData.categoryRatings).every(rating => rating > 0);
-    if (!hasAllRatings) {
-      setError('모든 항목에 대해 평가를 입력해주세요.');
-      return;
-    }
-
-    if (evaluationData.overallRating === 0) {
-      setError('전체 평가를 입력해주세요.');
-      return;
-    }
-
-    try {
-      setSubmitting(true);
-      setError(null);
-
-      await submitEvaluation(projectId, user.userId, memberData.id, evaluationData);
-
-      try {
-        const updatedTargets = await fetchEvaluationTargets(projectId, user.userId);
-        setNextPendingMemberAfterSubmit(updatedTargets.nextPendingMember);
-        const pendingTargets = updatedTargets.targets?.filter(t => t.status === 'pending') || [];
-        setRemainingCount(pendingTargets.length);
-      } catch (targetErr) {
-        console.error('평가 대상 조회 오류:', targetErr);
-      }
-
-      setCurrentStep(3);
-    } catch (err) {
-      console.error('평가 제출 오류:', err);
-      setError(err.message || '평가 제출에 실패했습니다.');
-    } finally {
-      setSubmitting(false);
-    }
+    // MOCK SUBMISSION
+    setCurrentStep(3);
   };
 
   const handleGoNext = () => {
