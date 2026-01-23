@@ -25,10 +25,10 @@ const AUTH_ACTIONS = {
 
 // 초기 상태
 const initialState = {
-    user: { userId: 'mock-user-1', email: 'test@example.com', name: 'Test User' },
-    token: 'mock-token',
-    isLoading: false,
-    isAuthenticated: true,
+    user: null,
+    token: null,
+    isLoading: true,
+    isAuthenticated: false,
     error: null,
     isRefreshing: false,
     // 휴대폰 본인인증 등록 정보 (신규)
@@ -110,7 +110,8 @@ const authReducer = (state, action) => {
                 ...state,
                 user: action.payload.user,
                 token: action.payload.token,
-                isAuthenticated: true
+                isAuthenticated: true,
+                isLoading: false
             };
 
         case AUTH_ACTIONS.CLEAR_ERROR:
@@ -154,7 +155,9 @@ export const AuthProvider = ({ children }) => {
                         payload: { user, token }
                     });
 
-                    console.log('기존 인증 정보 복원됨:', { user: user.email, tokenValid: true });
+                    if (process.env.NODE_ENV === 'development') {
+                        console.log('기존 인증 정보 복원됨:', { user: user.email, tokenValid: true });
+                    }
                 } else {
                     // 유효하지 않은 토큰이나 사용자 정보가 있으면 정리
                     if (token || user) {
@@ -162,14 +165,17 @@ export const AuthProvider = ({ children }) => {
                         removeToken();
                         console.log('저장된 인증 정보 없음 또는 만료됨');
                     }
+                    // 인증 정보가 없으면 로그아웃 상태로 초기화 (로딩 종료)
+                    dispatch({ type: AUTH_ACTIONS.LOGOUT });
                 }
             } catch (error) {
                 console.error('인증 초기화 오류:', error);
                 removeToken();
+                dispatch({ type: AUTH_ACTIONS.LOGOUT });
             }
         };
 
-        // initializeAuth();
+        initializeAuth();
     }, []);
 
     // 토큰 자동 갱신 체크

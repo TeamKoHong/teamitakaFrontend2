@@ -30,7 +30,9 @@ export const formatDateRange = (startDate, endDate) => {
 export const calculateDaysFromStart = (startDate) => {
   // Return D+0 if no start date provided
   if (!startDate) {
-    console.log('[calculateDaysFromStart] No startDate provided');
+    if (process.env.NODE_ENV === 'development') {
+      console.log('[calculateDaysFromStart] No startDate provided');
+    }
     return 'D+0';
   }
 
