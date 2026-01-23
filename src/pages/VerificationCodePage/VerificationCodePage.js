@@ -72,23 +72,29 @@ function VerificationCodePage() {
         }
     };
 
-    // 인증번호 재전송
-    const handleResend = async () => {
-        setIsLoading(true);
-        setError('');
+// 인증번호 재전송
+const handleResend = async () => {
+    setIsLoading(true);
+    setError('');
+    setSuccessMessage(''); // 1. 우선 성공 메시지를 비웁니다.
 
-        try {
-            await resendVerificationCode(formData);
-            resetTimer();
-            setAttemptCount(0);
-            setCode('');
-            setSuccessMessage('인증번호가 재전송되었습니다');
-        } catch (err) {
-            setError(err.message || '재전송에 실패했습니다.');
-        } finally {
-            setIsLoading(false);
-        }
-    };
+    try {
+        await resendVerificationCode(formData);
+        
+        // 2. 성공 시에만 재전송 완료 메시지 세팅
+        resetTimer();
+        setAttemptCount(0);
+        setCode('');
+        setSuccessMessage('인증번호가 재전송되었습니다'); 
+    } catch (err) {
+        // 3. 실패 시 에러 메시지 세팅
+        console.error("Resend error:", err);
+        setError(err.message || '재전송에 실패했습니다.');
+        setSuccessMessage(''); // 실패했으므로 성공 메시지는 노출되지 않도록 확정
+    } finally {
+        setIsLoading(false);
+    }
+};
 
     return (
         <div className={styles.container}>

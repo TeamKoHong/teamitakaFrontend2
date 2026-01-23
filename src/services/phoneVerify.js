@@ -48,21 +48,35 @@ const toE164Format = (phone) => {
  * reCAPTCHA 초기화
  */
 const setupRecaptcha = () => {
-    if (!window.recaptchaVerifier) {
-        window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
-            size: 'normal', // visible 모드 (더 안정적)
-            callback: () => {
-                console.log('✅ reCAPTCHA 검증 완료');
-            },
-            'expired-callback': () => {
-                console.log('⚠️ reCAPTCHA 만료됨');
-                if (window.recaptchaVerifier) {
-                    window.recaptchaVerifier.clear();
-                    window.recaptchaVerifier = null;
-                }
-            }
-        });
+    // 1. 기존 인스턴스가 있다면 정리 (재전송 시 안정성 확보)
+    if (window.recaptchaVerifier) {
+        try {
+            window.recaptchaVerifier.clear();
+        } catch (e) {
+            console.error("reCAPTCHA clear error:", e);
+        }
+        window.recaptchaVerifier = null;
     }
+
+    // 2. recaptcha-container 엘리먼트 존재 확인
+    const container = document.getElementById('recaptcha-container');
+    if (!container) {
+        // container가 없으면 임시로 body에 생성하거나 에러 처리
+        console.error('reCAPTCHA container not found');
+    }
+
+    // 3. 인스턴스 새로 생성
+    window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
+        size: 'invisible', // 'normal'보다 'invisible'이 재전송 시 사용자 경험에 좋습니다.
+        callback: () => {
+            console.log('✅ reCAPTCHA 검증 완료');
+        },
+        'expired-callback': () => {
+            console.log('⚠️ reCAPTCHA 만료됨');
+            cleanupRecaptcha();
+        }
+    });
+
     return window.recaptchaVerifier;
 };
 
