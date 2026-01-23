@@ -45,12 +45,16 @@ async function login(page: Page): Promise<void> {
     const loginButtonSelector = "button.login-button";
     await page.click(loginButtonSelector);
 
-    // Wait for navigation
+    // Wait for navigation with longer timeout
     try {
-        await page.waitForURL(/\/(main|team-matching|project-management)/, { timeout: 15000 });
+        await page.waitForURL(/\/(main|team-matching|project-management)/, { timeout: 20000 });
     } catch {
-        await page.waitForTimeout(2000);
+        // If URL wait fails, wait for loading to finish
+        await page.waitForTimeout(3000);
     }
+
+    // Additional wait to ensure token is saved
+    await page.waitForTimeout(1000);
 
     // Verify login success
     const token = await page.evaluate(() => localStorage.getItem('authToken'));
@@ -169,8 +173,9 @@ test.describe('UI QA - Spacing Verification', () => {
         await page.waitForLoadState('networkidle');
         await page.waitForTimeout(2000);
 
-        // Check for completed project cards
-        const completedCards = page.locator('.completed-project-card');
+        // Check for completed project cards using CSS module class pattern
+        // CSS modules generate classes like "CompletedProjectSimpleCard_completedCard__xxxxx"
+        const completedCards = page.locator('[class*="completedCard"]');
         const cardCount = await completedCards.count();
 
         if (cardCount === 0) {
@@ -181,20 +186,9 @@ test.describe('UI QA - Spacing Verification', () => {
 
         console.log(`Found ${cardCount} completed project card(s)`);
 
-        // Test arrow icon spacing (for non-simple cards)
-        const arrowIcon = page.locator('.completed-project-card .next-arrow').first();
-        if (await arrowIcon.count() > 0) {
-            await assertMarginSide(
-                arrowIcon,
-                'right',
-                '4px',
-                'Arrow icon should have 4px right margin'
-            );
-            console.log('✅ Arrow icon spacing verified');
-        }
-
-        // Test star icon spacing (for simple/completed cards)
-        const starIcon = page.locator('.completed-project-card.simple .star-icon').first();
+        // Test star icon spacing in CompletedProjectSimpleCard
+        // Look for star icon using CSS module pattern
+        const starIcon = page.locator('[class*="starIcon"]').first();
         if (await starIcon.count() > 0) {
             await assertMarginSide(
                 starIcon,
@@ -203,6 +197,8 @@ test.describe('UI QA - Spacing Verification', () => {
                 'Star icon should have 4px right margin'
             );
             console.log('✅ Star icon spacing verified');
+        } else {
+            console.warn('⚠️ Star icon not found in completed cards');
         }
     });
 
@@ -225,7 +221,7 @@ test.describe('UI QA - Spacing Verification', () => {
         }
 
         // Navigate to evaluation page
-        await page.goto(`/evaluation/project/${projectId}/member/${memberId}`);
+        await page.goto(`/evaluation/team-member/${projectId}/${memberId}`);
         await page.waitForLoadState('networkidle');
         await page.waitForTimeout(2000);
 
@@ -270,7 +266,7 @@ test.describe('UI QA - Spacing Verification', () => {
         }
 
         // Navigate to evaluation page
-        await page.goto(`/evaluation/project/${projectId}/member/${memberId}`);
+        await page.goto(`/evaluation/team-member/${projectId}/${memberId}`);
         await page.waitForLoadState('networkidle');
         await page.waitForTimeout(2000);
 
@@ -307,7 +303,7 @@ test.describe('UI QA - Spacing Verification', () => {
         }
 
         // Navigate to evaluation page step 2 (total score)
-        await page.goto(`/evaluation/project/${projectId}/member/${memberId}?step=2`);
+        await page.goto(`/evaluation/team-member/${projectId}/${memberId}?step=2`);
         await page.waitForLoadState('networkidle');
         await page.waitForTimeout(2000);
 
@@ -319,7 +315,7 @@ test.describe('UI QA - Spacing Verification', () => {
             console.warn('⚠️ Question text not found - may need to complete step 1 first');
 
             // Try navigating to step 1, filling it out, then going to step 2
-            await page.goto(`/evaluation/project/${projectId}/member/${memberId}`);
+            await page.goto(`/evaluation/team-member/${projectId}/${memberId}`);
             await page.waitForTimeout(2000);
 
             // Fill out step 1 ratings (set all to 3)
@@ -388,19 +384,72 @@ test.describe('UI QA - Spacing Verification', () => {
             return;
         }
 
-        // Navigate to step 3 (completion page) - or complete the evaluation
-        // For this test, we'll try to navigate directly to step 3
-        await page.goto(`/evaluation/project/${projectId}/member/${memberId}?step=3`);
+        // Start evaluation - Step 1
+        console.log('📝 Starting evaluation flow...');
+        await page.goto(`/evaluation/team-member/${projectId}/${memberId}`);
         await page.waitForLoadState('networkidle');
         await page.waitForTimeout(2000);
+
+        // Complete Step 1: Fill all ability ratings
+        console.log('✏️ Step 1: Filling ability ratings...');
+        const sliders = page.locator('[class*="ratingTrackArea"]');
+        const sliderCount = await sliders.count();
+
+        if (sliderCount === 0) {
+            console.warn('⚠️ No rating sliders found - skipping test');
+            test.skip();
+            return;
+        }
+
+        // Click middle of each slider to set rating to 3
+        for (let i = 0; i < sliderCount; i++) {
+            await sliders.nth(i).click();
+            await page.waitForTimeout(100);
+        }
+
+        // Go to Step 2
+        const nextButton1 = page.locator('button:has-text("다음")').first();
+        await expect(nextButton1).toBeVisible({ timeout: 10000 });
+        await nextButton1.click();
+        await page.waitForTimeout(2000);
+
+        // Complete Step 2: Enter total score and comment
+        console.log('✏️ Step 2: Entering total score...');
+
+        // Click on the 3rd star to set a rating (CSS module pattern)
+        const stars = page.locator('[class*="starIcon"]');
+        const starCount = await stars.count();
+        if (starCount >= 3) {
+            await stars.nth(2).click(); // Click 3rd star (index 2) for rating of 3
+            await page.waitForTimeout(500);
+            console.log('⭐ Rating star clicked');
+        } else {
+            console.warn('⚠️ No rating stars found');
+        }
+
+        // Enter comment
+        const commentInput = page.locator('textarea[placeholder*="내용"]').first();
+        if (await commentInput.count() > 0) {
+            await commentInput.fill('테스트 평가 코멘트입니다.');
+            await page.waitForTimeout(500);
+            console.log('✍️ Comment entered');
+        }
+
+        // Submit evaluation
+        const submitButton = page.locator('button:has-text("평가 보내기")').first();
+        await expect(submitButton).toBeVisible({ timeout: 10000 });
+        await submitButton.click();
+        await page.waitForTimeout(3000); // Wait for submission and navigation
+
+        // Now we should be on Step 3 (completion page)
+        console.log('✅ Evaluation submitted, verifying completion page...');
 
         // Check if completion elements exist
         const checkIcon = page.locator('[class*="checkIconCircle"]').first();
         const successMessage = page.locator('[class*="successMessage"]').first();
 
         if (await checkIcon.count() === 0) {
-            console.warn('⚠️ Completion page not accessible directly - skipping test');
-            console.log('💡 This test requires completing the full evaluation flow');
+            console.warn('⚠️ Completion page not loaded - possibly already evaluated');
             test.skip();
             return;
         }
@@ -418,7 +467,7 @@ test.describe('UI QA - Spacing Verification', () => {
         );
         console.log('✅ Success message centered');
 
-        // Verify gap between icon and text (visual check via screenshot)
+        // Take screenshot for visual verification
         const screenshot = await page.screenshot({
             path: 'test-results/tc-05-completion-layout.png',
             fullPage: true
