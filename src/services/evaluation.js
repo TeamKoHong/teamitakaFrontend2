@@ -100,7 +100,7 @@ export async function fetchProjectReviews(projectId) {
     }
 
     const reviews = await response.json();
-    return reviews;
+    return reviews.data || reviews;
   } catch (error) {
     console.error('평가 조회 오류:', error);
     throw error;
@@ -150,10 +150,14 @@ export async function fetchProjectMembers(projectId) {
  */
 export async function fetchEvaluationTargets(projectId, currentUserId) {
   try {
-    const [members, reviews] = await Promise.all([
+    const [membersRes, reviewsRes] = await Promise.all([
       fetchProjectMembers(projectId),
       fetchProjectReviews(projectId),
     ]);
+
+    // API가 { data: [...] } 형태로 반환하는 경우 처리
+    const members = Array.isArray(membersRes) ? membersRes : (membersRes?.data || []);
+    const reviews = Array.isArray(reviewsRes) ? reviewsRes : (reviewsRes?.data || []);
 
     // Filter out current user from evaluation targets
     const targets = members.filter(member => member.user_id !== currentUserId);

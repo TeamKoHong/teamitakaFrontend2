@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import DefaultHeader from "../../components/Common/DefaultHeader";
 import projectDefaultImg from "../../assets/icons/project_default_img.png";
 import SmallBookmarkIcon from "../../assets/icons/small_bookMark.svg";
@@ -6,52 +7,78 @@ import BookmarkCheckCircleIcon from "../../assets/icons/bookMark_checkCircle.svg
 import BookmarkCalendarIcon from "../../assets/icons/bookMark_calendar.svg";
 import ApplicationHistorySlide from "../../components/BookmarkPage/ApplicationHistorySlide";
 import MyRecruitmentSlide from "../../components/BookmarkPage/MyRecruitmentSlide";
+import { getBookmarkedRecruitments } from "../../services/recruitment";
 import "./BookmarkPage.scss";
 
 function BookmarkPage() {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("recruiting"); // "recruiting" | "completed"
   const [isApplicationHistoryOpen, setIsApplicationHistoryOpen] = useState(false);
   const [isMyRecruitmentOpen, setIsMyRecruitmentOpen] = useState(false);
 
-  // 임시 데이터 - 실제로는 API에서 가져올 데이터
+  const [bookmarks, setBookmarks] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchBookmarks = async () => {
+      try {
+        setIsLoading(true);
+        setError(null);
+        const response = await getBookmarkedRecruitments();
+        setBookmarks(response.data || []);
+      } catch (err) {
+        console.error('북마크 목록 조회 실패:', err);
+        if (err.message === 'UNAUTHORIZED' || err.code === 'UNAUTHORIZED') {
+          setError('로그인이 필요합니다.');
+        } else {
+          setError('북마크 목록을 불러오는데 실패했습니다.');
+        }
+        setBookmarks([]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchBookmarks();
+  }, []);
+
+  // 모집 중/마감 필터링
+  const filteredProjects = bookmarks.filter(project => {
+    if (activeTab === "recruiting") {
+      return project.status === 'open' || project.status === 'recruiting' || !project.status;
+    } else {
+      return project.status === 'closed' || project.status === 'completed';
+    }
+  });
+
+  // 통계 계산
   const bookmarkStats = {
-    totalBookmarks: 24,
-    appliedProjects: 1,
-    myRecruitmentPosts: 3,
-    urgentDeadlines: 3
+    totalBookmarks: bookmarks.length,
+    appliedProjects: 0, // TODO: 지원 내역 API 연동 시 업데이트
+    myRecruitmentPosts: 0, // TODO: 내 모집글 API 연동 시 업데이트
+    urgentDeadlines: bookmarks.filter(b => {
+      if (!b.deadline) return false;
+      const deadline = new Date(b.deadline);
+      const today = new Date();
+      return deadline.toDateString() === today.toDateString();
+    }).length
   };
 
-  const projects = [
-    {
-      id: 1,
-      title: "프로젝트 제목",
-      description: "프로젝트 설명글입니다. 최대 2줄까지 미리보기로 볼 수 있습니다. (최대 48자)",
-      startDate: "00.00",
-      endDate: "00.00",
-      image: projectDefaultImg
-    },
-    {
-      id: 2,
-      title: "프로젝트 제목",
-      description: "프로젝트 설명글입니다. 최대 2줄까지 미리보기로 볼 수 있습니다. (최대 48자)",
-      startDate: "00.00",
-      endDate: "00.00",
-      image: projectDefaultImg
-    },
-    {
-      id: 3,
-      title: "프로젝트 제목",
-      description: "프로젝트 설명글입니다. 최대 2줄까지 미리보기로 볼 수 있습니다. (최대 48자)",
-      startDate: "00.00",
-      endDate: "00.00",
-      image: projectDefaultImg
-    }
-  ];
+  const handleProjectClick = (projectId) => {
+    navigate(`/recruitment/${projectId}`);
+  };
+
+  const formatDate = (dateString) => {
+    if (!dateString) return '00.00';
+    const date = new Date(dateString);
+    return `${String(date.getMonth() + 1).padStart(2, '0')}.${String(date.getDate()).padStart(2, '0')}`;
+  };
 
   return (
     <div className="bookmark-page-container">
       <DefaultHeader title="북마크" />
-      
+
       <main className="bookmark-main">
         {/* 북마크 요약 */}
         <div className="bookmark-summary">
@@ -115,31 +142,51 @@ function BookmarkPage() {
 
         {/* 프로젝트 목록 */}
         <div className="bookmark-project-list">
-          {projects.map((project) => (
-            <div key={project.id} className="bookmark-project-card">
-              <div className="bookmark-project-content">
-                <div className="bookmark-project-dates">
-                  {project.startDate} ~ {project.endDate}
-                </div>
-                <h3 className="bookmark-project-title">{project.title}</h3>
-                <p className="bookmark-project-description">{project.description}</p>
-              </div>
-              <div className="bookmark-project-image">
-                <img src={project.image} alt={project.title} />
-              </div>
+          {isLoading ? (
+            <div className="bookmark-loading">로딩 중...</div>
+          ) : error ? (
+            <div className="bookmark-error">{error}</div>
+          ) : filteredProjects.length === 0 ? (
+            <div className="bookmark-empty">
+              {activeTab === "recruiting"
+                ? "모집 중인 북마크가 없습니다."
+                : "마감된 북마크가 없습니다."}
             </div>
-          ))}
+          ) : (
+            filteredProjects.map((project) => (
+              <div
+                key={project.recruitment_id || project.id}
+                className="bookmark-project-card"
+                onClick={() => handleProjectClick(project.recruitment_id || project.id)}
+              >
+                <div className="bookmark-project-content">
+                  <div className="bookmark-project-dates">
+                    {formatDate(project.start_date || project.created_at)} ~ {formatDate(project.deadline || project.end_date)}
+                  </div>
+                  <h3 className="bookmark-project-title">{project.title}</h3>
+                  <p className="bookmark-project-description">{project.description}</p>
+                </div>
+                <div className="bookmark-project-image">
+                  <img
+                    src={project.photo_url || project.imageUrl || projectDefaultImg}
+                    alt={project.title}
+                    onError={(e) => { e.target.src = projectDefaultImg; }}
+                  />
+                </div>
+              </div>
+            ))
+          )}
         </div>
       </main>
 
       {/* 지원 내역 슬라이드 */}
-      <ApplicationHistorySlide 
+      <ApplicationHistorySlide
         isOpen={isApplicationHistoryOpen}
         onClose={() => setIsApplicationHistoryOpen(false)}
       />
 
       {/* 내가 올린 모집글 슬라이드 */}
-      <MyRecruitmentSlide 
+      <MyRecruitmentSlide
         isOpen={isMyRecruitmentOpen}
         onClose={() => setIsMyRecruitmentOpen(false)}
       />

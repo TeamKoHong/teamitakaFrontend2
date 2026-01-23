@@ -3,6 +3,7 @@ import "./TeamExperience.css";
 import MinusIcon from "../assets/minus.png";
 import PlusIcon from "../assets/plus.png";
 
+<<<<<<< HEAD
 export default function TeamExperience() {
   // ✅ 상태 추가
   const [count, setCount] = useState(0);
@@ -10,6 +11,34 @@ export default function TeamExperience() {
   // ✅ 증가/감소 함수 추가
   const increase = () => setCount(prev => prev + 1);
   const decrease = () => setCount(prev => (prev > 0 ? prev - 1 : 0));
+=======
+export default function TeamExperience({ value, onChange }) {
+  // 내부 상태 (props 없을 때 사용 - 기존 동작 유지)
+  const [internalCount, setInternalCount] = useState(0);
+
+  // controlled vs uncontrolled 모드 판단
+  const isControlled = value !== undefined && onChange !== undefined;
+  const currentCount = isControlled ? value : internalCount;
+
+  // 증가/감소 함수
+  const increase = () => {
+    const newValue = currentCount + 1;
+    if (isControlled) {
+      onChange(newValue);
+    } else {
+      setInternalCount(newValue);
+    }
+  };
+
+  const decrease = () => {
+    const newValue = currentCount > 0 ? currentCount - 1 : 0;
+    if (isControlled) {
+      onChange(newValue);
+    } else {
+      setInternalCount(newValue);
+    }
+  };
+>>>>>>> main
 
   return (
     <div className="team-exp-container">
@@ -26,19 +55,33 @@ export default function TeamExperience() {
             src={MinusIcon}
             alt="minus"
             className="team-exp-icon"
+<<<<<<< HEAD
             onClick={decrease}        // ← 클릭 시 감소
+=======
+            onClick={decrease}
+            style={{ cursor: 'pointer' }}
+>>>>>>> main
           />
 
           {/* 숫자 표시 (00 형태 유지) */}
           <span className="team-exp-value">
+<<<<<<< HEAD
             {String(count).padStart(2, "0")}
+=======
+            {String(currentCount).padStart(2, "0")}
+>>>>>>> main
           </span>
 
           <img
             src={PlusIcon}
             alt="plus"
             className="team-exp-icon"
+<<<<<<< HEAD
             onClick={increase}        // ← 클릭 시 증가
+=======
+            onClick={increase}
+            style={{ cursor: 'pointer' }}
+>>>>>>> main
           />
         </div>
 

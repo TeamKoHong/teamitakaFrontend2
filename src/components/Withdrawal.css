@@ -1,5 +1,6 @@
 /* 전체 감싸는 영역 */
 .withdrawal-container {
+<<<<<<< HEAD
   width: 390px;           /* 화면 기준 */
   padding: 0 16px;        /* 왼쪽 16px 동일 유지 */
   box-sizing: border-box;
@@ -7,6 +8,15 @@
   display: flex;
   justify-content: flex-end;  /* 오른쪽 정렬 */
   margin-top: 90px;           /* 위 요소와 간격 */
+=======
+  width: 100%;
+  padding: 0;
+  box-sizing: border-box;
+
+  display: flex;
+  justify-content: center;  /* 가운데 정렬 */
+  margin-top: 0;            /* 부모에서 gap으로 간격 처리 */
+>>>>>>> main
 }
 
 /* '탈퇴하기' 텍스트 스타일 */

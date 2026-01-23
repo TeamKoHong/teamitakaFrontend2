@@ -38,7 +38,7 @@ export default function ProjectApplySelect() {
         });
 
         // 백엔드 응답을 컴포넌트 형식으로 변환
-        const formattedProjects = result.projects.map(p => ({
+        const formattedProjects = (result.items || result.projects || []).map(p => ({
           id: p.project_id,  // UUID 형식
           title: p.title,
           thumb: p.photo_url || null,
@@ -67,7 +67,7 @@ export default function ProjectApplySelect() {
   };
 
   const handleSubmit = async () => {
-    if (selected.size === 0) return;
+    // ✅ 프로젝트 선택은 선택사항 - selected.size === 0 체크 제거
 
     // Validation
     if (!recruitmentId) {
@@ -158,7 +158,7 @@ export default function ProjectApplySelect() {
           <h1 className="headline">
             나를 어필할 수 있는<br />프로젝트가 있다면 선택해주세요.
           </h1>
-          <p className="sub">선택한 프로젝트는 팀장이 열람할 수 있어요.</p>
+          <p className="sub">선택한 프로젝트는 팀장이 열람할 수 있어요. (선택사항)</p>
 
           <hr className="divider" />
 
@@ -170,10 +170,12 @@ export default function ProjectApplySelect() {
               <p>프로젝트를 불러오는 중...</p>
             </div>
           ) : projects.length === 0 ? (
-            /* ✅ 빈 상태 */
+            /* ✅ 빈 상태 - 프로젝트 없이도 지원 가능 */
             <div style={{ padding: '40px', textAlign: 'center', color: '#666' }}>
               <p>완료된 프로젝트가 없습니다.</p>
-              <p style={{ fontSize: '14px', marginTop: '8px' }}>프로젝트를 먼저 완료한 후 지원해주세요.</p>
+              <p style={{ fontSize: '14px', marginTop: '8px', color: '#999' }}>
+                프로젝트가 없어도 지원할 수 있어요!
+              </p>
             </div>
           ) : (
             /* ✅ 프로젝트 목록 */
@@ -210,8 +212,8 @@ export default function ProjectApplySelect() {
 
       <div className="footer footer--gray">
         <button
-          className={`cta ${selected.size > 0 && !loading ? "active" : "disabled"}`}
-          disabled={selected.size === 0 || loading}
+          className={`cta ${!loading ? "active" : "disabled"}`}
+          disabled={loading}
           onClick={handleSubmit}
         >
           {loading ? '제출 중...' : '지원서 보내기'}

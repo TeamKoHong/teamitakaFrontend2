@@ -1,8 +1,14 @@
 .basic-info-container {
+<<<<<<< HEAD
   position: absolute;
   top: 259px;       /* Figma 값 */
   left: 16px;       /* Figma 값 */
   width: 358px;     /* Figma width */
+=======
+  /* position: absolute 제거 - Flexbox 레이아웃과 호환 */
+  width: 100%;
+  margin-top: 16px;
+>>>>>>> main
 
   display: flex;
   flex-direction: column;
@@ -27,7 +33,11 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+<<<<<<< HEAD
   margin-bottom: -9px;   /* ← 행 간격 8px */
+=======
+  margin-bottom: 8px;   /* 행 간격 8px */
+>>>>>>> main
 }
 
 

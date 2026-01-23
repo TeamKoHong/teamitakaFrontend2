@@ -5,16 +5,14 @@
   .todo-summary {
     display: flex;
     width: 100%;
-    max-width: 22.375rem; // 358px
+    
     height: 3rem; // 48px
     padding: 0.875rem 1.25rem; // 14px 20px
     flex-direction: column;
     align-items: flex-start;
-    gap: 0.625rem; // 10px
     flex-shrink: 0;
     border-radius: 0.5rem; // 8px
     background: var(--main, #F76241);
-    cursor: pointer;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
     position: relative;
     z-index: 2; // 투두박스보다 위에 오도록
@@ -29,6 +27,7 @@
       justify-content: space-between;
       align-items: center;
       width: 100%;
+      height: 100%;
     }
     
     .todo-summary-text {
@@ -38,24 +37,24 @@
       font-style: normal;
       text-transform: capitalize;
       font-family: Pretendard;
+      cursor: pointer;
 
       .todo-count-highlight {
         font-weight: 700;   
       }
     }
     
-    .todo-summary-icon {
+    .todo-add-btn {
       display: flex;
       align-items: center;
       justify-content: center;
-      
-      .chevron-icon {
-        transition: transform 0.3s ease;
-        
-        &.expanded {
-          transform: rotate(180deg);
-        }
-      }
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      transition: transform 0.2s ease;
+      background: #FFF;
+      border-radius: 5.914px
     }
   }
   
@@ -81,18 +80,56 @@
       .project-section {
         display: flex;
         flex-direction: column;
-        
-        .project-header {
-          border-bottom: 1px solid #F5F5F5;
-          margin-bottom: 0.5rem; // 8px
-          padding-top: 0.5rem; // 8px - 투두박스가 올라간 만큼 추가
+
+        // 투두 입력 창
+        .todo-input-item {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          margin-bottom: 0.75rem;
+          padding: 0.25rem 0;
           
-          h3 {
-            font-size: 1rem; // 16px
-            font-weight: 800;
-            font-family: Pretendard;
-            color: #000;
-            margin: 0;
+          .todo-content {
+            flex: 1;
+            min-width: 0;
+            margin-right: 0.75rem;
+            
+            .todo-input {
+              width: 100%;
+              padding: 0;
+              border: none;
+              font-size: 14px;
+              font-family: Pretendard;
+              outline: none;
+              background: transparent;
+              color: #000;
+              
+              &::placeholder {
+                color: #999;
+              }
+            }
+          }
+
+          .todo-checkbox-container {
+            flex-shrink: 0;
+            width: 17px;
+            height: 17px;
+            
+            .checkbox-label {
+              display: block;
+              cursor: default;
+              
+              .custom-checkbox {
+                width: 17px;
+                height: 17px;
+                border-radius: 2px;
+                border: 1px solid #D9D9D9;
+                background: #EBEBEB;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+              }
+            }
           }
         }
       }
@@ -184,8 +221,9 @@
     
     .project-feed-header {
       display: flex;
-      justify-content: space-between;
-      align-items: center;
+      flex-direction: column;
+      
+      gap: 0.25rem;
       margin-bottom: 1.25rem; // 20px
       
       h3 {
@@ -196,33 +234,15 @@
         margin: 0;
         font-family: Pretendard;
       }
-      
-      .add-feed-btn {
-        display: flex;
-        width: 27px;
-        height: 27px;
-        padding: 5px 4px;
-        justify-content: center;
-        align-items: center;
-        gap: 10px;
-        flex-shrink: 0;
-        border-radius: 8px;
-        background: #F76241;
-        color: white;
-        border: none;
-        font-size: 1rem;
-        font-weight: 300;
-        cursor: pointer;
-        transition: background-color 0.2s ease, transform 0.2s ease;
-        
-        &:hover {
-          background: #E55A2B;
-          transform: scale(1.1);
-        }
-        
-        &:active {
-          transform: scale(0.95);
-        }
+      p {
+        color: #807C7C;
+        font-family: Pretendard;
+        font-size: 12px;
+        font-style: normal;
+        font-weight: 500;
+        line-height: normal;
+        letter-spacing: -0.36px;
+        text-transform: capitalize;
       }
     }
     

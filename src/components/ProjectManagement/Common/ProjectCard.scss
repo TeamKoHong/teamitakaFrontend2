@@ -1,27 +1,31 @@
 .project-card {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  padding: 19px 1rem;
-  border-radius: 0.75rem;
+
+  padding: 16px 20px 16px 16px; // Updated padding (Right: 20px)
+  border-radius: 20px; // Updated radius (was 10px)
   background: #fff;
-  box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.05);
-  width: 100%;
-  height: 166px;
-  margin: 0.5rem 0;
+  width: calc(100% - 8px); // Width - 8px (4px margin + 16px parent = 20px)
+  margin: 10px auto; // 10px top/bottom margin
+  min-height: 130px; // Min height 130px
+  // height: 166px; // Removed fixed height
+
   cursor: pointer;
+
+  @media (max-width: 480px) {
+    width: 100%; // Use parent padding (16px) only
+  }
 
   position: relative;
 
   .card-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
     flex: 1;
+    height: 100%;
 
     .info {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 0.5rem;
-
       .title {
         font-size: 16px;
         font-family: Pretendard;
@@ -29,44 +33,63 @@
         color: #000;
         font-weight: 600;
         font-style: normal;
+        margin-bottom: 0.5rem;
+      }
+
+      p {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 0.25rem;
+
+        svg {
+          width: 16px;
+          height: 16px;
+          padding: 4px;
+          background-color: #403e3e;
+          border-radius: 5px;
+          color: #fffdfc;
+        }
       }
     }
-  }
 
-  .details {
-    font-size: 0.875rem;
-    color: #555;
-    margin-bottom: 1rem;
+    .details {
+      font-size: 0.875rem;
+      color: #555;
+      margin-bottom: 1rem;
 
-    p {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      margin-bottom: 0.25rem;
+
+    }
+
+    .applicant-info {
+      color: #F76241;
+      font-weight: 500;
 
       svg {
-        width: 16px;
-        height: 16px;
-        padding: 4px;
-        background-color: #403e3e;
-        border-radius: 5px;
-        color: #fffdfc;
+        background-color: #F76241;
       }
     }
   }
 
   .team {
     display: flex;
+    flex-direction: row-reverse;
+    justify-content: flex-end;
     align-items: center;
     position: relative;
     height: 2rem;
 
-    .member {
-      flex-shrink: 0;
-      width: 35px;
-      height: 35px;
+    .team-avatar {
+      width: 2.25rem;
+      height: 2.25rem;
       border-radius: 50%;
-      position: absolute;
+      border: 2px solid #fff;
+      object-fit: cover;
+      position: relative;
+
+      &:not(:last-child) {
+        margin-left: -12px;
+      }
     }
   }
 }
@@ -74,25 +97,18 @@
 .projectCard-right {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
+  justify-content: flex-end;
+  align-items: flex-end;
   height: 100%;
+  position: relative;
+  min-width: 60px; // Ensure proper spacing
+
   .time-ago {
-    position: relative;
+    position: absolute;
+    top: 0;
+    right: 0; // Relative to this container, but card padding handles edge distance
+    // If needed to move further in: right: 4px;
     font-size: 11px;
     color: #888;
-    display: flex;
-    align-items: center;
-
-    .dot {
-      position: absolute;
-      top: 0px;
-      right: -3px;
-      width: 0.2rem;
-      height: 0.2rem;
-      background: red;
-      border-radius: 50%;
-      margin-left: 0.25rem;
-    }
   }
 }

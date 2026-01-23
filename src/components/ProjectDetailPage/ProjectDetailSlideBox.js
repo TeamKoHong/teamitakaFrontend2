@@ -12,11 +12,10 @@ import { Pagination } from "swiper/modules";
 import "swiper/css/pagination";
 import SlideContentSchedule from "./SlideContentSchedule";
 // import NotificationBox from "./NotificationBox"; // 현재 사용 안 함 (주석 처리된 슬라이드)
-function ProjectDetailSlideBox() {
-  // 예시로 사용한 날짜
-  // 시작일, 목표일에 날짜를 받아 퍼센트로 전환
-  const startDate = "2025-05-01";
-  const endDate = "2025-06-20";
+function ProjectDetailSlideBox({ project }) {
+  // 프로젝트에서 날짜 가져오기 (없으면 기본값 사용)
+  const startDate = project?.start_date || "2025-05-01";
+  const endDate = project?.end_date || "2025-06-20";
   const progressPercent = calculateProgress(startDate, endDate);
   const elapsedDays = calculateElapsedDays(startDate);
   const remainingDays = calculateRemainingDays(endDate);
@@ -49,10 +48,10 @@ function ProjectDetailSlideBox() {
       >
         <SwiperSlide className="slide-wrapper">
           <div className="slide-card">
-            <div className="start-date">시작한지 {elapsedDays}일</div>
-            <div className="project-name">프로젝트명</div>
+            <div className="start-date">시작한지 +{elapsedDays}일</div>
+            <div className="project-name">{project?.title || "프로젝트명"}</div>
             <div className="project-subtitle">
-              프로젝트 설명 또는 다짐이 들어가는 입력란입니다.
+              {project?.description || "프로젝트 설명 또는 다짐이 들어가는 입력란입니다."}
             </div>
 
             <div className="progress-wrapper">
@@ -76,7 +75,7 @@ function ProjectDetailSlideBox() {
           </div>
         </SwiperSlide>
         <SwiperSlide className="slide-wrapper">
-          <SlideContentSchedule />
+          <SlideContentSchedule projectId={project?.project_id} />
         </SwiperSlide>
         {/* 3번째 슬라이드 (알림) - 기능적으로 제외 */}
         {/* <SwiperSlide className="slide-wrapper">

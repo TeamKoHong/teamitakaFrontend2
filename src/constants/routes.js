@@ -6,7 +6,6 @@ export const MAIN_ROUTES = {
   MAIN: '/main',
   LOGIN: '/login',
   REGISTER: '/register',
-  MY: '/my',
 };
 
 // ===== 프로젝트 관리 라우트 =====
@@ -23,6 +22,8 @@ export const PROJECT_ROUTES = {
 export const EVALUATION_ROUTES = {
   MANAGEMENT: '/evaluation/management',
   PROJECT: '/evaluation/project/:projectId',
+  PROJECT_GIVEN: '/evaluation/project/:projectId/given',
+  FEEDBACK_DETAIL: '/evaluation/project/:projectId/feedback/:memberId',
   TEAM_MEMBER: '/evaluation/team-member/:projectId/:memberId',
   STATUS_GIVEN: '/evaluation/status/:projectId/given',
   STATUS_RECEIVED: '/evaluation/status/:projectId/received',
@@ -48,6 +49,13 @@ export const OTHER_ROUTES = {
   BOOKMARK: '/bookmark',
 };
 
+// ===== 프로필 라우트 =====
+export const PROFILE_ROUTES = {
+  MAIN: '/profile',
+  EDIT: '/profile/edit',
+  VERIFICATION: '/profile/verification',
+};
+
 // ===== 데모 및 개발 도구 라우트 =====
 export const DEMO_ROUTES = {
   CATEGORY_SLIDER: '/demo/category-slider',
@@ -60,6 +68,7 @@ export const ROUTE_GROUPS = {
   EVALUATION: Object.values(EVALUATION_ROUTES),
   LEGACY_EVALUATION: Object.values(LEGACY_EVALUATION_ROUTES),
   OTHER: Object.values(OTHER_ROUTES),
+  PROFILE: Object.values(PROFILE_ROUTES),
   DEMO: Object.values(DEMO_ROUTES),
 };
 
@@ -84,11 +93,6 @@ export const ROUTE_METADATA = {
     title: '회원가입',
     requiresAuth: false,
     showBottomNav: false,
-  },
-  [MAIN_ROUTES.MY]: {
-    title: '프로필',
-    requiresAuth: true,
-    showBottomNav: true,
   },
   [PROJECT_ROUTES.MANAGEMENT]: {
     title: '프로젝트 관리',
@@ -124,6 +128,21 @@ export const ROUTE_METADATA = {
     title: '평가 상태 (받은 평가)',
     requiresAuth: true,
     showBottomNav: true,
+  },
+  [PROFILE_ROUTES.MAIN]: {
+    title: '프로필',
+    requiresAuth: true,
+    showBottomNav: true,
+  },
+  [PROFILE_ROUTES.EDIT]: {
+    title: '프로필 편집',
+    requiresAuth: true,
+    showBottomNav: false,
+  },
+  [PROFILE_ROUTES.VERIFICATION]: {
+    title: '대학 인증 내역',
+    requiresAuth: true,
+    showBottomNav: false,
   },
 };
 

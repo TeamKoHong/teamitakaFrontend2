@@ -1,65 +1,74 @@
-// src/pages/RecruitmentPage/RecruitmentPage.js
-import React, { useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { IoEyeOutline } from 'react-icons/io5';
-import { HiOutlineChatBubbleOvalLeft } from 'react-icons/hi2';
-import { AiOutlineArrowLeft } from 'react-icons/ai';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import view from "../../assets/view.png";
+import apply from "../../assets/apply.png";
+import task_empty from "../../assets/task_empty.png";
 import './RecruitmentPage.scss';
 import BottomNav from "../../components/Common/BottomNav/BottomNav";
-
-// --- 데이터 예시 ---
-export const filterOptions = ['전체', '마케팅', '디자인', '브랜딩', 'IT', '서비스'];
-export const recruitmentData = [
-  {
-    id: 'r1',
-    category: '디자인',
-    isBest: true,
-    imageUrl: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=2070&auto=format&fit=crop',
-    title: '김혜현 교수님] 비주얼 마케터 디자인 팀 프로젝트 인원 구합니다!',
-    views: 302,
-    apply: 79,
-    date: '25.03.24',
-    tags: ['마케팅', '디자인'],
-  },
-  {
-    id: 'r2',
-    category: '디자인',
-    isBest: true,
-    imageUrl: 'https://images.unsplash.com/photo-1552664730-d307ca884978?q=80&w=2070&auto=format&fit=crop',
-    title: '김건상 교수님] 기초 디자인 테크닉 (2) 함께 스케치 디벨로퍼 구합니다. 스터디 작업..',
-    views: 214,
-    apply: 93,
-    date: '25.03.27',
-    tags: ['디자인', 'IT'],
-  },
-  {
-    id: 'r3',
-    category: '서비스',
-    isBest: false,
-    imageUrl: '', // 빈값이면 placeholder 사용
-    title: '하면서 교수님] 지도하에 공모전 함께 할 팀플러 구합니다!!',
-    views: 182,
-    apply: 19,
-    date: '25.03.12',
-    tags: ['기획', '서비스'],
-  },
-];
+import back from "../../assets/back.png";
+import { getAllRecruitments } from '../../api/recruit';
 
 export default function RecruitmentPage() {
   const navigate = useNavigate();
-  const location = useLocation();
-  const initialFilter = location.state?.filter || '전체';
-  const [activeFilter, setActiveFilter] = useState(initialFilter);
+  const [activeFilter, setActiveFilter] = useState('전체');
+  const [recruitments, setRecruitments] = useState([]);
+  const [filterOptions, setFilterOptions] = useState(['전체']); 
+  const [loading, setLoading] = useState(true);
 
-  const filtered = recruitmentData.filter(item =>
-    activeFilter === '전체' ? true : item.category === activeFilter
-  );
+  useEffect(() => {
+    const fetchRecruitments = async () => {
+      try {
+        setLoading(true);
+        const data = await getAllRecruitments();
+        const formatted = data.map(post => {
+            const viewCount = Number(post.views || post.view_count || 0);
+            const appCount = Number(post.applicationCount || post.applicant_count || post.applicantCount || 0);
+            
+            return {
+              id: post.recruitment_id,
+              title: post.title,
+              description: post.description || post.content || '설명 없음',
+              imageUrl: post.photo_url, 
+              views: viewCount,
+              applicantCount: appCount,
+              date: post.created_at?.substring(0, 10).replace(/-/g, '.').substring(2),
+              category: post.project_type === 'course' ? '수업' : '사이드',
+              tags: (post.Hashtags || post.hashtags || []).map(h => h.name || h),
+              isBest: viewCount > 100,
+            };
+        });
+        setRecruitments(formatted);
+
+        const allTags = new Set();
+        formatted.forEach(item => {
+          if (item.tags) {
+            item.tags.forEach(tag => {
+              if (tag) allTags.add(tag);
+            });
+          }
+        });
+        const sortedTags = Array.from(allTags).sort();
+        setFilterOptions(['전체', ...sortedTags]);
+      } catch (error) {
+        console.error('Failed to fetch recruitments:', error);
+        setRecruitments([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchRecruitments();
+  }, []);
+
+  const filtered = recruitments.filter(item => {
+    if (activeFilter === '전체') return true;
+    return item.tags && item.tags.includes(activeFilter);
+  });
 
   return (
     <div className="recruitment-page">
       <header className="recruitment-header">
         <button className="back-button" onClick={() => navigate(-1)}>
-          <AiOutlineArrowLeft />
+          <img src={back} alt="아이콘" />        
         </button>
         <h1 className="header-title">모집글</h1>
       </header>
@@ -77,29 +86,46 @@ export default function RecruitmentPage() {
       </div>
 
       <ul className="recruitment-list">
-        {filtered.map(item => (
-          <li key={item.id} className="recruit-item">
-            <div className="thumbnail-wrapper">
-              {item.imageUrl ? (
-                <img src={item.imageUrl} alt={item.title} className="thumbnail-image" />
-              ) : (
-                <div className="thumbnail-placeholder" />
-              )}
-              {item.isBest && <span className="best-badge">Best</span>}
-            </div>
-            <div className="item-content">
-              <h2 className="item-title">{item.title}</h2>
-
-              <div className="item-info">
-                <span><IoEyeOutline /> {item.views}</span>
-                <span><HiOutlineChatBubbleOvalLeft /> {item.comments}</span>
-                <span className="item-date">{item.date}</span>
+        {loading ? (
+          <div className="loading-message">로딩 중...</div>
+        ) : filtered.length === 0 ? (
+          <div className="empty-message">해당하는 모집글이 없습니다.</div>
+        ) : (
+          filtered.map(item => (
+            <li key={item.id} className="recruit-item" onClick={() => navigate(`/recruitment/${item.id}`)}>
+              <div className="thumbnail-wrapper">
+                {item.imageUrl ? (
+                  <img src={item.imageUrl} alt={item.title} className="thumbnail-image" />
+                ) : (
+                  <div className="thumbnail-placeholder">
+                    <img src={task_empty} alt="no-img" className="empty-img-icon" />
+                  </div>
+                )}
+                {item.isBest && <span className="best-badge">Best</span>}
               </div>
-            </div>
-          </li>
-        ))}
+              <div className="item-content">
+                <h2 className="item-title">{item.title}</h2>
+                <p className="item-desc">{item.description}</p>
+                {item.tags && item.tags.length > 0 && (
+                  <div className="item-tags">
+                    {item.tags.map((tag, index) => (
+                      <span key={index} className="tag-item">#{tag}</span>
+                    ))}
+                  </div>
+                )}
+                <div className="item-info">
+                  <div className="twoicons">
+                    <div className="view-icon"><img src={view} alt="조회수"/> {item.views}</div>
+                    <div className="apply-icon"><img src={apply} alt="지원자"/> {item.applicantCount} </div>
+                  </div>
+                  <span className="item-date">{item.date}</span>
+                </div>
+              </div>
+            </li>
+          ))
+        )}
       </ul>
-
       <BottomNav />
     </div>
-)}
+  );
+}

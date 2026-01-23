@@ -3,11 +3,12 @@
 .container {
   max-width: 420px;
   margin: 0 auto;
-  padding: 32px 12px 48px 12px;
+  padding: 69px 12px 48px 12px; // Header(47px) + margin(22px) = 69px top
   background: $background;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  box-sizing: border-box;
 }
 
 .content {
@@ -16,7 +17,7 @@
   min-height: 0;
   padding-bottom: 96px;
   margin-bottom: 0;
-  gap: 32px;
+  gap: 24px; // Reduced from 32px
 }
 
 .pageTitle {
@@ -27,7 +28,9 @@
   text-align: center;
 }
 
-.statusSection, .summarySection, .reviewsSection {
+.statusSection,
+.summarySection,
+.reviewsSection {
   background: $white;
   border-radius: $border-radius-base;
   box-shadow: $shadow-base;
@@ -42,9 +45,11 @@
   margin-bottom: 20px;
 }
 
-.averageRating, .completion {
+.averageRating,
+.completion {
   font-size: 1.1em;
   color: $gray-dark;
+
   span {
     font-weight: bold;
     color: $primary-color;
@@ -97,7 +102,9 @@
   border-radius: 8px;
 }
 
-.loading, .error, .noData {
+.loading,
+.error,
+.noData {
   text-align: center;
   padding: 20px;
   color: $gray;
@@ -108,6 +115,7 @@
   display: flex;
   gap: 8px;
   margin-bottom: 18px;
+
   button {
     flex: 1;
     padding: 10px 0;
@@ -118,6 +126,7 @@
     font-weight: 600;
     font-size: 16px;
     cursor: pointer;
+
     &.active {
       background: #fff;
       color: #f76241;
@@ -129,7 +138,7 @@
 .givenResultSection {
   background: #fff;
   border-radius: 16px;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
   padding: 24px 18px 28px 18px;
   margin-bottom: 18px;
 }
@@ -141,7 +150,7 @@
   margin-top: 10px;
   font-size: 15px;
   color: #333;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
 }
 
 .incompleteNotice {
@@ -160,34 +169,43 @@
   gap: 12px;
   margin-bottom: 18px;
 }
-.goodBox, .improveBox {
+
+.goodBox,
+.improveBox {
   flex: 1;
   border-radius: 12px;
   padding: 14px 12px;
   background: #f7f7f7;
   font-size: 15px;
 }
+
 .goodBox {
   background: #f7f7f7;
   color: #222;
 }
+
 .improveBox {
   background: #ffede6;
   color: #f76241;
 }
-.goodTitle, .improveTitle {
+
+.goodTitle,
+.improveTitle {
   font-weight: 700;
   margin-bottom: 6px;
   font-size: 15px;
 }
+
 .givenDetailSection {
   margin-top: 18px;
 }
+
 .sectionSubTitle {
   font-size: 16px;
   font-weight: 600;
   margin-bottom: 10px;
 }
+
 .roleCard {
   background: #fff;
   border-radius: 10px;
@@ -195,8 +213,9 @@
   margin-bottom: 8px;
   font-size: 15px;
   color: #333;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
 }
+
 .showMoreBtn {
   display: block;
   margin: 0 auto;
@@ -216,10 +235,11 @@
   gap: 32px;
 }
 
-.sectionCard, .card {
+.sectionCard,
+.card {
   background: #fff;
   border-radius: 18px;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
   padding: 32px 20px 32px 20px;
   margin-bottom: 32px;
   width: 100%;
@@ -240,11 +260,13 @@
   font-size: 16px;
   font-weight: 500;
   margin-bottom: 2px;
+
   .categoryName {
     min-width: 90px;
     color: #f76241;
     font-weight: 700;
   }
+
   .categoryScore {
     font-size: 16px;
     font-weight: 700;
@@ -257,10 +279,12 @@
   padding-left: 32px !important;
   padding-right: 32px !important;
 }
+
 .memberReviewCardSection {
   padding-left: 32px !important;
   padding-right: 32px !important;
 }
+
 .memberReviewCard {
   display: flex;
   flex-direction: column;
@@ -270,9 +294,11 @@
   padding-left: 32px !important;
   padding-right: 32px !important;
 }
+
 .reviewerRow {
   margin-bottom: 18px;
 }
+
 .reviewerName {
   margin-left: 0 !important;
   white-space: nowrap;
@@ -282,10 +308,12 @@
   color: #f76241;
   text-align: left;
 }
+
 .memberCategoryTable {
   width: 100%;
   margin-bottom: 32px;
 }
+
 .reviewComment {
   align-self: stretch;
   margin-left: 0 !important;
@@ -296,10 +324,12 @@
   font-size: 1.05em;
   min-height: 64px;
   position: relative;
+
   &:before {
     left: 32px;
   }
 }
+
 .categoryRow {
   display: grid;
   grid-template-columns: minmax(56px, 110px) 140px;
@@ -307,6 +337,7 @@
   gap: 0 4px;
   width: 100%;
 }
+
 .categoryName {
   padding-right: 8px;
   font-size: 1em;
@@ -316,12 +347,14 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
 .starsAndScore {
   display: flex;
   align-items: center;
   gap: 4px;
   flex-shrink: 0;
 }
+
 .categoryScore {
   font-size: 15px;
   font-weight: 500;
@@ -333,28 +366,36 @@
   text-overflow: unset;
   white-space: nowrap;
 }
+
 .categoryRow.total {
   margin-top: 12px;
   margin-bottom: 12px;
   font-weight: 700;
+
   .categoryName {
     color: #222;
   }
+
   .categoryScore {
     color: #f76241;
     font-weight: 700;
   }
 }
-.memberCategoryTable, .categoryAverages {
+
+.memberCategoryTable,
+.categoryAverages {
   gap: 14px;
 }
-.sectionCard, .card {
+
+.sectionCard,
+.card {
   max-width: 420px;
   margin: 0 auto 32px auto;
   padding-left: 24px;
   padding-right: 24px;
   box-sizing: border-box;
 }
+
 .overallScoreBox {
   margin-top: 18px;
   margin-bottom: 12px;
@@ -364,87 +405,7 @@
   width: 100%;
 }
 
-.reviewCard {
-  position: relative;
-  background: #fafbfc;
-  border-radius: 16px;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
-  padding: 32px 20px 28px 20px;
-  margin-bottom: 32px;
-  transition: box-shadow 0.2s, transform 0.2s;
-  border-top: 4px solid #f76241; // highlight bar
 
-  &:hover {
-    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
-    transform: translateY(-2px) scale(1.01);
-  }
-
-  .reviewerAvatar {
-    width: 38px; height: 38px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #f76241 60%, #ffb88c 100%);
-    color: #fff;
-    font-weight: 700;
-    font-size: 18px;
-    display: flex; align-items: center; justify-content: center;
-    position: absolute; left: 18px; top: -19px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    border: 2px solid #fff;
-    z-index: 2;
-  }
-
-  .reviewerName {
-    margin-left: 54px; // 아바타 공간 확보
-    font-weight: 700;
-    color: #f76241;
-    font-size: 1.1em;
-    margin-bottom: 8px;
-  }
-
-  .reviewCategories {
-    margin-left: 54px;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 16px 32px;
-    margin-bottom: 16px;
-  }
-  .reviewOverall {
-    margin-left: 54px;
-    margin-bottom: 16px;
-    font-weight: 600;
-    color: #222;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    font-size: 1.08em;
-  }
-  .reviewComment {
-    background: #fffbe6;
-    color: #b88a00;
-    border-radius: 12px 12px 12px 0;
-    padding: 18px 20px;
-    font-size: 15px;
-    margin-top: 18px;
-    position: relative;
-    font-style: italic;
-    margin-left: 54px;
-    margin-bottom: 2px;
-    &:before {
-      content: '';
-      position: absolute;
-      left: 18px; bottom: -10px;
-      width: 0; height: 0;
-      border-top: 10px solid #fffbe6;
-      border-right: 12px solid transparent;
-    }
-    &:after {
-      content: '💬';
-      position: absolute;
-      left: 12px; top: 10px;
-      font-size: 18px;
-    }
-  }
-}
 
 .commentsSection {
   .commentCard {
@@ -454,6 +415,7 @@
     margin-bottom: 8px;
     font-size: 15px;
     color: #333;
+
     .commenter {
       font-weight: 600;
       color: #f76241;

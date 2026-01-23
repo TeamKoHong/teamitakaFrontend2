@@ -1,0 +1,181 @@
+.main-project-card {
+  font-family: Pretendard, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, "Noto Sans KR", Arial, sans-serif;
+
+  border: 0;
+  background: #fff;
+  border-radius: 20px; // Updated radius (was 8px/10px)
+
+  width: 280px;
+  min-width: 280px;
+  flex: 0 0 auto;
+
+  overflow: hidden;
+  text-align: left;
+  cursor: pointer;
+  box-shadow: none;
+
+  display: flex;
+  flex-direction: column;
+
+  .thumb {
+    width: 100%;
+    height: 160px;
+    background: #e5e5e5;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .thumb-placeholder {
+      width: 100%;
+      height: 100%;
+      background: #dcdcdc;
+      display: grid;
+      place-items: center;
+    }
+  }
+
+  .body {
+    padding: 14px 14px 16px;
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    align-items: flex-start;
+  }
+
+  .left {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    text-align: left;
+    align-items: flex-start;
+  }
+
+  .title {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 800;
+    color: #111;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+  }
+
+  .meta {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    color: #6b7280;
+    font-size: 12px;
+    width: 100%;
+  }
+
+  .meta-row {
+    display: flex;
+    align-items: center;
+    min-width: 0;
+
+    gap: 6px;
+
+    .meta-icon {
+      width: 18px;
+      height: 18px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+
+      font-size: 16px;
+      flex: 0 0 18px;
+      line-height: 1;
+    }
+
+    .meta-text {
+      flex: 1;
+      text-align: left;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      min-width: 0;
+    }
+  }
+
+  /* ✅ 오른쪽 영역 */
+  .right {
+    flex-shrink: 0;
+    align-self: center;
+
+    /* 오른쪽에 원형 + 텍스트를 안정적으로 배치 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* ✅ 주황 원형 프로그레스 + 중앙 D-day 텍스트 오버레이 */
+  .progress-wrap {
+    position: relative;
+    width: 60px;
+    /* CircularProgress 기본 크기에 맞춤 */
+    height: 60px;
+    display: grid;
+    place-items: center;
+  }
+
+  .progress-center-text {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+
+    font-weight: 800;
+    font-size: 12px;
+    color: #111;
+    pointer-events: none;
+    user-select: none;
+  }
+}
+
+@media (max-width: 375px) {
+  .main-project-card {
+    border-radius: 20px; // Updated radius
+
+    width: 260px;
+    min-width: 260px;
+
+    .thumb {
+      height: 150px;
+    }
+
+    .body {
+      padding: 12px 12px 14px;
+    }
+
+    /* 모바일에서는 아이콘 칸도 조금 줄이기 */
+    .meta-row {
+      gap: 6px;
+
+      .meta-icon {
+        width: 16px;
+        height: 16px;
+        flex: 0 0 16px;
+        font-size: 15px;
+      }
+    }
+
+    /* 모바일 원형도 살짝 줄임 */
+    .progress-wrap {
+      width: 56px;
+      height: 56px;
+    }
+
+    .progress-center-text {
+      font-size: 11px;
+    }
+  }
+}

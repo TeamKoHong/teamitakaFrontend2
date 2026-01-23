@@ -1,17 +1,32 @@
 .member-header-container {
-  position: sticky;
+  position: fixed;
   top: 0;
+  left: 0;
+  right: 0;
   z-index: 100;
-  width: 100%;
   background: #fffdfc;
   box-shadow: 0px 1px 1px 0px rgba(0, 0, 0, 0.15);
-  padding: 8px 22px 6px 21px;
+  padding: 1.5rem 1rem;
   display: flex;
+  height: 64px;
   align-items: center;
-  position: relative;
-  gap: 12px;
+  box-sizing: border-box;
 
-  .member-header-back,
+  .member-header-back {
+    background: none;
+    border: none;
+    cursor: pointer;
+    width: 22px;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    left: 21px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
   .member-header-chat {
     background: none;
     border: none;
@@ -21,23 +36,35 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    flex-shrink: 0;
+    position: absolute;
+    right: 22px;
+    top: 50%;
+    transform: translateY(-50%);
   }
 
   .member-header-title {
-    font-size: 20px;
+    font-size: 17px;
     font-weight: 600;
     letter-spacing: -0.2px;
     margin: 0;
+    padding: 0; // Ensure no padding
+    text-indent: 0; // Ensure no indent
     position: absolute;
     left: 50%;
     top: 50%;
+    font-style: normal;
+    color: #000;
     transform: translate(-50%, -50%);
     white-space: nowrap;
   }
 
   .member-header-chat--placeholder {
-    width: 22px; /* 아이콘 크기와 동일하게 */
-    flex-shrink: 0;
+    width: auto;
+    min-width: 22px;
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    white-space: nowrap;
   }
 }

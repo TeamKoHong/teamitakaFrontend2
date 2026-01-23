@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
-import { toastBus } from './ToastHost';
+import { toastBus } from './GlobalToastSystem';
 
 let redirecting = false;
 
@@ -14,7 +14,7 @@ export default function AuthEventBridge() {
     const onExpired = () => {
       if (redirecting) return;
       redirecting = true;
-      try { logout(); } catch (e) {}
+      try { logout(); } catch (e) { }
       if (location.pathname !== '/login') {
         navigate('/login', { replace: true });
       }

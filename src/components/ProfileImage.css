@@ -1,8 +1,17 @@
 /* 프로필 이미지 전체 영역 */
 .profile-wrapper {
+<<<<<<< HEAD
   position: absolute;
   top: 116px;   /* Figma 기준 */
   left: 134px;
+=======
+  /* position: absolute 제거 - Flexbox 레이아웃과 호환 */
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 16px auto;
+>>>>>>> main
 
   width: 111px;
   height: 111px;

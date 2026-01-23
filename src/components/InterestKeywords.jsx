@@ -2,23 +2,57 @@ import React, { useState } from "react";
 import "./InterestKeywords.css";
 import PlusOrange from "../assets/plus_orange.png";
 
+<<<<<<< HEAD
 export default function InterestKeywords() {
   const [keywords, setKeywords] = useState([]);
   const [inputVisible, setInputVisible] = useState(false);
   const [inputValue, setInputValue] = useState("");
 
+=======
+export default function InterestKeywords({ value, onChange }) {
+  // 내부 상태 (props 없을 때 사용 - 기존 동작 유지)
+  const [internalKeywords, setInternalKeywords] = useState([]);
+  const [inputVisible, setInputVisible] = useState(false);
+  const [inputValue, setInputValue] = useState("");
+
+  // controlled vs uncontrolled 모드 판단
+  const isControlled = value !== undefined && onChange !== undefined;
+  const currentKeywords = isControlled ? value : internalKeywords;
+
+>>>>>>> main
   const handleAddClick = () => {
     setInputVisible(true);
   };
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter" && inputValue.trim() !== "") {
+<<<<<<< HEAD
       setKeywords([...keywords, inputValue.trim()]);
+=======
+      const newKeywords = [...currentKeywords, inputValue.trim()];
+      if (isControlled) {
+        onChange(newKeywords);
+      } else {
+        setInternalKeywords(newKeywords);
+      }
+>>>>>>> main
       setInputValue("");
       setInputVisible(false);
     }
   };
 
+<<<<<<< HEAD
+=======
+  const handleRemoveKeyword = (indexToRemove) => {
+    const newKeywords = currentKeywords.filter((_, idx) => idx !== indexToRemove);
+    if (isControlled) {
+      onChange(newKeywords);
+    } else {
+      setInternalKeywords(newKeywords);
+    }
+  };
+
+>>>>>>> main
   return (
     <div className="interest-container">
 
@@ -28,8 +62,19 @@ export default function InterestKeywords() {
       <div className="keyword-row">
 
         {/* 키워드들 */}
+<<<<<<< HEAD
         {keywords.map((kw, idx) => (
           <div key={idx} className="keyword-pill">
+=======
+        {currentKeywords.map((kw, idx) => (
+          <div
+            key={idx}
+            className="keyword-pill"
+            onClick={() => handleRemoveKeyword(idx)}
+            style={{ cursor: 'pointer' }}
+            title="클릭하여 삭제"
+          >
+>>>>>>> main
             {kw}
           </div>
         ))}

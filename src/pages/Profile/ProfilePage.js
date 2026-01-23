@@ -1,9 +1,9 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import { getMe } from "../../services/user";
 
-import profileImage from "../../images/profileImage.png";
+import defaultProfileImage from "../../images/profileImage.png";
 import gearIcon from "../../images/gear.png";
 import linkIcon from "../../images/link.png";
 import tagIcon from "../../images/tag.png";
@@ -13,10 +13,18 @@ import BottomNav from "../../components/Common/BottomNav/BottomNav";
 
 const ProfilePage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { logout } = useAuth();
   const [user, setUser] = React.useState(null);
 
   React.useEffect(() => {
+    // state로 전달받은 user가 있으면 우선 사용 (프로필 편집 후 돌아온 경우)
+    if (location.state?.user) {
+      setUser(location.state.user);
+      return;
+    }
+
+    // 없으면 API 호출
     const load = async () => {
       try {
         const res = await getMe();
@@ -37,7 +45,7 @@ const ProfilePage = () => {
     };
     load();
     // eslint-disable-next-line
-  }, []);
+  }, [location.state]);
 
   const onLogout = () => {
     // 수동 로그아웃에서는 세션 만료 모달을 띄우지 않도록 suppress 플래그 설정
@@ -68,12 +76,18 @@ const ProfilePage = () => {
         marginBottom: '8px'
       }}>
         <h2 style={{ color: '#f76241', fontWeight: 'bold', fontSize: '24px', margin: 0 }}>프로필</h2>
-        <img src={gearIcon} alt="설정" style={{ width: 24, height: 24, objectFit: 'contain', display: 'block' }} />
+        <img
+          src={gearIcon}
+          alt="설정"
+          style={{ width: 24, height: 24, objectFit: 'contain', display: 'block', cursor: 'pointer' }}
+          onClick={() => navigate('/my/edit', { state: { user } })}
+          title="프로필 편집"
+        />
       </div>
 
       {/* 프로필 정보 */}
       <div style={{ display: 'flex', alignItems: 'center', background: '#fff', padding: 12, borderRadius: 8 }}>
-        <img src={profileImage} alt="프로필" style={{ width: 60, height: 60, borderRadius: '50%', objectFit: 'cover', marginRight: 12 }} />
+        <img src={user?.profileImage || defaultProfileImage} alt="프로필" style={{ width: 60, height: 60, borderRadius: '50%', objectFit: 'cover', marginRight: 12 }} />
         <div>
           <div style={{
             backgroundColor: '#f76241', color: 'white', fontSize: 12, padding: '2px 8px', borderRadius: 12, display: 'inline-block', marginBottom: 6

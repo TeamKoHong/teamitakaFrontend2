@@ -1,61 +1,81 @@
-import React, { useState } from "react";
+import React from "react";
 import "./RecruitingProject.scss";
 import { TbEyeFilled } from "react-icons/tb";
 import { RiFileList2Fill } from "react-icons/ri";
-import avatar1 from "../assets/icons/avatar1.png";
-import avatar2 from "../assets/icons/avatar2.png";
-import avatar3 from "../assets/icons/avatar3.png";
-import avatar4 from "../assets/icons/avatar4.png";
-import ApplicantListSlide from "./ApplicantListSlide"; // 추가
+import userDefaultImg from "../assets/icons/user_default_img.svg";
 
-const RecruitingProject = () => {
-  const [showApplicantSlide, setShowApplicantSlide] = useState(false);
+const RecruitingProject = ({ recruitment, onSelectTeam }) => {
+  if (!recruitment) return null;
+
+  const {
+    title,
+    description,
+    views = 0,
+    applicant_count = 0,
+    recruitment_end,
+  } = recruitment;
+
+  // D-day 계산
+  const getDDayText = () => {
+    if (!recruitment_end) return 'D-DAY';
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const endDate = new Date(recruitment_end);
+    endDate.setHours(0, 0, 0, 0);
+
+    const diffTime = endDate - today;
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+    if (diffDays === 0) return 'D-DAY';
+    if (diffDays > 0) return `D-${diffDays}`;
+    return '마감';
+  };
+
+  // 기본 아바타 이미지 배열 생성
+  const defaultAvatars = Array(Math.min(4, Number(applicant_count))).fill(userDefaultImg);
 
   return (
     <div className="recruiting-project-container">
+      <div className="recruiting-content">
       <div className="recruiting-card">
-        <h3>교내 동아리 전시 프로젝트 팀원 구합니다.</h3>
+        <h3>{title || '프로젝트명'}</h3>
         <p className="description">
-          교내 1층 전시 홀에 작품을 설치 할 예정입니다. 자유주제이며 함께 두달
-          동안 할 팀원을 구합니다.
+          {description || '프로젝트 설명이 없습니다.'}
         </p>
         <div className="info">
           <div className="info-left">
             <div className="views">
               <TbEyeFilled className="info-view-icon" />
-              <span>214</span>
+              <span>{views}</span>
             </div>
             <div className="comments">
               <RiFileList2Fill className="info-icon" />
-              <span>12</span>
+              <span>{applicant_count}</span>
             </div>
           </div>
-          <span className="d-day">D-DAY</span>
+          <span className="d-day">{getDDayText()}</span>
         </div>
       </div>
 
       <div className="apply-status">
-        <p className="apply-count">모집 중인 프로젝트명</p>
-        <h2>24명</h2>
+        <p className="apply-count">{title || '모집 중인 프로젝트명'}</p>
+        <h2>{applicant_count}명</h2>
         <p className="apply-desc">
-          총 <span className="highlight">24명</span>의 지원서가 도착했어요!
+          총 <span className="highlight">{applicant_count}명</span>의 지원서가 도착했어요!
         </p>
         <div className="avatars">
-          <img src={avatar1} alt="avatar" />
-          <img src={avatar2} alt="avatar" />
-          <img src={avatar3} alt="avatar" />
-          <img src={avatar4} alt="avatar" />
+          {defaultAvatars.map((avatar, idx) => (
+            <img key={idx} src={avatar} alt={`지원자 ${idx + 1}`} />
+          ))}
         </div>
       </div>
 
-      <button className="team-btn" onClick={() => setShowApplicantSlide(true)}>
+      <button className="team-btn" onClick={onSelectTeam}>
         팀원 선정하러 가기
       </button>
-
-      <ApplicantListSlide
-        open={showApplicantSlide}
-        onClose={() => setShowApplicantSlide(false)}
-      />
+      </div>
     </div>
   );
 };

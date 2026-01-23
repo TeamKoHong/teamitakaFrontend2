@@ -7,7 +7,7 @@ import './LoginPage.scss';
 function LoginPage() {
     const navigate = useNavigate();
     const { login, isAuthenticated, isLoading, error: authError } = useAuth();
-    
+
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [isLoginLoading, setIsLoginLoading] = useState(false);
@@ -21,23 +21,31 @@ function LoginPage() {
     }, [isAuthenticated, navigate]);
 
     const handleSignup = () => {
-        navigate('/register');
+        navigate('/phone-verify');
     };
 
     const handleGuestMode = () => {
         navigate('/guest');
     };
 
+    const handleFindId = () => {
+        navigate('/find-id');
+    };
+
+    const handleFindPassword = () => {
+        navigate('/find-password');
+    };
+
     // 단일 화면 사용: 별도의 폼 전환 없이 동일 화면에서 제출 처리
 
     const handleLogin = async (e) => {
         e.preventDefault();
-        
+
         // 중복 제출 방지
         if (isLoginLoading || isLoading) {
             return;
         }
-        
+
         // 입력 검증
         if (!email.trim() || !password.trim()) {
             setLoginError('이메일과 비밀번호를 모두 입력해주세요.');
@@ -96,7 +104,7 @@ function LoginPage() {
                     <span className="normal">으로 </span>
                     <span className="normal">프로젝트를 완성하세요!</span>
                 </div>
-                
+
                 <form onSubmit={handleLogin} autoComplete="on" className="button-group">
                     <input
                         className="input-field"
@@ -131,13 +139,13 @@ function LoginPage() {
                         {isLoginLoading || isLoading ? '로그인 중...' : '로그인'}
                     </button>
                 </form>
-                
+
                 <div className="find-links">
-                    <button className="find-links-button">
+                    <button className="find-links-button" onClick={handleFindId}>
                         아이디 찾기
                     </button>
                     <span className="find-links-separator">|</span>
-                    <button className="find-links-button">
+                    <button className="find-links-button" onClick={handleFindPassword}>
                         비밀번호 찾기
                     </button>
                     <span className="find-links-separator">|</span>

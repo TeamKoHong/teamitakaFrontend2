@@ -1,0 +1,495 @@
+@import '../../../styles/variables';
+
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  height: 100svh;
+  overflow: hidden;
+  background-color: #f5f5f5;
+  // padding-bottom removed from container, moved to content
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  background-color: #fff;
+}
+
+.headerTitle {
+  font-family: 'Pretendard';
+  font-size: 20px;
+  font-weight: 700;
+  color: $primary-color;
+}
+
+.settingsButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.settingsIcon {
+  width: 24px;
+  height: 24px;
+  color: #666;
+}
+
+.content {
+  flex: 1;
+  padding: 0 16px;
+  overflow-y: auto;
+  padding-bottom: 100px; // Enough space for BottomNav (88px) + extra
+  -webkit-overflow-scrolling: touch; // Smooth scroll on iOS
+}
+
+// 프로필 카드 (컴팩트 가로 배치)
+.profileCard {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  background-color: transparent;
+  padding: 20px 0;
+  margin-bottom: 12px;
+  gap: 16px;
+}
+
+.profileImageWrapper {
+  position: relative;
+  width: 111px;
+  height: 111px;
+  flex-shrink: 0;
+}
+
+.profileImage {
+  width: 111px;
+  height: 111px;
+  border-radius: 16px;
+  object-fit: cover;
+}
+
+.verificationBadge {
+  position: absolute;
+  top: -9px;
+  right: -9px;
+  width: 42px;
+  height: 42px;
+  cursor: pointer;
+}
+
+.profileInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.profileName {
+  font-family: 'Pretendard';
+  font-size: 18px;
+  font-weight: 700;
+  color: #140805;
+}
+
+.profileUniversity {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-family: 'Pretendard';
+  font-size: 12px;
+  font-weight: 500;
+  color: #807C7C;
+
+  svg {
+    flex-shrink: 0;
+    width: 16px;
+    height: 16px;
+  }
+}
+
+.profileStats {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin-top: 4px;
+}
+
+.statHighlight {
+  font-family: 'Pretendard';
+  font-size: 13px;
+  font-weight: 700;
+  color: #140805;
+}
+
+.statOrange {
+  color: $primary-color;
+  font-weight: 700;
+}
+
+.statNormal {
+  font-family: 'Pretendard';
+  font-size: 12px;
+  font-weight: 500;
+  color: #807C7C;
+}
+
+.profileTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+.tag {
+  background-color: transparent;
+  border: 1px solid $primary-color;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-family: 'Pretendard';
+  font-size: 11px;
+  font-weight: 600;
+  color: $primary-color;
+}
+
+// 활동 타입 카드 (배너 이미지만 표시)
+.activityCard {
+  border-radius: 20px;
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+
+.activityBanner {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 20px;
+}
+
+// 능력치 분석 섹션
+.skillSection {
+  background-color: transparent;
+  padding: 20px 0;
+  margin-bottom: 16px;
+}
+
+.skillHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.skillTitle {
+  font-family: 'Pretendard';
+  font-size: 16px;
+  font-weight: 700;
+  color: #140805;
+}
+
+.skillProjectCount {
+  font-family: 'Pretendard';
+  font-size: 14px;
+  font-weight: 400;
+  color: #807C7C;
+}
+
+.bubbleChartContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+  margin-bottom: 16px;
+}
+
+.expandButton {
+  width: 100%;
+  padding: 12px;
+  background-color: #f76241;
+  border: none;
+  border-radius: 8px;
+  font-family: 'Pretendard';
+  font-size: 15px;
+  font-weight: 600;
+  color: #fffdfc;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.expandIcon {
+  width: 16px;
+  height: 16px;
+  transition: transform 0.3s ease;
+}
+
+.expandIconRotated {
+  transform: rotate(180deg);
+}
+
+// 확장된 상세 분석
+.expandedContent {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #f0f0f0;
+}
+
+.radarChartContainer {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.feedbackCards {
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+}
+
+// 프로필 소개 문구
+.profileIntro {
+  font-family: 'Pretendard';
+  font-size: 20px;
+  font-weight: 600;
+  color: #000000;
+  text-align: left;
+  padding: 16px 0;
+  line-height: 140%;
+}
+
+.profileIntroHighlight {
+  color: $primary-color;
+  font-weight: 700;
+}
+
+// 프로젝트 섹션
+.projectSection {
+  margin-bottom: 16px;
+}
+
+.sectionTitle {
+  font-family: 'Pretendard';
+  font-size: 16px;
+  font-weight: 700;
+  color: #140805;
+  margin-bottom: 12px;
+}
+
+.projectGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.projectCard {
+  background-color: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.projectThumbnail {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+}
+
+.projectTitle {
+  padding: 12px;
+  font-family: 'Pretendard';
+  font-size: 14px;
+  font-weight: 600;
+  color: #140805;
+  min-height: 44px;
+  max-height: 44px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+// 로딩 상태
+.loadingContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+  min-height: 300px;
+  color: #807C7C;
+  font-family: 'Pretendard';
+  font-size: 14px;
+}
+
+// 에러 상태
+.errorContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+  min-height: 300px;
+  color: $primary-color;
+  gap: 16px;
+  font-family: 'Pretendard';
+  font-size: 14px;
+}
+
+// Empty State 스타일
+.emptyProfileButton {
+  background-color: transparent;
+  border: 1px dashed #D1CCCB;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-family: 'Pretendard';
+  font-size: 13px;
+  font-weight: 500;
+  color: #807C7C;
+  cursor: pointer;
+  margin-top: 8px;
+
+  &:hover {
+    border-color: $primary-color;
+    color: $primary-color;
+  }
+}
+
+.clickable {
+  cursor: pointer;
+  transition: transform 0.2s ease;
+
+  &:hover {
+    transform: scale(1.02);
+  }
+}
+
+.emptySkillContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  background-color: #FFFFFF;
+  border-radius: 16px;
+  margin-bottom: 16px;
+}
+
+.emptyIllustration {
+  width: 120px;
+  height: 120px;
+  object-fit: contain;
+  margin-bottom: 16px;
+  opacity: 0.8;
+}
+
+.emptyText {
+  font-family: 'Pretendard';
+  font-size: 14px;
+  font-weight: 500;
+  color: #807C7C;
+  text-align: center;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.emptyProjectContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  background-color: #FFFFFF;
+  border-radius: 16px;
+}
+
+.addProjectButton {
+  background-color: $primary-color;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-family: 'Pretendard';
+  font-size: 14px;
+  font-weight: 600;
+  color: #FFFFFF;
+  cursor: pointer;
+  margin-top: 16px;
+
+  &:hover {
+    background-color: darken($primary-color, 10%);
+  }
+}
+
+.addProjectCard {
+  background-color: #FFFFFF;
+  border: 2px dashed #D1CCCB;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 1;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+
+  &:hover {
+    border-color: $primary-color;
+    background-color: rgba($primary-color, 0.05);
+  }
+}
+
+.addProjectIcon {
+  font-size: 32px;
+  font-weight: 300;
+  color: #807C7C;
+  margin-bottom: 8px;
+}
+
+.addProjectText {
+  font-family: 'Pretendard';
+  font-size: 12px;
+  font-weight: 500;
+  color: #807C7C;
+}
+
+// Figma 스펙 기반 Empty Project Card
+.emptyProjectCard {
+  width: 100%;
+  max-width: 176px;
+  aspect-ratio: 176 / 134;
+  border-radius: 16px;
+  background-color: #dcdcdc;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: darken(#dcdcdc, 5%);
+  }
+}
+
+.emptyProjectIcon {
+  font-size: 14px;
+  font-weight: 300;
+  color: #403e3e;
+}
+
+.emptyProjectText {
+  font-family: 'Pretendard';
+  font-size: 13px;
+  font-weight: 600;
+  color: #403e3e;
+  letter-spacing: -0.03em;
+  line-height: 19px;
+}
