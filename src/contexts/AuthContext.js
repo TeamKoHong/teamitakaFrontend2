@@ -73,6 +73,7 @@ const authReducer = (state, action) => {
         case AUTH_ACTIONS.LOGOUT:
             return {
                 ...state,
+                isLoading: false,
                 isAuthenticated: false,
                 user: null,
                 token: null,
