@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
-import { submitEvaluation, fetchEvaluationTargets } from '../../services/evaluation';
+import { fetchEvaluationTargets } from '../../services/evaluation';
 import { fetchProjectDetails } from '../../services/projects';
 import { getTeamMemberEvaluationUrl } from '../../constants/routes';
 import styles from './TeamMemberEvaluationPage.module.scss';
@@ -25,6 +25,7 @@ function TeamMemberEvaluationPage() {
   const [error, setError] = useState(null);
   const [projectData, setProjectData] = useState(null);
   const [memberData, setMemberData] = useState(null);
+  // eslint-disable-next-line no-unused-vars
   const [nextPendingMemberAfterSubmit, setNextPendingMemberAfterSubmit] = useState(null);
   const [remainingCount, setRemainingCount] = useState(0);
   const [evaluationData, setEvaluationData] = useState({

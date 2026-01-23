@@ -142,6 +142,7 @@ export const AuthProvider = ({ children }) => {
 
     // 초기화 - 저장된 토큰과 사용자 정보 확인
     useEffect(() => {
+        // eslint-disable-next-line no-unused-vars
         const initializeAuth = () => {
             try {
                 const token = getToken();
