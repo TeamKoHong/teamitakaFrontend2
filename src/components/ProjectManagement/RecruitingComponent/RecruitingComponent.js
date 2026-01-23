@@ -24,9 +24,11 @@ const RecruitingComponent = () => {
       setError(null);
       const res = await getMyRecruitments({ limit: page.limit || 10, offset: nextOffset });
 
-      console.log('🔍 [Debug] Recruitment API 응답:', res);
-      console.log('🔍 [Debug] Recruitments 배열:', res.items);
-      console.log('🔍 [Debug] 모집글 개수:', res.items?.length);
+      if (process.env.NODE_ENV === 'development') {
+        console.log('🔍 [Debug] Recruitment API 응답:', res);
+        console.log('🔍 [Debug] Recruitments 배열:', res.items);
+        console.log('🔍 [Debug] 모집글 개수:', res.items?.length);
+      }
 
       if (res?.success) {
         setItems(nextOffset === 0 ? res.items : [...items, ...res.items]);
@@ -74,7 +76,7 @@ const RecruitingComponent = () => {
 
     try {
       const result = await deleteRecruitment(recruitmentId);
-      
+
       if (result.success) {
         // 삭제 성공 시 목록 새로고침
         await load(0);
@@ -82,7 +84,7 @@ const RecruitingComponent = () => {
       }
     } catch (error) {
       console.error('❌ 모집글 삭제 실패:', error);
-      
+
       if (error.code === 'UNAUTHORIZED') {
         alert('로그인이 필요합니다.');
         localStorage.removeItem('authToken');
@@ -132,10 +134,10 @@ const RecruitingComponent = () => {
           </div>
         </div>
       )}
-      
+
       <div className="recruiting-list">
         {isLoading && items.length === 0 && <div className="loading-state">불러오는 중...</div>}
-        
+
         {error && (
           <div className="error-state">
             <p style={{ color: '#F76241', marginBottom: '12px' }}>{error}</p>
@@ -157,8 +159,8 @@ const RecruitingComponent = () => {
 
         <div className="recruiting-cards-wrapper">
           {activeRecruitments.map((recruitment) => (
-            <RecruitingProjectCard 
-              key={recruitment.recruitment_id} 
+            <RecruitingProjectCard
+              key={recruitment.recruitment_id}
               recruitment={recruitment}
               onClick={() => handleCardClick(recruitment)}
             />
@@ -177,19 +179,19 @@ const RecruitingComponent = () => {
                 <span className="highlight">다시 한번 모집</span>해보세요
               </p>
             </div>
-            
+
             {expiredRecruitments.map((recruitment) => (
               <div key={recruitment.recruitment_id} className="recruiting-deadline-card">
                 <p className="recruiting-deadline-card-description">목표 모집 인원에 도달하지 못했어요.</p>
                 <p className="recruiting-deadline-card-title">{recruitment.title}</p>
                 <div className="recruiting-deadline-card-buttons">
-                  <button 
+                  <button
                     className="delete-btn"
                     onClick={() => handleDelete(recruitment.recruitment_id)}
                   >
                     삭제하기
                   </button>
-                  <button 
+                  <button
                     className="rerecruit-btn"
                     onClick={() => handleReRecruit(recruitment.recruitment_id)}
                   >

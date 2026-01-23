@@ -2,7 +2,7 @@
 
 .container {
     display: flex;
-    gap: 8px;
+    gap: 10px;
     align-items: center;
     justify-content: center;
 }
@@ -31,5 +31,5 @@
 }
 
 .lg {
-    font-size: 40px; // Step 2 Main Rating
+    font-size: 33px; // Step 2 Main Rating - Updated to Figma spec
 }

@@ -64,7 +64,7 @@ $track-bg: #ececec;
   width: 100%;
   background-color: $card-bg;
   border-radius: 20px;
-  padding: 12px 26px;
+  padding: 8px 16px;
   box-sizing: border-box;
   margin-bottom: 16px;
   display: flex;
@@ -142,7 +142,7 @@ $track-bg: #ececec;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 4px;
+      gap: 8px;
 
       .avatar {
         width: 55px;
@@ -221,11 +221,21 @@ $track-bg: #ececec;
 
 // Step Container
 .stepContainer {
+  position: relative; // Required for absolute-positioned topBackgroundBox
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
+
+.stepIndicatorContainer {
+  margin: 8px 0; // Adjusted to match Figma spec
+  display: flex;
+  justify-content: flex-start;
+  width: 100%;
+  align-self: flex-start;
+}
+
 
 // Question Text
 .questionText {
@@ -233,7 +243,7 @@ $track-bg: #ececec;
   font-weight: 600;
   line-height: 140.98%;
   color: $text-dark;
-  margin: 20px 0 10px;
+  margin: 8px 0 8px; // Adjusted to match Figma spec
   text-align: left;
   width: 100%;
 }
@@ -243,289 +253,283 @@ $track-bg: #ececec;
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 8px; // Adjusted to match Figma spec
   margin-bottom: 30px;
 }
 
-// Category Item (Card)
+// Category Item
 .categoryItem {
-  background-color: $card-bg;
-  border-radius: 20px;
-  padding: 16px 20px; // Standardized padding
   display: flex;
   flex-direction: column;
-  gap: 12px; // Reduced gap from 16px
-  box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.05);
+  gap: 8px;
+  padding: 12px 16px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  border: 1px solid #ececec;
+}
 
-  .categoryHeader {
-    display: flex;
-    flex-direction: column;
-    gap: 0; // Removed gap
-    align-items: flex-start; // Ensure left alignment
+.categoryHeader {
+  display: flex;
+  flex-direction: column; // Stack title and description
+  align-items: flex-start;
+  gap: 4px; // Reduce gap for tighter stacking
 
-    .categoryName {
-      font-size: 14px; // Increased from 13px
-      font-weight: 600;
-      letter-spacing: -0.01em;
-      color: $text-dark;
-      margin-bottom: 2px; // Add slight bottom margin
-    }
+  .categoryName {
+    font-size: 13px; // Requested: 13px
+    font-weight: 600; // Requested: semibold
+    color: #140805;
+  }
 
-    .categoryDescription {
-      font-size: 11px; // Increased from 10px
-      letter-spacing: -0.01em;
-      color: $text-gray;
-      line-height: 1.4;
-    }
+  .categoryDescription {
+    font-size: 10px; // Requested: 10px
+    font-weight: 400; // Requested: regular
+    color: #807c7c;
   }
 }
 
-// Rating Input (Custom Slider)
+// Rating Input Styles
 .ratingInputContainer {
   width: 100%;
-  position: relative;
-  height: 35px;
-
-  .ratingTrackArea {
-    position: relative;
-    width: 100%;
-    height: 20px;
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-    touch-action: none;
-  }
-
-  .ratingTrackBackground {
-    position: absolute;
-    left: 0;
-    width: 100%;
-    height: 7px;
-    background-color: $track-bg;
-    border-radius: 50px;
-  }
-
-  .ratingTrackFill {
-    position: absolute;
-    left: 0;
-    height: 7px;
-    background-color: $primary-orange;
-    border-radius: 50px;
-    pointer-events: none;
-  }
-
-  .ratingKnob {
-    position: absolute;
-    width: 17px;
-    height: 17px;
-    background-color: $primary-orange;
-    border-radius: 50%;
-    box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.25);
-    transform: translateX(-50%);
-    pointer-events: none;
-    top: 1.5px;
-  }
-
-  .ratingLabels {
-    position: absolute;
-    top: 20px;
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    padding: 0 2px;
-
-    .ratingLabel {
-      font-size: 10px;
-      color: $text-gray;
-      cursor: pointer;
-      width: 20px;
-      text-align: center;
-
-      &.active {
-        color: $primary-orange;
-        font-weight: bold;
-      }
-    }
-  }
-}
-
-// Button
-.buttonContainer {
-  width: 100%;
   display: flex;
-  justify-content: center;
-  margin-top: 20px;
+  flex-direction: column;
+  gap: 8px;
+  padding: 0 10px; // Provide some side padding for knob overhang
 }
 
-.nextButton,
-.button {
+.ratingTrackArea {
+  position: relative;
   width: 100%;
-  height: 59px;
-  background-color: $primary-orange;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-size: 15px;
-  font-weight: 600;
-  cursor: pointer;
+  height: 24px;
   display: flex;
   align-items: center;
-  justify-content: center;
+  cursor: pointer;
+  touch-action: none;
+}
 
-  &:disabled {
-    background-color: #d1cccb;
-    cursor: not-allowed;
-  }
+.ratingTrackBackground {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 6px;
+  background-color: #ECECEC;
+  border-radius: 3px;
+}
 
-  &.secondary {
-    background-color: #dadada;
-    color: $text-gray;
+.ratingTrackFill {
+  position: absolute;
+  left: 0;
+  height: 6px;
+  background-color: #F76241;
+  border-radius: 3px;
+}
+
+.ratingKnob {
+  position: absolute;
+  top: 50%;
+  width: 20px;
+  height: 20px;
+  background-color: #FFFFFF;
+  border: 2px solid #F76241;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+}
+
+.ratingLabels {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin-top: 4px;
+}
+
+.ratingLabel {
+  font-size: 14px;
+  color: #807C7C;
+  cursor: pointer;
+  text-align: center;
+  width: 24px; // Ensure touch target
+  transition: color 0.2s;
+
+  &.active {
+    color: #F76241;
+    font-weight: 700;
   }
 }
+
+
 
 // Step 2 Styles
 .overallRatingSection {
-  @extend .categoryItem;
-  align-items: center;
-  text-align: center;
-  padding: 24px 16px;
+  // Removed @extend .categoryItem to remove border/box
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  padding: 0px 16px;
+  gap: 4px;
 
   .overallLabel {
     font-size: 18px;
     font-weight: 600;
-    color: $text-dark;
-    margin-bottom: 4px;
+    color: #140805;
+    line-height: 140.98%;
+    margin-bottom: 0;
   }
 
   .overallSubtitle {
     font-size: 12px;
-    color: $text-gray;
+    color: #807c7c;
+    letter-spacing: -0.01em;
     margin-bottom: 20px;
   }
 }
 
-.roleSection {
-  @extend .categoryItem;
-  padding: 16px;
+// ... (Role Section unchanged) ...
 
-  .roleLabel {
-    font-size: 16px;
-    font-weight: 600;
-    color: $text-dark;
-    margin-bottom: 16px;
-    line-height: 1.4;
-  }
+// Step 3 Styles - Simplified flex-based layout
 
-  .textareaWrapper {
-    width: 100%;
-    position: relative;
-    border: 1px solid #d1cccb;
-    border-radius: 20px;
-    padding: 16px;
-    box-sizing: border-box;
-    min-height: 162px;
-    display: flex;
-    flex-direction: column;
-
-    .roleInput {
-      width: 100%;
-      border: none;
-      resize: none;
-      font-size: 14px;
-      color: $text-dark;
-      font-family: inherit;
-      flex: 1;
-      outline: none;
-
-      &::placeholder {
-        color: #d1cccb;
-      }
-    }
-
-    .charCounter {
-      align-self: flex-end;
-      font-size: 12px;
-      color: #d1cccb;
-      margin-top: 8px;
-    }
-  }
-}
-
-// Step 3 Styles
-.successWrap {
-  width: 100%;
+// Top Section - White background with header, card and date
+.topSection {
+  width: calc(100% + 32px);
+  margin-left: -16px;
+  margin-right: -16px;
+  background-color: #fffdfc;
+  box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.15);
+  padding: 0 16px 20px; // Increased bottom padding
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 30px; // Increased gap between card and message
+  gap: 12px; // Increased gap between elements
+
+  // Modal header with title and close button
+  .modalHeader {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    height: 56px; // Slightly taller for better spacing
+    margin-bottom: 4px; // Reduced bottom margin
+
+    .headerTitle {
+      font-size: 17px;
+      font-weight: 600;
+      color: #140805;
+    }
+
+    .closeButton {
+      position: absolute;
+      right: 16px;
+      background: none;
+      border: none;
+      font-size: 22px;
+      cursor: pointer;
+      color: #140805;
+      padding: 0;
+      line-height: 1;
+    }
+  }
 }
 
+// Member card inside top section
 .completedMemberCard {
-  width: 360px;
+  width: 100%;
+  max-width: 420px; // Slightly wider
   background-color: #fffdfc;
   border: 1px solid #d1cccb;
-  border-radius: 16px;
-  padding: 22px 24px;
+  border-radius: 20px; // More rounded corners
+  padding: 20px 24px; // Adjusted padding
   box-sizing: border-box;
   display: flex;
-  flex-direction: column;
-  gap: 12px;
+  flex-direction: row;
+  align-items: center;
 
-  .cardHeader {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    padding-left: 67px; // Align with member name (55px avatar + 12px gap)
-
-    .roleTag {
-      font-size: 12px;
-      color: #807c7c;
-      text-transform: capitalize;
-    }
-
-    .evalDate {
-      font-size: 12px;
-      color: #403e3e;
-      text-align: right;
-      text-transform: capitalize;
-    }
+  .memberAvatar {
+    width: 63px;
+    height: 63px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 16px;
+    background-color: #fcece9; // Placeholder color
   }
 
-  .cardBody {
+  .memberTextContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    flex: 1;
+    gap: 2px;
+  }
+
+  .roleTag {
+    font-size: 13px;
+    color: #807c7c;
+    font-weight: 500;
+    line-height: 1.2;
+  }
+
+  .memberName {
+    font-size: 18px;
+    font-weight: 700;
+    color: #140805;
+    line-height: 1.2;
+    margin-bottom: 4px;
+  }
+
+  .starRating {
     display: flex;
     align-items: center;
-    gap: 12px;
 
-    .memberAvatar {
-      width: 55px;
-      height: 55px;
-      border-radius: 50%;
-      object-fit: cover;
-    }
-
-    .memberInfo {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-
-      .memberName {
-        font-size: 15px;
-        font-weight: 600;
-        color: $text-dark;
-      }
+    // Override star size for Step 3 completion card
+    :global(.RatingStars_starIcon__TQVGM) {
+      font-size: 23.6px !important;
+      width: 23.6px;
+      height: 23.6px;
     }
   }
 }
 
-.successContent {
+// Evaluation date below card
+.evaluationDate {
+  width: 100%;
+  max-width: 420px;
+  font-size: 13px; // Slightly larger
+  color: #666666; // Slightly lighter gray
+  text-align: right;
+  margin-top: -8px; // Pull closer to card
+  // User wanted position fix. Usually right aligned below card is standard, 
+  // but if user says "position fix", maybe they want it inside? 
+  // For now keeping right aligned but ensuring margin.
+  margin-top: 4px;
+}
+
+// Bottom Section - Gray background with centered content
+.bottomSection {
+  width: calc(100% + 32px);
+  margin-left: -16px;
+  margin-right: -16px;
+  flex: 1;
+  min-height: calc(100vh - 280px);
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center; // Center content vertically if needed
-  gap: 12px; // Reduced gap
-  margin: 10px 0 30px 0; // Adjusted margins
+  justify-content: space-between;
+  padding: 24px 16px 34px; // Adjusted padding-bottom for Safari balance
+  background-color: inherit;
 
+  // Centered content wrapper (check icon + message)
+  .centeredContent {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    gap: 4px; // Reduced gap per QA (8px -> 4px)
+  }
+
+  // Check icon styles  
   .checkIconCircle {
     width: 57px;
     height: 57px;
@@ -534,28 +538,32 @@ $track-bg: #ececec;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 24px;
-    font-size: 24px;
-    color: white;
-    margin: 0; // Removed margin
+    margin: 0;
+
+    svg {
+      width: 24px;
+      height: 24px;
+    }
   }
 
+  // Success message below check icon
   .successMessage {
     font-size: 18px;
     font-weight: 600;
-    color: $text-dark;
+    color: #140805;
     line-height: 140.98%;
-    margin-bottom: 0; // Removed margin
+    text-align: center;
   }
-}
 
-.buttonBlock {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 12px; // Reduced gap
-  align-items: center;
-  margin-top: 10px; // Adjust top margin
+  // Button group at bottom of section
+  .buttonGroup {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    max-width: 358px;
+  }
 }
 
 .homeLink {

@@ -2,7 +2,7 @@
   display: flex;
   justify-content: space-between;
 
-  padding: 16px; // Updated padding
+  padding: 16px 20px 16px 16px; // Updated padding (Right: 20px)
   border-radius: 20px; // Updated radius (was 10px)
   background: #fff;
   width: calc(100% - 8px); // Width - 8px (4px margin + 16px parent = 20px)
@@ -101,11 +101,13 @@
   align-items: flex-end;
   height: 100%;
   position: relative;
+  min-width: 60px; // Ensure proper spacing
 
   .time-ago {
     position: absolute;
     top: 0;
-    right: 0;
+    right: 0; // Relative to this container, but card padding handles edge distance
+    // If needed to move further in: right: 4px;
     font-size: 11px;
     color: #888;
   }

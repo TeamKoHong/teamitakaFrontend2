@@ -27,7 +27,7 @@ const AUTH_ACTIONS = {
 const initialState = {
     user: null,
     token: null,
-    isLoading: false,
+    isLoading: true,
     isAuthenticated: false,
     error: null,
     isRefreshing: false,
@@ -73,6 +73,7 @@ const authReducer = (state, action) => {
         case AUTH_ACTIONS.LOGOUT:
             return {
                 ...state,
+                isLoading: false,
                 isAuthenticated: false,
                 user: null,
                 token: null,
@@ -110,7 +111,8 @@ const authReducer = (state, action) => {
                 ...state,
                 user: action.payload.user,
                 token: action.payload.token,
-                isAuthenticated: true
+                isAuthenticated: true,
+                isLoading: false
             };
 
         case AUTH_ACTIONS.CLEAR_ERROR:
@@ -142,6 +144,7 @@ export const AuthProvider = ({ children }) => {
 
     // 초기화 - 저장된 토큰과 사용자 정보 확인
     useEffect(() => {
+        // eslint-disable-next-line no-unused-vars
         const initializeAuth = () => {
             try {
                 const token = getToken();
@@ -153,7 +156,9 @@ export const AuthProvider = ({ children }) => {
                         payload: { user, token }
                     });
 
-                    console.log('기존 인증 정보 복원됨:', { user: user.email, tokenValid: true });
+                    if (process.env.NODE_ENV === 'development') {
+                        console.log('기존 인증 정보 복원됨:', { user: user.email, tokenValid: true });
+                    }
                 } else {
                     // 유효하지 않은 토큰이나 사용자 정보가 있으면 정리
                     if (token || user) {
@@ -161,10 +166,13 @@ export const AuthProvider = ({ children }) => {
                         removeToken();
                         console.log('저장된 인증 정보 없음 또는 만료됨');
                     }
+                    // 인증 정보가 없으면 로그아웃 상태로 초기화 (로딩 종료)
+                    dispatch({ type: AUTH_ACTIONS.LOGOUT });
                 }
             } catch (error) {
                 console.error('인증 초기화 오류:', error);
                 removeToken();
+                dispatch({ type: AUTH_ACTIONS.LOGOUT });
             }
         };
 
@@ -186,7 +194,7 @@ export const AuthProvider = ({ children }) => {
         const interval = setInterval(checkTokenRefresh, 5 * 60 * 1000);
 
         // 즉시 한 번 확인
-        checkTokenRefresh();
+        // checkTokenRefresh();
 
         return () => clearInterval(interval);
     }, [state.isAuthenticated, state.isRefreshing]);
