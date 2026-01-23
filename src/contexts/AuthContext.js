@@ -25,10 +25,10 @@ const AUTH_ACTIONS = {
 
 // 초기 상태
 const initialState = {
-    user: null,
-    token: null,
+    user: { userId: 'mock-user-1', email: 'test@example.com', name: 'Test User' },
+    token: 'mock-token',
     isLoading: false,
-    isAuthenticated: false,
+    isAuthenticated: true,
     error: null,
     isRefreshing: false,
     // 휴대폰 본인인증 등록 정보 (신규)
@@ -142,6 +142,7 @@ export const AuthProvider = ({ children }) => {
 
     // 초기화 - 저장된 토큰과 사용자 정보 확인
     useEffect(() => {
+        // eslint-disable-next-line no-unused-vars
         const initializeAuth = () => {
             try {
                 const token = getToken();
@@ -168,7 +169,7 @@ export const AuthProvider = ({ children }) => {
             }
         };
 
-        initializeAuth();
+        // initializeAuth();
     }, []);
 
     // 토큰 자동 갱신 체크
@@ -186,7 +187,7 @@ export const AuthProvider = ({ children }) => {
         const interval = setInterval(checkTokenRefresh, 5 * 60 * 1000);
 
         // 즉시 한 번 확인
-        checkTokenRefresh();
+        // checkTokenRefresh();
 
         return () => clearInterval(interval);
     }, [state.isAuthenticated, state.isRefreshing]);
