@@ -1,26 +1,17 @@
 /**
  * 본인인증 API 서비스 (Firebase Phone Auth 연동)
- * 
- * 기존 Mock API를 Firebase Phone Auth로 교체
  */
-
 import { auth } from '../config/firebase';
 import { RecaptchaVerifier, signInWithPhoneNumber } from 'firebase/auth';
 import { verifyPhoneAuth } from './phoneAuth';
 
-// 설정
-const TEST_PHONE = '+821012345678'; // 테스트 전화번호
-const TEST_CODE = '123456'; // 테스트 인증코드
-const REGISTERED_PHONE = '010-0000-0000'; // 이미 가입된 번호
+const TEST_PHONE = '+821012345678';
+const TEST_CODE = '123456';
+const REGISTERED_PHONE = '010-0000-0000';
 
-// 전역 상태 (confirmationResult 저장용)
 let confirmationResult = null;
 
-/**
- * 휴대폰 번호 포맷팅 (010-XXXX-XXXX)
- * @param {string} value - 입력값
- * @returns {string} - 포맷팅된 번호
- */
+// 휴대폰 번호 포맷팅
 export const formatPhoneNumber = (value) => {
     const nums = value.replace(/\D/g, '').slice(0, 11);
     if (nums.length <= 3) return nums;
@@ -28,27 +19,18 @@ export const formatPhoneNumber = (value) => {
     return `${nums.slice(0, 3)}-${nums.slice(3, 7)}-${nums.slice(7)}`;
 };
 
-/**
- * 휴대폰 번호를 E.164 형식으로 변환
- * @param {string} phone - 010-1234-5678 형식
- * @returns {string} - +821012345678 형식
- */
+// E.164 형식 변환
 const toE164Format = (phone) => {
     const cleaned = phone.replace(/-/g, '');
-    if (cleaned.startsWith('010')) {
-        return '+82' + cleaned.substring(1);
-    }
-    if (cleaned.startsWith('+82')) {
-        return cleaned;
-    }
-    return '+82' + cleaned;
+    if (cleaned.startsWith('010')) return '+82' + cleaned.substring(1);
+    return cleaned.startsWith('+82') ? cleaned : '+82' + cleaned;
 };
 
 /**
- * reCAPTCHA 초기화
+ * reCAPTCHA 초기화 (중복 및 충돌 방지)
  */
 const setupRecaptcha = () => {
-    // 1. Clear existing verifier if present
+    // 1. 기존 인스턴스가 있다면 먼저 완전히 정리
     if (window.recaptchaVerifier) {
         try {
             window.recaptchaVerifier.clear();
@@ -58,196 +40,105 @@ const setupRecaptcha = () => {
         window.recaptchaVerifier = null;
     }
 
-    // 2. Check for container element
+    // 2. 컨테이너 엘리먼트 확인
     const container = document.getElementById('recaptcha-container');
     if (!container) {
         console.error('❌ recaptcha-container element not found');
         return null;
     }
 
-    // 3. Create new verifier
+    // 3. 인스턴스 새로 생성 (재전송 시 안정성을 위해 invisible 모드 권장)
     try {
         window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
-            size: 'normal', // visible mode
-            callback: () => {
-                console.log('✅ reCAPTCHA solved');
-            },
+            size: 'invisible', 
+            callback: () => console.log('✅ reCAPTCHA solved'),
             'expired-callback': () => {
                 console.log('⚠️ reCAPTCHA expired');
-                if (window.recaptchaVerifier) {
-                    try {
-                        window.recaptchaVerifier.clear();
-                    } catch (e) { }
-                    window.recaptchaVerifier = null;
-                }
+                cleanupRecaptcha();
             }
         });
+        return window.recaptchaVerifier;
     } catch (e) {
         console.error('❌ RecaptchaVerifier creation failed:', e);
         return null;
     }
-
-    return window.recaptchaVerifier;
 };
 
-/**
- * reCAPTCHA 정리
- */
+// reCAPTCHA 정리
 export const cleanupRecaptcha = () => {
     if (window.recaptchaVerifier) {
-        window.recaptchaVerifier.clear();
+        try { window.recaptchaVerifier.clear(); } catch (e) {}
         window.recaptchaVerifier = null;
     }
 };
 
-/**
- * 본인인증 SMS 요청 (Firebase Phone Auth)
- * @param {Object} formData - 폼 데이터
- * @returns {Promise<{success: boolean, message: string}>}
- */
+// SMS 발송 요청
 export const requestPhoneVerification = async (formData) => {
-    // 이미 가입된 번호 체크 (실제로는 백엔드에서 확인)
     if (formData.phone === REGISTERED_PHONE) {
         const error = new Error('이미 가입된 번호입니다.');
         error.code = 'ALREADY_REGISTERED';
         throw error;
     }
 
-    // 필수 필드 검증
     if (!formData.carrier || !formData.phone || !formData.birthDate ||
         !formData.genderCode || !formData.name) {
-        const error = new Error('모든 필드를 입력해주세요.');
-        error.code = 'MISSING_FIELDS';
-        throw error;
+        throw new Error('모든 필드를 입력해주세요.');
     }
 
     const formattedPhone = toE164Format(formData.phone);
-    console.log('📱 SMS 발송 요청:', formattedPhone);
-
-    // 🧪 테스트 모드 (개발 환경)
+    
+    // 테스트 모드 처리
     if (process.env.REACT_APP_ENABLE_TEST_MODE === 'true' && formattedPhone === TEST_PHONE) {
-        console.log('🧪 테스트 모드: 가짜 SMS 전송');
-
-        // 테스트용 가짜 confirmationResult
         confirmationResult = {
             confirm: async (code) => {
-                if (code === TEST_CODE) {
-                    return {
-                        user: {
-                            uid: 'test-user-' + Date.now(),
-                            phoneNumber: formattedPhone,
-                            getIdToken: async () => 'dev-test-token-' + Date.now()
-                        }
-                    };
-                } else {
-                    throw new Error('인증 코드가 올바르지 않습니다.');
-                }
+                if (code === TEST_CODE) return { user: { uid: 'test-uid', getIdToken: async () => 'test-token' } };
+                throw new Error('인증 코드가 올바르지 않습니다.');
             }
         };
-
-        return {
-            success: true,
-            message: '인증번호가 전송되었습니다. (테스트: 123456)'
-        };
+        return { success: true, message: '인증번호가 전송되었습니다. (테스트)' };
     }
 
-    // 🔥 Firebase Phone Auth
     try {
         const appVerifier = setupRecaptcha();
-        if (!appVerifier) {
-            throw new Error('reCAPTCHA initialization failed. Please refresh the page.');
-        }
+        if (!appVerifier) throw new Error('reCAPTCHA 초기화 실패. 페이지를 새로고침 해주세요.');
+
         const result = await signInWithPhoneNumber(auth, formattedPhone, appVerifier);
         confirmationResult = result;
-
-        console.log('✅ Firebase SMS 전송 완료');
-
-        return {
-            success: true,
-            message: '인증번호가 전송되었습니다.'
-        };
+        return { success: true, message: '인증번호가 전송되었습니다.' };
     } catch (err) {
-        console.error('❌ Firebase SMS 전송 실패:', err);
         cleanupRecaptcha();
-
-        // 에러 처리
         let userMessage = 'SMS 전송에 실패했습니다.';
-        if (err.code === 'auth/invalid-phone-number') {
-            userMessage = '올바르지 않은 전화번호 형식입니다.';
-        } else if (err.code === 'auth/too-many-requests') {
-            userMessage = '너무 많은 시도가 있었습니다. 잠시 후 다시 시도해주세요.';
-        } else if (err.code === 'auth/invalid-app-credential') {
-            userMessage = '인증 설정 오류입니다. 관리자에게 문의해주세요.';
-        }
-
+        if (err.code === 'auth/too-many-requests') userMessage = '너무 많은 시도가 있었습니다. 잠시 후 다시 시도해주세요.';
         const error = new Error(userMessage);
         error.code = err.code;
         throw error;
     }
 };
 
-/**
- * 인증번호 확인 (Firebase + 백엔드)
- * @param {string} code - 6자리 인증번호
- * @param {Object} formData - 원본 폼 데이터
- * @returns {Promise<{success: boolean, ci: string, name: string, phone: string}>}
- */
+// 인증번호 확인
 export const verifyCode = async (code, formData = {}) => {
-    if (!confirmationResult) {
-        throw new Error('인증번호를 먼저 요청해주세요.');
-    }
-
+    if (!confirmationResult) throw new Error('인증번호를 먼저 요청해주세요.');
     try {
-        console.log('🔐 인증 코드 확인 중...');
-
-        // Firebase 인증 코드 확인
         const credential = await confirmationResult.confirm(code);
         const idToken = await credential.user.getIdToken();
-
-        console.log('✅ Firebase 인증 완료');
-
-        // 백엔드 API로 검증 & 사용자 정보 획득
         const response = await verifyPhoneAuth(idToken);
-
-        console.log('✅ 백엔드 인증 완료:', response);
-
-        // confirmationResult 정리
         confirmationResult = null;
-
         return {
             success: true,
             ci: response.user?.ci || 'CI_' + Date.now(),
-            name: formData.name || response.user?.name || '사용자',
+            name: formData.name || response.user?.name,
             phone: formData.phone || credential.user.phoneNumber,
-            token: response.token,
-            user: response.user
+            token: response.token
         };
     } catch (err) {
-        console.error('❌ 인증 확인 실패:', err);
-
-        let userMessage = '인증번호가 일치하지 않습니다.';
-        if (err.code === 'auth/invalid-verification-code') {
-            userMessage = '인증번호가 올바르지 않습니다.';
-        } else if (err.code === 'auth/code-expired') {
-            userMessage = '인증번호가 만료되었습니다. 다시 받아주세요.';
-        }
-
-        const error = new Error(userMessage);
-        error.code = err.code || 'INVALID_CODE';
-        throw error;
+        let userMessage = err.code === 'auth/code-expired' ? '만료된 코드입니다.' : '인증번호가 올바르지 않습니다.';
+        throw new Error(userMessage);
     }
 };
 
-/**
- * 인증번호 재전송
- * @param {Object} formData - 폼 데이터
- * @returns {Promise<{success: boolean, message: string}>}
- */
+// 인증번호 재전송
 export const resendVerificationCode = async (formData) => {
-    // reCAPTCHA 정리 후 재요청
     cleanupRecaptcha();
     confirmationResult = null;
-
-    // 새로운 SMS 전송
     return requestPhoneVerification(formData);
 };
