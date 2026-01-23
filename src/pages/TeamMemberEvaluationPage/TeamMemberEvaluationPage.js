@@ -66,7 +66,9 @@ function TeamMemberEvaluationPage() {
         // Try to get project details from location.state first (passed from navigation)
         let projectDetails = null;
         if (location.state?.projectSummary) {
-          console.log('📦 Using project data from location.state:', location.state.projectSummary);
+          if (process.env.NODE_ENV === 'development') {
+            console.log('📦 Using project data from location.state:', location.state.projectSummary);
+          }
           // Use data passed via navigation state
           const stateProject = location.state.projectSummary;
           projectDetails = {

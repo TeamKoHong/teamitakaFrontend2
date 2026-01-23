@@ -51,7 +51,9 @@ export default function GlobalToastSystem() {
       return; // Do not attach listeners
     }
     window.__GLOBAL_TOAST_SYSTEM_ACTIVE__ = true;
-    console.log('GlobalToastSystem mounted (Singleton Active)');
+    if (process.env.NODE_ENV === 'development') {
+      console.log('GlobalToastSystem mounted (Singleton Active)');
+    }
 
     let lastToast = { message: '', timestamp: 0 };
 

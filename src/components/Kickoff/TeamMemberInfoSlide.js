@@ -9,9 +9,11 @@ import { updateProjectMembers } from '../../services/projects';
 
 export default function TeamMemberInfoSlide({ open, onClose, selectedMembers, projectId }) {
   const navigate = useNavigate();
-  
-  console.log('🔍 TeamMemberInfoSlide 렌더링:', { open, projectId, membersCount: selectedMembers?.length });
-  
+
+  if (process.env.NODE_ENV === 'development') {
+    console.log('🔍 TeamMemberInfoSlide 렌더링:', { open, projectId, membersCount: selectedMembers?.length });
+  }
+
   const [memberInfo, setMemberInfo] = useState(
     selectedMembers?.map(member => {
       // role에 따른 기본 역할명 설정
@@ -36,7 +38,7 @@ export default function TeamMemberInfoSlide({ open, onClose, selectedMembers, pr
   const handleComplete = async () => {
     try {
       console.log('💾 팀원 정보 저장 시작:', memberInfo);
-      
+
       // API 형식에 맞게 데이터 변환
       const membersToUpdate = memberInfo.map(member => ({
         user_id: member.user_id,
@@ -54,7 +56,7 @@ export default function TeamMemberInfoSlide({ open, onClose, selectedMembers, pr
       onClose();
     } catch (error) {
       console.error('❌ 팀원 정보 저장 실패:', error);
-      
+
       // 에러 메시지 표시
       if (error.code === 'NOT_PROJECT_LEADER') {
         alert('팀장만 멤버 역할을 수정할 수 있습니다.');
@@ -96,7 +98,9 @@ export default function TeamMemberInfoSlide({ open, onClose, selectedMembers, pr
   );
 
   if (!projectId || !selectedMembers || selectedMembers.length === 0) {
-    console.log('⚠️ TeamMemberInfoSlide - 필수 데이터 없음');
+    if (process.env.NODE_ENV === 'development') {
+      console.log('⚠️ TeamMemberInfoSlide - 필수 데이터 없음');
+    }
     return null;
   }
 
@@ -104,8 +108,8 @@ export default function TeamMemberInfoSlide({ open, onClose, selectedMembers, pr
     <>
       <div className={`team-info-overlay ${open ? "open" : ""}`} onClick={onClose} />
       <div className={`team-info-panel ${open ? "open" : ""}`}>
-        <DefaultHeader 
-          title="팀원 정보" 
+        <DefaultHeader
+          title="팀원 정보"
           onBack={onClose}
           rightElement={
             <button className="skip-button-header" onClick={handleSkip}>
@@ -113,7 +117,7 @@ export default function TeamMemberInfoSlide({ open, onClose, selectedMembers, pr
             </button>
           }
         />
-        
+
         <div className="team-info-content">
           <ul className="team-list">
             {memberInfo.map((member) => (
@@ -123,10 +127,10 @@ export default function TeamMemberInfoSlide({ open, onClose, selectedMembers, pr
                 onClick={() => handleMemberClick(member)}
               >
                 <div className="team-info">
-                  <img 
-                    src={member.img || member.User?.avatar || defaultProfile} 
-                    alt={member.name} 
-                    className="avatar" 
+                  <img
+                    src={member.img || member.User?.avatar || defaultProfile}
+                    alt={member.name}
+                    className="avatar"
                   />
                   <div className="text">
                     <p className="name">{member.name}</p>
@@ -153,12 +157,12 @@ export default function TeamMemberInfoSlide({ open, onClose, selectedMembers, pr
         {/* 팀원 정보 편집 슬라이드 */}
         {selectedMember && editingMember && (
           <>
-            <div 
-              className="member-edit-overlay" 
+            <div
+              className="member-edit-overlay"
               onClick={() => setSelectedMember(null)}
             />
             <div className="member-edit-panel">
-              <DefaultHeader 
+              <DefaultHeader
                 title={isEditMode ? "팀원 정보 편집" : "팀원 정보"}
                 onBack={() => {
                   setSelectedMember(null);
@@ -166,7 +170,7 @@ export default function TeamMemberInfoSlide({ open, onClose, selectedMembers, pr
                 }}
                 rightElement={
                   isEditMode ? (
-                    <button 
+                    <button
                       className="header-complete-btn"
                       onClick={handleEditComplete}
                     >
@@ -175,7 +179,7 @@ export default function TeamMemberInfoSlide({ open, onClose, selectedMembers, pr
                   ) : null
                 }
               />
-              
+
               <div className="member-edit-content">
                 <div className="member-detail-card">
                   {!isEditMode && (
@@ -184,8 +188,8 @@ export default function TeamMemberInfoSlide({ open, onClose, selectedMembers, pr
                     </button>
                   )}
                   <div className="avatar-wrapper">
-                    <img 
-                      src={editingMember.img || editingMember.User?.avatar || defaultProfile} 
+                    <img
+                      src={editingMember.img || editingMember.User?.avatar || defaultProfile}
                       alt={editingMember.name}
                       className="avatar-large"
                     />
