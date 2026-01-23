@@ -11,7 +11,6 @@ const REGISTERED_PHONE = '010-0000-0000';
 
 let confirmationResult = null;
 
-// 휴대폰 번호 포맷팅
 export const formatPhoneNumber = (value) => {
     const nums = value.replace(/\D/g, '').slice(0, 11);
     if (nums.length <= 3) return nums;
@@ -19,7 +18,6 @@ export const formatPhoneNumber = (value) => {
     return `${nums.slice(0, 3)}-${nums.slice(3, 7)}-${nums.slice(7)}`;
 };
 
-// E.164 형식 변환
 const toE164Format = (phone) => {
     const cleaned = phone.replace(/-/g, '');
     if (cleaned.startsWith('010')) return '+82' + cleaned.substring(1);
@@ -27,10 +25,10 @@ const toE164Format = (phone) => {
 };
 
 /**
- * reCAPTCHA 초기화 (중복 및 충돌 방지)
+ * reCAPTCHA 초기화 (중복 방지 로직 포함)
  */
 const setupRecaptcha = () => {
-    // 1. 기존 인스턴스가 있다면 먼저 완전히 정리
+    // 1. 기존 인스턴스 클리어
     if (window.recaptchaVerifier) {
         try {
             window.recaptchaVerifier.clear();
@@ -47,10 +45,10 @@ const setupRecaptcha = () => {
         return null;
     }
 
-    // 3. 인스턴스 새로 생성 (재전송 시 안정성을 위해 invisible 모드 권장)
+    // 3. 인스턴스 새로 생성
     try {
         window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
-            size: 'invisible', 
+            size: 'invisible', // 재전송 시 사용자 경험을 위해 invisible 권장
             callback: () => console.log('✅ reCAPTCHA solved'),
             'expired-callback': () => {
                 console.log('⚠️ reCAPTCHA expired');
@@ -64,7 +62,6 @@ const setupRecaptcha = () => {
     }
 };
 
-// reCAPTCHA 정리
 export const cleanupRecaptcha = () => {
     if (window.recaptchaVerifier) {
         try { window.recaptchaVerifier.clear(); } catch (e) {}
@@ -72,7 +69,6 @@ export const cleanupRecaptcha = () => {
     }
 };
 
-// SMS 발송 요청
 export const requestPhoneVerification = async (formData) => {
     if (formData.phone === REGISTERED_PHONE) {
         const error = new Error('이미 가입된 번호입니다.');
@@ -100,7 +96,7 @@ export const requestPhoneVerification = async (formData) => {
 
     try {
         const appVerifier = setupRecaptcha();
-        if (!appVerifier) throw new Error('reCAPTCHA 초기화 실패. 페이지를 새로고침 해주세요.');
+        if (!appVerifier) throw new Error('reCAPTCHA 초기화 실패');
 
         const result = await signInWithPhoneNumber(auth, formattedPhone, appVerifier);
         confirmationResult = result;
@@ -115,7 +111,6 @@ export const requestPhoneVerification = async (formData) => {
     }
 };
 
-// 인증번호 확인
 export const verifyCode = async (code, formData = {}) => {
     if (!confirmationResult) throw new Error('인증번호를 먼저 요청해주세요.');
     try {
@@ -136,7 +131,6 @@ export const verifyCode = async (code, formData = {}) => {
     }
 };
 
-// 인증번호 재전송
 export const resendVerificationCode = async (formData) => {
     cleanupRecaptcha();
     confirmationResult = null;
