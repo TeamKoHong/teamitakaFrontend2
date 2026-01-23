@@ -83,10 +83,10 @@ const CompletedComponent = () => {
   };
 
   const load = async (nextOffset = 0) => {
-    try {
-      setIsLoading(true);
-      setError(null);
+    setIsLoading(true);
+    setError(null);
 
+    try {
       const res = await getMyProjects({
         status: 'completed',
         limit: page.limit || 10,
