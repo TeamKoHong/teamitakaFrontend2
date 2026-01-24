@@ -19,10 +19,10 @@
 }
 
 .headerTitle {
-  font-family: 'Pretendard';
-  font-size: 20px;
-  font-weight: 700;
-  color: $primary-color;
+    font-family: 'KIMM_Bold', sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+    color: #f76241;
 }
 
 .settingsButton {
@@ -91,7 +91,7 @@
 }
 
 .profileName {
-  font-family: 'Pretendard';
+    font-family: 'Pretendard', sans-serif;
   font-size: 18px;
   font-weight: 700;
   color: #140805;
@@ -147,8 +147,7 @@
 }
 
 .tag {
-  background-color: transparent;
-  border: 1px solid $primary-color;
+  background-color: #FFE6E0;
   padding: 4px 10px;
   border-radius: 12px;
   font-family: 'Pretendard';
@@ -208,30 +207,40 @@
 }
 
 .expandButton {
-  width: 100%;
-  padding: 12px;
+  width: 358px;
+  height: 50px;
+  padding: 20px;
   background-color: #f76241;
   border: none;
   border-radius: 8px;
   font-family: 'Pretendard';
   font-size: 15px;
-  font-weight: 600;
+  font-weight: 400;
   color: #fffdfc;
   cursor: pointer;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content:space-between;
   gap: 8px;
 }
 
 .expandIcon {
   width: 16px;
   height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   transition: transform 0.3s ease;
+  transform: rotate(-90deg); 
+
+  img {
+    filter: brightness(0) invert(1);
+  }
 }
 
 .expandIconRotated {
-  transform: rotate(180deg);
+  // 클릭 시 위로 향하게 하려면:
+  transform: rotate(90deg);
 }
 
 // 확장된 상세 분석
@@ -296,7 +305,8 @@
 }
 
 .projectThumbnail {
-  width: 100%;
+  width: 176px;
+  height: 89px;
   aspect-ratio: 1;
   object-fit: cover;
 }
@@ -308,7 +318,6 @@
   font-weight: 600;
   color: #140805;
   min-height: 44px;
-  max-height: 44px;
   overflow: hidden;
   text-overflow: ellipsis;
   display: -webkit-box;
