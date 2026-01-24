@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
+import DefaultHeader from '../../components/Common/DefaultHeader';
 import Button from '../../components/DesignSystem/Button/Button';
 import ProgressIndicator from '../../components/auth/ProgressIndicator';
 import styles from './ProfileSetupPage.module.scss';
@@ -77,15 +78,7 @@ function ProfileSetupPage() {
     return (
         <div className={styles.container}>
             {/* 헤더 */}
-            <div className={styles.header}>
-                <button className={styles.backButton} onClick={handleBack}>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="10" height="17" viewBox="0 0 10 17" fill="none">
-                        <path d="M8.81641 1L1.99822 8.5L8.81641 16" stroke="#140805" strokeWidth="2" />
-                    </svg>
-                </button>
-                <h1 className={styles.headerTitle}>프로필 설정</h1>
-                <div className={styles.headerSpacer} />
-            </div>
+            <DefaultHeader title="프로필 설정" onBack={handleBack} />
 
             {/* 메인 컨텐츠 */}
             <div className={styles.content}>
