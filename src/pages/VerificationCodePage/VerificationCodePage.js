@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
+import DefaultHeader from '../../components/Common/DefaultHeader';
 import StepIndicator from '../../components/DesignSystem/Feedback/StepIndicator';
 import VerificationCodeInput from '../../components/auth/VerificationCodeInput';
 import Button from '../../components/DesignSystem/Button/Button';
@@ -55,8 +56,8 @@ function VerificationCodePage() {
                     ci: result.ci
                 });
 
-                // 다음 단계 (이메일 연동)로 이동
-                navigate('/register');
+                // 다음 단계 (이메일 연동)로 이동 - step 2부터 시작하도록 state 전달
+                navigate('/register', { state: { step: 2 } });
             }
         } catch (err) {
             const newAttemptCount = attemptCount + 1;
@@ -93,15 +94,7 @@ function VerificationCodePage() {
     return (
         <div className={styles.container}>
             {/* 헤더 */}
-            <div className={styles.header}>
-                <button className={styles.backButton} onClick={handleBack}>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="10" height="17" viewBox="0 0 10 17" fill="none">
-                        <path d="M8.81641 1L1.99822 8.5L8.81641 16" stroke="#140805" strokeWidth="2" />
-                    </svg>
-                </button>
-                <h1 className={styles.headerTitle}>본인 인증</h1>
-                <div className={styles.headerSpacer} />
-            </div>
+            <DefaultHeader title="본인 인증" onBack={handleBack} />
 
             {/* 메인 컨텐츠 */}
             <div className={styles.content}>
@@ -125,6 +118,9 @@ function VerificationCodePage() {
                         successMessage={successMessage}
                     />
                 </div>
+
+                {/* Firebase reCAPTCHA 컨테이너 */}
+                <div id="recaptcha-container"></div>
             </div>
 
             {/* 하단 버튼 */}
