@@ -126,8 +126,8 @@ const RecruitingComponent = () => {
         <div className="recruiting-top">
           <div className="recruiting-top-info">
             <SectionHeader
-              explainText={`프로젝트 팀원을 모집하고\n함께 시작해보세요!`}
-              highlightText="모집 중"
+              explainText={`지원자를 모으고 있어요.`}
+              highlightText="지원자를"
             />
           </div>
         </div>
