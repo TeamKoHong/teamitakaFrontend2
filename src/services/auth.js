@@ -1,18 +1,18 @@
 // API 기본 URL과 인증 헤더를 설정하는 헬퍼 함수
 export const getApiConfig = () => {
     const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
-    
+
     if (!API_BASE_URL) {
         throw new Error('REACT_APP_API_BASE_URL 환경 변수가 설정되지 않았습니다.');
     }
-    
+
     // Supabase Edge Function인지 확인
     const isSupabaseFunction = API_BASE_URL.includes('supabase.co/functions');
-    
+
     const headers = {
         'Content-Type': 'application/json',
     };
-    
+
     // Supabase Edge Function인 경우 apikey 헤더 추가
     if (isSupabaseFunction) {
         const supabaseAnonKey = process.env.REACT_APP_SUPABASE_ANON_KEY;
@@ -22,7 +22,7 @@ export const getApiConfig = () => {
         headers['apikey'] = supabaseAnonKey;
         headers['Authorization'] = `Bearer ${supabaseAnonKey}`;
     }
-    
+
     return { API_BASE_URL, headers };
 };
 
@@ -35,15 +35,23 @@ export const sendVerificationCode = async (email, retryCount = 0) => {
         }
 
         const { API_BASE_URL, headers } = getApiConfig();
-        
+
         console.log(`📧 이메일 인증 요청 시도 ${retryCount + 1}: ${email}`);
-        
+
+        // 🧪 [개발용] 테스트 이메일 우회 로직
+        if (email === 'test@email.com') {
+            console.log('🧪 테스트 이메일 감지: 백엔드 요청을 우회합니다.');
+            // 실제 네트워크 딜레이 흉내
+            await new Promise(resolve => setTimeout(resolve, 500));
+            return { success: true, message: '인증 코드가 전송되었습니다. (테스트 모드)' };
+        }
+
         const response = await fetch(`${API_BASE_URL}/api/auth/send-verification`, {
             method: 'POST',
             headers,
             body: JSON.stringify({ email }),
         });
-        
+
         if (!response.ok) {
             const errorData = await response.json().catch(() => ({
                 error: 'UNKNOWN_ERROR',
@@ -89,17 +97,17 @@ export const sendVerificationCode = async (email, retryCount = 0) => {
         const result = await response.json();
         console.log(`✅ 이메일 인증 코드 전송 성공: ${email}`);
         return result;
-        
+
     } catch (error) {
         console.error('이메일 발송 오류:', error);
-        
+
         // 네트워크 에러인 경우 재시도
         if (isNetworkError(error) && retryCount < 2) {
             console.log(`🔄 네트워크 에러로 인한 재시도... (${retryCount + 1}/3)`);
             await new Promise(resolve => setTimeout(resolve, 1000 * (retryCount + 1)));
             return sendVerificationCode(email, retryCount + 1);
         }
-        
+
         throw new Error(error.message || '인증번호 전송에 실패했습니다.');
     }
 };
@@ -112,16 +120,16 @@ const isValidEmail = (email) => {
 
 // 재시도 여부 판단 함수
 const shouldRetry = (statusCode, retryCount) => {
-    const retryableStatuses = [408, 429, 500, 502, 503, 504];
+    const retryableStatuses = [408, 429, 502, 503, 504];
     return retryableStatuses.includes(statusCode) && retryCount < 2;
 };
 
 // 네트워크 에러 판단 함수
 const isNetworkError = (error) => {
-    return error.name === 'TypeError' || 
-           error.message.includes('fetch') || 
-           error.message.includes('network') ||
-           error.message.includes('Failed to fetch');
+    return error.name === 'TypeError' ||
+        error.message.includes('fetch') ||
+        error.message.includes('network') ||
+        error.message.includes('Failed to fetch');
 };
 
 // 로딩 상태 관리 함수들
@@ -210,9 +218,9 @@ export const verifyCode = async (email, code) => {
         }
 
         const { API_BASE_URL, headers } = getApiConfig();
-        
+
         console.log(`🔐 인증 코드 검증: ${email}`);
-        
+
         const response = await fetch(`${API_BASE_URL}/api/auth/verify-code`, {
             method: 'POST',
             headers,
@@ -220,11 +228,11 @@ export const verifyCode = async (email, code) => {
         });
 
         if (!response.ok) {
-            const errorData = await response.json().catch(() => ({ 
+            const errorData = await response.json().catch(() => ({
                 error: 'UNKNOWN_ERROR',
-                message: '응답을 파싱할 수 없습니다.' 
+                message: '응답을 파싱할 수 없습니다.'
             }));
-            
+
             console.error('인증 코드 검증 오류:', errorData);
             throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
         }
@@ -232,7 +240,7 @@ export const verifyCode = async (email, code) => {
         const result = await response.json();
         console.log(`✅ 인증 코드 검증 성공: ${email}`);
         return result;
-        
+
     } catch (error) {
         console.error('인증 코드 검증 오류:', error);
         throw new Error(error.message || '인증번호 확인에 실패했습니다.');
@@ -243,7 +251,7 @@ export const verifyCode = async (email, code) => {
 export const checkVerificationStatus = async (email) => {
     try {
         const { API_BASE_URL, headers } = getApiConfig();
-        
+
         const response = await fetch(`${API_BASE_URL}/api/auth/status?email=${encodeURIComponent(email)}`, {
             method: 'GET',
             headers,
@@ -268,9 +276,9 @@ export const resendVerificationCode = async (email) => {
         }
 
         const { API_BASE_URL, headers } = getApiConfig();
-        
+
         console.log(`🔄 인증 코드 재전송: ${email}`);
-        
+
         const response = await fetch(`${API_BASE_URL}/api/auth/send-verification`, {
             method: 'POST',
             headers,
@@ -278,11 +286,11 @@ export const resendVerificationCode = async (email) => {
         });
 
         if (!response.ok) {
-            const errorData = await response.json().catch(() => ({ 
+            const errorData = await response.json().catch(() => ({
                 error: 'UNKNOWN_ERROR',
-                message: '응답을 파싱할 수 없습니다.' 
+                message: '응답을 파싱할 수 없습니다.'
             }));
-            
+
             console.error('인증 코드 재전송 오류:', errorData);
             throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
         }
@@ -290,7 +298,7 @@ export const resendVerificationCode = async (email) => {
         const result = await response.json();
         console.log(`✅ 인증 코드 재전송 성공: ${email}`);
         return result;
-        
+
     } catch (error) {
         console.error('인증 코드 재전송 오류:', error);
         throw new Error(error.message || '인증번호 재전송에 실패했습니다.');
@@ -301,7 +309,7 @@ export const resendVerificationCode = async (email) => {
 export const registerUser = async (userData) => {
     try {
         const { API_BASE_URL, headers } = getApiConfig();
-        
+
         const response = await fetch(`${API_BASE_URL}/api/auth/register`, {
             method: 'POST',
             headers,
@@ -317,7 +325,7 @@ export const registerUser = async (userData) => {
         }
 
         const result = await response.json();
-        
+
         if (result.token) {
             localStorage.setItem('authToken', result.token);
             localStorage.setItem('user', JSON.stringify(result.user));
@@ -427,11 +435,11 @@ export const getCurrentUser = () => {
     try {
         const token = localStorage.getItem('authToken');
         const userStr = localStorage.getItem('user');
-        
+
         if (!token || !userStr) {
             return null;
         }
-        
+
         return {
             token,
             user: JSON.parse(userStr)
@@ -460,11 +468,11 @@ export const refreshToken = async () => {
     try {
         const { API_BASE_URL, headers } = getApiConfig();
         const currentToken = localStorage.getItem('authToken');
-        
+
         if (!currentToken) {
             throw new Error('저장된 토큰이 없습니다.');
         }
-        
+
         const response = await fetch(`${API_BASE_URL}/api/auth/refresh`, {
             method: 'POST',
             headers: {
@@ -479,7 +487,7 @@ export const refreshToken = async () => {
         }
 
         const result = await response.json();
-        
+
         if (result.token) {
             localStorage.setItem('authToken', result.token);
         }
