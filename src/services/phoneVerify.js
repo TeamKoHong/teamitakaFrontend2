@@ -8,13 +8,26 @@ import { auth } from '../config/firebase';
 import { RecaptchaVerifier, signInWithPhoneNumber } from 'firebase/auth';
 import { verifyPhoneAuth } from './phoneAuth';
 
-// 설정
-const TEST_PHONE = '+821012345678'; // 테스트 전화번호
+// 테스트 전화번호 목록 (Firebase 우회)
+const TEST_PHONES = [
+    '010-1234-5678',
+    '010-0000-0000',
+    '010-9999-9999'
+];
 const TEST_CODE = '123456'; // 테스트 인증코드
 const REGISTERED_PHONE = '010-0000-0000'; // 이미 가입된 번호
 
 // 전역 상태 (confirmationResult 저장용)
 let confirmationResult = null;
+
+/**
+ * 테스트 번호 여부 확인
+ * @param {string} phone - 010-XXXX-XXXX 형식
+ * @returns {boolean}
+ */
+const isTestPhone = (phone) => {
+    return TEST_PHONES.includes(phone);
+};
 
 /**
  * 휴대폰 번호 포맷팅 (010-XXXX-XXXX)
@@ -124,9 +137,9 @@ export const requestPhoneVerification = async (formData) => {
     const formattedPhone = toE164Format(formData.phone);
     console.log('📱 SMS 발송 요청:', formattedPhone);
 
-    // 🧪 테스트 모드 (개발 환경)
-    if (process.env.REACT_APP_ENABLE_TEST_MODE === 'true' && formattedPhone === TEST_PHONE) {
-        console.log('🧪 테스트 모드: 가짜 SMS 전송');
+    // 🧪 테스트 번호 체크 (Firebase 우회)
+    if (isTestPhone(formData.phone)) {
+        console.log('🧪 테스트 번호 감지:', formData.phone, '→ Firebase 우회');
 
         // 테스트용 가짜 confirmationResult
         confirmationResult = {
@@ -135,7 +148,7 @@ export const requestPhoneVerification = async (formData) => {
                     return {
                         user: {
                             uid: 'test-user-' + Date.now(),
-                            phoneNumber: formattedPhone,
+                            phoneNumber: toE164Format(formData.phone),
                             getIdToken: async () => 'dev-test-token-' + Date.now()
                         }
                     };
@@ -147,7 +160,7 @@ export const requestPhoneVerification = async (formData) => {
 
         return {
             success: true,
-            message: '인증번호가 전송되었습니다. (테스트: 123456)'
+            message: `인증번호가 전송되었습니다. (테스트: ${TEST_CODE})`
         };
     }
 
@@ -205,6 +218,28 @@ export const verifyCode = async (code, formData = {}) => {
         const idToken = await credential.user.getIdToken();
 
         console.log('✅ Firebase 인증 완료');
+
+        // 🧪 테스트 번호는 백엔드 검증 우회
+        if (isTestPhone(formData.phone)) {
+            console.log('🧪 테스트 번호 → 백엔드 검증 우회');
+
+            // confirmationResult 정리
+            confirmationResult = null;
+
+            return {
+                success: true,
+                ci: 'TEST_CI_' + Date.now(),
+                name: formData.name || '테스트사용자',
+                phone: formData.phone,
+                token: 'test-jwt-token-' + Date.now(),
+                user: {
+                    id: 'test-user-' + Date.now(),
+                    name: formData.name || '테스트사용자',
+                    phone: formData.phone,
+                    ci: 'TEST_CI_' + Date.now()
+                }
+            };
+        }
 
         // 백엔드 API로 검증 & 사용자 정보 획득
         const response = await verifyPhoneAuth(idToken);

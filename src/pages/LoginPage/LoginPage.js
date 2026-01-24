@@ -21,7 +21,7 @@ function LoginPage() {
     }, [isAuthenticated, navigate]);
 
     const handleSignup = () => {
-        navigate('/phone-verify');
+        navigate('/register');
     };
 
     const handleGuestMode = () => {

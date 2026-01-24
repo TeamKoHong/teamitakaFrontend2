@@ -1,15 +1,21 @@
 import React, { useEffect, useRef, useState } from 'react';
 import './RegisterPage.scss';
 import './RegisterPage.step2.scss';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
-import { sendVerificationCode } from '../../services/auth.js';
+import { sendVerificationCode, verifyCode } from '../../services/auth.js';
 import VerificationLoading from '../../components/Common/VerificationLoading';
+import DefaultHeader from '../../components/Common/DefaultHeader';
 
 function RegisterPage() {
     const navigate = useNavigate();
+    const location = useLocation(); // location 훅 추가
     const { isAuthenticated } = useAuth();
-    const [currentStep, setCurrentStep] = useState(1);
+
+    // 전달받은 step이 있으면 그걸 사용, 없으면 1 (약관동의)
+    const initialStep = location.state?.step || 1;
+    const [currentStep, setCurrentStep] = useState(initialStep);
+
     const [email, setEmail] = useState('');
     const [verificationCode, setVerificationCode] = useState('');
     const [password, setPassword] = useState('');
@@ -44,9 +50,10 @@ function RegisterPage() {
         marketing: false,
         thirdParty: false
     });
-    const [isVerificationLoading, setIsVerificationLoading] = useState(false);
     const [verificationError, setVerificationError] = useState('');
     const [verificationErrorCode, setVerificationErrorCode] = useState('');
+    const [codeVerificationError, setCodeVerificationError] = useState(''); // 인증코드 확인 에러
+    const [isVerificationLoading, setIsVerificationLoading] = useState(false);
 
     // 이미 로그인된 사용자는 메인 페이지로 리디렉션
     useEffect(() => {
@@ -55,11 +62,37 @@ function RegisterPage() {
         }
     }, [isAuthenticated, navigate]);
 
-    const handleNext = () => {
+    const handleNext = async () => {
         if (currentStep < 8) {
-            if (currentStep === 3) {
-                // 인증코드 입력 완료 → 완료 화면으로 이동
-                setCurrentStep(4);
+            if (currentStep === 1) {
+                // 약관 동의 완료 → 휴대전화 인증으로 이동
+                navigate('/phone-verify');
+            } else if (currentStep === 3) {
+                // 인증코드 입력값 검증
+                if (!verificationCode || verificationCode.length !== 6) {
+                    setCodeVerificationError('인증코드 6자리를 모두 입력해주세요.');
+                    return;
+                }
+
+                try {
+                    setIsVerificationLoading(true);
+                    setCodeVerificationError('');
+
+                    // 실제 인증 API 호출
+                    const result = await verifyCode(email, verificationCode);
+
+                    if (result.success) {
+                        // 인증 성공 → 완료 화면으로 이동
+                        setCurrentStep(4);
+                    } else {
+                        setCodeVerificationError(result.message || '인증번호가 일치하지 않습니다.');
+                    }
+                } catch (error) {
+                    console.error('인증 실패:', error);
+                    setCodeVerificationError(error.message || '인증번호 확인 중 오류가 발생했습니다.');
+                } finally {
+                    setIsVerificationLoading(false);
+                }
             } else if (currentStep === 6) {
                 // case6에서 완료 버튼을 누르면 case7로 이동
                 navigate('/login');
@@ -89,11 +122,11 @@ function RegisterPage() {
                 ...consents,
                 [key]: !consents[key]
             };
-            
+
             // 개별 체크박스 변경 시 전체 동의 상태 업데이트
             const allChecked = newConsents.terms && newConsents.privacy && newConsents.marketing && newConsents.thirdParty;
             newConsents.all = allChecked;
-            
+
             setConsents(newConsents);
         }
     };
@@ -240,6 +273,7 @@ function RegisterPage() {
             if (result.success || result.message) {
                 setVerificationError('');
                 // 성공 시에만 다음 화면으로 이동
+                setShowToast(true);
                 setCurrentStep(3);
             } else {
                 setVerificationError(result.message || '인증번호 전송에 실패했습니다.');
@@ -292,11 +326,11 @@ function RegisterPage() {
                 return consents.terms && consents.privacy;
             case 2:
                 // 약관 동의: 모든 필수 약관 동의
-                return consents.personalInfo && 
-                       consents.personalInfoProvision && 
-                       consents.age14 && 
-                       consents.terms && 
-                       consents.rights;
+                return consents.personalInfo &&
+                    consents.personalInfoProvision &&
+                    consents.age14 &&
+                    consents.terms &&
+                    consents.rights;
             case 3:
                 // 인증 코드: 6자리 모두 입력되면 활성화
                 return verificationCode.trim().length === 6;
@@ -325,7 +359,7 @@ function RegisterPage() {
                         <div className="step-description-sub">
                             <p>필수 항목에 동의해야 가입할 수 있습니다.</p>
                         </div>
-                        
+
                         <div className="consent-section">
                             <div className={`consent-item all-consent ${consents.all ? 'checked' : ''}`} onClick={() => handleConsentChange('all')}>
                                 <div className={`checkbox all-checkbox ${consents.all ? 'checked' : ''}`}>
@@ -337,64 +371,64 @@ function RegisterPage() {
                                 </div>
                                 <span className="consent-text">전체 동의</span>
                             </div>
-                            
+
                             <div className={`consent-item ${consents.terms ? 'checked' : ''}`} onClick={() => handleConsentChange('terms')}>
                                 <div className="checkbox-icon">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="17" height="14" viewBox="0 0 17 14" fill="none">
-                                        <path d="M14.4393 1.27284C15.025 0.68705 15.9746 0.68705 16.5604 1.27284C17.1461 1.85862 17.1461 2.80814 16.5604 3.39393L7.22734 12.7269C6.64156 13.3127 5.69204 13.3127 5.10625 12.7269L0.439258 8.06092C-0.146474 7.47519 -0.146365 6.52563 0.439258 5.93983C1.02504 5.35404 1.97457 5.35404 2.56035 5.93983L6.16582 9.5453L14.4393 1.27284Z" fill={consents.terms ? "#F76241" : "#807C7C"}/>
+                                        <path d="M14.4393 1.27284C15.025 0.68705 15.9746 0.68705 16.5604 1.27284C17.1461 1.85862 17.1461 2.80814 16.5604 3.39393L7.22734 12.7269C6.64156 13.3127 5.69204 13.3127 5.10625 12.7269L0.439258 8.06092C-0.146474 7.47519 -0.146365 6.52563 0.439258 5.93983C1.02504 5.35404 1.97457 5.35404 2.56035 5.93983L6.16582 9.5453L14.4393 1.27284Z" fill={consents.terms ? "#F76241" : "#807C7C"} />
                                     </svg>
                                 </div>
                                 <span className="consent-text">
                                     <span className="consent-label">[필수]</span>
                                     <span className="consent-content"> 서비스 이용약관 동의</span>
                                 </span>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="8" height="14" viewBox="0 0 8 14" fill="none" onClick={() => handleTermsClick('terms')} style={{cursor: 'pointer'}}>
-                                    <path d="M2 12.5L6.38848 7.67267C6.73523 7.29125 6.73523 6.70875 6.38848 6.32733L2 1.5" stroke={consents.terms ? "#F76241" : "#807C7C"} strokeWidth="2.5" strokeLinecap="round"/>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="8" height="14" viewBox="0 0 8 14" fill="none" onClick={() => handleTermsClick('terms')} style={{ cursor: 'pointer' }}>
+                                    <path d="M2 12.5L6.38848 7.67267C6.73523 7.29125 6.73523 6.70875 6.38848 6.32733L2 1.5" stroke={consents.terms ? "#F76241" : "#807C7C"} strokeWidth="2.5" strokeLinecap="round" />
                                 </svg>
                             </div>
-                            
+
                             <div className={`consent-item ${consents.privacy ? 'checked' : ''}`} onClick={() => handleConsentChange('privacy')}>
                                 <div className="checkbox-icon">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="17" height="14" viewBox="0 0 17 14" fill="none">
-                                        <path d="M14.4393 1.27284C15.025 0.68705 15.9746 0.68705 16.5604 1.27284C17.1461 1.85862 17.1461 2.80814 16.5604 3.39393L7.22734 12.7269C6.64156 13.3127 5.69204 13.3127 5.10625 12.7269L0.439258 8.06092C-0.146474 7.47519 -0.146365 6.52563 0.439258 5.93983C1.02504 5.35404 1.97457 5.35404 2.56035 5.93983L6.16582 9.5453L14.4393 1.27284Z" fill={consents.privacy ? "#F76241" : "#807C7C"}/>
+                                        <path d="M14.4393 1.27284C15.025 0.68705 15.9746 0.68705 16.5604 1.27284C17.1461 1.85862 17.1461 2.80814 16.5604 3.39393L7.22734 12.7269C6.64156 13.3127 5.69204 13.3127 5.10625 12.7269L0.439258 8.06092C-0.146474 7.47519 -0.146365 6.52563 0.439258 5.93983C1.02504 5.35404 1.97457 5.35404 2.56035 5.93983L6.16582 9.5453L14.4393 1.27284Z" fill={consents.privacy ? "#F76241" : "#807C7C"} />
                                     </svg>
                                 </div>
                                 <span className="consent-text">
                                     <span className="consent-label">[필수]</span>
                                     <span className="consent-content"> 개인정보 처리방침 동의</span>
                                 </span>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="8" height="14" viewBox="0 0 8 14" fill="none" onClick={() => handleTermsClick('privacy')} style={{cursor: 'pointer'}}>
-                                    <path d="M2 12.5L6.38848 7.67267C6.73523 7.29125 6.73523 6.70875 6.38848 6.32733L2 1.5" stroke={consents.privacy ? "#F76241" : "#807C7C"} strokeWidth="2.5" strokeLinecap="round"/>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="8" height="14" viewBox="0 0 8 14" fill="none" onClick={() => handleTermsClick('privacy')} style={{ cursor: 'pointer' }}>
+                                    <path d="M2 12.5L6.38848 7.67267C6.73523 7.29125 6.73523 6.70875 6.38848 6.32733L2 1.5" stroke={consents.privacy ? "#F76241" : "#807C7C"} strokeWidth="2.5" strokeLinecap="round" />
                                 </svg>
                             </div>
-                            
+
                             <div className={`consent-item ${consents.marketing ? 'checked' : ''}`} onClick={() => handleConsentChange('marketing')}>
                                 <div className="checkbox-icon">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="17" height="14" viewBox="0 0 17 14" fill="none">
-                                        <path d="M14.4393 1.27284C15.025 0.68705 15.9746 0.68705 16.5604 1.27284C17.1461 1.85862 17.1461 2.80814 16.5604 3.39393L7.22734 12.7269C6.64156 13.3127 5.69204 13.3127 5.10625 12.7269L0.439258 8.06092C-0.146474 7.47519 -0.146365 6.52563 0.439258 5.93983C1.02504 5.35404 1.97457 5.35404 2.56035 5.93983L6.16582 9.5453L14.4393 1.27284Z" fill={consents.marketing ? "#F76241" : "#807C7C"}/>
+                                        <path d="M14.4393 1.27284C15.025 0.68705 15.9746 0.68705 16.5604 1.27284C17.1461 1.85862 17.1461 2.80814 16.5604 3.39393L7.22734 12.7269C6.64156 13.3127 5.69204 13.3127 5.10625 12.7269L0.439258 8.06092C-0.146474 7.47519 -0.146365 6.52563 0.439258 5.93983C1.02504 5.35404 1.97457 5.35404 2.56035 5.93983L6.16582 9.5453L14.4393 1.27284Z" fill={consents.marketing ? "#F76241" : "#807C7C"} />
                                     </svg>
                                 </div>
                                 <span className="consent-text">
                                     <span className="consent-label">[선택]</span>
                                     <span className="consent-content"> 마케팅 정보 수신 동의</span>
                                 </span>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="8" height="14" viewBox="0 0 8 14" fill="none" onClick={() => handleTermsClick('marketing')} style={{cursor: 'pointer'}}>
-                                    <path d="M2 12.5L6.38848 7.67267C6.73523 7.29125 6.73523 6.70875 6.38848 6.32733L2 1.5" stroke={consents.marketing ? "#F76241" : "#807C7C"} strokeWidth="2.5" strokeLinecap="round"/>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="8" height="14" viewBox="0 0 8 14" fill="none" onClick={() => handleTermsClick('marketing')} style={{ cursor: 'pointer' }}>
+                                    <path d="M2 12.5L6.38848 7.67267C6.73523 7.29125 6.73523 6.70875 6.38848 6.32733L2 1.5" stroke={consents.marketing ? "#F76241" : "#807C7C"} strokeWidth="2.5" strokeLinecap="round" />
                                 </svg>
                             </div>
-                            
+
                             <div className={`consent-item ${consents.thirdParty ? 'checked' : ''}`} onClick={() => handleConsentChange('thirdParty')}>
                                 <div className="checkbox-icon">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="17" height="14" viewBox="0 0 17 14" fill="none">
-                                        <path d="M14.4393 1.27284C15.025 0.68705 15.9746 0.68705 16.5604 1.27284C17.1461 1.85862 17.1461 2.80814 16.5604 3.39393L7.22734 12.7269C6.64156 13.3127 5.69204 13.3127 5.10625 12.7269L0.439258 8.06092C-0.146474 7.47519 -0.146365 6.52563 0.439258 5.93983C1.02504 5.35404 1.97457 5.35404 2.56035 5.93983L6.16582 9.5453L14.4393 1.27284Z" fill={consents.thirdParty ? "#F76241" : "#807C7C"}/>
+                                        <path d="M14.4393 1.27284C15.025 0.68705 15.9746 0.68705 16.5604 1.27284C17.1461 1.85862 17.1461 2.80814 16.5604 3.39393L7.22734 12.7269C6.64156 13.3127 5.69204 13.3127 5.10625 12.7269L0.439258 8.06092C-0.146474 7.47519 -0.146365 6.52563 0.439258 5.93983C1.02504 5.35404 1.97457 5.35404 2.56035 5.93983L6.16582 9.5453L14.4393 1.27284Z" fill={consents.thirdParty ? "#F76241" : "#807C7C"} />
                                     </svg>
                                 </div>
                                 <span className="consent-text">
                                     <span className="consent-label">[선택]</span>
                                     <span className="consent-content"> 제3자 제공 동의</span>
                                 </span>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="8" height="14" viewBox="0 0 8 14" fill="none" onClick={() => handleTermsClick('thirdParty')} style={{cursor: 'pointer'}}>
-                                    <path d="M2 12.5L6.38848 7.67267C6.73523 7.29125 6.73523 6.70875 6.38848 6.32733L2 1.5" stroke={consents.thirdParty ? "#F76241" : "#807C7C"} strokeWidth="2.5" strokeLinecap="round"/>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="8" height="14" viewBox="0 0 8 14" fill="none" onClick={() => handleTermsClick('thirdParty')} style={{ cursor: 'pointer' }}>
+                                    <path d="M2 12.5L6.38848 7.67267C6.73523 7.29125 6.73523 6.70875 6.38848 6.32733L2 1.5" stroke={consents.thirdParty ? "#F76241" : "#807C7C"} strokeWidth="2.5" strokeLinecap="round" />
                                 </svg>
                             </div>
                         </div>
@@ -490,11 +524,16 @@ function RegisterPage() {
                             />
                         </div>
                         <div className="resend-code-link" onClick={handleResendCode}>코드 다시 받기</div>
+                        {codeVerificationError && (
+                            <div className="password-error" style={{ textAlign: 'center', marginTop: '16px' }}>
+                                {codeVerificationError}
+                            </div>
+                        )}
                         {showToast && (
                             <div className="register-toast-message">
                                 <div className="register-toast-icon">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="22" height="17" viewBox="0 0 22 17" fill="none">
-                                        <path d="M19.4501 0.978472C19.9877 0.420763 20.8752 0.40458 21.4332 0.941933C21.9913 1.47951 22.0083 2.36787 21.4707 2.92597L8.85762 16.0213C8.59314 16.2959 8.22765 16.4507 7.84641 16.4507C7.46536 16.4506 7.10053 16.2957 6.83613 16.0213L0.529591 9.47366C-0.00787739 8.91566 0.00834407 8.02723 0.56613 7.48962C1.12413 6.95215 2.01256 6.96837 2.55017 7.52616L7.84641 13.0243L19.4501 0.978472Z" fill="#FFFDFC"/>
+                                        <path d="M19.4501 0.978472C19.9877 0.420763 20.8752 0.40458 21.4332 0.941933C21.9913 1.47951 22.0083 2.36787 21.4707 2.92597L8.85762 16.0213C8.59314 16.2959 8.22765 16.4507 7.84641 16.4507C7.46536 16.4506 7.10053 16.2957 6.83613 16.0213L0.529591 9.47366C-0.00787739 8.91566 0.00834407 8.02723 0.56613 7.48962C1.12413 6.95215 2.01256 6.96837 2.55017 7.52616L7.84641 13.0243L19.4501 0.978472Z" fill="#FFFDFC" />
                                     </svg>
                                 </div>
                                 <span className="register-toast-text">인증 코드를 전송했습니다.</span>
@@ -524,7 +563,7 @@ function RegisterPage() {
                                 <img src="/Star 92.png" alt="star" style={{ width: '64px', height: '64px' }} />
                                 <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}>
                                     <svg xmlns="http://www.w3.org/2000/svg" width="22" height="17" viewBox="0 0 22 17" fill="none">
-                                        <path d="M19.4501 0.978472C19.9877 0.420763 20.8752 0.40458 21.4332 0.941933C21.9913 1.47951 22.0083 2.36787 21.4707 2.92597L8.85762 16.0213C8.59314 16.2959 8.22765 16.4507 7.84641 16.4507C7.46536 16.4506 7.10053 16.2957 6.83613 16.0213L0.529591 9.47366C-0.00787739 8.91566 0.00834407 8.02723 0.56613 7.48962C1.12413 6.95215 2.01256 6.96837 2.55017 7.52616L7.84641 13.0243L19.4501 0.978472Z" fill="#140805"/>
+                                        <path d="M19.4501 0.978472C19.9877 0.420763 20.8752 0.40458 21.4332 0.941933C21.9913 1.47951 22.0083 2.36787 21.4707 2.92597L8.85762 16.0213C8.59314 16.2959 8.22765 16.4507 7.84641 16.4507C7.46536 16.4506 7.10053 16.2957 6.83613 16.0213L0.529591 9.47366C-0.00787739 8.91566 0.00834407 8.02723 0.56613 7.48962C1.12413 6.95215 2.01256 6.96837 2.55017 7.52616L7.84641 13.0243L19.4501 0.978472Z" fill="#140805" />
                                     </svg>
                                 </div>
                             </div>
@@ -557,20 +596,20 @@ function RegisterPage() {
                             <p>비밀번호 설정</p>
                         </div>
                         <div className='standard-input-field'>
-                             <input
-                                 type="password"
-                                 placeholder="비밀번호 입력 (영문+숫자 8자 이상)"
-                                 value={password}
-                                 onChange={(e) => setPassword(e.target.value)}
-                             />
-                         </div>
-                         <div className='standard-input-field'>
-                             <input
-                                 type="password"
-                                 placeholder="비밀번호 확인"
-                                 value={passwordConfirm}
-                                 onChange={(e) => setPasswordConfirm(e.target.value)}
-                             />
+                            <input
+                                type="password"
+                                placeholder="비밀번호 입력 (영문+숫자 8자 이상)"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                            />
+                        </div>
+                        <div className='standard-input-field'>
+                            <input
+                                type="password"
+                                placeholder="비밀번호 확인"
+                                value={passwordConfirm}
+                                onChange={(e) => setPasswordConfirm(e.target.value)}
+                            />
                         </div>
                         {(() => {
                             const hasAnyInput = password.trim() !== '' || passwordConfirm.trim() !== '';
@@ -607,7 +646,7 @@ function RegisterPage() {
                                 margin: '330px auto 16px'
                             }}>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="22" height="16" viewBox="0 0 22 16" fill="none">
-                                    <path d="M8.16137 15.0385C7.90176 15.2944 7.48474 15.2944 7.22514 15.0385L0.975385 8.87736C0.438962 8.34854 0.438962 7.48306 0.975385 6.95424C1.50109 6.43599 2.34554 6.43599 2.87124 6.95424L7.69325 11.7079L19.1288 0.434491C19.6545 -0.0837587 20.4989 -0.0837579 21.0246 0.434492C21.561 0.963311 21.561 1.82879 21.0246 2.35761L8.16137 15.0385Z" fill="#FFFDFC"/>
+                                    <path d="M8.16137 15.0385C7.90176 15.2944 7.48474 15.2944 7.22514 15.0385L0.975385 8.87736C0.438962 8.34854 0.438962 7.48306 0.975385 6.95424C1.50109 6.43599 2.34554 6.43599 2.87124 6.95424L7.69325 11.7079L19.1288 0.434491C19.6545 -0.0837587 20.4989 -0.0837579 21.0246 0.434492C21.561 0.963311 21.561 1.82879 21.0246 2.35761L8.16137 15.0385Z" fill="#FFFDFC" />
                                 </svg>
                             </div>
                             <p style={{
@@ -637,7 +676,7 @@ function RegisterPage() {
                 <div className="terms-header">
                     <button className="back-button" onClick={handleBackToRegister}>
                         <svg xmlns="http://www.w3.org/2000/svg" width="10" height="17" viewBox="0 0 10 17" fill="none">
-                            <path d="M8.81641 1L1.99822 8.5L8.81641 16" stroke="#140805" strokeWidth="2"/>
+                            <path d="M8.81641 1L1.99822 8.5L8.81641 16" stroke="#140805" strokeWidth="2" />
                         </svg>
                     </button>
                     <div className="header-title">{getTermsContent(currentTermsType).title}</div>
@@ -659,23 +698,19 @@ function RegisterPage() {
 
     return (
         <div className={`register-page-container`}>
-                { currentStep !== 6 && (
-                 <div className="header">
-                    <button className="back-button" onClick={handleBackClick}>
-                         <svg xmlns="http://www.w3.org/2000/svg" width="10" height="17" viewBox="0 0 10 17" fill="none">
-                             <path d="M8.81641 1L1.99822 8.5L8.81641 16" stroke="#140805" strokeWidth="2"/>
-                         </svg>
-                     </button>
-                    <div className="header-title">{currentStep === 2 || currentStep === 3 || currentStep === 4 ? '학생 이메일 인증' : currentStep === 5? '비밀번호 설정' : '서비스 약관 동의'}</div>
-                 </div>
-             )}
+            {currentStep !== 6 && (
+                <DefaultHeader
+                    title={currentStep === 2 || currentStep === 3 || currentStep === 4 ? '학생 이메일 인증' : currentStep === 5 ? '비밀번호 설정' : '서비스 약관 동의'}
+                    onBack={handleBackClick}
+                />
+            )}
             <div className="main-content">
                 {renderStep()}
             </div>
-                         {currentStep && (
+            {currentStep && (
                 <div className="bottom-button">
                     {currentStep === 4 ? (
-                        <button 
+                        <button
                             className="next-button active"
                             onClick={() => setCurrentStep(5)}
                         >
@@ -684,7 +719,7 @@ function RegisterPage() {
                     ) : (
                         currentStep === 1 ? (
                             (consents.terms && consents.privacy && consents.marketing && consents.thirdParty) ? (
-                                <button 
+                                <button
                                     className="next-button active"
                                     onClick={handleNext}
                                 >
@@ -704,7 +739,7 @@ function RegisterPage() {
                         ) : (
                             currentStep === 5 ? (
                                 (isValidPassword(password) && passwordConfirm.trim() !== '' && password === passwordConfirm) ? (
-                                    <button 
+                                    <button
                                         className="next-button active"
                                         onClick={handleNext}
                                     >
@@ -712,14 +747,14 @@ function RegisterPage() {
                                     </button>
                                 ) : null
                             ) : currentStep === 6 ? (
-                                <button 
+                                <button
                                     className="next-button active"
                                     onClick={handleNext}
                                 >
                                     로그인 하기
                                 </button>
                             ) : (
-                                <button 
+                                <button
                                     className={`next-button ${isNextButtonActive() ? 'active' : ''}`}
                                     onClick={handleNext}
                                     disabled={!isNextButtonActive()}
@@ -729,8 +764,8 @@ function RegisterPage() {
                             )
                         )
                     )}
-                 </div>
-             )}
+                </div>
+            )}
         </div>
     );
 }

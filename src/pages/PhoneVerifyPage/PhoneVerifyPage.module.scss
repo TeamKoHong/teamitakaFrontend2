@@ -42,6 +42,7 @@
 .content {
     flex: 1;
     padding: 0 16px;
+    padding-top: 88px; // Header height + extra spacing
     overflow-y: auto;
 }
 
