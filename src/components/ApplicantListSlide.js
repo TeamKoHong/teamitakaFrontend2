@@ -333,7 +333,12 @@ export default function ApplicantListSlide({ open, onClose, recruitmentId }) {
         <div className="als-content" ref={contentRef}>
           {loading && <p className="description">지원자 목록을 불러오는 중...</p>}
           {error && <p className="description" style={{color: "red"}}>{error}</p>}
-          {!loading && !error && (
+          {!loading && !error && applicants.length === 0 && (
+            <div className="empty-state">
+              <p>아직 지원자가 없어요.</p>
+            </div>
+          )}
+          {!loading && !error && applicants.length > 0 && (
             <>
               {hasSelection ? (
                 <div 

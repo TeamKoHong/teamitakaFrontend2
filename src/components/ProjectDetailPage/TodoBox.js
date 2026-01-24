@@ -323,7 +323,7 @@ function TodoBox({ showFeed = true, projectId }) {
           <div className="project-todo-box">
             {/* 투두 입력 창 - projects와 상관없이 항상 표시 */}
             {isAddingTodo && (
-              <div className="project-section">
+              <div className="todo-project-section">
                 <div className="todo-item todo-input-item">
                   <div className="todo-content">
                     <input
@@ -348,7 +348,7 @@ function TodoBox({ showFeed = true, projectId }) {
             )}
 
             {projects.length > 0 ? projects.map((project) => (
-              <div key={project.id} className="project-section">
+              <div key={project.id} className="todo-project-section">
                 <div className="project-todos-list">
                   {project.todos.length > 0 ? project.todos.map((todo) => (
                     <div key={todo.id} className={`todo-item ${todo.checked ? "completed" : ""}`}>
