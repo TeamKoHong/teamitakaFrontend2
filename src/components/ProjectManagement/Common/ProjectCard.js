@@ -1,10 +1,11 @@
 import React from "react";
 import "./ProjectCard.scss";
 import { useNavigate } from "react-router-dom";
-import { IoCalendarOutline, IoPeopleOutline } from "react-icons/io5";
+import { IoPeopleOutline } from "react-icons/io5";
 import CircularProgress from "../../Common/CircularProgress";
 import { formatDateRange } from "../../../utils/dateFormat";
 import defaultProfile from "../../../assets/default_profile.png";
+import projectDueIcon from "../../../assets/icons/projectDueIcon.png";
 
 // 진행률 계산 (시작일~종료일 기준)
 const calculateProgress = (startDate, endDate) => {
@@ -88,7 +89,7 @@ const ProjectCard = ({ project, type = "project" }) => {
         <div className="info">
           <h3 className="title">{title || '프로젝트명'}</h3>
           <p>
-            <IoCalendarOutline className="details-icon" /> {period}
+            <img src={projectDueIcon} alt="calendar" className="details-icon" /> {period}
           </p>
         </div>
 
