@@ -5,6 +5,7 @@ import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { sendVerificationCode, verifyCode } from '../../services/auth.js';
 import VerificationLoading from '../../components/Common/VerificationLoading';
+import StepIndicator from '../../components/DesignSystem/Feedback/StepIndicator';
 import DefaultHeader from '../../components/Common/DefaultHeader';
 
 function RegisterPage() {
@@ -346,12 +347,7 @@ function RegisterPage() {
             case 1:
                 return (
                     <div className="step-content">
-                        <div className="progress-indicator">
-                            <div className="progress-step active"></div>
-                            <div className="progress-step"></div>
-                            <div className="progress-step"></div>
-                            <div className="progress-step"></div>
-                        </div>
+
                         <div className="step-description">
                             <p>서비스 이용을 위해</p>
                             <p>약관에 동의해주세요.</p>
@@ -438,12 +434,7 @@ function RegisterPage() {
                 return (
                     <div className="step-content">
                         {isVerificationLoading && <VerificationLoading />}
-                        <div className="progress-indicator">
-                            <div className="progress-step completed"></div>
-                            <div className="progress-step active"></div>
-                            <div className="progress-step"></div>
-                            <div className="progress-step"></div>
-                        </div>
+                        <StepIndicator currentStep={3} totalSteps={5} />
                         <div className="step-description">
                             <p>학생 인증을 위해</p>
                             <p>학교 이메일을 입력해주세요.</p>
@@ -490,12 +481,8 @@ function RegisterPage() {
             case 3:
                 return (
                     <div className="step-content">
-                        <div className="progress-indicator">
-                            <div className="progress-step completed"></div>
-                            <div className="progress-step active"></div>
-                            <div className="progress-step"></div>
-                            <div className="progress-step"></div>
-                        </div>
+                        {isVerificationLoading && <VerificationLoading />}
+                        <StepIndicator currentStep={4} totalSteps={5} />
                         <div className="step-description">
                             <p>입력하신 이메일로 받은</p>
                             <p>인증 코드를 입력해주세요.</p>
@@ -544,12 +531,8 @@ function RegisterPage() {
             case 4:
                 return (
                     <div className="step-content">
-                        <div className="progress-indicator">
-                            <div className="progress-step completed"></div>
-                            <div className="progress-step active"></div>
-                            <div className="progress-step"></div>
-                            <div className="progress-step"></div>
-                        </div>
+                        {isVerificationLoading && <VerificationLoading />}
+                        <StepIndicator currentStep={4} totalSteps={5} />
                         <div className="step-description">
                             <p>입력하신 이메일로 받은</p>
                             <p>인증 코드를 입력해주세요.</p>
@@ -579,12 +562,7 @@ function RegisterPage() {
             case 5:
                 return (
                     <div className="step-content">
-                        <div className="progress-indicator">
-                            <div className="progress-step completed"></div>
-                            <div className="progress-step completed"></div>
-                            <div className="progress-step active"></div>
-                            <div className="progress-step"></div>
-                        </div>
+                        <StepIndicator currentStep={5} totalSteps={5} />
                         <div className="step-description">
                             <p>계정 보안을 위한</p>
                             <p>비밀번호를 설정하세요</p>
