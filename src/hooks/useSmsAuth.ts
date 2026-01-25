@@ -6,6 +6,7 @@ type SmsAuthStep = 'INPUT_PHONE' | 'INPUT_CODE' | 'VERIFIED';
 interface UseSmsAuthOptions {
     initialSessionId?: string;
     initialTimerStart?: number;
+    initialPhone?: string;
 }
 
 interface UseSmsAuthReturn {
@@ -40,7 +41,7 @@ export const useSmsAuth = (options?: UseSmsAuthOptions): UseSmsAuthReturn => {
         return 0;
     };
 
-    const [phone, setPhone] = useState('');
+    const [phone, setPhone] = useState(options?.initialPhone || '');
     const [code, setCode] = useState('');
     const [step, setStep] = useState<SmsAuthStep>(
         options?.initialSessionId ? 'INPUT_CODE' : 'INPUT_PHONE'
