@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import NextImageShim from 'shared/shims/NextImageShim';
 import { useBrowserOptimization } from 'features/type-test/lib/hooks/useBrowserOptimization';
 import { useSafariViewport } from 'features/type-test/lib/hooks/useSafariViewport';
 
@@ -23,8 +22,8 @@ export default function QuestionCard({
     className = ''
 }: QuestionCardProps) {
     const [selectedAnswer, setSelectedAnswer] = useState<boolean | null>(null);
-    const browserOptimization = useBrowserOptimization();
-    const { viewportHeight, isSafari } = useSafariViewport();
+    useBrowserOptimization();
+    const { isSafari } = useSafariViewport();
 
     useEffect(() => {
         setSelectedAnswer(null);
