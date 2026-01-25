@@ -56,11 +56,6 @@ const SettingsIcon = () => (
   />
 );
 
-const ChevronDownIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2">
-    <polyline points="4 6 8 10 12 6" />
-  </svg>
-);
 
 const GraduationCapIcon = () => (
   <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
