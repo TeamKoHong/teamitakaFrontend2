@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useSmsAuth } from '../../hooks/useSmsAuth';
-import { LuCheck, LuLoader, LuTimer, LuRefreshCw, LuSmartphone } from 'react-icons/lu';
+import { LuCheck, LuLoader, LuRefreshCw } from 'react-icons/lu';
 
 interface SmsAuthFormProps {
     onVerificationSuccess?: () => void;
@@ -37,114 +37,112 @@ export const SmsAuthForm: React.FC<SmsAuthFormProps> = ({ onVerificationSuccess 
 
     if (step === 'VERIFIED') {
         return (
-            <div className="flex flex-col items-center justify-center p-6 space-y-4 bg-green-50 rounded-xl border border-green-100 animate-in fade-in zoom-in duration-300">
-                <LuCheck className="w-16 h-16 text-green-500" />
-                <h3 className="text-xl font-bold text-green-700">Verification Complete</h3>
-                <p className="text-green-600">Your phone number has been verified.</p>
+            <div className="flex flex-col items-center justify-center py-4 space-y-2 animate-in fade-in zoom-in duration-300">
+                <div className="flex items-center space-x-2 text-green-600">
+                    <LuCheck className="w-5 h-5" />
+                    <span className="font-medium">인증이 완료되었습니다.</span>
+                </div>
                 <button
                     onClick={reset}
-                    className="text-sm text-green-600 underline hover:text-green-800"
+                    className="text-xs text-gray-400 underline hover:text-gray-600"
                 >
-                    Verify another number
+                    다른 번호로 인증하기
                 </button>
             </div>
         );
     }
 
     return (
-        <div className="w-full max-w-md mx-auto p-6 bg-white rounded-xl shadow-sm border border-gray-100">
-            <div className="flex items-center space-x-2 mb-6">
-                <LuSmartphone className="w-5 h-5 text-indigo-600" />
-                <h2 className="text-lg font-semibold text-gray-800">Phone Verification</h2>
-            </div>
-
+        <div className="w-full">
             <div className="space-y-4">
                 {/* Phone Input */}
                 <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Phone Number
+                    <label className="block text-sm font-medium text-gray-700 mb-1 hidden">
+                        휴대폰 번호
                     </label>
-                    <div className="relative">
-                        <input
-                            type="tel"
-                            value={phone}
-                            onChange={handlePhoneChange}
-                            disabled={step === 'INPUT_CODE' || isLoading}
-                            placeholder="010-1234-5678"
-                            className={`w-full px-4 py-3 rounded-lg border ${error && step === 'INPUT_PHONE' ? 'border-red-300 focus:ring-red-200' : 'border-gray-200 focus:ring-indigo-200'
-                                } focus:outline-none focus:ring-2 transition-all disabled:bg-gray-50 disabled:text-gray-500`}
-                        />
-                        {step === 'INPUT_CODE' && (
-                            <button
-                                onClick={reset}
-                                className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-indigo-600 font-medium hover:text-indigo-800"
-                            >
-                                Change
-                            </button>
-                        )}
+                    <div className="flex space-x-2">
+                        <div className="relative flex-grow">
+                            <input
+                                type="tel"
+                                value={phone}
+                                onChange={handlePhoneChange}
+                                disabled={step === 'INPUT_CODE' || isLoading}
+                                placeholder="휴대폰 번호 입력"
+                                className={`w-full bg-[#F2F4F6] rounded-xl px-4 py-3.5 outline-none text-gray-900 placeholder-gray-400 ${error && step === 'INPUT_PHONE' ? 'ring-1 ring-red-400' : ''
+                                    } disabled:text-gray-500`}
+                            />
+                        </div>
+                        <button
+                            onClick={sendSms}
+                            disabled={isLoading || step === 'INPUT_CODE' || phone.length < 12}
+                            className={`whitespace-nowrap px-4 py-3.5 rounded-xl font-medium text-sm transition-all
+                                ${step === 'INPUT_CODE'
+                                    ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                                    : 'bg-indigo-600 text-white hover:bg-indigo-700 active:scale-[0.98] disabled:bg-gray-200 disabled:text-gray-500'}`}
+                        >
+                            {isLoading && step === 'INPUT_PHONE' ? (
+                                <LuLoader className="w-4 h-4 animate-spin" />
+                            ) : (
+                                step === 'INPUT_CODE' ? '재전송' : '인증번호 받기'
+                            )}
+                        </button>
                     </div>
                 </div>
 
                 {/* Code Input (Visible only in INPUT_CODE step) */}
                 {step === 'INPUT_CODE' && (
                     <div className="animate-in fade-in slide-in-from-top-1 duration-200">
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                            Verification Code
-                        </label>
                         <div className="relative">
                             <input
                                 type="text"
                                 value={code}
                                 onChange={handleCodeChange}
                                 disabled={isLoading}
-                                placeholder="1234"
+                                placeholder="인증번호 4자리"
                                 maxLength={4}
-                                className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-200 transition-all text-center tracking-widest text-lg font-medium"
+                                className="w-full bg-[#F2F4F6] rounded-xl px-4 py-3.5 outline-none text-gray-900 placeholder-gray-400 text-center tracking-widest font-medium"
                             />
-                            <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center space-x-1 text-sm text-gray-500 font-mono">
-                                <LuTimer className="w-4 h-4" />
-                                <span className={timer < 30 ? 'text-red-500' : ''}>{formatTimer(timer)}</span>
+
+                            {/* Timer inside input */}
+                            <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center space-x-1 text-sm font-mono">
+                                <span className={timer < 30 ? 'text-red-500' : 'text-indigo-600'}>
+                                    {formatTimer(timer)}
+                                </span>
                             </div>
                         </div>
+
+                        <button
+                            onClick={verifySms}
+                            disabled={isLoading || code.length !== 4}
+                            className="w-full mt-3 py-3.5 rounded-xl font-medium text-white bg-indigo-600 hover:bg-indigo-700 active:scale-[0.98] disabled:bg-gray-200 disabled:text-gray-500 flex items-center justify-center transition-all"
+                        >
+                            {isLoading ? (
+                                <LuLoader className="w-5 h-5 animate-spin" />
+                            ) : (
+                                '인증번호 확인'
+                            )}
+                        </button>
+
+                        {/* Manual Resend Trigger when timer expires */}
+                        {timer === 0 && !isLoading && (
+                            <div className="mt-2 text-center">
+                                <button
+                                    onClick={sendSms}
+                                    className="text-xs text-gray-500 hover:text-gray-700 flex items-center justify-center space-x-1 mx-auto"
+                                >
+                                    <LuRefreshCw className="w-3 h-3" />
+                                    <span>인증번호 재전송</span>
+                                </button>
+                            </div>
+                        )}
                     </div>
                 )}
 
                 {/* Error Message */}
                 {error && (
-                    <div className="p-3 bg-red-50 text-red-600 text-sm rounded-lg flex items-start">
-                        <span className="mr-2">⚠️</span>
+                    <div className="text-red-500 text-xs px-1">
                         {error}
                     </div>
-                )}
-
-                {/* Action Button */}
-                <button
-                    onClick={step === 'INPUT_PHONE' ? sendSms : verifySms}
-                    disabled={isLoading || (step === 'INPUT_PHONE' && phone.length < 12)} // Simple length check
-                    className={`w-full py-3 px-4 rounded-lg font-medium text-white shadow-sm transition-all flex items-center justify-center space-x-2
-            ${isLoading ? 'bg-indigo-400 cursor-not-allowed' : 'bg-indigo-600 hover:bg-indigo-700 active:scale-[0.98]'}`}
-                >
-                    {isLoading ? (
-                        <>
-                            <LuLoader className="w-5 h-5 animate-spin" />
-                            <span>Processing...</span>
-                        </>
-                    ) : step === 'INPUT_PHONE' ? (
-                        <span>Send Verification Code</span>
-                    ) : (
-                        <span>Verify Code</span>
-                    )}
-                </button>
-
-                {/* Resend Logic */}
-                {step === 'INPUT_CODE' && timer === 0 && !isLoading && (
-                    <button
-                        onClick={sendSms}
-                        className="w-full py-2 text-sm text-gray-500 flex items-center justify-center space-x-1 hover:text-indigo-600 transition-colors"
-                    >
-                        <LuRefreshCw className="w-4 h-4" />
-                        <span>Resend Code</span>
-                    </button>
                 )}
             </div>
         </div>
