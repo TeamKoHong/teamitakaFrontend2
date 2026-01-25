@@ -58,8 +58,8 @@ const ChevronDownIcon = () => (
 
 const GraduationCapIcon = () => (
   <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
-    <path d="M10 2L1 7L10 12L19 7L10 2Z" stroke="#807C7C" strokeWidth="1.5" strokeLinejoin="round"/>
-    <path d="M4 9V14C4 14 6 17 10 17C14 17 16 14 16 14V9" stroke="#807C7C" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M10 2L1 7L10 12L19 7L10 2Z" stroke="#807C7C" strokeWidth="1.5" strokeLinejoin="round" />
+    <path d="M4 9V14C4 14 6 17 10 17C14 17 16 14 16 14V9" stroke="#807C7C" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
   </svg>
 );
 
@@ -276,7 +276,7 @@ export default function ProfileMainPage() {
   // 캐릭터 배너 핸들러
   const handleBannerClick = () => {
     if (hasNoTeamiType) {
-      navigate('/teami-type');
+      navigate('/type-test');
     }
   };
 
@@ -368,12 +368,12 @@ export default function ProfileMainPage() {
         <div className={styles.profileIntro}>
           {isProfileEmpty ? (
             <>
-              프로필을 작성하고 <br/>
+              프로필을 작성하고 <br />
               <span className={styles.profileIntroHighlight}>내 팀플 분석</span>을 완성해보세요!
             </>
           ) : (
             <>
-              지난 활동을 돌아보고, <br/>
+              지난 활동을 돌아보고, <br />
               <span className={styles.profileIntroHighlight}>더 나은 팀원</span>이 되어가요.
             </>
           )}

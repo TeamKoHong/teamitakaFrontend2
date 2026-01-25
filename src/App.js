@@ -32,6 +32,11 @@ import BookmarkPage from './pages/BookmarkPage/BookmarkPage';
 import RecruitmentViewPage from './pages/RecruitmentViewPage/RecruitmentViewPage';
 import TeamSelectPage from './pages/TeamSelectPage/TeamSelectPage';
 
+// Type Test Pages
+import QuizPage from './features/type-test/pages/QuizPage';
+import AnalysisCompletePage from './features/type-test/pages/AnalysisCompletePage';
+import ResultPage from './features/type-test/pages/ResultPage';
+
 // 메인 페이지 임포트
 import MainPage from './components/Home/MainPage';
 
@@ -345,6 +350,11 @@ const App = () => {
           <Route path="/phone-verify/code" element={<PublicRoute><VerificationCodePage /></PublicRoute>} />
           <Route path="/profile-setup" element={<ProtectedRoute><ProfileSetupPage /></ProtectedRoute>} />
           <Route path="/welcome" element={<ProtectedRoute><WelcomePage /></ProtectedRoute>} />
+
+          {/* ===== Type Test Routes ===== */}
+          <Route path="/type-test" element={<QuizPage />} />
+          <Route path="/type-test/complete" element={<AnalysisCompletePage />} />
+          <Route path="/type-test/result/:type" element={<ResultPage />} />
 
           {/* ===== 기본 리다이렉트 ===== */}
           <Route path="/" element={<Navigate to={MAIN_ROUTES.HOME} replace />} />
