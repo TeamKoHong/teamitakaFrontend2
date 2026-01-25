@@ -9,7 +9,7 @@ const decodeJWT = (token) => {
     try {
         const parts = token.split('.');
         if (parts.length !== 3) return null;
-        
+
         const payload = JSON.parse(atob(parts[1]));
         return payload;
     } catch (error) {
@@ -22,17 +22,17 @@ const decodeJWT = (token) => {
 export const setToken = (token, user = null) => {
     try {
         localStorage.setItem(TOKEN_KEY, token);
-        
+
         if (user) {
             localStorage.setItem(USER_KEY, JSON.stringify(user));
         }
-        
+
         // JWT에서 만료 시간 추출
         const payload = decodeJWT(token);
         if (payload && payload.exp) {
             localStorage.setItem(TOKEN_EXPIRY_KEY, payload.exp.toString());
         }
-        
+
         console.log('토큰 저장 완료');
         return true;
     } catch (error) {
@@ -69,7 +69,8 @@ export const removeToken = () => {
         localStorage.removeItem(TOKEN_KEY);
         localStorage.removeItem(USER_KEY);
         localStorage.removeItem(TOKEN_EXPIRY_KEY);
-        
+        localStorage.removeItem('user_mbti_type');
+
         // 실제로 토큰이 있었던 경우에만 로그 출력
         if (hadToken) {
             console.log('토큰 삭제 완료');
@@ -86,20 +87,20 @@ export const isTokenValid = () => {
     try {
         const token = getToken();
         if (!token) return false;
-        
+
         const expiryStr = localStorage.getItem(TOKEN_EXPIRY_KEY);
         if (!expiryStr) {
             // 만료 시간이 없으면 JWT에서 직접 확인
             const payload = decodeJWT(token);
             if (!payload || !payload.exp) return false;
-            
+
             const now = Math.floor(Date.now() / 1000);
             return payload.exp > now;
         }
-        
+
         const expiry = parseInt(expiryStr);
         const now = Math.floor(Date.now() / 1000);
-        
+
         return expiry > now;
     } catch (error) {
         console.error('토큰 유효성 검사 실패:', error);
@@ -114,17 +115,17 @@ export const getTokenRemainingTime = () => {
         if (!expiryStr) {
             const token = getToken();
             if (!token) return 0;
-            
+
             const payload = decodeJWT(token);
             if (!payload || !payload.exp) return 0;
-            
+
             const now = Math.floor(Date.now() / 1000);
             return Math.max(0, payload.exp - now);
         }
-        
+
         const expiry = parseInt(expiryStr);
         const now = Math.floor(Date.now() / 1000);
-        
+
         return Math.max(0, expiry - now);
     } catch (error) {
         console.error('토큰 남은 시간 계산 실패:', error);
@@ -167,10 +168,10 @@ export const getTokenInfo = () => {
     try {
         const token = getToken();
         if (!token) return null;
-        
+
         const payload = decodeJWT(token);
         if (!payload) return null;
-        
+
         return {
             userId: payload.sub || payload.userId,
             email: payload.email,
