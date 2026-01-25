@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useSmsAuth } from '../../hooks/useSmsAuth';
-import { LuCheck, LuLoader, LuTimer, LuRefreshCw, LuSmartphone } from 'react-icons/lu';
+import { LuCheck, LuLoader, LuRefreshCw } from 'react-icons/lu';
 
 interface SmsAuthFormProps {
     onVerificationSuccess?: () => void;
