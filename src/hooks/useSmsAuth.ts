@@ -109,7 +109,7 @@ export const useSmsAuth = (options?: UseSmsAuthOptions): UseSmsAuthReturn => {
             }
 
             const data = await response.json();
-            const newSessionId = data.sessionId;
+            const newSessionId = data.data?.sessionId;
 
             setSessionId(newSessionId);
             setStep('INPUT_CODE');
