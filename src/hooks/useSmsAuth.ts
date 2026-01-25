@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import axios from 'axios';
+import { getApiConfig } from '../services/auth';
 
 type SmsAuthStep = 'INPUT_PHONE' | 'INPUT_CODE' | 'VERIFIED';
 
@@ -49,7 +49,6 @@ export const useSmsAuth = (): UseSmsAuthReturn => {
     };
 
     const handleCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        // Allow only numbers and max 4 digits
         const val = e.target.value.replace(/[^\d]/g, '').slice(0, 4);
         setCode(val);
         setError(null);
@@ -68,17 +67,31 @@ export const useSmsAuth = (): UseSmsAuthReturn => {
         setError(null);
 
         try {
-            await axios.post('/api/auth/sms/send', { phone: plainPhone });
-            setStep('INPUT_CODE');
-            setTimer(180); // 3 minutes
-        } catch (err: any) {
-            if (err.response?.status === 429) {
-                setError('Too many requests. Please try again later.');
-            } else if (err.response?.status === 400) {
-                setError(err.response.data.message || 'Validation error.');
-            } else {
-                setError('Server error. Failed to send verification code.');
+            const { API_BASE_URL, headers } = getApiConfig();
+
+            const response = await fetch(`${API_BASE_URL}/api/auth/sms/send`, {
+                method: 'POST',
+                headers,
+                body: JSON.stringify({ phone: plainPhone }),
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => ({}));
+
+                if (response.status === 429) {
+                    setError('Too many requests. Please try again later.');
+                } else if (response.status === 400) {
+                    setError(errorData.message || 'Validation error.');
+                } else {
+                    setError('Server error. Failed to send verification code.');
+                }
+                return;
             }
+
+            setStep('INPUT_CODE');
+            setTimer(180);
+        } catch (err) {
+            setError('Network error. Please check your connection.');
         } finally {
             setIsLoading(false);
         }
@@ -95,15 +108,27 @@ export const useSmsAuth = (): UseSmsAuthReturn => {
         const plainPhone = phone.replace(/-/g, '');
 
         try {
-            await axios.post('/api/auth/sms/verify', { phone: plainPhone, code });
+            const { API_BASE_URL, headers } = getApiConfig();
+
+            const response = await fetch(`${API_BASE_URL}/api/auth/sms/verify`, {
+                method: 'POST',
+                headers,
+                body: JSON.stringify({ phone: plainPhone, code }),
+            });
+
+            if (!response.ok) {
+                if (response.status === 400 || response.status === 401) {
+                    setError('Invalid verification code.');
+                } else {
+                    setError('Verification failed. Please try again.');
+                }
+                return;
+            }
+
             setStep('VERIFIED');
             setTimer(0);
-        } catch (err: any) {
-            if (err.response?.status === 400 || err.response?.status === 401) {
-                setError('Invalid verification code.');
-            } else {
-                setError('Verification failed. Please try again.');
-            }
+        } catch (err) {
+            setError('Network error. Please check your connection.');
         } finally {
             setIsLoading(false);
         }
