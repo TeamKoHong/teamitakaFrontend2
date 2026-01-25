@@ -4,7 +4,6 @@ import './RegisterPage.step2.scss';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { sendVerificationCode, verifyCode, registerUser } from '../../services/auth.js';
-import VerificationLoading from '../../components/Common/VerificationLoading';
 import StepIndicator from '../../components/DesignSystem/Feedback/StepIndicator';
 import DefaultHeader from '../../components/Common/DefaultHeader';
 
@@ -489,7 +488,6 @@ function RegisterPage() {
             case 2:
                 return (
                     <div className="step-content">
-                        {isVerificationLoading && <VerificationLoading />}
                         <StepIndicator currentStep={3} totalSteps={5} />
                         <div className="step-description">
                             <p>학생 인증을 위해</p>
@@ -537,7 +535,6 @@ function RegisterPage() {
             case 3:
                 return (
                     <div className="step-content">
-                        {isVerificationLoading && <VerificationLoading />}
                         <StepIndicator currentStep={4} totalSteps={5} />
                         <div className="step-description">
                             <p>입력하신 이메일로 받은</p>
@@ -586,32 +583,26 @@ function RegisterPage() {
                 );
             case 4:
                 return (
-                    <div className="step-content">
-                        {isVerificationLoading && <VerificationLoading />}
-                        <StepIndicator currentStep={4} totalSteps={5} />
-                        <div className="step-description">
-                            <p>입력하신 이메일로 받은</p>
-                            <p>인증 코드를 입력해주세요.</p>
+                    <div className="step-content" style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        minHeight: 'calc(100vh - 200px)'
+                    }}>
+                        <div style={{ position: 'relative', display: 'inline-block' }}>
+                            <img src="/Star 92.png" alt="star" style={{ width: '64px', height: '64px' }} />
+                            <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="17" viewBox="0 0 22 17" fill="none">
+                                    <path d="M19.4501 0.978472C19.9877 0.420763 20.8752 0.40458 21.4332 0.941933C21.9913 1.47951 22.0083 2.36787 21.4707 2.92597L8.85762 16.0213C8.59314 16.2959 8.22765 16.4507 7.84641 16.4507C7.46536 16.4506 7.10053 16.2957 6.83613 16.0213L0.529591 9.47366C-0.00787739 8.91566 0.00834407 8.02723 0.56613 7.48962C1.12413 6.95215 2.01256 6.96837 2.55017 7.52616L7.84641 13.0243L19.4501 0.978472Z" fill="#140805" />
+                                </svg>
+                            </div>
                         </div>
-                        <div className="step-description-sub">
-                            <p>인증 코드를 이메일로 보냈습니다.</p>
+                        <div style={{ marginTop: '16px', color: '#140805', textAlign: 'center', fontFamily: 'Pretendard', fontSize: '25px', fontStyle: 'normal', fontWeight: 700, lineHeight: 'normal' }}>
+                            대학교 인증 완료
                         </div>
-                        <div></div>
-                        <div style={{ textAlign: 'center', marginTop: '122px' }}>
-                            <div style={{ position: 'relative', display: 'inline-block' }}>
-                                <img src="/Star 92.png" alt="star" style={{ width: '64px', height: '64px' }} />
-                                <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="17" viewBox="0 0 22 17" fill="none">
-                                        <path d="M19.4501 0.978472C19.9877 0.420763 20.8752 0.40458 21.4332 0.941933C21.9913 1.47951 22.0083 2.36787 21.4707 2.92597L8.85762 16.0213C8.59314 16.2959 8.22765 16.4507 7.84641 16.4507C7.46536 16.4506 7.10053 16.2957 6.83613 16.0213L0.529591 9.47366C-0.00787739 8.91566 0.00834407 8.02723 0.56613 7.48962C1.12413 6.95215 2.01256 6.96837 2.55017 7.52616L7.84641 13.0243L19.4501 0.978472Z" fill="#140805" />
-                                    </svg>
-                                </div>
-                            </div>
-                            <div style={{ marginTop: '16px', color: '#140805', textAlign: 'center', fontFamily: 'Pretendard', fontSize: '25px', fontStyle: 'normal', fontWeight: 700, lineHeight: 'normal' }}>
-                                대학교 인증 완료
-                            </div>
-                            <div style={{ marginTop: '4px', color: '#807C7C', textAlign: 'center', fontFamily: 'Pretendard', fontSize: '14px', fontStyle: 'normal', fontWeight: 400, lineHeight: 'normal' }}>
-                                2022.03.10 부로 인증되었습니다.
-                            </div>
+                        <div style={{ marginTop: '4px', color: '#807C7C', textAlign: 'center', fontFamily: 'Pretendard', fontSize: '14px', fontStyle: 'normal', fontWeight: 400, lineHeight: 'normal' }}>
+                            {new Date().toLocaleDateString('ko-KR', { timeZone: 'Asia/Seoul', year: 'numeric', month: '2-digit', day: '2-digit' }).replace(/\. /g, '.').replace(/\.$/, '')} 부로 인증되었습니다.
                         </div>
                     </div>
                 );
