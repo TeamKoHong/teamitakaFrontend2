@@ -3,6 +3,7 @@ import { useRouter } from 'shared/shims/useNextRouterShim';
 import QuestionCard from 'features/type-test/components/QuestionCard';
 import { questions } from 'features/type-test/lib/questions';
 import { calculateMBTIType, type Answer } from 'features/type-test/lib/scoring';
+import { saveTypeResult } from 'services/user';
 import 'features/type-test/styles/type-test-base.css';
 
 export default function QuizPage() {
@@ -37,19 +38,19 @@ export default function QuizPage() {
 
                     // Backend Integration: Save Result
                     try {
-                        await fetch('/api/users/type-result', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
-                            body: JSON.stringify({
-                                type: mbtiType,
-                                answers: finalAnswers
-                            }),
+                        await saveTypeResult({
+                            type: mbtiType,
+                            answers: finalAnswers
                         });
+
+                        // [Fallback] Save to local storage for immediate UI update
+                        // because /api/auth/me might not return the new field immediately
+                        localStorage.setItem('user_mbti_type', mbtiType);
+
                     } catch (apiError) {
                         console.error('Failed to save result:', apiError);
-                        // Continue to show result even if save fails
+                        // Even if server save fails, save locally so user sees result
+                        localStorage.setItem('user_mbti_type', mbtiType);
                     }
 
                     router.push(`/type-test/complete?type=${encodeURIComponent(mbtiType)}`);
@@ -83,8 +84,6 @@ export default function QuizPage() {
         window.addEventListener('keydown', handleKeyDown);
         return () => window.removeEventListener('keydown', handleKeyDown);
     }, [handleBack]);
-
-    const isLastQuestion = currentQuestion + 1 === questions.length;
 
     return (
         <div className="tw-min-h-screen" style={{
