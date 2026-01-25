@@ -24,7 +24,7 @@ import 통찰티미 from '../../../assets/character_banner/통찰티미.png';
 import 비회원배너 from '../../../assets/character_banner/비회원 캐릭터 배너_테스트유도용.png';
 
 // 빈 상태 일러스트
-import projectEmpty from '../../../assets/icons/project_empty.png';
+// import projectEmpty from '../../../assets/icons/project_empty.png';
 
 // 티미 타입별 이미지 매핑
 const CHARACTER_IMAGES = {
