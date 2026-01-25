@@ -85,14 +85,15 @@
     gap: 6px;
 
     .meta-icon {
-      width: 18px;
-      height: 18px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
+      width: 14px;
+      height: 14px;
+      flex: 0 0 14px;
+      font-size: 14px;
 
-      font-size: 16px;
-      flex: 0 0 18px;
+      display: block;
+      align-items: center;
+      justify-content: flex-start;
+
       line-height: 1;
     }
 
