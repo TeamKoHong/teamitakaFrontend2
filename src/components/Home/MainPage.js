@@ -29,8 +29,8 @@ const MainPage = () => {
   const [projectError, setProjectError] = useState(null);
 
   const carouselRef = useRef(null);
-  const [activeIndex, setActiveIndex] = useState(0);
 
+  // 사용자 정보 + 요약
   useEffect(() => {
     let mounted = true;
 
@@ -39,20 +39,14 @@ const MainPage = () => {
         setIsLoading(true);
         setError(null);
 
-        const [meRes, sumRes] = await Promise.all([
-          getMe().catch((e) => {
-            throw e;
-          }),
-          getSummary().catch((e) => {
-            throw e;
-          }),
-        ]);
+        const [meRes, sumRes] = await Promise.all([getMe(), getSummary()]);
 
         if (!mounted) return;
 
         if (meRes?.success && meRes.user) setUser(meRes.user);
         if (sumRes?.success) setSummary(sumRes.data || sumRes.summary || null);
       } catch (e) {
+        if (!mounted) return;
         setError("일시적인 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
       } finally {
         if (mounted) setIsLoading(false);
@@ -63,8 +57,9 @@ const MainPage = () => {
     return () => {
       mounted = false;
     };
-  }, [navigate]);
+  }, []);
 
+  // 프로젝트 목록
   useEffect(() => {
     let mounted = true;
 
@@ -97,46 +92,10 @@ const MainPage = () => {
     };
   }, []);
 
-  // 프로젝트가 바뀌면 dot/스크롤 초기화
+  // 프로젝트가 바뀌면 캐러셀 스크롤 초기화
   useEffect(() => {
-    setActiveIndex(0);
     if (carouselRef.current) carouselRef.current.scrollLeft = 0;
   }, [projects]);
-
-  // 캐러셀 스크롤 시 현재 인덱스 계산
-  const handleCarouselScroll = () => {
-    const el = carouselRef.current;
-    if (!el) return;
-
-    const firstCard = el.firstElementChild;
-    if (!firstCard) return;
-
-    const cardWidth = firstCard.getBoundingClientRect().width;
-    const gap = 12;
-    const step = cardWidth + gap;
-
-    const idx = Math.round(el.scrollLeft / step);
-    const safeIdx = Math.max(0, Math.min(idx, projects.length - 1));
-    setActiveIndex(safeIdx);
-  };
-
-  // dot 클릭 시 해당 카드로 이동
-  const scrollToIndex = (idx) => {
-    const el = carouselRef.current;
-    if (!el) return;
-
-    const firstCard = el.firstElementChild;
-    if (!firstCard) return;
-
-    const cardWidth = firstCard.getBoundingClientRect().width;
-    const gap = 12;
-    const step = cardWidth + gap;
-
-    el.scrollTo({
-      left: idx * step,
-      behavior: "smooth",
-    });
-  };
 
   const ongoingCount = summary?.projects?.ongoing ?? "N";
   const unreadCount = summary?.notifications?.unread ?? "0";
@@ -251,33 +210,15 @@ const MainPage = () => {
         )}
 
         {!isLoadingProjects && projects.length > 0 && (
-          <>
-            <div
-              className="main-project-carousel"
-              ref={carouselRef}
-              onScroll={handleCarouselScroll}
-            >
-              {projects.map((project) => (
-                <MainProjectCard
-                  key={project.project_id}
-                  project={project}
-                  onClick={() => navigate(`/project/${project.project_id}`)}
-                />
-              ))}
-            </div>
-
-            <div className="carousel-dots" aria-label="프로젝트 캐러셀 페이지 표시">
-              {projects.map((_, i) => (
-                <button
-                  key={i}
-                  type="button"
-                  className={`dot ${i === activeIndex ? "is-active" : ""}`}
-                  aria-label={`프로젝트 ${i + 1}로 이동`}
-                  onClick={() => scrollToIndex(i)}
-                />
-              ))}
-            </div>
-          </>
+          <div className="main-project-carousel" ref={carouselRef}>
+            {projects.map((project) => (
+              <MainProjectCard
+                key={project.project_id}
+                project={project}
+                onClick={() => navigate(`/project/${project.project_id}`)}
+              />
+            ))}
+          </div>
         )}
       </section>
 
