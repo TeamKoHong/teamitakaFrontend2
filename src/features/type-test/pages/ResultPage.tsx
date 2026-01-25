@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter, useParams } from 'shared/shims/useNextRouterShim';
 import UnifiedAdaptiveResultCard from 'features/type-test/components/UnifiedAdaptiveResultCard';
-import ShareBar from 'features/type-test/components/ShareBar'; // Ensure ShareBar exists
 import { TYPE_METADATA } from 'features/type-test/lib/types';
-import { timiCards } from 'features/type-test/lib/data/timiCards';
 
 export default function ResultPage() {
     const router = useRouter();

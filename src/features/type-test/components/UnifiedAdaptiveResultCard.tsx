@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { TypeMeta } from 'features/type-test/lib/types';
-import { useRouter } from 'shared/shims/useNextRouterShim';
 
 interface UnifiedAdaptiveResultCardProps {
     typeMeta: TypeMeta;
@@ -15,10 +14,7 @@ export default function UnifiedAdaptiveResultCard({
     className = '',
     onRetest
 }: UnifiedAdaptiveResultCardProps) {
-    const router = useRouter();
     const [isSaving, setIsSaving] = useState(false);
-    const [imageErrors, setImageErrors] = useState<{ [key: string]: boolean }>({});
-    const accentColor = typeMeta.themeAccent || '#B97DEF';
 
     const handleSaveImage = async () => {
         if (isSaving) return;
@@ -51,31 +47,6 @@ export default function UnifiedAdaptiveResultCard({
         } finally {
             setIsSaving(false);
         }
-    };
-
-    const handleRetest = () => {
-        if (onRetest) {
-            onRetest();
-        } else {
-            router.push('/type-test');
-        }
-    };
-
-    const handleImageError = (imageKey: string) => {
-        setImageErrors(prev => ({ ...prev, [imageKey]: true }));
-    };
-
-    // Styles mapped from globals.css
-    const styles = {
-        subtitle: { fontSize: 'clamp(16px, calc(18px * (100vw / 390px)), 22px)', lineHeight: '1.2', fontWeight: 400 },
-        title: { fontSize: 'clamp(32px, calc(36px * (100vw / 390px)), 42px)', lineHeight: '1.1', fontWeight: 700, color: accentColor },
-        description: { fontSize: 'clamp(14px, calc(16px * (100vw / 390px)), 18px)', lineHeight: '1.4', fontWeight: 400 },
-        matchNames: { fontSize: 'clamp(14px, calc(16px * (100vw / 390px)), 18px)', lineHeight: '1.3', fontWeight: 400 },
-        synergy: { fontSize: 'clamp(12px, calc(14px * (100vw / 390px)), 16px)', lineHeight: '1.4', fontWeight: 200 },
-        tipTitle: { fontSize: 'clamp(18px, calc(20px * (100vw / 390px)), 24px)', lineHeight: '1.3', fontWeight: 700, color: accentColor },
-        tipItemTitle: { fontSize: 'clamp(14px, calc(16px * (100vw / 390px)), 18px)', lineHeight: '1.3', fontWeight: 600 },
-        tipItemDesc: { fontSize: 'clamp(12px, calc(14px * (100vw / 390px)), 16px)', lineHeight: '1.4', fontWeight: 200 },
-        quote: { fontSize: 'clamp(14px, calc(16px * (100vw / 390px)), 18px)', lineHeight: '1.4', fontWeight: 500 },
     };
 
     return (
@@ -114,7 +85,6 @@ export default function UnifiedAdaptiveResultCard({
                         src={`/assets/result/${typeMeta.nickname}.png`}
                         alt={typeMeta.nickname}
                         className="tw-w-full tw-h-auto tw-object-contain"
-                        onError={() => handleImageError(`${typeMeta.nickname}_main`)}
                     />
                 </div>
             </div>
