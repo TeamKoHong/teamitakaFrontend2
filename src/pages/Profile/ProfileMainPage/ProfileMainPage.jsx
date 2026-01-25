@@ -58,8 +58,8 @@ const ChevronDownIcon = () => (
 
 const GraduationCapIcon = () => (
   <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
-    <path d="M10 2L1 7L10 12L19 7L10 2Z" stroke="#807C7C" strokeWidth="1.5" strokeLinejoin="round"/>
-    <path d="M4 9V14C4 14 6 17 10 17C14 17 16 14 16 14V9" stroke="#807C7C" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M10 2L1 7L10 12L19 7L10 2Z" stroke="#807C7C" strokeWidth="1.5" strokeLinejoin="round" />
+    <path d="M4 9V14C4 14 6 17 10 17C14 17 16 14 16 14V9" stroke="#807C7C" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
   </svg>
 );
 
@@ -189,12 +189,16 @@ export default function ProfileMainPage() {
 
         // 기본 사용자 정보 로드
         const userRes = await getMe();
+        console.log('🔍 [ProfileMainPage] getMe result:', userRes);
+        console.log('🔍 [ProfileMainPage] user.mbti_type:', userRes?.user?.mbti_type);
         if (userRes?.success && userRes.user) {
           setUserData(userRes.user);
         }
 
         // 프로필 상세 정보 로드
         const profileRes = await getProfileDetail();
+        console.log('🔍 [ProfileMainPage] getProfileDetail result:', profileRes);
+        console.log('🔍 [ProfileMainPage] activityType:', profileRes?.data?.activityType);
         if (profileRes?.success) {
           setProfileData(profileRes.data);
         }
@@ -247,6 +251,8 @@ export default function ProfileMainPage() {
   }
 
   // Mock 데이터 (API 연동 전)
+  const localMbtiType = localStorage.getItem('user_mbti_type');
+
   const displayData = {
     profileImage: userData?.profileImage || defaultProfileImage,
     username: userData?.username || '사용자',
@@ -257,7 +263,8 @@ export default function ProfileMainPage() {
     totalTeamExperience: userData?.teamExperience || profileData?.totalTeamExperience || 0,
     tags: userData?.keywords || profileData?.tags || [],
     isVerified: !!userData?.university,
-    activityType: profileData?.activityType || null,
+    // 우선순위: API UserData -> LocalStorage -> API ProfileData
+    activityType: { type: userData?.mbti_type || localMbtiType || profileData?.activityType?.type || null },
     skills: profileData?.skills || null,
     feedback: {
       positive: profileData?.feedback?.positive || [],
@@ -269,16 +276,9 @@ export default function ProfileMainPage() {
 
   // Empty State 조건 변수
   const isProfileEmpty = !userData?.university && !userData?.major && (!userData?.keywords || userData.keywords.length === 0);
-  const hasNoTeamiType = !profileData?.activityType?.type;
+  const hasNoTeamiType = !displayData.activityType?.type;
   const hasNoProjects = displayData.totalProjects === 0 && (!displayData.projects || displayData.projects.length === 0);
   const hasNoEvaluations = displayData.totalProjects === 0;
-
-  // 캐릭터 배너 핸들러
-  const handleBannerClick = () => {
-    if (hasNoTeamiType) {
-      navigate('/teami-type');
-    }
-  };
 
   // 프로젝트 등록 핸들러
   const handleAddProject = () => {
@@ -351,16 +351,22 @@ export default function ProfileMainPage() {
           </div>
         </div>
 
-        {/* 2. 활동 타입 카드 (배너 이미지만 표시) */}
+        {/* 2. 활동 타입 카드 (성향 결과에 따른 배너 표시) */}
         <div
-          className={`${styles.activityCard} ${hasNoTeamiType ? styles.clickable : ''}`}
-          onClick={handleBannerClick}
-          style={{ cursor: hasNoTeamiType ? 'pointer' : 'default' }}
+          className={`${styles.activityCard} tw-relative`}
+          onClick={() => {
+            if (!hasNoTeamiType) {
+              navigate(`/type-test/result/${displayData.activityType.type}`);
+            } else {
+              navigate('/type-test');
+            }
+          }}
+          style={{ cursor: 'pointer' }}
         >
           <img
-            src={hasNoTeamiType ? 비회원배너 : (CHARACTER_IMAGES[displayData.activityType?.type] || 활동티미)}
-            alt={hasNoTeamiType ? '지금 캐릭터 확인하기' : displayData.activityType?.type}
-            className={styles.activityBanner}
+            src={(!hasNoTeamiType && CHARACTER_IMAGES[displayData.activityType.type]) || 비회원배너}
+            alt={!hasNoTeamiType ? displayData.activityType.type : '지금 캐릭터 확인하기'}
+            className="tw-w-full tw-rounded-xl tw-shadow-md"
           />
         </div>
 
@@ -368,12 +374,12 @@ export default function ProfileMainPage() {
         <div className={styles.profileIntro}>
           {isProfileEmpty ? (
             <>
-              프로필을 작성하고 <br/>
+              프로필을 작성하고 <br />
               <span className={styles.profileIntroHighlight}>내 팀플 분석</span>을 완성해보세요!
             </>
           ) : (
             <>
-              지난 활동을 돌아보고, <br/>
+              지난 활동을 돌아보고, <br />
               <span className={styles.profileIntroHighlight}>더 나은 팀원</span>이 되어가요.
             </>
           )}
