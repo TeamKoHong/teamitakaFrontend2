@@ -3,6 +3,11 @@ import { getApiConfig } from '../services/auth';
 
 type SmsAuthStep = 'INPUT_PHONE' | 'INPUT_CODE' | 'VERIFIED';
 
+interface UseSmsAuthOptions {
+    initialSessionId?: string;
+    initialTimerStart?: number;
+}
+
 interface UseSmsAuthReturn {
     phone: string;
     code: string;
@@ -10,9 +15,10 @@ interface UseSmsAuthReturn {
     timer: number;
     isLoading: boolean;
     error: string | null;
+    sessionId: string | null;
     handlePhoneChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     handleCodeChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-    sendSms: () => Promise<void>;
+    sendSms: () => Promise<string | undefined>;
     verifySms: () => Promise<void>;
     reset: () => void;
 }
@@ -24,13 +30,27 @@ const formatPhoneNumber = (value: string) => {
     return `${numbers.slice(0, 3)}-${numbers.slice(3, 7)}-${numbers.slice(7, 11)}`;
 };
 
-export const useSmsAuth = (): UseSmsAuthReturn => {
+export const useSmsAuth = (options?: UseSmsAuthOptions): UseSmsAuthReturn => {
+    // Calculate remaining timer from initialTimerStart
+    const calculateInitialTimer = () => {
+        if (options?.initialTimerStart) {
+            const elapsed = Math.floor((Date.now() - options.initialTimerStart) / 1000);
+            return Math.max(0, 180 - elapsed);
+        }
+        return 0;
+    };
+
     const [phone, setPhone] = useState('');
     const [code, setCode] = useState('');
-    const [step, setStep] = useState<SmsAuthStep>('INPUT_PHONE');
-    const [timer, setTimer] = useState(0);
+    const [step, setStep] = useState<SmsAuthStep>(
+        options?.initialSessionId ? 'INPUT_CODE' : 'INPUT_PHONE'
+    );
+    const [timer, setTimer] = useState(calculateInitialTimer);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [sessionId, setSessionId] = useState<string | null>(
+        options?.initialSessionId || null
+    );
 
     useEffect(() => {
         let interval: NodeJS.Timeout;
@@ -54,12 +74,12 @@ export const useSmsAuth = (): UseSmsAuthReturn => {
         setError(null);
     };
 
-    const sendSms = async () => {
+    const sendSms = async (): Promise<string | undefined> => {
         const plainPhone = phone.replace(/-/g, '');
         const phoneRegex = /^01([0|1|6|7|8|9])([0-9]{3,4})([0-9]{4})$/;
 
         if (!phoneRegex.test(plainPhone)) {
-            setError('Please enter a valid phone number (010-XXXX-XXXX).');
+            setError('올바른 전화번호를 입력해주세요 (010-XXXX-XXXX).');
             return;
         }
 
@@ -79,19 +99,25 @@ export const useSmsAuth = (): UseSmsAuthReturn => {
                 const errorData = await response.json().catch(() => ({}));
 
                 if (response.status === 429) {
-                    setError('Too many requests. Please try again later.');
+                    setError('요청이 너무 많습니다. 잠시 후 다시 시도해주세요.');
                 } else if (response.status === 400) {
-                    setError(errorData.message || 'Validation error.');
+                    setError(errorData.message || '입력값 오류입니다.');
                 } else {
-                    setError('Server error. Failed to send verification code.');
+                    setError('서버 오류입니다. 인증번호 전송에 실패했습니다.');
                 }
                 return;
             }
 
+            const data = await response.json();
+            const newSessionId = data.sessionId;
+
+            setSessionId(newSessionId);
             setStep('INPUT_CODE');
             setTimer(180);
+
+            return newSessionId;
         } catch (err) {
-            setError('Network error. Please check your connection.');
+            setError('네트워크 오류입니다. 연결 상태를 확인해주세요.');
         } finally {
             setIsLoading(false);
         }
@@ -99,13 +125,17 @@ export const useSmsAuth = (): UseSmsAuthReturn => {
 
     const verifySms = async () => {
         if (code.length !== 4) {
-            setError('Please enter the 4-digit code.');
+            setError('4자리 인증번호를 입력해주세요.');
+            return;
+        }
+
+        if (!sessionId) {
+            setError('인증 세션이 만료되었습니다. 다시 시도해주세요.');
             return;
         }
 
         setIsLoading(true);
         setError(null);
-        const plainPhone = phone.replace(/-/g, '');
 
         try {
             const { API_BASE_URL, headers } = getApiConfig();
@@ -113,14 +143,14 @@ export const useSmsAuth = (): UseSmsAuthReturn => {
             const response = await fetch(`${API_BASE_URL}/api/auth/sms/verify`, {
                 method: 'POST',
                 headers,
-                body: JSON.stringify({ phone: plainPhone, code }),
+                body: JSON.stringify({ sessionId, code }),
             });
 
             if (!response.ok) {
                 if (response.status === 400 || response.status === 401) {
-                    setError('Invalid verification code.');
+                    setError('인증번호가 일치하지 않습니다.');
                 } else {
-                    setError('Verification failed. Please try again.');
+                    setError('인증에 실패했습니다. 다시 시도해주세요.');
                 }
                 return;
             }
@@ -128,7 +158,7 @@ export const useSmsAuth = (): UseSmsAuthReturn => {
             setStep('VERIFIED');
             setTimer(0);
         } catch (err) {
-            setError('Network error. Please check your connection.');
+            setError('네트워크 오류입니다. 연결 상태를 확인해주세요.');
         } finally {
             setIsLoading(false);
         }
@@ -140,6 +170,7 @@ export const useSmsAuth = (): UseSmsAuthReturn => {
         setStep('INPUT_PHONE');
         setTimer(0);
         setError(null);
+        setSessionId(null);
     }, []);
 
     return {
@@ -149,6 +180,7 @@ export const useSmsAuth = (): UseSmsAuthReturn => {
         timer,
         isLoading,
         error,
+        sessionId,
         handlePhoneChange,
         handleCodeChange,
         sendSms,
