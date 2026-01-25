@@ -25,7 +25,7 @@ const SCHOOL_OPTIONS = [
  */
 function ProfileSetupPage() {
     const navigate = useNavigate();
-    const { registration, updateUser, user } = useAuth();
+    const { updateUser, user } = useAuth();
 
     const [school, setSchool] = useState('');
     const [studentId, setStudentId] = useState('');
@@ -33,12 +33,7 @@ function ProfileSetupPage() {
     const [searchQuery, setSearchQuery] = useState('');
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-    // 본인인증 미완료 시 이전 단계로 리다이렉트
-    React.useEffect(() => {
-        if (!registration?.phoneVerified) {
-            navigate('/phone-verify');
-        }
-    }, [registration, navigate]);
+
 
     // 학교 검색 필터
     const filteredSchools = SCHOOL_OPTIONS.filter(s =>
