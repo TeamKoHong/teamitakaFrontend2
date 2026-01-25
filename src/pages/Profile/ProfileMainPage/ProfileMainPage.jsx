@@ -398,15 +398,33 @@ export default function ProfileMainPage() {
           </div>
 
           {hasNoEvaluations ? (
-            <div className={styles.emptySkillContainer}>
-              <img
-                src={projectEmpty}
-                alt="데이터 없음"
-                className={styles.emptyIllustration}
-              />
-              <p className={styles.emptyText}>
-                프로젝트 정보가 없어요.
-              </p>
+            <div className="tw-relative">
+              {/* 블러 처리된 차트 (기본 데이터 표시) */}
+              <div className={styles.bubbleChartContainer} style={{ filter: 'blur(4px)', opacity: 0.6 }}>
+                <SkillBubbleChart skills={null} />
+              </div>
+
+              {/* 오버레이 메시지 */}
+              <div className="tw-absolute tw-inset-0 tw-flex tw-items-center tw-justify-center z-10">
+                <span style={{
+                  color: '#807C7C',
+                  fontSize: '14px',
+                  fontWeight: 500,
+                  fontFamily: 'Pretendard'
+                }}>
+                  프로젝트 평가를 받으면 볼 수 있어요
+                </span>
+              </div>
+
+              {/* Detail button for empty state (optional - mostly acts as placeholder) */}
+              <div className="tw-mt-4 tw-opacity-50 tw-pointer-events-none">
+                <button className={styles.expandButton}>
+                  나의 능력치 분석 자세히보기
+                  <span className={styles.expandIcon}>
+                    <ChevronDownIcon />
+                  </span>
+                </button>
+              </div>
             </div>
           ) : (
             <>
