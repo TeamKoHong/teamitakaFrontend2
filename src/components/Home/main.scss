@@ -1,6 +1,7 @@
 @use '../../styles/variables' as *;
+
 /* ========== Tokens ========== */
-$brand: $primary-color; // CHANGED: #ef4423 -> $primary-color
+$brand: $primary-color;
 $brand-strong: $primary-color;
 $ink: #111;
 $ink-2: #373737;
@@ -14,21 +15,15 @@ $radius-lg: 16px;
 $radius-md: 12px;
 $header-h: 56px;
 
-/* 프로필 아바타 위치 */
-$avatar-offset: 16px;
-$avatar-offset-sm: 12px;
-
 $card-gap-top: 0px;
 $pull-up: $header-h;
-
-$keywords-bottom-space: 24px;
+$keywords-bottom-space: 16px;
 
 .main-page {
   background: $bg;
   min-height: 100vh;
   padding: 0 16px;
   padding-top: $header-h;
-  //font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
   color: $ink;
 
   .header {
@@ -50,7 +45,7 @@ $keywords-bottom-space: 24px;
     color: $brand;
     font-size: 22px;
     font-weight: 800;
-    letter-spacing: .2px;
+    letter-spacing: 0.2px;
   }
 
   .icon-btn {
@@ -74,7 +69,7 @@ $keywords-bottom-space: 24px;
   .profile-card {
     position: relative;
     background: $card;
-    border-radius: 0 0 $radius-lg $radius-lg;
+    border-radius: 0 0 24px 24px;
     box-shadow: none;
     padding: 64px 16px 16px 16px;
     margin: -$pull-up -16px 20px;
@@ -91,19 +86,24 @@ $keywords-bottom-space: 24px;
       justify-items: start;
       position: relative;
 
-      transform: translateY($avatar-offset);
-      will-change: transform;
-
       .profile-img {
         width: 100px;
         height: 100px;
-        border-radius: 12%;
+
+        border-radius: 24px;
+        overflow: hidden;
+
         background: #e9e9ec;
         display: grid;
         place-items: center;
-        font-size: 32px;
-        color: $ink-3;
         margin-bottom: 0;
+
+        img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          display: block;
+        }
       }
     }
 
@@ -142,7 +142,7 @@ $keywords-bottom-space: 24px;
         align-items: center;
         gap: 6px;
         font-size: 12px;
-        color: $ink-4;
+        color: #807c7c;
         line-height: 1.35;
         margin-bottom: 10px;
 
@@ -181,9 +181,9 @@ $keywords-bottom-space: 24px;
         margin-top: 10px;
 
         .tag.pill {
-          padding: 4px 8px;
+          padding: 5px 10px;
           font-size: 11px;
-          font-weight: 600; // CHANGED: 12px -> 11px, Padding
+          font-weight: 600;
           border-radius: 999px;
           background: #fff4ef;
           color: $brand;
@@ -195,7 +195,7 @@ $keywords-bottom-space: 24px;
 
   >h2.section-title {
     font-size: 15px;
-    font-weight: 800;
+    font-weight: 600;
     color: $ink;
     margin: 8px 0 16px;
   }
@@ -207,6 +207,7 @@ $keywords-bottom-space: 24px;
     padding: 0;
     margin-bottom: 16px;
 
+    /* ✅ 여기만 핵심 수정 */
     .main-project-carousel {
       display: flex !important;
       flex-direction: row !important;
@@ -216,11 +217,13 @@ $keywords-bottom-space: 24px;
       overflow-y: hidden !important;
       -webkit-overflow-scrolling: touch;
 
-      margin-left: -16px;
-      margin-right: -16px;
+      /* ❌ 패딩을 죽이던 코드 제거 */
+      margin-left: 0 !important;
+      margin-right: 0 !important;
 
-      padding-left: 16px;
-      padding-right: 32px;
+      /* ✅ “왼쪽 16px 흰 배경 여백” 보장 */
+      padding-left: 16px !important;
+      padding-right: 16px !important;
 
       scroll-snap-type: x mandatory;
 
@@ -238,7 +241,6 @@ $keywords-bottom-space: 24px;
       }
     }
 
-    /* ✅ dots (덮임 방지 + 보이는 높이 확보) */
     .carousel-dots {
       display: flex;
       justify-content: center;
@@ -249,11 +251,8 @@ $keywords-bottom-space: 24px;
       padding-bottom: 6px;
 
       min-height: 14px;
-      /* ✅ 높이 보장 */
       position: relative;
-      /* ✅ z-index 적용 */
       z-index: 5;
-      /* ✅ 아래 섹션에 가려지지 않게 */
       pointer-events: auto;
     }
 
@@ -335,7 +334,7 @@ $keywords-bottom-space: 24px;
         cursor: pointer;
         background: $brand;
         box-shadow: none;
-        transition: transform .06s ease;
+        transition: transform 0.06s ease;
 
         &:active {
           transform: translateY(1px);
@@ -354,7 +353,6 @@ $keywords-bottom-space: 24px;
   .bottom-spacer {
     height: calc(88px + env(safe-area-inset-bottom) + 16px);
   }
-
 
   .support-btn-wrap {
     display: flex;
@@ -385,15 +383,10 @@ $keywords-bottom-space: 24px;
       grid-template-columns: 1fr 84px;
       column-gap: 12px;
 
-      .profile-right {
-        transform: translateY($avatar-offset-sm);
-      }
-
       .profile-right .profile-img {
         width: 76px;
         height: 76px;
-        font-size: 26px;
-        margin-bottom: 0;
+        border-radius: 24px;
       }
     }
 

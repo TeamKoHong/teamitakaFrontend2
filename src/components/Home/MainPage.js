@@ -5,17 +5,16 @@ import "./main.scss";
 import BottomNav from "../Common/BottomNav/BottomNav";
 
 import bellIcon from "../../assets/icons/bell.png";
-import schoolIcon from "../../assets/icons/school.png";
+import schoolIcon from "../../assets/icons/school3.png";
 import mascotImg from "../../assets/icons/project_empty.png";
 import mainlogo from "../../assets/icons/Teamitaka_main_logo.png";
+import defaultProfileImg from "../../assets/icons/defaultImage_profile.png";
 
 import { getMe } from "../../services/user";
 import { getSummary } from "../../services/dashboard";
 import { getMyProjects } from "../../services/projects";
 
-
 import MainProjectCard from "./MainProjectCard";
-
 
 const MainPage = () => {
   const navigate = useNavigate();
@@ -29,10 +28,9 @@ const MainPage = () => {
   const [isLoadingProjects, setIsLoadingProjects] = useState(false);
   const [projectError, setProjectError] = useState(null);
 
-
   const carouselRef = useRef(null);
-  const [activeIndex, setActiveIndex] = useState(0);
 
+  // 사용자 정보 + 요약
   useEffect(() => {
     let mounted = true;
 
@@ -41,20 +39,14 @@ const MainPage = () => {
         setIsLoading(true);
         setError(null);
 
-        const [meRes, sumRes] = await Promise.all([
-          getMe().catch((e) => {
-            throw e;
-          }),
-          getSummary().catch((e) => {
-            throw e;
-          }),
-        ]);
+        const [meRes, sumRes] = await Promise.all([getMe(), getSummary()]);
 
         if (!mounted) return;
 
         if (meRes?.success && meRes.user) setUser(meRes.user);
         if (sumRes?.success) setSummary(sumRes.data || sumRes.summary || null);
       } catch (e) {
+        if (!mounted) return;
         setError("일시적인 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
       } finally {
         if (mounted) setIsLoading(false);
@@ -65,8 +57,9 @@ const MainPage = () => {
     return () => {
       mounted = false;
     };
-  }, [navigate]);
+  }, []);
 
+  // 프로젝트 목록
   useEffect(() => {
     let mounted = true;
 
@@ -99,47 +92,10 @@ const MainPage = () => {
     };
   }, []);
 
-  // ✅ 프로젝트가 바뀌면 dot/스크롤 초기화
+  // 프로젝트가 바뀌면 캐러셀 스크롤 초기화
   useEffect(() => {
-    setActiveIndex(0);
     if (carouselRef.current) carouselRef.current.scrollLeft = 0;
   }, [projects]);
-
-  // 캐러셀 스크롤 시 현재 인덱스 계산
-  const handleCarouselScroll = () => {
-    const el = carouselRef.current;
-    if (!el) return;
-
-    const firstCard = el.firstElementChild;
-    if (!firstCard) return;
-
-    // 카드 너비 + gap(12px) 기준으로 인덱스 계산
-    const cardWidth = firstCard.getBoundingClientRect().width;
-    const gap = 12;
-    const step = cardWidth + gap;
-
-    const idx = Math.round(el.scrollLeft / step);
-    const safeIdx = Math.max(0, Math.min(idx, projects.length - 1));
-    setActiveIndex(safeIdx);
-  };
-
-  //dot 클릭 시 해당 카드로 이동
-  const scrollToIndex = (idx) => {
-    const el = carouselRef.current;
-    if (!el) return;
-
-    const firstCard = el.firstElementChild;
-    if (!firstCard) return;
-
-    const cardWidth = firstCard.getBoundingClientRect().width;
-    const gap = 12;
-    const step = cardWidth + gap;
-
-    el.scrollTo({
-      left: idx * step,
-      behavior: "smooth",
-    });
-  };
 
   const ongoingCount = summary?.projects?.ongoing ?? "N";
   const unreadCount = summary?.notifications?.unread ?? "0";
@@ -149,7 +105,10 @@ const MainPage = () => {
     <div className="main-page">
       <div className="top-card">
         <header className="header">
-          <h1 className="logo">  <img src={mainlogo} alt="Teamitaka" className="logo-img" /> </h1>
+          <h1 className="logo">
+            <img src={mainlogo} alt="Teamitaka" className="logo-img" />
+          </h1>
+
           <button
             className="icon-btn"
             aria-label="알림"
@@ -214,14 +173,18 @@ const MainPage = () => {
           </div>
 
           <div className="profile-right">
-            <div className="profile-img" aria-hidden>
-              🧍
+            <div className="profile-img">
+              <img
+                src={user?.profileImage || defaultProfileImg}
+                alt="프로필 이미지"
+              />
             </div>
           </div>
         </section>
       </div>
 
       <h2 className="section-title">내가 참여 중인 프로젝트</h2>
+
       <section className="my-projects">
         {isLoadingProjects && <div className="loading-state">프로젝트를 불러오는 중...</div>}
 
@@ -247,34 +210,15 @@ const MainPage = () => {
         )}
 
         {!isLoadingProjects && projects.length > 0 && (
-          <>
-            <div
-              className="main-project-carousel"
-              ref={carouselRef}
-              onScroll={handleCarouselScroll}
-            >
-              {projects.map((project) => (
-                <MainProjectCard
-                  key={project.project_id}
-                  project={project}
-                  onClick={() => navigate(`/project/${project.project_id}`)}
-                />
-              ))}
-            </div>
-
-            {/* dots (●●●) */}
-            <div className="carousel-dots" aria-label="프로젝트 캐러셀 페이지 표시">
-              {projects.map((_, i) => (
-                <button
-                  key={i}
-                  type="button"
-                  className={`dot ${i === activeIndex ? "is-active" : ""}`}
-                  aria-label={`프로젝트 ${i + 1}로 이동`}
-                  onClick={() => scrollToIndex(i)}
-                />
-              ))}
-            </div>
-          </>
+          <div className="main-project-carousel" ref={carouselRef}>
+            {projects.map((project) => (
+              <MainProjectCard
+                key={project.project_id}
+                project={project}
+                onClick={() => navigate(`/project/${project.project_id}`)}
+              />
+            ))}
+          </div>
         )}
       </section>
 
