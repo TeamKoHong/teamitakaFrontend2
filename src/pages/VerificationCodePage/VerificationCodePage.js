@@ -1,126 +1,90 @@
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { useAuth } from '../../contexts/AuthContext';
 import DefaultHeader from '../../components/Common/DefaultHeader';
 import StepIndicator from '../../components/DesignSystem/Feedback/StepIndicator';
-import VerificationCodeInput from '../../components/auth/VerificationCodeInput';
 import Button from '../../components/DesignSystem/Button/Button';
-import useTimer from '../../hooks/useTimer';
-import useResendTimer from '../../hooks/useResendTimer';
-import { verifyCode, resendVerificationCode } from '../../services/phoneVerify';
-import { MAX_VERIFICATION_ATTEMPTS } from '../../types/auth';
+import { useSmsAuth } from '../../hooks/useSmsAuth';
 import styles from './VerificationCodePage.module.scss';
 
 /**
- * 휴대폰 본인인증 - 인증번호 입력 페이지
+ * 휴대폰 본인인증 - 인증번호 입력 페이지 (Step 2)
  */
 function VerificationCodePage() {
     const navigate = useNavigate();
     const location = useLocation();
-    const { setRegistration } = useAuth();
-    const formData = location.state?.formData || {};
 
-    // 타이머 Hook (인증시간 만료)
-    const { formatted, isExpired, reset: resetTimer } = useTimer(180);
+    // Extract state from navigation
+    const { formData, sessionId, timerStart } = location.state || {};
 
-    // 재전송 타이머 Hook (쿨다운 및 횟수 제한)
+    // Initialize useSmsAuth with sessionId and timerStart
     const {
-        cooldown: resendCooldown,
-        resendCount,
-        maxResendCount,
-        canResend,
-        startCooldown,
-        incrementResendCount
-    } = useResendTimer(60, 5);
+        code,
+        step,
+        timer,
+        isLoading,
+        error,
+        handleCodeChange,
+        verifySms,
+        sendSms,
+    } = useSmsAuth({
+        initialSessionId: sessionId,
+        initialTimerStart: timerStart,
+    });
 
-    // 상태
-    const [code, setCode] = useState('');
-    const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState('');
-    const [successMessage, setSuccessMessage] = useState('인증번호가 전송되었습니다');
-    const [attemptCount, setAttemptCount] = useState(0);
+    // Redirect if no sessionId (direct access without SMS)
+    useEffect(() => {
+        if (!sessionId) {
+            navigate('/phone-verify');
+        }
+    }, [sessionId, navigate]);
 
-    // 폼 유효성
-    const isCodeValid = code.length === 6;
+    // Navigate on success
+    useEffect(() => {
+        if (step === 'VERIFIED') {
+            navigate('/register', {
+                state: { step: 2, formData },
+            });
+        }
+    }, [step, navigate, formData]);
 
-    // 뒤로가기
+    const formatTimer = (seconds) => {
+        const m = Math.floor(seconds / 60);
+        const s = seconds % 60;
+        return `${m}:${s.toString().padStart(2, '0')}`;
+    };
+
+    const handleVerify = async () => {
+        await verifySms();
+    };
+
+    const handleResend = async () => {
+        if (timer > 150) return; // Cooldown (30s elapsed minimum)
+        const newSessionId = await sendSms();
+        if (newSessionId) {
+            navigate('/phone-verify/code', {
+                state: {
+                    formData,
+                    sessionId: newSessionId,
+                    timerStart: Date.now(),
+                },
+                replace: true,
+            });
+        }
+    };
+
     const handleBack = () => {
         navigate(-1);
     };
 
-    // 인증번호 확인
-    const handleVerify = async () => {
-        if (!isCodeValid || isExpired || isLoading) return;
-
-        setIsLoading(true);
-        setError('');
-
-        try {
-            const result = await verifyCode(code, formData);
-
-            if (result.success) {
-                // AuthContext에 인증 정보 저장
-                setRegistration({
-                    phoneVerified: true,
-                    verifiedName: result.name,
-                    verifiedPhone: result.phone,
-                    ci: result.ci
-                });
-
-                // 다음 단계 (이메일 연동)로 이동 - step 2부터 시작하도록 state 전달
-                navigate('/register', { state: { step: 2 } });
-            }
-        } catch (err) {
-            const newAttemptCount = attemptCount + 1;
-            setAttemptCount(newAttemptCount);
-
-            if (newAttemptCount >= MAX_VERIFICATION_ATTEMPTS) {
-                setError('인증 시도 횟수를 초과했습니다. 인증번호를 다시 받아주세요.');
-            } else {
-                setError(err.message || '인증번호가 일치하지 않습니다.');
-            }
-        } finally {
-            setIsLoading(false);
-        }
-    };
-
-    // 인증번호 재전송
-    const handleResend = async () => {
-        if (!canResend) return;
-
-        setIsLoading(true);
-        setError('');
-        setSuccessMessage(''); // 초기화
-
-        try {
-            const result = await resendVerificationCode(formData);
-
-            // 타이머 및 상태 리셋
-            resetTimer(); // 인증시간 초기화 (3분)
-            startCooldown(); // 재전송 쿨다운 시작 (60초)
-            incrementResendCount(); // 재전송 횟수 증가
-            setAttemptCount(0); // 인증 시도 횟수 초기화
-            setCode(''); // 입력값 초기화
-
-            // 쿨다운 시간(백엔드에서 받는 경우 result.cooldownSeconds 사용 가능)
-            if (result.cooldownSeconds) {
-                startCooldown(result.cooldownSeconds);
-            }
-
-            setSuccessMessage('인증번호가 재전송되었습니다');
-        } catch (err) {
-            setError(err.message || '재전송에 실패했습니다.');
-        } finally {
-            setIsLoading(false);
-        }
-    };
+    // Don't render if no sessionId
+    if (!sessionId) return null;
 
     return (
         <div className={styles.container}>
-            {/* 헤더 */}
+            {/* Header */}
             <DefaultHeader title="본인 인증" onBack={handleBack} />
 
-            {/* 메인 컨텐츠 */}
+            {/* Main Content */}
             <div className={styles.content}>
                 <StepIndicator currentStep={2} totalSteps={5} />
 
@@ -129,31 +93,48 @@ function VerificationCodePage() {
                     <p>인증번호를 입력해주세요.</p>
                 </div>
 
-                {/* 인증번호 입력 */}
+                {/* Code Input Section */}
                 <div className={styles.formSection}>
-                    <VerificationCodeInput
-                        value={code}
-                        onChange={setCode}
-                        formatted={formatted}
-                        isExpired={isExpired}
-                        onResend={handleResend}
-                        resendCooldown={resendCooldown}
-                        resendCount={resendCount}
-                        maxResendCount={maxResendCount}
-                        error={error}
-                        successMessage={successMessage}
-                    />
-                </div>
+                    <div className={styles.codeInputWrapper}>
+                        <input
+                            type="text"
+                            inputMode="numeric"
+                            value={code}
+                            onChange={handleCodeChange}
+                            placeholder="인증번호 4자리"
+                            className={styles.codeInput}
+                            maxLength={4}
+                            autoFocus
+                        />
+                        <span className={styles.timerBadge}>
+                            {formatTimer(timer)}
+                        </span>
+                    </div>
 
-                {/* Firebase reCAPTCHA 컨테이너 */}
-                <div id="recaptcha-container"></div>
+                    <div className={styles.statusMessage}>
+                        인증번호가 전송되었습니다.
+                        <button
+                            type="button"
+                            className={styles.resendLink}
+                            onClick={handleResend}
+                            disabled={timer > 150 || isLoading}
+                        >
+                            다시 보내기
+                        </button>
+                    </div>
+
+                    {/* Error Message */}
+                    {error && (
+                        <div className={styles.errorMessage}>{error}</div>
+                    )}
+                </div>
             </div>
 
-            {/* 하단 버튼 */}
+            {/* Bottom Button */}
             <div className={styles.bottomButton}>
                 <Button
                     fullWidth
-                    disabled={!isCodeValid || isExpired || isLoading || attemptCount >= MAX_VERIFICATION_ATTEMPTS}
+                    disabled={code.length !== 4 || timer === 0 || isLoading}
                     onClick={handleVerify}
                     isLoading={isLoading}
                 >

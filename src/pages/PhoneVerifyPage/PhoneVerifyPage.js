@@ -10,27 +10,21 @@ import styles from './PhoneVerifyPage.module.scss';
 import { useSmsAuth } from '../../hooks/useSmsAuth';
 
 /**
- * 휴대폰 본인인증 - 정보 입력 페이지
- * (Legacy UI Structure with New SMS Backend Logic)
+ * 휴대폰 본인인증 - 정보 입력 페이지 (Step 1)
  */
 function PhoneVerifyPage() {
     const navigate = useNavigate();
 
-    // SMS Auth Hook Integration
+    // SMS Auth Hook
     const {
         phone,
-        code,
-        step,
-        timer,
         isLoading: isSmsLoading,
         error: smsError,
         handlePhoneChange,
-        handleCodeChange,
         sendSms,
-        verifySms,
     } = useSmsAuth();
 
-    // Legacy Form States
+    // Form States
     const [carrier, setCarrier] = useState('');
     const [birthDate, setBirthDate] = useState('');
     const [genderCode, setGenderCode] = useState('');
@@ -43,56 +37,35 @@ function PhoneVerifyPage() {
     const isBasicFormValid = carrier && phone.length >= 12 && birthDate.length === 6 &&
         genderCode.length === 1 && name.trim().length >= 2;
 
-    const formatTimer = (seconds) => {
-        const m = Math.floor(seconds / 60);
-        const s = seconds % 60;
-        return `${m}:${s.toString().padStart(2, '0')}`;
-    };
-
     // Handle Back
     const handleBack = () => {
         navigate(-1);
     };
 
-    // Bottom Button Action Types
+    // Open Terms Sheet
     const handleMainButtonClick = () => {
-        if (step === 'INPUT_PHONE') {
-            // Open Terms Sheet
-            if (isBasicFormValid) {
-                setIsTermsOpen(true);
-            }
-        } else if (step === 'INPUT_CODE') {
-            // Verify Code
-            verifySms();
-        } else if (step === 'VERIFIED') {
-            // Proceed to Next Page (Register Step 2)
-            navigate('/register', {
-                state: {
-                    step: 2,
-                    formData: {
-                        name,
-                        phone,
-                        birthDate,
-                        genderCode,
-                        carrier // Pass carrier just in case
-                    }
-                }
-            });
+        if (isBasicFormValid) {
+            setIsTermsOpen(true);
         }
     };
 
-    // Terms Agreement -> Send SMS
+    // Terms Agreement -> Send SMS -> Navigate to Code Page
     const handleTermsAgree = async () => {
         setIsTermsOpen(false);
-        await sendSms();
-    };
-
-    // Button Text Logic
-    const getButtonText = () => {
-        if (step === 'INPUT_PHONE') return '본인인증';
-        if (step === 'INPUT_CODE') return '인증번호 확인';
-        if (step === 'VERIFIED') return '다음';
-        return '본인인증';
+        try {
+            const sessionId = await sendSms();
+            if (sessionId) {
+                navigate('/phone-verify/code', {
+                    state: {
+                        formData: { name, phone, birthDate, genderCode, carrier },
+                        sessionId,
+                        timerStart: Date.now(),
+                    },
+                });
+            }
+        } catch (err) {
+            // Error is handled by useSmsAuth
+        }
     };
 
     return (
@@ -128,49 +101,10 @@ function PhoneVerifyPage() {
                                 placeholder="010-0000-0000"
                                 className={styles.phoneInput}
                                 maxLength={13}
-                                disabled={step !== 'INPUT_PHONE' && step !== 'INPUT_CODE'}
                             />
                         </div>
                     </div>
                 </div>
-
-                {/* Code Input (conditionally rendered for flow within page) */}
-                {step !== 'INPUT_PHONE' && (
-                    <div className={`${styles.formSection} ${styles.codeInputSection}`}>
-                        <div className={styles.codeInputWrapper}>
-                            <input
-                                type="text"
-                                inputMode="numeric"
-                                value={code}
-                                onChange={handleCodeChange}
-                                placeholder="인증번호 4자리"
-                                className={styles.phoneInput}
-                                maxLength={4}
-                                disabled={step === 'VERIFIED'}
-                            />
-                            {step === 'INPUT_CODE' && (
-                                <span className={styles.timerBadge}>
-                                    {formatTimer(timer)}
-                                </span>
-                            )}
-                        </div>
-                        {/* Status & Resend */}
-                        {step === 'INPUT_CODE' && (
-                            <div className={styles.statusMessage}>
-                                인증번호가 전송되었습니다.
-                                <button
-                                    type="button"
-                                    className={styles.resendLink}
-                                    onClick={sendSms}
-                                    disabled={timer > 150}
-                                >
-                                    다시 보내기
-                                </button>
-                            </div>
-                        )}
-                    </div>
-                )}
-
 
                 {/* SSN Section */}
                 <div className={styles.formSection}>
@@ -199,10 +133,6 @@ function PhoneVerifyPage() {
                 {smsError && (
                     <div className={styles.errorMessage}>{smsError}</div>
                 )}
-
-                {step === 'VERIFIED' && (
-                    <div className={styles.successMessage}>인증이 완료되었습니다.</div>
-                )}
             </div>
 
             {/* Bottom Button */}
@@ -213,7 +143,7 @@ function PhoneVerifyPage() {
                     onClick={handleMainButtonClick}
                     isLoading={isSmsLoading}
                 >
-                    {getButtonText()}
+                    본인인증
                 </Button>
             </div>
 
