@@ -107,7 +107,6 @@ function VerificationCodePage() {
 
                 {/* 인증번호 입력 */}
                 <div className={styles.formSection}>
-                    <label className={styles.label}>인증번호 입력</label>
                     <VerificationCodeInput
                         value={code}
                         onChange={setCode}

@@ -81,7 +81,7 @@ const setupRecaptcha = () => {
     // 3. Create new verifier
     try {
         window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
-            size: 'normal', // visible mode
+            size: 'invisible', // invisible mode
             callback: () => {
                 console.log('✅ reCAPTCHA solved');
             },
@@ -186,9 +186,9 @@ export const requestPhoneVerification = async (formData) => {
         // 에러 처리
         let userMessage = 'SMS 전송에 실패했습니다.';
         if (err.code === 'auth/invalid-phone-number') {
-            userMessage = '올바르지 않은 전화번호 형식입니다.';
+            userMessage = '전화번호 형식 오류';
         } else if (err.code === 'auth/too-many-requests') {
-            userMessage = '너무 많은 시도가 있었습니다. 잠시 후 다시 시도해주세요.';
+            userMessage = '요청 한도 초과 (나중에 다시 시도)';
         } else if (err.code === 'auth/invalid-app-credential') {
             userMessage = '인증 설정 오류입니다. 관리자에게 문의해주세요.';
         }
@@ -262,9 +262,9 @@ export const verifyCode = async (code, formData = {}) => {
 
         let userMessage = '인증번호가 일치하지 않습니다.';
         if (err.code === 'auth/invalid-verification-code') {
-            userMessage = '인증번호가 올바르지 않습니다.';
+            userMessage = '인증코드 불일치';
         } else if (err.code === 'auth/code-expired') {
-            userMessage = '인증번호가 만료되었습니다. 다시 받아주세요.';
+            userMessage = '인증코드 만료 (재발송 필요)';
         }
 
         const error = new Error(userMessage);
