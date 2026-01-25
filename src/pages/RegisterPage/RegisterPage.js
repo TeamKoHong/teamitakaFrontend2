@@ -3,7 +3,7 @@ import './RegisterPage.scss';
 import './RegisterPage.step2.scss';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
-import { sendVerificationCode, verifyCode } from '../../services/auth.js';
+import { sendVerificationCode, verifyCode, registerUser } from '../../services/auth.js';
 import VerificationLoading from '../../components/Common/VerificationLoading';
 import StepIndicator from '../../components/DesignSystem/Feedback/StepIndicator';
 import DefaultHeader from '../../components/Common/DefaultHeader';
@@ -16,6 +16,22 @@ function RegisterPage() {
     // 전달받은 step이 있으면 그걸 사용, 없으면 1 (약관동의)
     const initialStep = location.state?.step || 1;
     const [currentStep, setCurrentStep] = useState(initialStep);
+
+    // Form Data from Phone Verification
+    const [phoneData] = useState(location.state?.formData || null);
+
+    // 이미 로그인된 사용자는 메인 페이지로 리디렉션 + 데이터 검증
+    useEffect(() => {
+        if (isAuthenticated) {
+            navigate('/main');
+        }
+
+        // If accessed directly at step 2 without phone data, redirect to phone verify
+        if (currentStep > 1 && !location.state?.formData && !phoneData) {
+            // alert('본인 인증이 필요합니다.'); // Optional: Show toast/alert
+            navigate('/phone-verify');
+        }
+    }, [isAuthenticated, navigate, currentStep, location.state, phoneData]);
 
     const [email, setEmail] = useState('');
     const [verificationCode, setVerificationCode] = useState('');
@@ -69,7 +85,7 @@ function RegisterPage() {
                 // 약관 동의 완료 → 휴대전화 인증으로 이동
                 navigate('/phone-verify');
             } else if (currentStep === 3) {
-                // 인증코드 입력값 검증
+                // 인증코드 입력값 검증 (Step 3: Code Input)
                 if (!verificationCode || verificationCode.length !== 6) {
                     setCodeVerificationError('인증코드 6자리를 모두 입력해주세요.');
                     return;
@@ -94,15 +110,55 @@ function RegisterPage() {
                 } finally {
                     setIsVerificationLoading(false);
                 }
+            } else if (currentStep === 5) {
+                // 비밀번호 설정 완료 (Step 5) -> 회원가입 요청
+                if (!isValidPassword(password)) {
+                    // Should be handled by UI validation, but double check
+                    return;
+                }
+
+                try {
+                    setIsVerificationLoading(true);
+
+                    // Construct Payload
+                    // phoneData is { name, phone, birthDate, genderCode, carrier }
+                    // API expects: name, phoneNumber, residentNumber, schoolEmail, password
+                    const payload = {
+                        name: phoneData?.name || '',
+                        phoneNumber: phoneData?.phone || '', // Check format. PhoneVerify passes formatted string? Yes.
+                        residentNumber: `${phoneData?.birthDate || ''}${phoneData?.genderCode || ''}`, // 7 digits
+                        schoolEmail: email,
+                        password: password,
+                        // Add CONSENTS if backend needs them?
+                        marketingAgreed: consents.marketing,
+                        thirdPartyAgreed: consents.thirdParty
+                    };
+
+                    const result = await registerUser(payload);
+
+                    if (result.success || result.token) {
+                        // Success -> Go to Step 6 (Completion)
+                        setCurrentStep(6);
+                    } else {
+                        alert(result.message || '회원가입에 실패했습니다.');
+                    }
+
+                } catch (error) {
+                    console.error('회원가입 실패:', error);
+                    alert(error.message || '회원가입 중 오류가 발생했습니다.');
+                } finally {
+                    setIsVerificationLoading(false);
+                }
+
             } else if (currentStep === 6) {
-                // case6에서 완료 버튼을 누르면 case7로 이동
-                navigate('/login');
+                // case6에서 완료 버튼을 누르면 Profile Setup으로 이동
+                navigate('/profile-setup');
             } else {
+                // Default progression (Step 2 -> 3, Step 4 -> 5)
                 setCurrentStep(currentStep + 1);
             }
         } else {
             // 로그인 처리
-            console.log('로그인 시도');
             // main 페이지로 이동
             navigate('/main');
         }
@@ -729,7 +785,7 @@ function RegisterPage() {
                                     className="next-button active"
                                     onClick={handleNext}
                                 >
-                                    로그인 하기
+                                    프로필 설정하러 가기
                                 </button>
                             ) : (
                                 <button

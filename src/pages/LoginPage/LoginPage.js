@@ -21,7 +21,7 @@ function LoginPage() {
     }, [isAuthenticated, navigate]);
 
     const handleSignup = () => {
-        navigate('/register');
+        navigate('/phone-verify');
     };
 
     const handleGuestMode = () => {
@@ -67,7 +67,7 @@ function LoginPage() {
                 password: password
             };
 
-            console.log('로그인 시도:', { email: loginData.email });
+
 
             const result = await loginUser(loginData);
 
@@ -76,7 +76,6 @@ function LoginPage() {
                 const success = login(result.user, result.token);
 
                 if (success) {
-                    console.log('로그인 성공, 메인 페이지로 이동');
                     navigate('/main');
                 } else {
                     setLoginError('로그인 정보 저장에 실패했습니다.');
