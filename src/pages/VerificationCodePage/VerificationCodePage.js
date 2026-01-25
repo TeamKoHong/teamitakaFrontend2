@@ -6,6 +6,7 @@ import StepIndicator from '../../components/DesignSystem/Feedback/StepIndicator'
 import VerificationCodeInput from '../../components/auth/VerificationCodeInput';
 import Button from '../../components/DesignSystem/Button/Button';
 import useTimer from '../../hooks/useTimer';
+import useResendTimer from '../../hooks/useResendTimer';
 import { verifyCode, resendVerificationCode } from '../../services/phoneVerify';
 import { MAX_VERIFICATION_ATTEMPTS } from '../../types/auth';
 import styles from './VerificationCodePage.module.scss';
@@ -19,8 +20,18 @@ function VerificationCodePage() {
     const { setRegistration } = useAuth();
     const formData = location.state?.formData || {};
 
-    // 타이머 Hook
+    // 타이머 Hook (인증시간 만료)
     const { formatted, isExpired, reset: resetTimer } = useTimer(180);
+
+    // 재전송 타이머 Hook (쿨다운 및 횟수 제한)
+    const {
+        cooldown: resendCooldown,
+        resendCount,
+        maxResendCount,
+        canResend,
+        startCooldown,
+        incrementResendCount
+    } = useResendTimer(60, 5);
 
     // 상태
     const [code, setCode] = useState('');
@@ -75,14 +86,27 @@ function VerificationCodePage() {
 
     // 인증번호 재전송
     const handleResend = async () => {
+        if (!canResend) return;
+
         setIsLoading(true);
         setError('');
+        setSuccessMessage(''); // 초기화
 
         try {
-            await resendVerificationCode(formData);
-            resetTimer();
-            setAttemptCount(0);
-            setCode('');
+            const result = await resendVerificationCode(formData);
+
+            // 타이머 및 상태 리셋
+            resetTimer(); // 인증시간 초기화 (3분)
+            startCooldown(); // 재전송 쿨다운 시작 (60초)
+            incrementResendCount(); // 재전송 횟수 증가
+            setAttemptCount(0); // 인증 시도 횟수 초기화
+            setCode(''); // 입력값 초기화
+
+            // 쿨다운 시간(백엔드에서 받는 경우 result.cooldownSeconds 사용 가능)
+            if (result.cooldownSeconds) {
+                startCooldown(result.cooldownSeconds);
+            }
+
             setSuccessMessage('인증번호가 재전송되었습니다');
         } catch (err) {
             setError(err.message || '재전송에 실패했습니다.');
@@ -113,6 +137,9 @@ function VerificationCodePage() {
                         formatted={formatted}
                         isExpired={isExpired}
                         onResend={handleResend}
+                        resendCooldown={resendCooldown}
+                        resendCount={resendCount}
+                        maxResendCount={maxResendCount}
                         error={error}
                         successMessage={successMessage}
                     />
