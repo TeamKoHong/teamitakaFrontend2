@@ -108,3 +108,39 @@ export const updateProfile = async (profileData) => {
     }
     return res.json();
 };
+
+/**
+ * 타입 테스트 결과 저장
+ * @param {Object} resultData - { type: string, answers: boolean[] }
+ * @returns {Promise<Object>}
+ */
+export const saveTypeResult = async (resultData) => {
+    const { API_BASE_URL, headers } = getApiConfig();
+    const token = localStorage.getItem('authToken');
+    if (!token) {
+        // 비회원도 저장 시도할 수 있다면 에러 처리 방식 고려
+        const err = new Error('UNAUTHORIZED');
+        err.code = 'UNAUTHORIZED';
+        throw err;
+    }
+
+    const res = await fetch(`${API_BASE_URL}/api/user/type-result`, {
+        method: 'POST',
+        headers: { ...headers, Authorization: `Bearer ${token}` },
+        body: JSON.stringify(resultData),
+    });
+
+    if (res.status === 401 || res.status === 403) {
+        notifyLoginExpired();
+        const err = new Error('UNAUTHORIZED');
+        err.code = 'UNAUTHORIZED';
+        throw err;
+    }
+    if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        const err = new Error(errorData.message || 'SERVER_ERROR');
+        err.code = errorData.code || 'SERVER_ERROR';
+        throw err;
+    }
+    return res.json();
+};
