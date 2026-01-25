@@ -8,28 +8,11 @@ $success-color: #12A76D;
 }
 
 .successMessage {
-    display: flex;
-    align-items: center;
-    gap: 8px;
     margin-bottom: 16px;
-    padding: 12px 16px;
-    background-color: rgba($success-color, 0.1);
-    border-radius: $border-radius-base;
-    color: $success-color;
-    font-size: $font-size-body;
-
-    &::before {
-        content: '✓';
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        width: 20px;
-        height: 20px;
-        border-radius: 50%;
-        background-color: $success-color;
-        color: white;
-        font-size: 12px;
-    }
+    color: #12A76D;
+    font-family: 'Pretendard';
+    font-size: 16px;
+    font-weight: 600;
 }
 
 .inputWrapper {
@@ -87,9 +70,9 @@ $success-color: #12A76D;
 
 .resendText {
     margin-top: 16px;
-    font-size: $font-size-caption;
+    font-size: 16px;
     color: $gray-light;
-    text-align: center;
+    text-align: left;
 }
 
 .resendButton {
@@ -98,7 +81,7 @@ $success-color: #12A76D;
     border: none;
     background: none;
     color: $primary-color;
-    font-size: $font-size-caption;
+    font-size: 16px;
     font-family: $font-family-base;
     font-weight: $font-weight-medium;
     text-decoration: underline;
