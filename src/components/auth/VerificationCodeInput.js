@@ -35,9 +35,9 @@ const VerificationCodeInput = ({
             return `재전송 (${resendCooldown}초)`;
         }
         if (resendCount >= maxResendCount) {
-            return `재전송 불가 (${resendCount}/${maxResendCount})`;
+            return `재전송 불가`;
         }
-        return `재전송 (${resendCount}/${maxResendCount})`;
+        return `재전송`;
     };
 
     const isResendDisabled = resendCooldown > 0 || resendCount >= maxResendCount;
