@@ -29,6 +29,7 @@ function VerificationCodePage() {
     } = useSmsAuth({
         initialSessionId: sessionId,
         initialTimerStart: timerStart,
+        initialPhone: formData?.phone,
     });
 
     // Redirect if no sessionId (direct access without SMS)
