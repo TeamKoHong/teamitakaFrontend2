@@ -39,6 +39,12 @@
     }
   }
 
+  .main-project-carousel {
+    .main-project-card:first-child {
+      margin-left: 16px;
+    }
+  }
+
   .body {
     padding: 14px 14px 16px;
     display: flex;

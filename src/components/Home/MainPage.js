@@ -266,7 +266,7 @@ const MainPage = () => {
               ))}
             </div>
 
-            <div className="carousel-dots" aria-label="프로젝트 캐러셀 페이지 표시">
+            {/* <div className="carousel-dots" aria-label="프로젝트 캐러셀 페이지 표시">
               {projects.map((_, i) => (
                 <button
                   key={i}
@@ -276,7 +276,7 @@ const MainPage = () => {
                   onClick={() => scrollToIndex(i)}
                 />
               ))}
-            </div>
+            </div> */}
           </>
         )}
       </section>
