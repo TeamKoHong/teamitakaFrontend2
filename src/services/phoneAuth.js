@@ -8,7 +8,7 @@ import { getApiConfig } from './auth';
 export const verifyPhoneAuth = async (idToken) => {
     const { API_BASE_URL, headers } = getApiConfig();
 
-    const res = await fetch(`${API_BASE_URL}/api/auth/phone/verify`, {
+    const res = await fetch(`${API_BASE_URL}/api/auth/verify-phone`, {
         method: 'POST',
         headers: {
             ...headers,

@@ -52,8 +52,8 @@ const FeedbackCard = ({ type, title, items = [] }) => {
   const displayItems = items.length > 0 ? items : ['피드백이 없습니다'];
   return (
     <div style={{ flex: 1, minWidth: 0, minHeight: '72px', padding: '12px', borderRadius: '10px', backgroundColor: isPositive ? '#FFFDFC' : '#F76241', boxSizing: 'border-box' }}>
-      <div style={{ fontFamily: 'Pretendard', fontSize: '11px', fontWeight: 600, color: isPositive ? '#000' : '#fff', marginBottom: '6px' }}>{title}</div>
-      <div style={{ color: isPositive ? '#444' : '#efefef', fontSize: '10px', lineHeight: '165.04%' }}>
+      <div style={{ fontFamily: 'Pretendard', fontSize: '13px', fontWeight: 600, color: isPositive ? '#000' : '#fff', marginBottom: '6px' }}>{title}</div>
+      <div style={{ color: isPositive ? '#444' : '#efefef', fontSize: '11px', lineHeight: '165.04%' }}> {/* 💡 11px 적용 */}
         {displayItems.map((item, index) => <div key={index} style={{ marginBottom: '2px' }}>• {item}</div>)}
       </div>
     </div>
@@ -154,6 +154,8 @@ export default function ProfileMainPage() {
   const hasNoProjects = displayData.totalProjects === 0 && (!displayData.projects || displayData.projects.length === 0);
   const hasNoEvaluations = displayData.totalProjects === 0;
 
+  if (isLoading) return <div className={styles.container}>로딩 중...</div>;
+
   return (
     <div className={styles.container}>
       <div className={styles.header}>
@@ -171,14 +173,13 @@ export default function ProfileMainPage() {
             <div className={styles.profileName}>
               {isProfileEmpty ? (
                 '프로필을 입력하세요.'
-
               ) : (
                 <>
                   <span className={styles.nameBold}>{displayData.username}</span>
                   <span className={styles.nameRegular}>&nbsp;티미님</span>
                 </>
               )}
-            </div>            
+            </div>      
             <div className={styles.profileUniversity}>
               <GraduationCapIcon />
               <span>{isProfileEmpty ? '대학교명 재학 중' : `${displayData.university} ${displayData.department} ${displayData.enrollmentStatus}`}</span>
@@ -220,14 +221,13 @@ export default function ProfileMainPage() {
 
         <div className={styles.skillSection}>
           <div className={styles.skillHeader}>
-            <span className={styles.skillTitle}>
-              팀플 능력치 분석 
-              </span>
+            <span className={styles.skillTitle}>팀플 능력치 분석</span>
             <span className={styles.skillProjectCount}>
               {hasNoEvaluations ? '프로젝트 종합 결과가 없어요.' 
               : `${displayData.totalProjects}회 프로젝트 종합결과`}
-              </span>
+            </span>
           </div>
+
           {hasNoEvaluations ? (
             <div className={styles.emptySkillContainer}>
               <img src={projectEmpty} alt="데이터 없음" className={styles.emptyIllustration} />
@@ -238,7 +238,9 @@ export default function ProfileMainPage() {
               <div className={styles.bubbleChartContainer}><SkillBubbleChart skills={displayData.skills} /></div>
               <button className={styles.expandButton} onClick={() => setIsSkillExpanded(!isSkillExpanded)}>
                 나의 능력치 분석 자세히보기
-                <span className={`${styles.expandIcon} ${isSkillExpanded ? styles.expandIconRotated : ''}`}><img src={backIcon} alt="arrow" style={{ width: '16px' }} /></span>
+                <span className={`${styles.expandIcon} ${isSkillExpanded ? styles.expandIconRotated : ''}`}>
+                   <img src={backIcon} alt="arrow" />
+                </span>
               </button>
               {isSkillExpanded && (
                 <div className={styles.expandedContent}>

@@ -18,6 +18,9 @@ const VerificationCodeInput = ({
     formatted,
     isExpired,
     onResend,
+    resendCooldown,
+    resendCount,
+    maxResendCount,
     error,
     successMessage
 }) => {
@@ -25,6 +28,19 @@ const VerificationCodeInput = ({
         const newValue = e.target.value.replace(/\D/g, '').slice(0, 6);
         onChange(newValue);
     };
+
+    // 재전송 버튼 텍스트 및 상태 결정
+    const getResendButtonContent = () => {
+        if (resendCooldown > 0) {
+            return `재전송 (${resendCooldown}초)`;
+        }
+        if (resendCount >= maxResendCount) {
+            return `재전송 불가`;
+        }
+        return `재전송`;
+    };
+
+    const isResendDisabled = resendCooldown > 0 || resendCount >= maxResendCount;
 
     return (
         <div className={styles.container}>
@@ -55,9 +71,10 @@ const VerificationCodeInput = ({
                 <button
                     type="button"
                     onClick={onResend}
-                    className={styles.resendButton}
+                    disabled={isResendDisabled}
+                    className={`${styles.resendButton} ${isResendDisabled ? styles.disabled : ''}`}
                 >
-                    다시 보내기
+                    {getResendButtonContent()}
                 </button>
             </p>
         </div>
