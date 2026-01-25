@@ -52,7 +52,7 @@ const FeedbackCard = ({ type, title, items = [] }) => {
   const displayItems = items.length > 0 ? items : ['피드백이 없습니다'];
   return (
     <div style={{ flex: 1, minWidth: 0, minHeight: '72px', padding: '12px', borderRadius: '10px', backgroundColor: isPositive ? '#FFFDFC' : '#F76241', boxSizing: 'border-box' }}>
-      <div style={{ fontFamily: 'Pretendard', fontSize: '13px', fontWeight: 600, color: isPositive ? '#000' : '#fff', marginBottom: '6px' }}>{title}</div>
+      <div style={{ fontFamily: 'Pretendard', fontSize: '11px', fontWeight: 600, color: isPositive ? '#000' : '#fff', marginBottom: '6px' }}>{title}</div>
       <div style={{ color: isPositive ? '#444' : '#efefef', fontSize: '10px', lineHeight: '165.04%' }}>
         {displayItems.map((item, index) => <div key={index} style={{ marginBottom: '2px' }}>• {item}</div>)}
       </div>
@@ -168,7 +168,17 @@ export default function ProfileMainPage() {
             {displayData.isVerified && <img src={verificationBadge} alt="인증" className={styles.verificationBadge} onClick={handleVerificationClick} />}
           </div>
           <div className={styles.profileInfo}>
-            <div className={styles.profileName}>{isProfileEmpty ? '프로필을 입력하세요.' : `${displayData.username} 티미님`}</div>
+            <div className={styles.profileName}>
+              {isProfileEmpty ? (
+                '프로필을 입력하세요.'
+
+              ) : (
+                <>
+                  <span className={styles.nameBold}>{displayData.username}</span>
+                  <span className={styles.nameRegular}>&nbsp;티미님</span>
+                </>
+              )}
+            </div>            
             <div className={styles.profileUniversity}>
               <GraduationCapIcon />
               <span>{isProfileEmpty ? '대학교명 재학 중' : `${displayData.university} ${displayData.department} ${displayData.enrollmentStatus}`}</span>
@@ -193,22 +203,30 @@ export default function ProfileMainPage() {
           <img 
             src={(!hasNoTeamiType && CHARACTER_IMAGES[displayData.activityType.type]) || 비회원배너} 
             alt="활동타입" 
-            className="tw-w-full tw-rounded-xl tw-shadow-md" 
           />
         </div>
 
         <div className={styles.profileIntro}>
           {isProfileEmpty ? (
-            <>프로필을 작성하고 <br/><span className={styles.profileIntroHighlight}>내 팀플 분석</span>을 완성해보세요!</>
+            <>프로필을 작성하고 <br/>
+            <span className={styles.profileIntroHighlight}>
+              내 팀플 분석</span>을 완성해보세요!</>
           ) : (
-            <>지난 활동을 돌아보고, <br/><span className={styles.profileIntroHighlight}>더 나은 팀원</span>이 되어가요.</>
+            <>지난 활동을 돌아보고, <br/>
+            <span className={styles.profileIntroHighlight}>
+              더 나은 팀원</span>이 되어가요.</>
           )}
         </div>
 
         <div className={styles.skillSection}>
           <div className={styles.skillHeader}>
-            <span className={styles.skillTitle}>팀플 능력치 분석</span>
-            <span className={styles.skillProjectCount}>{hasNoEvaluations ? '프로젝트 종합 결과가 없어요.' : `${displayData.totalProjects}회 프로젝트 종합결과`}</span>
+            <span className={styles.skillTitle}>
+              팀플 능력치 분석 
+              </span>
+            <span className={styles.skillProjectCount}>
+              {hasNoEvaluations ? '프로젝트 종합 결과가 없어요.' 
+              : `${displayData.totalProjects}회 프로젝트 종합결과`}
+              </span>
           </div>
           {hasNoEvaluations ? (
             <div className={styles.emptySkillContainer}>
@@ -225,10 +243,24 @@ export default function ProfileMainPage() {
               {isSkillExpanded && (
                 <div className={styles.expandedContent}>
                   <div className={styles.radarChartContainer}><PentagonChart skills={displayData.skills} /></div>
-                  <div style={{ display: 'flex', width: '100%', maxWidth: '364px', position: 'relative', margin: '32px auto 0' }}>
+                  <div style={{ 
+                    display: 'flex', 
+                    width: '100%', 
+                    maxWidth: '364px', 
+                    position: 'relative', 
+                    margin: '32px auto 0' }}>
                     <FeedbackCard type="positive" title="이런 점이 좋아요👍" items={displayData.feedback.positive} />
-                    <div style={{ position: 'absolute', top: '11px', left: '50%', width: '1px', height: '52px', borderLeft: '1px dashed #D1CCCB' }} />
-                    <FeedbackCard type="negative" title="이런 점은 개선이 필요해요🚨" items={displayData.feedback.negative} />
+                    <div style={{ 
+                      position: 'absolute', 
+                      top: '11px', 
+                      left: '50%', 
+                      width: '1px', 
+                      height: '52px', 
+                      borderLeft: '1px dashed #D1CCCB' }} />
+                    <FeedbackCard 
+                    type="negative" 
+                    title="이런 점은 개선이 필요해요🚨" 
+                    items={displayData.feedback.negative} />
                   </div>
                 </div>
               )}

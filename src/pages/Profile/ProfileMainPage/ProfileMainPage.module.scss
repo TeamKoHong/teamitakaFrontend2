@@ -14,7 +14,8 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px;
+  padding: 10px;
+  padding-left: 12px;
   background-color: #fff;
 }
 
@@ -55,8 +56,7 @@
   flex-direction: row;
   align-items: flex-start;
   background-color: transparent;
-  padding: 20px 0;
-  margin-bottom: 12px;
+  padding: 10px 0;
   gap: 16px;
 }
 
@@ -65,6 +65,8 @@
   width: 111px;
   height: 111px;
   flex-shrink: 0;
+  margin-top: -15px;
+
 }
 
 .profileImage {
@@ -72,11 +74,12 @@
   height: 111px;
   border-radius: 16px;
   object-fit: cover;
+  margin-top: -10px;
 }
 
 .verificationBadge {
   position: absolute;
-  top: -9px;
+  top: 7px;
   right: -9px;
   width: 42px;
   height: 42px;
@@ -91,19 +94,29 @@
 }
 
 .profileName {
-    font-family: 'Pretendard', sans-serif;
-  font-size: 18px;
-  font-weight: 700;
+  font-family: 'Pretendard', sans-serif;
+  font-size: 20px;
   color: #140805;
+  display: flex;
+  align-items: center;
+}
+
+.nameBold {
+  font-weight: 700; // 이름 부분
+}
+
+.nameRegular {
+  font-weight: 400; // 티미님 부분
 }
 
 .profileUniversity {
   display: flex;
   align-items: center;
+  margin-top: -5px;
   gap: 4px;
   font-family: 'Pretendard';
-  font-size: 12px;
-  font-weight: 500;
+  font-size: 11px;
+  font-weight: 400;
   color: #807C7C;
 
   svg {
@@ -123,7 +136,7 @@
 .statHighlight {
   font-family: 'Pretendard';
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 600;
   color: #140805;
 }
 
@@ -143,7 +156,6 @@
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
-  margin-top: 6px;
 }
 
 .tag {
@@ -158,9 +170,9 @@
 
 // 활동 타입 카드 (배너 이미지만 표시)
 .activityCard {
-  border-radius: 20px;
-  overflow: hidden;
-  margin-bottom: 16px;
+  border-radius: 16px;
+  overflow:hidden;
+  margin-bottom: 10px;
 }
 
 .activityBanner {
@@ -168,20 +180,19 @@
   height: auto;
   display: block;
   border-radius: 20px;
+
 }
 
 // 능력치 분석 섹션
 .skillSection {
   background-color: transparent;
-  padding: 20px 0;
-  margin-bottom: 16px;
+  padding: 10px 0;
 }
 
 .skillHeader {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 16px;
+  flex-direction: column;
+  align-items: flex-start;
 }
 
 .skillTitle {
@@ -203,7 +214,6 @@
   justify-content: center;
   align-items: center;
   min-height: 200px;
-  margin-bottom: 16px;
 }
 
 .expandButton {
@@ -225,8 +235,8 @@
 }
 
 .expandIcon {
-  width: 16px;
-  height: 16px;
+  width: 8px;
+  height: 5px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -245,15 +255,13 @@
 
 // 확장된 상세 분석
 .expandedContent {
-  margin-top: 16px;
-  padding-top: 16px;
-  border-top: 1px solid #f0f0f0;
+  margin-top: 0px;
 }
 
 .radarChartContainer {
   display: flex;
   justify-content: center;
-  margin-bottom: 16px;
+  height: 182px;
 }
 
 .feedbackCards {
@@ -270,12 +278,13 @@
   color: #000000;
   text-align: left;
   padding: 16px 0;
+  padding-bottom: 0;
   line-height: 140%;
 }
 
 .profileIntroHighlight {
   color: $primary-color;
-  font-weight: 700;
+  font-weight: 600;
 }
 
 // 프로젝트 섹션
@@ -294,7 +303,7 @@
 .projectGrid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 12px;
+  gap: 8px;
 }
 
 .projectCard {
@@ -312,10 +321,10 @@
 }
 
 .projectTitle {
-  padding: 12px;
+  padding: 5px;
   font-family: 'Pretendard';
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 500;
   color: #140805;
   min-height: 44px;
   overflow: hidden;

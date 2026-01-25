@@ -4,9 +4,9 @@ import "./PentagonChart.scss";
 // 위치 인덱스 기반 오프셋 (라벨명이 아닌 위치로 결정)
 const POSITION_OFFSETS = [
   { dx: 0, dy: -18 },   // 상단
-  { dx: 18, dy: -8 },   // 우상단
-  { dx: 12, dy: 18 },   // 우하단
-  { dx: -12, dy: 18 },  // 좌하단
+  { dx: 25, dy: -8 },   // 우상단
+  { dx: 12, dy: 10 },   // 우하단
+  { dx: -12, dy: 10 },  // 좌하단
   { dx: -18, dy: -8 }   // 좌상단
 ];
 
@@ -21,18 +21,23 @@ const BASE_POINTS = [
 
 const PentagonChart = ({
   skills = {
-    노력: 70,
+    노력: 50,
     업무능력: 80,
     소통: 85,
     성장: 90,
     의지: 60
-  },
-  highlightLabels = [] // 하이라이트할 라벨 목록 (주황색으로 표시)
+  }
 }) => {
+  // 1. 하위 2개 항목 추출 (다른 로직 건드리지 않음)
+  const lowSkillLabels = Object.entries(skills)
+    .sort(([, a], [, b]) => a - b) // 낮은 점수 순 정렬
+    .slice(0, 2)                   // 상위 2개 추출
+    .map(([label]) => label);
+
   // 스킬 값을 0-100 범위로 정규화
   const normalizeValue = (value) => Math.max(0, Math.min(100, value));
 
-  // skills 객체에서 키(라벨)와 값 추출 - 백엔드 API 데이터 기반 동적 처리
+  // skills 객체에서 키(라벨)와 값 추출
   const skillEntries = Object.entries(skills);
 
   // skills 키 순서대로 라벨 동적 배치
@@ -91,10 +96,11 @@ const PentagonChart = ({
       {/* 라벨들 (SVG 꼭짓점 + 위치 기반 오프셋) */}
       <div className="chart-labels">
         {points.map(({ x, y, label }, index) => {
-          // 위치 인덱스 기반 오프셋 사용 (라벨명이 아닌 위치로 결정)
           const offset = POSITION_OFFSETS[index] || { dx: 0, dy: 0 };
 
-          const isHighlighted = highlightLabels.includes(label);
+          // 2. 하위 2개 항목에 포함되는지 확인하여 하이라이트
+          const isHighlighted = lowSkillLabels.includes(label);
+
           const style = {
             left: x + offset.dx,
             top: y + offset.dy,
