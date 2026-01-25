@@ -90,4 +90,11 @@ $success-color: #12A76D;
     &:hover {
         color: darken($primary-color, 10%);
     }
+
+    &.disabled {
+        color: $gray-light;
+        cursor: not-allowed;
+        text-decoration: none;
+        pointer-events: none;
+    }
 }
