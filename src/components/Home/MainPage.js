@@ -5,17 +5,16 @@ import "./main.scss";
 import BottomNav from "../Common/BottomNav/BottomNav";
 
 import bellIcon from "../../assets/icons/bell.png";
-import schoolIcon from "../../assets/icons/school.png";
+import schoolIcon from "../../assets/icons/school3.png";
 import mascotImg from "../../assets/icons/project_empty.png";
 import mainlogo from "../../assets/icons/Teamitaka_main_logo.png";
+import defaultProfileImg from "../../assets/icons/defaultImage_profile.png";
 
 import { getMe } from "../../services/user";
 import { getSummary } from "../../services/dashboard";
 import { getMyProjects } from "../../services/projects";
 
-
 import MainProjectCard from "./MainProjectCard";
-
 
 const MainPage = () => {
   const navigate = useNavigate();
@@ -28,7 +27,6 @@ const MainPage = () => {
   const [projects, setProjects] = useState([]);
   const [isLoadingProjects, setIsLoadingProjects] = useState(false);
   const [projectError, setProjectError] = useState(null);
-
 
   const carouselRef = useRef(null);
   const [activeIndex, setActiveIndex] = useState(0);
@@ -99,7 +97,7 @@ const MainPage = () => {
     };
   }, []);
 
-  // ✅ 프로젝트가 바뀌면 dot/스크롤 초기화
+  // 프로젝트가 바뀌면 dot/스크롤 초기화
   useEffect(() => {
     setActiveIndex(0);
     if (carouselRef.current) carouselRef.current.scrollLeft = 0;
@@ -113,7 +111,6 @@ const MainPage = () => {
     const firstCard = el.firstElementChild;
     if (!firstCard) return;
 
-    // 카드 너비 + gap(12px) 기준으로 인덱스 계산
     const cardWidth = firstCard.getBoundingClientRect().width;
     const gap = 12;
     const step = cardWidth + gap;
@@ -123,7 +120,7 @@ const MainPage = () => {
     setActiveIndex(safeIdx);
   };
 
-  //dot 클릭 시 해당 카드로 이동
+  // dot 클릭 시 해당 카드로 이동
   const scrollToIndex = (idx) => {
     const el = carouselRef.current;
     if (!el) return;
@@ -149,7 +146,10 @@ const MainPage = () => {
     <div className="main-page">
       <div className="top-card">
         <header className="header">
-          <h1 className="logo">  <img src={mainlogo} alt="Teamitaka" className="logo-img" /> </h1>
+          <h1 className="logo">
+            <img src={mainlogo} alt="Teamitaka" className="logo-img" />
+          </h1>
+
           <button
             className="icon-btn"
             aria-label="알림"
@@ -214,14 +214,18 @@ const MainPage = () => {
           </div>
 
           <div className="profile-right">
-            <div className="profile-img" aria-hidden>
-              🧍
+            <div className="profile-img">
+              <img
+                src={user?.profileImage || defaultProfileImg}
+                alt="프로필 이미지"
+              />
             </div>
           </div>
         </section>
       </div>
 
       <h2 className="section-title">내가 참여 중인 프로젝트</h2>
+
       <section className="my-projects">
         {isLoadingProjects && <div className="loading-state">프로젝트를 불러오는 중...</div>}
 
@@ -262,7 +266,6 @@ const MainPage = () => {
               ))}
             </div>
 
-            {/* dots (●●●) */}
             <div className="carousel-dots" aria-label="프로젝트 캐러셀 페이지 표시">
               {projects.map((_, i) => (
                 <button
