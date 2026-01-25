@@ -115,63 +115,6 @@
     font-size: $font-size-body;
 }
 
-.successMessage {
-    margin-top: 16px;
-    padding: 12px 16px;
-    background-color: rgba(#10B981, 0.1);
-    border-radius: $border-radius-base;
-    color: #10B981;
-    font-size: $font-size-body;
-}
-
-.statusMessage {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-top: 8px;
-    font-size: $font-size-caption;
-    color: #12a76d;
-}
-
-.resendLink {
-    display: inline-block;
-    padding: 0;
-    border: none;
-    background: none;
-    color: #ff5252;
-    font-size: $font-size-caption;
-    font-family: $font-family-base;
-    text-decoration: underline;
-    cursor: pointer;
-
-    &:hover {
-        opacity: 0.8;
-    }
-
-    &:disabled {
-        color: $gray-light;
-        cursor: not-allowed;
-    }
-}
-
-.codeInputSection {
-    margin-top: 12px;
-}
-
-.codeInputWrapper {
-    position: relative;
-}
-
-.timerBadge {
-    position: absolute;
-    right: 16px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: $error-color;
-    font-size: 14px;
-    font-family: monospace;
-}
-
 .notMyPhoneLink {
     display: block;
     margin: 24px auto 0;
