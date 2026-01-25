@@ -1,8 +1,13 @@
 // 최상위 루트 (라이브러리 내부 .rbs-containerWrapper 등에 원하는 스타일 추가 가능)
 .bottom-sheet-root {
-  // 예: 뒷배경 투명도 조절
-  --rsbs-backdrop-bg: rgba(0, 0, 0, 0.6);
+  // 뒷배경 투명도 조절 (Design spec)
+  --rsbs-backdrop-bg: rgba(20, 8, 5, 0.68);
   --rsbs-backdrop-opacity: 1;
+  --rsbs-handle-bg: #D1CCCB;
+
+  [data-rsbs-overlay] {
+    border-radius: 22px 22px 0 0;
+  }
 }
 
 // 시트 내부 container

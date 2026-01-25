@@ -134,27 +134,40 @@ function PhoneVerifyPage() {
                     </div>
                 </div>
 
-                {/* Code Input ( conditionally rendered for flow within page) */}
+                {/* Code Input (conditionally rendered for flow within page) */}
                 {step !== 'INPUT_PHONE' && (
-                    <div className={styles.formSection} style={{ marginTop: '12px' }}>
-                        <div style={{ position: 'relative' }}>
+                    <div className={`${styles.formSection} ${styles.codeInputSection}`}>
+                        <div className={styles.codeInputWrapper}>
                             <input
                                 type="text"
                                 inputMode="numeric"
                                 value={code}
                                 onChange={handleCodeChange}
                                 placeholder="인증번호 4자리"
-                                className={styles.phoneInput} // Reuse same style
+                                className={styles.phoneInput}
                                 maxLength={4}
                                 disabled={step === 'VERIFIED'}
-                                style={{ width: '100%' }}
                             />
                             {step === 'INPUT_CODE' && (
-                                <div style={{ position: 'absolute', right: '16px', top: '50%', transform: 'translateY(-50%)', color: '#EF4444', fontSize: '14px', fontFamily: 'monospace' }}>
+                                <span className={styles.timerBadge}>
                                     {formatTimer(timer)}
-                                </div>
+                                </span>
                             )}
                         </div>
+                        {/* Status & Resend */}
+                        {step === 'INPUT_CODE' && (
+                            <div className={styles.statusMessage}>
+                                인증번호가 전송되었습니다.
+                                <button
+                                    type="button"
+                                    className={styles.resendLink}
+                                    onClick={sendSms}
+                                    disabled={timer > 150}
+                                >
+                                    다시 보내기
+                                </button>
+                            </div>
+                        )}
                     </div>
                 )}
 
@@ -188,13 +201,8 @@ function PhoneVerifyPage() {
                 )}
 
                 {step === 'VERIFIED' && (
-                    <div className={styles.errorMessage} style={{ color: '#10B981' }}>인증이 완료되었습니다.</div>
+                    <div className={styles.successMessage}>인증이 완료되었습니다.</div>
                 )}
-
-                {/* Not My Phone Link */}
-                <button className={styles.notMyPhoneLink}>
-                    내 명의 휴대전화가 아니에요
-                </button>
             </div>
 
             {/* Bottom Button */}
