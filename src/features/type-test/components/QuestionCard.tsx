@@ -98,7 +98,7 @@ export default function QuestionCard({
                     {/* 상단 영역 */}
                     <div className="tw-flex-shrink-0 tw-px-4 tw-pt-6">
                         <button
-                            className="tw-p-2 tw-mb-4 -tw-ml-2 tw-self-start"
+                            className="tw-p-2 tw-mb-4 -tw-ml-2 tw-self-start tw-bg-transparent tw-border-none tw-cursor-pointer hover:tw-bg-gray-200 tw-rounded-full tw-transition-colors"
                             onClick={onBack || (() => window.history.back())}
                             aria-label="뒤로가기"
                         >
@@ -107,7 +107,7 @@ export default function QuestionCard({
                                 alt="뒤로가기"
                                 width={24}
                                 height={24}
-                                className="tw-w-6 tw-h-6"
+                                className="tw-w-6 tw-h-6 tw-object-contain"
                             />
                         </button>
 
@@ -142,7 +142,7 @@ export default function QuestionCard({
                     >
                         <button
                             onClick={() => handleAnswerSelect(false)}
-                            className={`tw-w-[160px] tw-h-[180px] tw-rounded-xl tw-flex tw-items-center tw-justify-center tw-font-bold ${selectedAnswer === false
+                            className={`tw-w-[160px] tw-h-[180px] tw-rounded-xl tw-flex tw-items-center tw-justify-center tw-font-bold tw-border-none tw-cursor-pointer tw-transition-transform active:tw-scale-95 ${selectedAnswer === false
                                 ? 'tw-bg-orange-500 tw-text-white'
                                 : 'tw-bg-white tw-text-black'
                                 }`}
@@ -155,7 +155,7 @@ export default function QuestionCard({
 
                         <button
                             onClick={() => handleAnswerSelect(true)}
-                            className={`tw-w-[160px] tw-h-[180px] tw-rounded-xl tw-flex tw-items-center tw-justify-center tw-font-bold ${selectedAnswer === true
+                            className={`tw-w-[160px] tw-h-[180px] tw-rounded-xl tw-flex tw-items-center tw-justify-center tw-font-bold tw-border-none tw-cursor-pointer tw-transition-transform active:tw-scale-95 ${selectedAnswer === true
                                 ? 'tw-bg-orange-500 tw-text-white'
                                 : 'tw-bg-white tw-text-black'
                                 }`}
