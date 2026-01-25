@@ -62,6 +62,7 @@
     font-size: 15px;
     font-weight: 800;
     color: #111;
+
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -83,24 +84,23 @@
     gap: 6px;
     min-width: 0;
 
-    /* ✅ 아이콘/텍스트가 같은 기준선에 놓이도록 */
+    /* ✅ 아이콘 칸 고정 + 중앙정렬 (두 아이콘의 x좌표 동일) */
     .meta-icon {
       width: 14px;
       height: 14px;
-
-      /* ✅ 아이콘 칸을 고정해서 x좌표 정렬 통일 */
       flex: 0 0 14px;
+
       display: flex;
       align-items: center;
       justify-content: center;
 
-      /* ✅ PNG 여백/비율 차이 흡수 */
       object-fit: contain;
     }
 
     .meta-text {
       flex: 1;
       min-width: 0;
+
       text-align: left;
       white-space: nowrap;
       overflow: hidden;
@@ -118,7 +118,6 @@
     justify-content: center;
   }
 
-  /* ✅ 주황 원형 프로그레스 + 중앙 D-day 텍스트 오버레이 */
   .progress-wrap {
     position: relative;
     width: 60px;
@@ -143,8 +142,6 @@
 
 @media (max-width: 375px) {
   .main-project-card {
-    border-radius: 20px;
-
     width: 260px;
     min-width: 260px;
 
