@@ -14,7 +14,7 @@ function VerificationCodePage() {
     const location = useLocation();
 
     // Extract state from navigation
-    const { formData, sessionId, timerStart } = location.state || {};
+    const { formData, sessionId, timerStart, isResend } = location.state || {};
 
     // Initialize useSmsAuth with sessionId and timerStart
     const {
@@ -66,6 +66,7 @@ function VerificationCodePage() {
                     formData,
                     sessionId: newSessionId,
                     timerStart: Date.now(),
+                    isResend: true,
                 },
                 replace: true,
             });
@@ -112,7 +113,7 @@ function VerificationCodePage() {
                     </div>
 
                     <div className={styles.statusMessage}>
-                        인증번호가 전송되었습니다.
+                        {isResend ? '인증번호가 재전송되었습니다.' : '인증번호가 전송되었습니다.'}
                         <button
                             type="button"
                             className={styles.resendLink}
