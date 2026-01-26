@@ -1,7 +1,7 @@
 import React from "react";
 import Header from "../components/Header";
 import ProfileImage from "../components/ProfileImage";
-import ProfilePotato from "../assets/profile_potato.png";
+import DefaultProfile from "../assets/profile_default.png"; // 기본 이미지 (감자)
 import BasicInfo from "../components/BasicInfo";
 import "./ProfileEdit.css";
 import MajorInput from "../components/MajorInput";
@@ -14,7 +14,7 @@ export default function ProfileEdit() {
   return (
     <div className="page-frame">
       <Header />
-      <ProfileImage src={ProfilePotato} />
+      <ProfileImage src={DefaultProfile} />
       <BasicInfo />
       <MajorInput />
       <TeamExperience />
