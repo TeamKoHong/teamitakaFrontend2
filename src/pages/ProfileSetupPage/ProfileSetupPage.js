@@ -77,7 +77,7 @@ function ProfileSetupPage() {
 
             {/* 메인 컨텐츠 */}
             <div className={styles.content}>
-                <ProgressIndicator currentStep={4} totalSteps={5} />
+                <ProgressIndicator currentStep={5} totalSteps={5} />
 
                 <div className={styles.description}>
                     <p>학교 정보를</p>

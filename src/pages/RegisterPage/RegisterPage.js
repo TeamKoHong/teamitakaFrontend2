@@ -535,7 +535,7 @@ function RegisterPage() {
             case 3:
                 return (
                     <div className="step-content">
-                        <StepIndicator currentStep={4} totalSteps={5} />
+                        <StepIndicator currentStep={3} totalSteps={5} />
                         <div className="step-description">
                             <p>입력하신 이메일로 받은</p>
                             <p>인증 코드를 입력해주세요.</p>
@@ -609,7 +609,7 @@ function RegisterPage() {
             case 5:
                 return (
                     <div className="step-content">
-                        <StepIndicator currentStep={5} totalSteps={5} />
+                        <StepIndicator currentStep={4} totalSteps={5} />
                         <div className="step-description">
                             <p>계정 보안을 위한</p>
                             <p>비밀번호를 설정하세요</p>
