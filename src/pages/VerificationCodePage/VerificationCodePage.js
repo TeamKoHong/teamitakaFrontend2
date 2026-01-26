@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import DefaultHeader from '../../components/Common/DefaultHeader';
 import StepIndicator from '../../components/DesignSystem/Feedback/StepIndicator';
@@ -15,6 +15,9 @@ function VerificationCodePage() {
 
     // Extract state from navigation
     const { formData, sessionId, timerStart, isResend } = location.state || {};
+
+    // Local state for immediate UI feedback on resend
+    const [hasResent, setHasResent] = useState(isResend || false);
 
     // Initialize useSmsAuth with sessionId and timerStart
     const {
@@ -60,6 +63,7 @@ function VerificationCodePage() {
 
     const handleResend = async () => {
         if (timer > 150) return; // Cooldown (30s elapsed minimum)
+        setHasResent(true); // Immediate UI feedback
         const newSessionId = await sendSms();
         if (newSessionId) {
             navigate('/phone-verify/code', {
@@ -114,7 +118,7 @@ function VerificationCodePage() {
                     </div>
 
                     <div className={styles.statusMessage}>
-                        {isResend ? '인증번호가 재전송되었습니다.' : '인증번호가 전송되었습니다.'}
+                        {hasResent ? '인증번호가 재전송되었습니다.' : '인증번호가 전송되었습니다.'}
                         <button
                             type="button"
                             className={styles.resendLink}
