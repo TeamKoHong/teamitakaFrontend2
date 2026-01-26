@@ -10,7 +10,7 @@ import styles from './ProfileMainPage.module.scss';
 // Assets
 import backIcon from '../../../assets/back.png';
 import settingIcon from '../../../assets/setting.png'; 
-import profileDefault from '../../../assets/profile_potato.png'; // 💡 감자 이미지로 통일
+import profileDefault from '../../../assets/profile_potato.png'; 
 import defaultProfileImage from '../../../images/profileImage.png';
 import verificationBadge from '../../../assets/대학_인증_완료.svg';
 import projectEmpty from '../../../assets/icons/project_empty.png';
@@ -95,7 +95,7 @@ export default function ProfileMainPage() {
   const [userData, setUserData] = useState(null);
   const [profileData, setProfileData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
+  // 💡 [수정] 사용하지 않는 error state 제거 (Line 98 관련 해결)
   const [isSkillExpanded, setIsSkillExpanded] = useState(false);
   const [currentImg, setCurrentImg] = useState(profileDefault);
 
@@ -106,14 +106,17 @@ export default function ProfileMainPage() {
         const userRes = await getMe();
         if (userRes?.success && userRes.user) {
           setUserData(userRes.user);
-          // 💡 서버 데이터가 없으면 profileDefault(감자) 사용
           setCurrentImg(userRes.user.profileImage || profileDefault);
         }
         const profileRes = await getProfileDetail();
         if (profileRes?.success) setProfileData(profileRes.data);
       } catch (err) {
-        if (err?.code === 'UNAUTHORIZED') navigate('/login', { replace: true });
-        else setError(err.message || '데이터를 불러올 수 없습니다.');
+        if (err?.code === 'UNAUTHORIZED') {
+          navigate('/login', { replace: true });
+        } else {
+          // 💡 [수정] error state를 제거했으므로 console로 에러 출력
+          console.error(err.message || '데이터를 불러올 수 없습니다.');
+        }
       } finally {
         setIsLoading(false);
       }
@@ -126,7 +129,6 @@ export default function ProfileMainPage() {
     const reader = new FileReader();
     reader.onload = () => setCurrentImg(reader.result);
     reader.readAsDataURL(file);
-    // 여기서 보통 서버 업로드 API를 호출하거나 부모의 state를 업데이트합니다.
   };
 
   const handleSettingsClick = () => navigate('/profile/edit');
@@ -135,7 +137,6 @@ export default function ProfileMainPage() {
 
   const localMbtiType = localStorage.getItem('user_mbti_type');
   const displayData = {
-    // 💡 최종적으로 보여줄 때도 안전장치 추가
     profileImage: currentImg || profileDefault,
     username: userData?.username || '사용자',
     university: userData?.university || '대학교 미인증',
@@ -169,7 +170,11 @@ export default function ProfileMainPage() {
       <div className={styles.content}>
         <div className={styles.profileCard}>
           <div className={styles.profileImageWrapper}>
-            <ProfileImageEdit src={displayData.profileImage} onChange={handleImageChange} />
+            <ProfileImageEdit 
+              src={displayData.profileImage} 
+              isEditable={false}
+              onChange={handleImageChange} 
+            />
             {displayData.isVerified && <img src={verificationBadge} alt="인증" className={styles.verificationBadge} onClick={handleVerificationClick} />}
           </div>
           <div className={styles.profileInfo}>
