@@ -10,7 +10,7 @@ import styles from './ProfileMainPage.module.scss';
 // Assets
 import backIcon from '../../../assets/back.png';
 import settingIcon from '../../../assets/setting.png'; 
-import profileDefault from '../../../assets/profile_default.png';
+import profileDefault from '../../../assets/profile_potato.png'; // 💡 감자 이미지로 통일
 import defaultProfileImage from '../../../images/profileImage.png';
 import verificationBadge from '../../../assets/대학_인증_완료.svg';
 import projectEmpty from '../../../assets/icons/project_empty.png';
@@ -53,7 +53,7 @@ const FeedbackCard = ({ type, title, items = [] }) => {
   return (
     <div style={{ flex: 1, minWidth: 0, minHeight: '72px', padding: '12px', borderRadius: '10px', backgroundColor: isPositive ? '#FFFDFC' : '#F76241', boxSizing: 'border-box' }}>
       <div style={{ fontFamily: 'Pretendard', fontSize: '13px', fontWeight: 600, color: isPositive ? '#000' : '#fff', marginBottom: '6px' }}>{title}</div>
-      <div style={{ color: isPositive ? '#444' : '#efefef', fontSize: '11px', lineHeight: '165.04%' }}> {/* 💡 11px 적용 */}
+      <div style={{ color: isPositive ? '#444' : '#efefef', fontSize: '11px', lineHeight: '165.04%' }}>
         {displayItems.map((item, index) => <div key={index} style={{ marginBottom: '2px' }}>• {item}</div>)}
       </div>
     </div>
@@ -106,6 +106,7 @@ export default function ProfileMainPage() {
         const userRes = await getMe();
         if (userRes?.success && userRes.user) {
           setUserData(userRes.user);
+          // 💡 서버 데이터가 없으면 profileDefault(감자) 사용
           setCurrentImg(userRes.user.profileImage || profileDefault);
         }
         const profileRes = await getProfileDetail();
@@ -125,6 +126,7 @@ export default function ProfileMainPage() {
     const reader = new FileReader();
     reader.onload = () => setCurrentImg(reader.result);
     reader.readAsDataURL(file);
+    // 여기서 보통 서버 업로드 API를 호출하거나 부모의 state를 업데이트합니다.
   };
 
   const handleSettingsClick = () => navigate('/profile/edit');
@@ -133,7 +135,8 @@ export default function ProfileMainPage() {
 
   const localMbtiType = localStorage.getItem('user_mbti_type');
   const displayData = {
-    profileImage: currentImg,
+    // 💡 최종적으로 보여줄 때도 안전장치 추가
+    profileImage: currentImg || profileDefault,
     username: userData?.username || '사용자',
     university: userData?.university || '대학교 미인증',
     department: userData?.major || userData?.department || '',
