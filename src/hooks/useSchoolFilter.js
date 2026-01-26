@@ -3,7 +3,7 @@
  * 배열 데이터를 현재 사용자 학교 기준으로 필터링
  */
 import { useCallback } from 'react';
-import { useSchoolFilterContext, FILTER_MODES } from '../contexts/SchoolFilterContext';
+import { useSchoolFilterContext } from '../contexts/SchoolFilterContext';
 import { isSameUniversity } from '../constants/schools';
 
 /**
@@ -12,9 +12,6 @@ import { isSameUniversity } from '../constants/schools';
  */
 export const useSchoolFilter = () => {
     const {
-        filterMode,
-        setFilterMode,
-        toggleFilterMode,
         userUniversity,
         canUseSchoolFilter,
         isSchoolMode,
@@ -39,15 +36,14 @@ export const useSchoolFilter = () => {
     const filterBySchool = useCallback((items, universityKey = 'university') => {
         if (!Array.isArray(items)) return [];
 
-        // 전체 모드이거나 학교 필터 사용 불가능한 경우 전체 반환
+        // 학교 필터 사용 불가능한 경우 (비로그인 등) 전체 반환
         if (!isSchoolMode) {
             return items;
         }
 
-        // 교내 모드: 같은 학교만 필터링
+        // 로그인 사용자: 같은 학교만 필터링
         return items.filter(item => {
             const itemUniversity = item?.[universityKey];
-            // 학교 정보가 없는 아이템은 전체 모드에서만 표시
             if (!itemUniversity) return false;
             return isSchoolMatch(itemUniversity);
         });
@@ -73,22 +69,14 @@ export const useSchoolFilter = () => {
 
     return {
         // 상태
-        filterMode,
         isSchoolMode,
         userUniversity,
         canUseSchoolFilter,
-
-        // 액션
-        setFilterMode,
-        toggleFilterMode,
 
         // 필터링 함수
         filterBySchool,
         isSchoolMatch,
         getFilterStats,
-
-        // 상수
-        FILTER_MODES,
     };
 };
 

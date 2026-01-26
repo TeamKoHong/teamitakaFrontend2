@@ -103,7 +103,7 @@ export default function TeamMatchingPage() {
     const [isLoading, setIsLoading] = useState(true);
 
     const { user: currentUser } = useAuth();
-    const { filterBySchool, isSchoolMode, userUniversity } = useSchoolFilter();
+    const { filterBySchool, userUniversity } = useSchoolFilter();
 
     useEffect(() => {
         const fetchPosts = async () => {
@@ -197,9 +197,9 @@ export default function TeamMatchingPage() {
                         <section className="section section--panel">
                             <div className="section-header">
                                 <h2 className="section-title">
-                                    {isSchoolMode
-                                        ? `${getShortSchoolName(userUniversity) || '교내'} HOT 공고`
-                                        : `${getShortSchoolName(currentUser?.university) || '대학교'} HOT 교내 공고`
+                                    {userUniversity
+                                        ? `${getShortSchoolName(userUniversity)} HOT 공고`
+                                        : 'HOT 공고'
                                     }
                                 </h2>
                             </div>
@@ -208,7 +208,7 @@ export default function TeamMatchingPage() {
                                     schoolFilteredHotProjects.length > 0 ? schoolFilteredHotProjects.map(item => (
                                         <HotTopicCard key={item.id} item={item} onBookmarkToggle={handleBookmarkToggle} />
                                     )) : <div style={{ padding: '20px', color: '#999' }}>
-                                        {isSchoolMode ? '교내 공고가 없습니다.' : '등록된 공고가 없습니다.'}
+                                        {userUniversity ? '교내 공고가 없습니다.' : '등록된 공고가 없습니다.'}
                                     </div>}
                             </div>
                         </section>
