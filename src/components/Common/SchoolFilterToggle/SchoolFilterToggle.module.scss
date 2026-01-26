@@ -1,0 +1,36 @@
+/**
+ * 학교 필터 토글 스타일
+ * 세그먼트 컨트롤 디자인
+ */
+
+.toggleContainer {
+    display: inline-flex;
+    background-color: #F5F5F5;
+    border-radius: 20px;
+    padding: 3px;
+    gap: 2px;
+}
+
+.toggleButton {
+    padding: 6px 14px;
+    border: none;
+    border-radius: 17px;
+    background-color: transparent;
+    color: #807C7C;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+    font-family: 'Pretendard', sans-serif;
+
+    &:hover:not(.active) {
+        background-color: rgba(0, 0, 0, 0.05);
+    }
+
+    &.active {
+        background-color: #F76241;
+        color: #FFFFFF;
+        font-weight: 600;
+    }
+}

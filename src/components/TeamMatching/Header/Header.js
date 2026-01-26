@@ -2,10 +2,11 @@
 import React from 'react';
 import './Header.scss';
 import search_icon from "../../../assets/search_icon.png";
+import SchoolFilterToggle from '../../Common/SchoolFilterToggle';
 
 import { useNavigate } from 'react-router-dom';
 
-function Header({ title }) {
+function Header({ title, showSchoolFilter = true }) {
   const navigate = useNavigate();
 
   return (
@@ -15,6 +16,7 @@ function Header({ title }) {
           <h1 className="title">{title || '모집하기'}</h1>
         </div>
         <div className="header-right">
+          {showSchoolFilter && <SchoolFilterToggle />}
           <button
             className="btn-search"
             onClick={() => navigate('/search')}

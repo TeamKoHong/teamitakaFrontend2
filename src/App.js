@@ -71,6 +71,7 @@ import RegisterCompletePage from './pages/RegisterCompletePage/RegisterCompleteP
 
 // 인증 관련 임포트
 import { AuthProvider } from './contexts/AuthContext';
+import { SchoolFilterProvider } from './contexts/SchoolFilterContext';
 import GlobalToastSystem from './components/Common/GlobalToastSystem';
 import AuthEventBridge from './components/Common/AuthEventBridge';
 import ProtectedRoute, { PublicRoute } from './components/ProtectedRoute';
@@ -277,10 +278,11 @@ const App = () => {
   return (
     <Router>
       <AuthProvider>
-        <GlobalToastSystem />
-        <AuthEventBridge />
+        <SchoolFilterProvider>
+          <GlobalToastSystem />
+          <AuthEventBridge />
 
-        <Routes>
+          <Routes>
           {/* ===== 공개 페이지 (로그인하지 않은 사용자만) ===== */}
           <Route path={MAIN_ROUTES.HOME} element={<PublicRoute><OnboardingPage /></PublicRoute>} />
           <Route path={MAIN_ROUTES.LOGIN} element={<PublicRoute><LoginPage /></PublicRoute>} />
@@ -386,7 +388,8 @@ const App = () => {
           <Route path="/recruit/preview" element={<ProtectedRoute><ProjectRecruitPreview /></ProtectedRoute>} />
           <Route path="/recruit/publish" element={<ProtectedRoute><ProjectRecruitPublish /></ProtectedRoute>} />
           <Route path="/recruit/publish/done" element={<ProtectedRoute><ProjectRecruitPublishDone /></ProtectedRoute>} />
-        </Routes>
+          </Routes>
+        </SchoolFilterProvider>
       </AuthProvider>
     </Router>
   );
