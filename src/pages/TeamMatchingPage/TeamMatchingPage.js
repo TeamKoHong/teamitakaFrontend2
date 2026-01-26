@@ -16,6 +16,7 @@ import task_empty from "../../assets/task_empty.png";
 import { getAllRecruitments } from '../../api/recruit';
 import { toggleRecruitmentScrap } from '../../services/recruitment';
 import { useAuth } from '../../contexts/AuthContext';
+import { getShortSchoolName } from '../../constants/schools';
 
 const CreateProjectBanner = () => {
     const navigate = useNavigate();
@@ -179,7 +180,7 @@ export default function TeamMatchingPage() {
                         </section>
 
                         <section className="section section--panel">
-                            <div className="section-header"><h2 className="section-title">{currentUser?.university || '대학교'} HOT 교내 공고</h2></div>
+                            <div className="section-header"><h2 className="section-title">{getShortSchoolName(currentUser?.university) || '대학교'} HOT 교내 공고</h2></div>
                             <div className="horizontal-scroll-list">
                                 {isLoading ? <div style={{ padding: '20px', color: '#999' }}>로딩 중...</div> :
                                     hotProjects.length > 0 ? hotProjects.map(item => (
