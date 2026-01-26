@@ -2,17 +2,16 @@ import React, { useState, useEffect } from "react";
 import "./ProfileImage.css";
 import PenIcon from "../assets/pen.png";
 import PenBack from "../assets/penback.png";
-import DefaultProfile from "../assets/profile_potato.png"; // 기본 이미지 (감자)
+import DefaultProfile from "../assets/profile_default.png"; // 기본 이미지 (감자)
 
 export default function ProfileImage({ src, onChange }) {
   const [showModal, setShowModal] = useState(false);
+  // 초기값: 전달받은 src가 없으면 바로 기본 감자 이미지 사용
   const [profileImage, setProfileImage] = useState(src || DefaultProfile);
 
-  // src prop이 변경되면 상태 업데이트 (외부에서 이미지 URL 전달 시)
+  // src prop이 변경되면 상태 업데이트 (외부 API에서 데이터를 늦게 받아올 때 대응)
   useEffect(() => {
-    if (src) {
-      setProfileImage(src);
-    }
+    setProfileImage(src || DefaultProfile);
   }, [src]);
 
   const handleFileSelect = (e) => {
@@ -28,12 +27,13 @@ export default function ProfileImage({ src, onChange }) {
     if (onChange) {
       onChange(file);
     }
+    setShowModal(false);
   };
 
   const resetImage = () => {
     setProfileImage(DefaultProfile);
     setShowModal(false);
-    // 부모 컴포넌트에 리셋 알림 (null로 전달)
+    // 부모 컴포넌트에 리셋 알림
     if (onChange) {
       onChange(null);
     }
@@ -42,14 +42,21 @@ export default function ProfileImage({ src, onChange }) {
   return (
     <>
       <div className="profile-wrapper">
-        <img src={profileImage} className="profile-photo" alt="profile" />
+        <img 
+          src={profileImage} 
+          className="profile-photo" 
+          alt="profile" 
+          // 이미지 로딩 에러 시 기본 이미지로 대체
+          onError={(e) => {
+            e.target.src = DefaultProfile;
+          }}
+        />
 
         <button className="edit-icon-btn" onClick={() => setShowModal(true)}>
           <img src={PenBack} className="edit-back" alt="edit-background" />
           <img src={PenIcon} className="edit-icon" alt="edit-icon" />
         </button>
 
-        {/* input hidden */}
         <input
           type="file"
           id="fileUpload"
@@ -59,12 +66,9 @@ export default function ProfileImage({ src, onChange }) {
         />
       </div>
 
-      {/* 모달 */}
       {showModal && (
         <div className="modal-overlay" onClick={() => setShowModal(false)}>
           <div className="modal-sheet" onClick={(e) => e.stopPropagation()}>
-
-            {/* 상단 박스 */}
             <div className="modal-top-box">
               <div
                 className="modal-item"
@@ -72,15 +76,11 @@ export default function ProfileImage({ src, onChange }) {
               >
                 라이브러리에서 선택
               </div>
-
               <div className="modal-divider" />
-
               <div className="modal-item" onClick={resetImage}>
                 현재 사진 삭제
               </div>
             </div>
-
-            {/* 하단 취소 버튼 */}
             <div className="modal-cancel" onClick={() => setShowModal(false)}>
               취소
             </div>
