@@ -17,7 +17,7 @@ import { getAllRecruitments } from '../../api/recruit';
 import { toggleRecruitmentScrap } from '../../services/recruitment';
 import { useAuth } from '../../contexts/AuthContext';
 import { getShortSchoolName } from '../../constants/schools';
-import { useSchoolFilter } from '../../hooks/useSchoolFilter';
+import { useUniversityFilter } from '../../hooks/useUniversityFilter';
 
 const CreateProjectBanner = () => {
     const navigate = useNavigate();
@@ -103,7 +103,7 @@ export default function TeamMatchingPage() {
     const [isLoading, setIsLoading] = useState(true);
 
     const { user: currentUser } = useAuth();
-    const { filterBySchool, userUniversity } = useSchoolFilter();
+    const { filterByUniv, userUniversity } = useUniversityFilter();
 
     useEffect(() => {
         const fetchPosts = async () => {
@@ -166,13 +166,13 @@ export default function TeamMatchingPage() {
 
     // 학교 필터 적용된 게시물 목록
     const schoolFilteredPosts = useMemo(() => {
-        return filterBySchool(allPosts, 'university');
-    }, [allPosts, filterBySchool]);
+        return filterByUniv(allPosts, 'university');
+    }, [allPosts, filterByUniv]);
 
     // 학교 필터 적용된 HOT 프로젝트
     const schoolFilteredHotProjects = useMemo(() => {
-        return filterBySchool(hotProjects, 'university');
-    }, [hotProjects, filterBySchool]);
+        return filterByUniv(hotProjects, 'university');
+    }, [hotProjects, filterByUniv]);
 
     const filteredMatching = schoolFilteredPosts.filter(item => {
         if (passedSearchQuery) {
