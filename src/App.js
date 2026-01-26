@@ -283,111 +283,111 @@ const App = () => {
           <AuthEventBridge />
 
           <Routes>
-          {/* ===== 공개 페이지 (로그인하지 않은 사용자만) ===== */}
-          <Route path={MAIN_ROUTES.HOME} element={<PublicRoute><OnboardingPage /></PublicRoute>} />
-          <Route path={MAIN_ROUTES.LOGIN} element={<PublicRoute><LoginPage /></PublicRoute>} />
-          <Route path={MAIN_ROUTES.REGISTER} element={<PublicRoute><RegisterPage /></PublicRoute>} />
-          <Route path="/find-id" element={<PublicRoute><FindIdPage /></PublicRoute>} />
-          <Route path="/find-password" element={<PublicRoute><FindPasswordPage /></PublicRoute>} />
+            {/* ===== 공개 페이지 (로그인하지 않은 사용자만) ===== */}
+            <Route path={MAIN_ROUTES.HOME} element={<PublicRoute><OnboardingPage /></PublicRoute>} />
+            <Route path={MAIN_ROUTES.LOGIN} element={<PublicRoute><LoginPage /></PublicRoute>} />
+            <Route path={MAIN_ROUTES.REGISTER} element={<PublicRoute><RegisterPage /></PublicRoute>} />
+            <Route path="/find-id" element={<PublicRoute><FindIdPage /></PublicRoute>} />
+            <Route path="/find-password" element={<PublicRoute><FindPasswordPage /></PublicRoute>} />
 
-          {/*===== 게스트 랜딩 페이지 (로그인 불필요) =====*/}
-          {/* <Route path="/guest" element={<GuestLandingPage />} />  */}
+            {/*===== 게스트 랜딩 페이지 (로그인 불필요) =====*/}
+            {/* <Route path="/guest" element={<GuestLandingPage />} />  */}
 
 
-          {/* ===== 메인/프로필 (인증 필요) =====*/}
-          {/* <Route path={MAIN_ROUTES.MAIN} element={<ProtectedRoute><MainPage /></ProtectedRoute>} />
+            {/* ===== 메인/프로필 (인증 필요) =====*/}
+            {/* <Route path={MAIN_ROUTES.MAIN} element={<ProtectedRoute><MainPage /></ProtectedRoute>} />
           <Route path={MAIN_ROUTES.MY} element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} /> */}
 
 
-          {/* ===== 혜정 테스트 > 게스트 랜딩 페이지 (로그인 불필요) =====*/}
-          <Route path="/main" element={<MainPage />} />
+            {/* ===== 혜정 테스트 > 게스트 랜딩 페이지 (로그인 불필요) =====*/}
+            <Route path="/main" element={<MainPage />} />
 
-          {/* ===== 혜정 테스트 용도 // 메인/프로필 (인증 필요 없음음) ===== */}
-          <Route path={MAIN_ROUTES.MAIN} element={<MainPage />} />
-          <Route path={PROFILE_ROUTES.MAIN} element={<ProfileMainPage />} />
-          <Route path={PROFILE_ROUTES.EDIT} element={<ProfileEditPage />} />
+            {/* ===== 혜정 테스트 용도 // 메인/프로필 (인증 필요 없음음) ===== */}
+            <Route path={MAIN_ROUTES.MAIN} element={<MainPage />} />
+            <Route path={PROFILE_ROUTES.MAIN} element={<ProfileMainPage />} />
+            <Route path={PROFILE_ROUTES.EDIT} element={<ProfileEditPage />} />
 
 
 
-          {/* ===== 프로젝트 관리 라우트 (로그인 제한 없음) ===== */}
-          <Route path={PROJECT_ROUTES.MANAGEMENT} element={<ProjectManagement />} />
-          <Route path={PROJECT_ROUTES.DETAIL} element={<ProjectDetailPage />} />
-          <Route path={PROJECT_ROUTES.MEMBER} element={<ProjectMemberPage />} />
-          <Route path={PROJECT_ROUTES.PROCEEDINGS} element={<ProceedingsPage />} />
-          <Route path={PROJECT_ROUTES.CREATE_MEETING} element={<CreateMeetingPage />} />
-          <Route path={PROJECT_ROUTES.CALENDAR} element={<ProjectCalender />} />
+            {/* ===== 프로젝트 관리 라우트 (로그인 제한 없음) ===== */}
+            <Route path={PROJECT_ROUTES.MANAGEMENT} element={<ProjectManagement />} />
+            <Route path={PROJECT_ROUTES.DETAIL} element={<ProjectDetailPage />} />
+            <Route path={PROJECT_ROUTES.MEMBER} element={<ProjectMemberPage />} />
+            <Route path={PROJECT_ROUTES.PROCEEDINGS} element={<ProceedingsPage />} />
+            <Route path={PROJECT_ROUTES.CREATE_MEETING} element={<CreateMeetingPage />} />
+            <Route path={PROJECT_ROUTES.CALENDAR} element={<ProjectCalender />} />
 
-          {/* ===== 평가 시스템 라우트 (인증 필요) ===== */}
-          <Route path={EVALUATION_ROUTES.MANAGEMENT} element={<ProtectedRoute><RatingManagementPage /></ProtectedRoute>} />
-          <Route path={EVALUATION_ROUTES.PROJECT} element={<ProtectedRoute><ProjectEvaluationGuard /></ProtectedRoute>} />
-          <Route path={EVALUATION_ROUTES.PROJECT_GIVEN} element={<ProtectedRoute><ProjectEvaluationGivenGuard /></ProtectedRoute>} />
-          <Route path={EVALUATION_ROUTES.FEEDBACK_DETAIL} element={<ProtectedRoute><ReceivedFeedbackDetailPage /></ProtectedRoute>} />
-          <Route path={EVALUATION_ROUTES.TEAM_MEMBER} element={<ProtectedRoute><TeamMemberEvaluationGuard /></ProtectedRoute>} />
-          <Route path={EVALUATION_ROUTES.STATUS_GIVEN} element={<ProtectedRoute><EvaluationStatusGuard /></ProtectedRoute>} />
-          <Route path={EVALUATION_ROUTES.STATUS_RECEIVED} element={<ProtectedRoute><EvaluationStatusGuard /></ProtectedRoute>} />
-          <Route path={EVALUATION_ROUTES.STATUS} element={<ProtectedRoute><EvaluationStatusGuard /></ProtectedRoute>} />
+            {/* ===== 평가 시스템 라우트 (인증 필요) ===== */}
+            <Route path={EVALUATION_ROUTES.MANAGEMENT} element={<ProtectedRoute><RatingManagementPage /></ProtectedRoute>} />
+            <Route path={EVALUATION_ROUTES.PROJECT} element={<ProtectedRoute><ProjectEvaluationGuard /></ProtectedRoute>} />
+            <Route path={EVALUATION_ROUTES.PROJECT_GIVEN} element={<ProtectedRoute><ProjectEvaluationGivenGuard /></ProtectedRoute>} />
+            <Route path={EVALUATION_ROUTES.FEEDBACK_DETAIL} element={<ProtectedRoute><ReceivedFeedbackDetailPage /></ProtectedRoute>} />
+            <Route path={EVALUATION_ROUTES.TEAM_MEMBER} element={<ProtectedRoute><TeamMemberEvaluationGuard /></ProtectedRoute>} />
+            <Route path={EVALUATION_ROUTES.STATUS_GIVEN} element={<ProtectedRoute><EvaluationStatusGuard /></ProtectedRoute>} />
+            <Route path={EVALUATION_ROUTES.STATUS_RECEIVED} element={<ProtectedRoute><EvaluationStatusGuard /></ProtectedRoute>} />
+            <Route path={EVALUATION_ROUTES.STATUS} element={<ProtectedRoute><EvaluationStatusGuard /></ProtectedRoute>} />
 
-          {/* ===== 기존 URL 호환성 리다이렉트 ===== */}
-          <Route path={LEGACY_EVALUATION_ROUTES.RATING_MANAGEMENT} element={<Navigate to={EVALUATION_ROUTES.MANAGEMENT} replace />} />
-          <Route path={LEGACY_EVALUATION_ROUTES.RATING_PROJECT} element={<Navigate to={EVALUATION_ROUTES.PROJECT} replace />} />
-          <Route path={LEGACY_EVALUATION_ROUTES.EVALUATE_MEMBER} element={<Navigate to={EVALUATION_ROUTES.TEAM_MEMBER} replace />} />
-          <Route path={LEGACY_EVALUATION_ROUTES.RATING_STATUS_GIVEN} element={<Navigate to={EVALUATION_ROUTES.STATUS_GIVEN} replace />} />
-          <Route path={LEGACY_EVALUATION_ROUTES.RATING_STATUS_RECEIVED} element={<Navigate to={EVALUATION_ROUTES.STATUS_RECEIVED} replace />} />
-          <Route path={LEGACY_EVALUATION_ROUTES.RATING_STATUS} element={<Navigate to={EVALUATION_ROUTES.STATUS} replace />} />
+            {/* ===== 기존 URL 호환성 리다이렉트 ===== */}
+            <Route path={LEGACY_EVALUATION_ROUTES.RATING_MANAGEMENT} element={<Navigate to={EVALUATION_ROUTES.MANAGEMENT} replace />} />
+            <Route path={LEGACY_EVALUATION_ROUTES.RATING_PROJECT} element={<Navigate to={EVALUATION_ROUTES.PROJECT} replace />} />
+            <Route path={LEGACY_EVALUATION_ROUTES.EVALUATE_MEMBER} element={<Navigate to={EVALUATION_ROUTES.TEAM_MEMBER} replace />} />
+            <Route path={LEGACY_EVALUATION_ROUTES.RATING_STATUS_GIVEN} element={<Navigate to={EVALUATION_ROUTES.STATUS_GIVEN} replace />} />
+            <Route path={LEGACY_EVALUATION_ROUTES.RATING_STATUS_RECEIVED} element={<Navigate to={EVALUATION_ROUTES.STATUS_RECEIVED} replace />} />
+            <Route path={LEGACY_EVALUATION_ROUTES.RATING_STATUS} element={<Navigate to={EVALUATION_ROUTES.STATUS} replace />} />
 
-          {/* ===== 팀 매칭 및 기타 라우트 (로그인 제한 없음) ===== */}
-          <Route path={OTHER_ROUTES.TEAM_MATCHING} element={<TeamMatchingPage />} />
-          <Route path={OTHER_ROUTES.RECRUITMENT} element={<RecruitmentPage />} />
-          <Route path={OTHER_ROUTES.SEARCH} element={<SearchPage />} />
-          <Route path={OTHER_ROUTES.BOOKMARK} element={<BookmarkPage />} />
-          <Route path={OTHER_ROUTES.TEAM} element={<Navigate to={OTHER_ROUTES.TEAM_MATCHING} replace />} />
-          <Route path="/recruitment/:id" element={<RecruitmentViewPage />} />
-          <Route path="/recruitment/:id/team-select" element={<TeamSelectPage />} />
+            {/* ===== 팀 매칭 및 기타 라우트 (로그인 제한 없음) ===== */}
+            <Route path={OTHER_ROUTES.TEAM_MATCHING} element={<TeamMatchingPage />} />
+            <Route path={OTHER_ROUTES.RECRUITMENT} element={<RecruitmentPage />} />
+            <Route path={OTHER_ROUTES.SEARCH} element={<SearchPage />} />
+            <Route path={OTHER_ROUTES.BOOKMARK} element={<BookmarkPage />} />
+            <Route path={OTHER_ROUTES.TEAM} element={<Navigate to={OTHER_ROUTES.TEAM_MATCHING} replace />} />
+            <Route path="/recruitment/:id" element={<RecruitmentViewPage />} />
+            <Route path="/recruitment/:id/team-select" element={<TeamSelectPage />} />
 
-          {/* ===== 데모 및 개발 도구 라우트 (개발용) ===== */}
-          <Route path={DEMO_ROUTES.CATEGORY_SLIDER} element={<CategorySliderDemo />} />
-          <Route path="/phone-auth-test" element={<PhoneAuthTestPage />} />
+            {/* ===== 데모 및 개발 도구 라우트 (개발용) ===== */}
+            <Route path={DEMO_ROUTES.CATEGORY_SLIDER} element={<CategorySliderDemo />} />
+            <Route path="/phone-auth-test" element={<PhoneAuthTestPage />} />
 
-          {/* ===== 휴대폰 본인인증 라우트 ===== */}
-          <Route path="/phone-verify" element={<PublicRoute><PhoneVerifyPage /></PublicRoute>} />
-          <Route path="/phone-verify/code" element={<PublicRoute><VerificationCodePage /></PublicRoute>} />
-          <Route path="/profile-setup" element={<ProtectedRoute><ProfileSetupPage /></ProtectedRoute>} />
-          <Route path="/welcome" element={<ProtectedRoute><WelcomePage /></ProtectedRoute>} />
-          <Route path="/register-complete" element={<RegisterCompletePage />} />
+            {/* ===== 휴대폰 본인인증 라우트 ===== */}
+            <Route path="/phone-verify" element={<PublicRoute><PhoneVerifyPage /></PublicRoute>} />
+            <Route path="/phone-verify/code" element={<PublicRoute><VerificationCodePage /></PublicRoute>} />
+            <Route path="/profile-setup" element={<ProtectedRoute><ProfileSetupPage /></ProtectedRoute>} />
+            <Route path="/welcome" element={<ProtectedRoute><WelcomePage /></ProtectedRoute>} />
+            <Route path="/register-complete" element={<RegisterCompletePage />} />
 
-          {/* ===== Type Test Routes ===== */}
-          <Route path="/type-test" element={<QuizPage />} />
-          <Route path="/type-test/complete" element={<AnalysisCompletePage />} />
-          <Route path="/type-test/result/:type" element={<ResultPage />} />
+            {/* ===== Type Test Routes ===== */}
+            <Route path="/type-test" element={<QuizPage />} />
+            <Route path="/type-test/complete" element={<AnalysisCompletePage />} />
+            <Route path="/type-test/result/:type" element={<ResultPage />} />
 
-          {/* ===== 기본 리다이렉트 ===== */}
-          <Route path="/" element={<Navigate to={MAIN_ROUTES.HOME} replace />} />
-          <Route path="*" element={<Navigate to={MAIN_ROUTES.HOME} replace />} />
+            {/* ===== 기본 리다이렉트 ===== */}
+            <Route path="/" element={<Navigate to={MAIN_ROUTES.HOME} replace />} />
+            <Route path="*" element={<Navigate to={MAIN_ROUTES.HOME} replace />} />
 
-          <Route path="/apply2" element={<ProjectApply />} />
-          <Route path="/apply2/select" element={<ProjectApplySelect />} />
-          <Route path="/apply2/complete" element={<ProjectApplyComplete />} />
+            <Route path="/apply2" element={<ProjectApply />} />
+            <Route path="/apply2/select" element={<ProjectApplySelect />} />
+            <Route path="/apply2/complete" element={<ProjectApplyComplete />} />
 
-          <Route path="/notifications" element={<NotificationsPage />} />
-          <Route path="/notifications/settings" element={<NotificationSettings />} />
+            <Route path="/notifications" element={<NotificationsPage />} />
+            <Route path="/notifications/settings" element={<NotificationSettings />} />
 
-          {/* 프로젝트 생성하기(로그인 필요 없) */}
-          {/* <Route path="/recruit" element={<ProjectRecruit />} />
-          <Route path="/recruit/detail" element={<ProjectRecruitDetail />} />
-          <Route path="/recruit/image" element={<ProjectRecruitImage />} />
-          <Route path="/recruit/drafts" element={<ProjectDrafts />} />
-          <Route path="/recruit/preview" element={<ProjectRecruitPreview />} />
-          <Route path="/recruit/publish" element={<ProjectRecruitPublish />} />
-          <Route path="/recruit/publish/done" element={<ProjectRecruitPublishDone />} /> */}
+            {/* 프로젝트 생성하기(로그인 필요 없) */}
+            {/* <Route path="/recruit" element={<ProjectRecruit />} />
+            <Route path="/recruit/detail" element={<ProjectRecruitDetail />} />
+            <Route path="/recruit/image" element={<ProjectRecruitImage />} />
+            <Route path="/recruit/drafts" element={<ProjectDrafts />} />
+            <Route path="/recruit/preview" element={<ProjectRecruitPreview />} />
+            <Route path="/recruit/publish" element={<ProjectRecruitPublish />} />
+            <Route path="/recruit/publish/done" element={<ProjectRecruitPublishDone />} /> */}
 
-          {/* 프로젝트 생성하기(로그인 필요) */}
-          <Route path="/recruit" element={<ProtectedRoute><ProjectRecruit /></ProtectedRoute>} />
-          <Route path="/recruit/detail" element={<ProtectedRoute><ProjectRecruitDetail /></ProtectedRoute>} />
-          <Route path="/recruit/image" element={<ProtectedRoute><ProjectRecruitImage /></ProtectedRoute>} />
-          <Route path="/recruit/drafts" element={<ProtectedRoute><ProjectDrafts /></ProtectedRoute>} />
-          <Route path="/recruit/preview" element={<ProtectedRoute><ProjectRecruitPreview /></ProtectedRoute>} />
-          <Route path="/recruit/publish" element={<ProtectedRoute><ProjectRecruitPublish /></ProtectedRoute>} />
-          <Route path="/recruit/publish/done" element={<ProtectedRoute><ProjectRecruitPublishDone /></ProtectedRoute>} />
+            {/* 프로젝트 생성하기(로그인 필요) */}
+            <Route path="/recruit" element={<ProtectedRoute><ProjectRecruit /></ProtectedRoute>} />
+            <Route path="/recruit/detail" element={<ProtectedRoute><ProjectRecruitDetail /></ProtectedRoute>} />
+            <Route path="/recruit/image" element={<ProtectedRoute><ProjectRecruitImage /></ProtectedRoute>} />
+            <Route path="/recruit/drafts" element={<ProtectedRoute><ProjectDrafts /></ProtectedRoute>} />
+            <Route path="/recruit/preview" element={<ProtectedRoute><ProjectRecruitPreview /></ProtectedRoute>} />
+            <Route path="/recruit/publish" element={<ProtectedRoute><ProjectRecruitPublish /></ProtectedRoute>} />
+            <Route path="/recruit/publish/done" element={<ProtectedRoute><ProjectRecruitPublishDone /></ProtectedRoute>} />
           </Routes>
         </UniversityFilterProvider>
       </AuthProvider>

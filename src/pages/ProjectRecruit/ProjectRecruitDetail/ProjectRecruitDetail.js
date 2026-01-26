@@ -10,45 +10,55 @@ import {
 
 function TagInput({ value, onChange, placeholder, max = 5 }) {
   const [text, setText] = useState('');
-  const isHash = (s) => /^#[^\s#]+$/.test(s);
 
-  const addTag = (raw) => {
-    const v = raw.trim();
-    if (!v) return;
+  const isHash = (s) => /^#[^\s#]+$/.test((s || '').trim());
+
+  const addTag = () => {
+    const v = text.trim();
+    // #해시태그 형태만 추가
+    if (!isHash(v)) return;
     if (value.includes(v) || value.length >= max) return;
+
     onChange([...value, v]);
     setText('');
   };
 
   const onKeyDown = (e) => {
+    // Enter / Space로 태그 확정
     if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault();
-      addTag(text);
+      addTag();
+      return;
+    }
+
+    // 입력이 비어있을 때 Backspace → 마지막 태그 삭제
+    if (e.key === 'Backspace' && text.length === 0 && value.length > 0) {
+      const next = value.slice(0, -1);
+      onChange(next);
     }
   };
 
-  const remove = (idx) => {
-    const next = value.slice();
-    next.splice(idx, 1);
-    onChange(next);
-  };
-
   return (
-    <div className={`tag-input ${isHash(text) ? 'is-hash-input' : ''}`}>
-      <div className="chips">
+    <div className={`tag-input-inline ${isHash(text) ? 'is-hash-input' : ''}`}>
+      <div className="tag-line">
         {value.map((t, i) => (
-          <span className={`chip ${isHash(t) ? 'chip-hash' : ''}`} key={t + i}>
+          <span className="inline-tag" key={t + i}>
             {t}
-            <button className="x" onClick={() => remove(i)} aria-label="태그 삭제">×</button>
           </span>
         ))}
+
         <input
           value={text}
           onChange={(e) => setText(e.target.value)}
           onKeyDown={onKeyDown}
           placeholder={value.length ? '' : placeholder}
+          aria-label="해시태그 입력"
         />
       </div>
+
+      {/* 필요하면 안내문(선택)
+      <div className="hint">#해시태그를 입력 후 스페이스/엔터로 추가</div>
+      */}
     </div>
   );
 }
@@ -101,19 +111,17 @@ export default function ProjectRecruitDetail() {
     const single = { ...base, detail, keywords };
     saveRecruitDraft(single);
 
-    // Save complete data to draft list (not just detail/keywords)
     saveDraftToList({
       id: getCurrentDraftId(),
       title: base.title || (detail.split('\n')[0] || '제목 없음'),
       type: base.type || '',
-      data: single,  // Save complete data, not partial
+      data: single,
     });
 
     alert('임시 저장되었어요.');
   };
 
   const goNext = () => {
-    // 키워드 없으면 다음 못 가게
     if (!detail.trim()) return;
     if (keywords.length === 0) {
       alert('키워드를 최소 1개 이상 설정해주세요.');
@@ -126,20 +134,21 @@ export default function ProjectRecruitDetail() {
     nav('/recruit/image');
   };
 
-  // 임시 저장 불러오기
-  const handleLoadDraft = () => nav('/recruit/drafts');
-
   return (
     <div className="page recruit-detail-page">
       <div className="topbar">
         <button className="back" onClick={() => nav(-1)} aria-label="뒤로">
           <span className="chevron" aria-hidden="true"></span>
         </button>
-        <button className="save-text" onClick={saveDraft}>임시 저장</button>
+        <button className="save-text" onClick={saveDraft}>
+          임시 저장
+        </button>
       </div>
 
       <div className="container">
-        <h2 className="h2">모집 내용을 상세하게{'\n'}작성해주세요</h2>
+        <h2 className="h2">
+          모집 내용을 상세하게{'\n'}작성해주세요
+        </h2>
 
         <div className={`field ${detail ? 'field--active' : ''}`}>
           <textarea
@@ -156,6 +165,7 @@ export default function ProjectRecruitDetail() {
           <div className="label-bold">키워드 설정</div>
           <div className="label-desc">최대 5개 태그 설정</div>
         </div>
+
         <TagInput
           value={keywords}
           onChange={setKeywords}
@@ -164,12 +174,7 @@ export default function ProjectRecruitDetail() {
         />
       </div>
 
-      {/* 푸터 안으로 이동: 불러오기 버튼 → 다음 버튼 바로 위 */}
       <div className="footer">
-        <button type="button" className="link-btn link-in-footer" onClick={handleLoadDraft}>
-          임시 저장 글 불러오기
-        </button>
-
         <button
           className={`next-btn ${canNext ? 'on' : 'off'}`}
           disabled={!canNext}
