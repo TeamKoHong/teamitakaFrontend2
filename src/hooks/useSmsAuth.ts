@@ -99,7 +99,10 @@ export const useSmsAuth = (options?: UseSmsAuthOptions): UseSmsAuthReturn => {
             if (!response.ok) {
                 const errorData = await response.json().catch(() => ({}));
 
-                if (response.status === 429) {
+                if (response.status === 409) {
+                    // 전화번호 중복 (백엔드에서 체크)
+                    setError(errorData.message || '이미 가입된 전화번호입니다.');
+                } else if (response.status === 429) {
                     setError('요청이 너무 많습니다. 잠시 후 다시 시도해주세요.');
                 } else if (response.status === 400) {
                     setError(errorData.message || '입력값 오류입니다.');

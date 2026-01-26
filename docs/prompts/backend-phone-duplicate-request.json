@@ -1,0 +1,166 @@
+{
+  "title": "전화번호 중복 체크 기능 요청",
+  "from": "프론트엔드",
+  "to": "백엔드",
+  "priority": "높음",
+  "date": "2025-01-26",
+
+  "summary": {
+    "request": "SMS 발송 API에서 전화번호 중복 체크 후 409 반환",
+    "reason": "회원가입 시 이미 가입된 전화번호로 인증 시도하면 즉시 안내 필요",
+    "approach": "별도 API 없이 기존 /api/auth/sms/send에 로직 추가 (네트워크 효율)"
+  },
+
+  "frontend_status": {
+    "completed": [
+      "409 응답 처리 코드 추가 완료",
+      "에러 메시지 UI 표시 로직 완료",
+      "불필요한 별도 API 호출 코드 제거 완료"
+    ],
+    "file_changed": "src/hooks/useSmsAuth.ts",
+    "waiting_for": "백엔드 API 수정"
+  },
+
+  "api_modification_required": {
+    "endpoint": "POST /api/auth/sms/send",
+    "current_behavior": "전화번호 받아서 SMS 발송",
+    "required_behavior": "전화번호 중복 체크 → 중복이면 409 반환, 아니면 SMS 발송"
+  },
+
+  "expected_responses": {
+    "success_200": {
+      "description": "신규 전화번호 - SMS 발송 성공",
+      "status": 200,
+      "body": {
+        "success": true,
+        "data": {
+          "sessionId": "uuid-session-id"
+        },
+        "message": "인증번호가 전송되었습니다."
+      }
+    },
+    "duplicate_409": {
+      "description": "이미 가입된 전화번호",
+      "status": 409,
+      "body": {
+        "success": false,
+        "error": "DUPLICATE_PHONE",
+        "message": "이미 가입된 전화번호입니다."
+      }
+    },
+    "invalid_400": {
+      "description": "전화번호 형식 오류",
+      "status": 400,
+      "body": {
+        "success": false,
+        "error": "INVALID_PHONE",
+        "message": "올바른 전화번호 형식이 아닙니다."
+      }
+    },
+    "rate_limit_429": {
+      "description": "요청 횟수 초과",
+      "status": 429,
+      "body": {
+        "success": false,
+        "error": "RATE_LIMITED",
+        "message": "요청이 너무 많습니다. 잠시 후 다시 시도해주세요."
+      }
+    }
+  },
+
+  "implementation_guide": {
+    "step_1": {
+      "action": "전화번호로 기존 사용자 조회",
+      "pseudo_code": "SELECT * FROM users WHERE phone_number = :phone LIMIT 1"
+    },
+    "step_2": {
+      "action": "중복이면 409 반환",
+      "pseudo_code": "if (existingUser) return res.status(409).json({...})"
+    },
+    "step_3": {
+      "action": "중복 아니면 기존 SMS 발송 로직 실행",
+      "pseudo_code": "// 기존 코드 그대로"
+    }
+  },
+
+  "code_example": {
+    "language": "TypeScript (Supabase Edge Function)",
+    "code": [
+      "// /api/auth/sms/send 핸들러 내부에 추가",
+      "",
+      "const { phone } = await req.json();",
+      "",
+      "// 1. 전화번호 중복 체크 (신규 추가)",
+      "const { data: existingUser } = await supabase",
+      "    .from('users')",
+      "    .select('id')",
+      "    .eq('phone_number', phone)",
+      "    .single();",
+      "",
+      "if (existingUser) {",
+      "    return new Response(",
+      "        JSON.stringify({",
+      "            success: false,",
+      "            error: 'DUPLICATE_PHONE',",
+      "            message: '이미 가입된 전화번호입니다.'",
+      "        }),",
+      "        { status: 409, headers: { 'Content-Type': 'application/json' } }",
+      "    );",
+      "}",
+      "",
+      "// 2. 기존 SMS 발송 로직 (변경 없음)",
+      "// ..."
+    ]
+  },
+
+  "database_consideration": {
+    "table": "users",
+    "column": "phone_number",
+    "recommendation": "UNIQUE INDEX 추가 권장 (중복 방지 + 조회 성능)",
+    "sql": "CREATE UNIQUE INDEX IF NOT EXISTS idx_users_phone ON users(phone_number) WHERE phone_number IS NOT NULL;"
+  },
+
+  "security_notes": [
+    {
+      "concern": "전화번호 수집 공격 (번호 존재 여부 확인용 악용)",
+      "recommendation": "Rate Limiting 강화 (IP당 분당 10회, 전화번호당 시간당 5회)"
+    },
+    {
+      "concern": "정보 노출",
+      "recommendation": "필요시 에러 메시지 일반화 가능 ('인증에 실패했습니다')"
+    }
+  ],
+
+  "testing_checklist": [
+    {
+      "case": "신규 전화번호로 인증 요청",
+      "expected": "200 + SMS 발송"
+    },
+    {
+      "case": "이미 가입된 전화번호로 인증 요청",
+      "expected": "409 + 에러 메시지"
+    },
+    {
+      "case": "잘못된 형식의 전화번호",
+      "expected": "400 + 형식 오류 메시지"
+    }
+  ],
+
+  "frontend_error_handling": {
+    "description": "프론트엔드에서 이미 구현된 에러 처리 코드",
+    "code": [
+      "if (response.status === 409) {",
+      "    // 전화번호 중복 (백엔드에서 체크)",
+      "    setError(errorData.message || '이미 가입된 전화번호입니다.');",
+      "}"
+    ]
+  },
+
+  "contact": {
+    "question": "구현 관련 질문은 프론트엔드 담당자에게 문의",
+    "files_reference": [
+      "docs/prompts/phone-duplicate-backend.json (상세 스펙)",
+      "docs/prompts/phone-duplicate-frontend.json (프론트 구현 내용)"
+    ]
+  }
+}
