@@ -1,32 +1,12 @@
-import { getApiConfig } from './auth';
-import { notifyLoginExpired } from '../components/Common/GlobalToastSystem';
+import { apiFetch } from './api';
 
 /**
  * 프로필 상세 정보 조회
  * @returns {Promise<Object>} 프로필 상세 정보
  */
 export const getProfileDetail = async () => {
-    const { API_BASE_URL, headers } = getApiConfig();
-    const token = localStorage.getItem('authToken');
-
-    if (!token) {
-        const err = new Error('UNAUTHORIZED');
-        err.code = 'UNAUTHORIZED';
-        throw err;
-    }
-
     try {
-        const res = await fetch(`${API_BASE_URL}/api/profile/detail`, {
-            method: 'GET',
-            headers: { ...headers, Authorization: `Bearer ${token}` },
-        });
-
-        if (res.status === 401 || res.status === 403) {
-            notifyLoginExpired();
-            const err = new Error('UNAUTHORIZED');
-            err.code = 'UNAUTHORIZED';
-            throw err;
-        }
+        const res = await apiFetch('/api/profile/detail');
 
         if (!res.ok) {
             // API 미구현 시 Mock 데이터 반환
@@ -60,9 +40,6 @@ export const getProfileDetail = async () => {
 
         return res.json();
     } catch (err) {
-        if (err?.code === 'UNAUTHORIZED') {
-            throw err;
-        }
         // 네트워크 오류 등의 경우 Mock 데이터 반환
         console.log('📊 [Mock] 네트워크 오류로 프로필 상세 정보 Mock 반환');
         return {
@@ -98,27 +75,8 @@ export const getProfileDetail = async () => {
  * @returns {Promise<Object>} 인증 정보
  */
 export const getVerificationInfo = async () => {
-    const { API_BASE_URL, headers } = getApiConfig();
-    const token = localStorage.getItem('authToken');
-
-    if (!token) {
-        const err = new Error('UNAUTHORIZED');
-        err.code = 'UNAUTHORIZED';
-        throw err;
-    }
-
     try {
-        const res = await fetch(`${API_BASE_URL}/api/profile/verification`, {
-            method: 'GET',
-            headers: { ...headers, Authorization: `Bearer ${token}` },
-        });
-
-        if (res.status === 401 || res.status === 403) {
-            notifyLoginExpired();
-            const err = new Error('UNAUTHORIZED');
-            err.code = 'UNAUTHORIZED';
-            throw err;
-        }
+        const res = await apiFetch('/api/profile/verification');
 
         if (!res.ok) {
             // API 미구현 시 Mock 데이터 반환
@@ -138,9 +96,6 @@ export const getVerificationInfo = async () => {
 
         return res.json();
     } catch (err) {
-        if (err?.code === 'UNAUTHORIZED') {
-            throw err;
-        }
         // 네트워크 오류 등의 경우 Mock 데이터 반환
         console.log('🎓 [Mock] 네트워크 오류로 대학 인증 정보 Mock 반환');
         return {
