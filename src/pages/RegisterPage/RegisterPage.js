@@ -648,7 +648,7 @@ function RegisterPage() {
                             if (password !== passwordConfirm) {
                                 return <div className='input-error-text'>비밀번호가 일치하지 않습니다.</div>;
                             }
-                            return null;
+                            return <div className='input-success-text'>비밀번호를 설정했습니다.</div>;
                         })()}
                     </div>
                 );
