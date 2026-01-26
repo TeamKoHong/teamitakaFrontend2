@@ -22,7 +22,6 @@ function Header({ title }) {
           >
             <img src={search_icon} alt="알림" className="icon-search" />
           </button>
-
         </div>
       </div>
     </header>

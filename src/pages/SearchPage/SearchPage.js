@@ -1,17 +1,19 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import search_icon from "../../assets/search_icon.png";
-import back_icon from "../../assets/back.png"; 
+import back_icon from "../../assets/back.png";
 import './SearchPage.scss';
 import { getAllRecruitments } from '../../api/recruit';
+import { useUniversityFilter } from '../../hooks/useUniversityFilter';
 
 export default function SearchPage() {
   const navigate = useNavigate();
   const inputRef = useRef(null);
+  const { filterByUniv } = useUniversityFilter();
 
   const [searchText, setSearchText] = useState('');
-  const [recentTags, setRecentTags] = useState([]);   
-  const [popularTags, setPopularTags] = useState([]); 
+  const [recentTags, setRecentTags] = useState([]);
+  const [popularTags, setPopularTags] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -23,8 +25,16 @@ export default function SearchPage() {
     const fetchPopularKeywords = async () => {
       try {
         const data = await getAllRecruitments();
+        // 대학 필터링을 위해 university 필드 추가
+        const postsWithUniv = data.map(post => ({
+          ...post,
+          university: post.university || post.author?.university || post.User?.university || null,
+        }));
+        // 대학 필터 적용
+        const filteredPosts = filterByUniv(postsWithUniv, 'university');
+
         const tagCounts = {};
-        data.forEach(post => {
+        filteredPosts.forEach(post => {
           const tags = post.Hashtags || post.hashtags || [];
           tags.forEach(tagObj => {
              const tagName = typeof tagObj === 'string' ? tagObj : tagObj.name;
@@ -46,7 +56,7 @@ export default function SearchPage() {
       }
     };
     fetchPopularKeywords();
-  }, []);
+  }, [filterByUniv]);
 
   const handleTagRemove = (tagToRemove, e) => {
     e.stopPropagation(); 
