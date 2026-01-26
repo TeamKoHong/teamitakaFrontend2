@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useLocation, useNavigate, Link } from 'react-router-dom';
 import { AiOutlineArrowLeft } from 'react-icons/ai';
 import './TeamMatchingPage.scss';
@@ -17,6 +17,7 @@ import { getAllRecruitments } from '../../api/recruit';
 import { toggleRecruitmentScrap } from '../../services/recruitment';
 import { useAuth } from '../../contexts/AuthContext';
 import { getShortSchoolName } from '../../constants/schools';
+import { useUniversityFilter } from '../../hooks/useUniversityFilter';
 
 const CreateProjectBanner = () => {
     const navigate = useNavigate();
@@ -102,6 +103,7 @@ export default function TeamMatchingPage() {
     const [isLoading, setIsLoading] = useState(true);
 
     const { user: currentUser } = useAuth();
+    const { filterByUniv, userUniversity } = useUniversityFilter();
 
     useEffect(() => {
         const fetchPosts = async () => {
@@ -111,6 +113,8 @@ export default function TeamMatchingPage() {
                 const formattedData = data.map(post => {
                     const viewCount = Number(post.views || 0);
                     const appCount = Number(post.applicationCount || 0);
+                    // 작성자 학교 정보 추출 (API 응답 구조에 따라 조정 필요)
+                    const authorUniversity = post.university || post.author?.university || post.User?.university || null;
                     return {
                         id: post.recruitment_id,
                         title: post.title,
@@ -122,7 +126,8 @@ export default function TeamMatchingPage() {
                         tags: (post.Hashtags || post.hashtags || []).map(h => h.name || h),
                         score: viewCount + (appCount * 10),
                         isBookmarked: !!post.is_scrapped,
-                        isBest: appCount >= 5
+                        isBest: appCount >= 5,
+                        university: authorUniversity, // 작성자 학교 정보 추가
                     };
                 });
 
@@ -159,7 +164,17 @@ export default function TeamMatchingPage() {
         try { await toggleRecruitmentScrap(id); } catch (error) { console.error('북마크 실패', error); }
     };
 
-    const filteredMatching = allPosts.filter(item => {
+    // 학교 필터 적용된 게시물 목록
+    const schoolFilteredPosts = useMemo(() => {
+        return filterByUniv(allPosts, 'university');
+    }, [allPosts, filterByUniv]);
+
+    // 학교 필터 적용된 HOT 프로젝트
+    const schoolFilteredHotProjects = useMemo(() => {
+        return filterByUniv(hotProjects, 'university');
+    }, [hotProjects, filterByUniv]);
+
+    const filteredMatching = schoolFilteredPosts.filter(item => {
         if (passedSearchQuery) {
             const query = passedSearchQuery.toLowerCase();
             return item.title.toLowerCase().includes(query) || (item.description?.toLowerCase().includes(query)) || (item.tags?.some(t => t.toLowerCase().includes(query)));
@@ -180,12 +195,21 @@ export default function TeamMatchingPage() {
                         </section>
 
                         <section className="section section--panel">
-                            <div className="section-header"><h2 className="section-title">{getShortSchoolName(currentUser?.university) || '대학교'} HOT 교내 공고</h2></div>
+                            <div className="section-header">
+                                <h2 className="section-title">
+                                    {userUniversity
+                                        ? `${getShortSchoolName(userUniversity)} HOT 공고`
+                                        : 'HOT 공고'
+                                    }
+                                </h2>
+                            </div>
                             <div className="horizontal-scroll-list">
                                 {isLoading ? <div style={{ padding: '20px', color: '#999' }}>로딩 중...</div> :
-                                    hotProjects.length > 0 ? hotProjects.map(item => (
+                                    schoolFilteredHotProjects.length > 0 ? schoolFilteredHotProjects.map(item => (
                                         <HotTopicCard key={item.id} item={item} onBookmarkToggle={handleBookmarkToggle} />
-                                    )) : <div style={{ padding: '20px', color: '#999' }}>등록된 공고가 없습니다.</div>}
+                                    )) : <div style={{ padding: '20px', color: '#999' }}>
+                                        {userUniversity ? '교내 공고가 없습니다.' : '등록된 공고가 없습니다.'}
+                                    </div>}
                             </div>
                         </section>
                     </>

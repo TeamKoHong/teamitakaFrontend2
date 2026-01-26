@@ -175,3 +175,58 @@ export const getShortSchoolName = (fullName) => {
     if (!fullName) return null;
     return SHORT_SCHOOL_NAMES[fullName] || fullName.replace('대학교', '대');
 };
+
+/**
+ * 학교명을 정규화 (비교용)
+ * "고려대", "고려대학교", "Korea University" → "고려대학교"
+ * @param {string} name - 학교명
+ * @returns {string|null} - 정규화된 학교명 또는 null
+ */
+export const normalizeUniversity = (name) => {
+    if (!name || typeof name !== 'string') return null;
+
+    const trimmed = name.trim();
+
+    // 이미 정규 학교명인 경우
+    if (Object.values(SCHOOL_EMAIL_DOMAINS).includes(trimmed)) {
+        return trimmed;
+    }
+
+    // 단축명 → 전체명 역변환
+    const shortToFull = {};
+    Object.entries(SHORT_SCHOOL_NAMES).forEach(([full, short]) => {
+        shortToFull[short] = full;
+        shortToFull[short.toLowerCase()] = full;
+    });
+
+    if (shortToFull[trimmed]) {
+        return shortToFull[trimmed];
+    }
+
+    // "대" → "대학교" 변환 시도
+    if (trimmed.endsWith('대') && !trimmed.endsWith('대학교')) {
+        const fullName = trimmed + '학교';
+        if (Object.values(SCHOOL_EMAIL_DOMAINS).includes(fullName)) {
+            return fullName;
+        }
+    }
+
+    return trimmed;
+};
+
+/**
+ * 두 학교명이 같은 학교인지 확인
+ * @param {string} a - 첫 번째 학교명
+ * @param {string} b - 두 번째 학교명
+ * @returns {boolean} - 같은 학교인지 여부
+ */
+export const isSameUniversity = (a, b) => {
+    if (!a || !b) return false;
+
+    const normalizedA = normalizeUniversity(a);
+    const normalizedB = normalizeUniversity(b);
+
+    if (!normalizedA || !normalizedB) return false;
+
+    return normalizedA === normalizedB;
+};
