@@ -10,7 +10,7 @@ import DefaultHeader from '../../components/Common/DefaultHeader';
 function RegisterPage() {
     const navigate = useNavigate();
     const location = useLocation(); // location 훅 추가
-    const { isAuthenticated } = useAuth();
+    const { isAuthenticated, setRegistration } = useAuth();
 
     // 전달받은 step이 있으면 그걸 사용, 없으면 1 (약관동의)
     const initialStep = location.state?.step || 1;
@@ -137,8 +137,10 @@ function RegisterPage() {
                     const result = await registerUser(payload);
 
                     if (result.success || result.token) {
-                        // Success -> Go to Step 6 (Completion)
-                        setCurrentStep(6);
+                        // 학교 이메일을 registration에 저장 (프로필 설정에서 학교 자동 감지용)
+                        setRegistration({ schoolEmail: email });
+                        // Success -> Go to Profile Setup
+                        navigate('/profile-setup');
                     } else {
                         alert(result.message || '회원가입에 실패했습니다.');
                     }
