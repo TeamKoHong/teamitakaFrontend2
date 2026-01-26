@@ -1,4 +1,4 @@
-import { getApiConfig } from './auth';
+import { apiFetch } from './api';
 
 /**
  * Maps frontend evaluation field names to backend Review model fields
@@ -41,21 +41,10 @@ function mapEvaluationData(evaluationData, projectId, reviewerId, revieweeId) {
  */
 export async function submitEvaluation(projectId, reviewerId, revieweeId, evaluationData) {
   try {
-    const { API_BASE_URL, headers } = getApiConfig();
-    const token = localStorage.getItem('authToken');
-
-    if (!token) {
-      throw new Error('로그인이 필요합니다.');
-    }
-
     const mappedData = mapEvaluationData(evaluationData, projectId, reviewerId, revieweeId);
 
-    const response = await fetch(`${API_BASE_URL}/api/reviews`, {
+    const response = await apiFetch('/api/reviews', {
       method: 'POST',
-      headers: {
-        ...headers,
-        Authorization: `Bearer ${token}`,
-      },
       body: JSON.stringify(mappedData),
     });
 
@@ -79,20 +68,7 @@ export async function submitEvaluation(projectId, reviewerId, revieweeId, evalua
  */
 export async function fetchProjectReviews(projectId) {
   try {
-    const { API_BASE_URL, headers } = getApiConfig();
-    const token = localStorage.getItem('authToken');
-
-    if (!token) {
-      throw new Error('로그인이 필요합니다.');
-    }
-
-    const response = await fetch(`${API_BASE_URL}/api/reviews/project/${projectId}`, {
-      method: 'GET',
-      headers: {
-        ...headers,
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const response = await apiFetch(`/api/reviews/project/${projectId}`);
 
     if (!response.ok) {
       const errorData = await response.json();
@@ -114,20 +90,7 @@ export async function fetchProjectReviews(projectId) {
  */
 export async function fetchProjectMembers(projectId) {
   try {
-    const { API_BASE_URL, headers } = getApiConfig();
-    const token = localStorage.getItem('authToken');
-
-    if (!token) {
-      throw new Error('로그인이 필요합니다.');
-    }
-
-    const response = await fetch(`${API_BASE_URL}/api/projects/${projectId}/members`, {
-      method: 'GET',
-      headers: {
-        ...headers,
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const response = await apiFetch(`/api/projects/${projectId}/members`);
 
     if (!response.ok) {
       const errorData = await response.json();
