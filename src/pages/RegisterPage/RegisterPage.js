@@ -124,13 +124,14 @@ function RegisterPage() {
                     // API expects: name, phoneNumber, residentNumber, schoolEmail, password
                     const payload = {
                         name: phoneData?.name || '',
-                        phoneNumber: phoneData?.phone || '', // Check format. PhoneVerify passes formatted string? Yes.
-                        residentNumber: `${phoneData?.birthDate || ''}${phoneData?.genderCode || ''}`, // 7 digits
+                        phoneNumber: phoneData?.phone || '',
+                        residentNumber: `${phoneData?.birthDate || ''}${phoneData?.genderCode || ''}`,
                         schoolEmail: email,
                         password: password,
-                        // Add CONSENTS if backend needs them?
                         marketingAgreed: consents.marketing,
-                        thirdPartyAgreed: consents.thirdParty
+                        thirdPartyAgreed: consents.thirdParty,
+                        isSmsVerified: true,
+                        isEmailVerified: true
                     };
 
                     const result = await registerUser(payload);
@@ -648,7 +649,7 @@ function RegisterPage() {
                             if (password !== passwordConfirm) {
                                 return <div className='input-error-text'>비밀번호가 일치하지 않습니다.</div>;
                             }
-                            return null;
+                            return <div className='input-success-text'>비밀번호를 설정했습니다.</div>;
                         })()}
                     </div>
                 );
