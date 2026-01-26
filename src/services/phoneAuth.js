@@ -1,4 +1,4 @@
-import { getApiConfig } from './auth';
+import { apiFetch } from './api';
 
 /**
  * Verifies Firebase ID token with backend and gets JWT token
@@ -6,14 +6,8 @@ import { getApiConfig } from './auth';
  * @returns {Promise<Object>} Response with JWT token and user info
  */
 export const verifyPhoneAuth = async (idToken) => {
-    const { API_BASE_URL, headers } = getApiConfig();
-
-    const res = await fetch(`${API_BASE_URL}/api/auth/verify-phone`, {
+    const res = await apiFetch('/api/auth/verify-phone', {
         method: 'POST',
-        headers: {
-            ...headers,
-            'Content-Type': 'application/json',
-        },
         credentials: 'include', // HttpOnly 쿠키 수신
         body: JSON.stringify({ idToken }),
     });

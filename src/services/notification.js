@@ -1,4 +1,4 @@
-import { getApiConfig } from './auth';
+import { apiFetch } from './api';
 
 /**
  * Fetches notifications for a specific project
@@ -7,20 +7,7 @@ import { getApiConfig } from './auth';
  */
 export async function fetchProjectNotifications(projectId) {
     try {
-        const { API_BASE_URL, headers } = getApiConfig();
-        const token = localStorage.getItem('authToken');
-
-        if (!token) {
-            throw new Error('로그인이 필요합니다.');
-        }
-
-        const response = await fetch(`${API_BASE_URL}/api/projects/${projectId}/notifications`, {
-            method: 'GET',
-            headers: {
-                ...headers,
-                Authorization: `Bearer ${token}`,
-            },
-        });
+        const response = await apiFetch(`/api/projects/${projectId}/notifications`);
 
         if (!response.ok) {
             // 404 means no notifications found, return empty array
