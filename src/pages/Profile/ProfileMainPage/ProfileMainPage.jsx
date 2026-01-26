@@ -10,11 +10,11 @@ import styles from './ProfileMainPage.module.scss';
 // Assets
 import backIcon from '../../../assets/back.png';
 import settingIcon from '../../../assets/setting.png'; 
-import profileDefault from '../../../assets/profile_potato.png'; 
+import profileDefault from '../../../assets/profile_default.png'; 
 import defaultProfileImage from '../../../images/profileImage.png';
 import verificationBadge from '../../../assets/대학_인증_완료.svg';
-import projectEmpty from '../../../assets/icons/project_empty.png';
 import 비회원배너 from '../../../assets/character_banner/비회원 캐릭터 배너_테스트유도용.png';
+import skillDefaultImg from '../../../assets/skill_default.png'; // 💡 스킬 기본 이미지 추가
 
 // Character Banners
 import 활동티미 from '../../../assets/character_banner/활동티미.png';
@@ -95,7 +95,6 @@ export default function ProfileMainPage() {
   const [userData, setUserData] = useState(null);
   const [profileData, setProfileData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  // 💡 [수정] 사용하지 않는 error state 제거 (Line 98 관련 해결)
   const [isSkillExpanded, setIsSkillExpanded] = useState(false);
   const [currentImg, setCurrentImg] = useState(profileDefault);
 
@@ -111,12 +110,8 @@ export default function ProfileMainPage() {
         const profileRes = await getProfileDetail();
         if (profileRes?.success) setProfileData(profileRes.data);
       } catch (err) {
-        if (err?.code === 'UNAUTHORIZED') {
-          navigate('/login', { replace: true });
-        } else {
-          // 💡 [수정] error state를 제거했으므로 console로 에러 출력
-          console.error(err.message || '데이터를 불러올 수 없습니다.');
-        }
+        if (err?.code === 'UNAUTHORIZED') navigate('/login', { replace: true });
+        else console.error(err.message || '데이터 로드 실패');
       } finally {
         setIsLoading(false);
       }
@@ -138,14 +133,14 @@ export default function ProfileMainPage() {
   const localMbtiType = localStorage.getItem('user_mbti_type');
   const displayData = {
     profileImage: currentImg || profileDefault,
-    username: userData?.username || '사용자',
-    university: userData?.university || '대학교 미인증',
-    department: userData?.major || userData?.department || '',
+    username: userData?.username || userData?.email || '사용자',
+    university: userData?.university,
+    department: userData?.major || userData?.department,
     enrollmentStatus: userData?.enrollmentStatus || '재학 중',
     currentProjects: profileData?.totalProjects || profileData?.currentProjects || 0,
     totalTeamExperience: userData?.teamExperience || profileData?.totalTeamExperience || 0,
     tags: userData?.keywords || profileData?.tags || [],
-    isVerified: !!userData?.university,
+    isVerified: true, // 💡 로그인 시 무조건 배지 표시
     activityType: { type: userData?.mbti_type || localMbtiType || profileData?.activityType?.type || null },
     skills: profileData?.skills || null,
     feedback: { positive: profileData?.feedback?.positive || [], negative: profileData?.feedback?.negative || [] },
@@ -153,10 +148,12 @@ export default function ProfileMainPage() {
     totalProjects: profileData?.totalProjects || 0,
   };
 
-  const isProfileEmpty = !userData?.university && !userData?.major && (!userData?.keywords || userData.keywords.length === 0);
+  const isProfileEmpty = !userData?.university && !userData?.major;
   const hasNoTeamiType = !displayData.activityType?.type;
-  const hasNoProjects = displayData.totalProjects === 0 && (!displayData.projects || displayData.projects.length === 0);
-  const hasNoEvaluations = displayData.totalProjects === 0;
+  const hasNoProjects = displayData.totalProjects === 0;
+  
+  // 💡 스킬 데이터가 비었거나 프로젝트가 0인 경우 판단
+  const hasNoEvaluations = !displayData.skills || Object.keys(displayData.skills).length === 0 || displayData.totalProjects === 0;
 
   if (isLoading) return <div className={styles.container}>로딩 중...</div>;
 
@@ -175,7 +172,8 @@ export default function ProfileMainPage() {
               isEditable={false}
               onChange={handleImageChange} 
             />
-            {displayData.isVerified && <img src={verificationBadge} alt="인증" className={styles.verificationBadge} onClick={handleVerificationClick} />}
+            {/* 로그인 상태면 인증 뱃지는 항상 노출 */}
+            {userData && <img src={verificationBadge} alt="인증" className={styles.verificationBadge} onClick={handleVerificationClick} />}
           </div>
           <div className={styles.profileInfo}>
             <div className={styles.profileName}>
@@ -188,10 +186,17 @@ export default function ProfileMainPage() {
                 </>
               )}
             </div>      
+            
             <div className={styles.profileUniversity}>
               <GraduationCapIcon />
-              <span>{isProfileEmpty ? '대학교명 재학 중' : `${displayData.university} ${displayData.department} ${displayData.enrollmentStatus}`}</span>
+              <span>
+                {/* 💡 학교 정보가 존재하면 출력, 없으면 기본 텍스트 */}
+                {userData?.university && userData?.major 
+                  ? `${userData.university} ${userData.major} 재학 중` 
+                  : '대학교명 재학 중'}
+              </span>
             </div>
+
             <div className={styles.profileStats}>
               <div className={styles.statHighlight}>
                 {isProfileEmpty ? '현재 진행중인 프로젝트가 없어요.' : <>현재 진행중인 프로젝트 <span className={styles.statOrange}>총 {displayData.currentProjects}건</span></>}
@@ -236,10 +241,14 @@ export default function ProfileMainPage() {
             </span>
           </div>
 
+          {/* 💡 [수정됨] 평가 데이터가 없을 때 skill_default 이미지만 표시 */}
           {hasNoEvaluations ? (
-            <div className={styles.emptySkillContainer}>
-              <img src={projectEmpty} alt="데이터 없음" className={styles.emptyIllustration} />
-              <p className={styles.emptyText}>프로젝트 정보가 없어요.</p>
+            <div className={styles.defaultSkillWrapper} style={{ textAlign: 'center', paddingTop: '16px' }}>
+              <img 
+                src={skillDefaultImg} 
+                alt="기본 스킬 분석 이미지" 
+                style={{ width: '100%', height: 'auto', display: 'block' }} 
+              />
             </div>
           ) : (
             <>
