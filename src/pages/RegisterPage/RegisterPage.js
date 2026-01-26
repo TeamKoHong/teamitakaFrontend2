@@ -44,8 +44,8 @@ function RegisterPage() {
         return emailRegex.test(value);
     };
     const isValidPassword = (value) => {
-        // 영문과 숫자를 모두 포함하고 8자 이상
-        const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+        // 영문과 숫자를 모두 포함하고 8자 이상 (특수문자 허용)
+        const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d).{8,}$/;
         return passwordRegex.test(value);
     };
 
