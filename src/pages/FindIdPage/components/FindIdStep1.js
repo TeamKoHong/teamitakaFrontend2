@@ -5,7 +5,7 @@ import styles from '../FindIdPage.module.scss';
 
 // 통신사 옵션
 const CARRIERS = [
-    { value: '', label: '통신사 선택' },
+    { value: '', label: '통신사' },
     { value: 'SKT', label: 'SKT' },
     { value: 'KT', label: 'KT' },
     { value: 'LGU', label: 'LG U+' },
@@ -51,8 +51,9 @@ function FindIdStep1({ formData, onComplete }) {
     return (
         <div className={styles.stepContainer}>
             <div className={styles.description}>
-                <p>가입할 때 사용한</p>
-                <p>휴대폰 번호를 입력해주세요.</p>
+                <p>본인 확인을 위해</p>
+                <p>아래 정보를 입력해주세요.</p>
+                <p className={styles.subDescription}>티미타카에 가입했던 정보로 입력해주세요.</p>
             </div>
 
             {/* 이름 입력 */}
@@ -62,7 +63,7 @@ function FindIdStep1({ formData, onComplete }) {
                     type="text"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    placeholder="이름을 입력해주세요"
+                    placeholder="이름"
                     className={styles.input}
                 />
             </div>
@@ -87,7 +88,7 @@ function FindIdStep1({ formData, onComplete }) {
                         inputMode="numeric"
                         value={phone}
                         onChange={handlePhoneChange}
-                        placeholder="010-0000-0000"
+                        placeholder="휴대폰번호"
                         className={styles.phoneInput}
                         maxLength={13}
                     />
