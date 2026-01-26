@@ -7,6 +7,7 @@
  */
 
 import { getApiConfig } from './auth';
+import { getAuthHeader } from '../utils/tokenManager';
 
 /**
  * 전역 에러 처리가 포함된 fetch 래퍼
@@ -23,6 +24,7 @@ export const apiFetch = async (endpoint, options = {}) => {
         ...options,
         headers: {
             ...defaultHeaders,
+            ...getAuthHeader(),
             ...options.headers,
         },
     });
