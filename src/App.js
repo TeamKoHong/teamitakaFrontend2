@@ -67,6 +67,7 @@ import PhoneVerifyPage from './pages/PhoneVerifyPage/PhoneVerifyPage';
 import VerificationCodePage from './pages/VerificationCodePage/VerificationCodePage';
 import ProfileSetupPage from './pages/ProfileSetupPage/ProfileSetupPage';
 import WelcomePage from './pages/WelcomePage/WelcomePage';
+import RegisterCompletePage from './pages/RegisterCompletePage/RegisterCompletePage';
 
 // 인증 관련 임포트
 import { AuthProvider } from './contexts/AuthContext';
@@ -350,6 +351,7 @@ const App = () => {
           <Route path="/phone-verify/code" element={<PublicRoute><VerificationCodePage /></PublicRoute>} />
           <Route path="/profile-setup" element={<ProtectedRoute><ProfileSetupPage /></ProtectedRoute>} />
           <Route path="/welcome" element={<ProtectedRoute><WelcomePage /></ProtectedRoute>} />
+          <Route path="/register-complete" element={<RegisterCompletePage />} />
 
           {/* ===== Type Test Routes ===== */}
           <Route path="/type-test" element={<QuizPage />} />
