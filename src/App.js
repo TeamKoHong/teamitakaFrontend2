@@ -1,9 +1,11 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Routes, Navigate, useParams, useLocation } from "react-router-dom";
-import ProjectManagement from "./pages/ProjectManagement/ProjectManagement";
 import "./App.css";
-import ProjectDetailPage from "./pages/ProjectDetailPage/ProjectDetailPage";
 import "react-spring-bottom-sheet/dist/style.css";
+
+// 페이지 임포트
+import ProjectManagement from "./pages/ProjectManagement/ProjectManagement";
+import ProjectDetailPage from "./pages/Profile/ProjectDetailPage"; 
 import ProjectMemberPage from "./pages/ProjectMemberPage/ProjectMemberPage";
 import ProceedingsPage from "./pages/ProceedingsPage/ProceedingsPage";
 import CreateMeetingPage from "./pages/CreateMeetingPage/CreateMeetingPage";
@@ -14,7 +16,7 @@ import RatingProjectPage from './pages/RatingProjectPage/RatingProjectPage';
 import RatingProjectStatusPage from './pages/RatingProjectStatusPage/RatingProjectStatusPage';
 import TeamMemberEvaluationPage from './pages/TeamMemberEvaluationPage/TeamMemberEvaluationPage';
 import ReceivedFeedbackDetailPage from './pages/ReceivedFeedbackDetailPage/ReceivedFeedbackDetailPage';
-// CategorySliderDemo 임포트 제거 (Line 17 에러 해결)
+
 import OnboardingPage from './pages/OnboardingPage/OnboardingPage';
 import LoginPage from './pages/LoginPage/LoginPage';
 import RegisterPage from './pages/RegisterPage/RegisterPage';
@@ -29,24 +31,19 @@ import BookmarkPage from './pages/BookmarkPage/BookmarkPage';
 import RecruitmentViewPage from './pages/RecruitmentViewPage/RecruitmentViewPage';
 import TeamSelectPage from './pages/TeamSelectPage/TeamSelectPage';
 
-// Type Test Pages
 import QuizPage from './features/type-test/pages/QuizPage';
 import AnalysisCompletePage from './features/type-test/pages/AnalysisCompletePage';
 import ResultPage from './features/type-test/pages/ResultPage';
 
-// 메인 페이지
 import MainPage from './components/Home/MainPage';
 
-// 프로젝트 지원하기
 import ProjectApply from "./pages/ProjectApply/ProjectApply";
 import ProjectApplySelect from "./pages/ProjectApply/ProjectApplySelect";
 import ProjectApplyComplete from "./pages/ProjectApply/ProjectApplyComplete";
 
-// 알림 페이지
 import NotificationSettings from './pages/NotificationsPage/NotificationSettings';
 import NotificationsPage from './pages/NotificationsPage/NotificationsPage';
 
-// 프로젝트 생성하기
 import ProjectRecruit from './pages/ProjectRecruit/ProjectRecruit/ProjectRecruit';
 import ProjectRecruitDetail from './pages/ProjectRecruit/ProjectRecruitDetail/ProjectRecruitDetail';
 import ProjectRecruitImage from './pages/ProjectRecruit/ProjectRecruitImage/ProjectRecruitImage';
@@ -55,16 +52,13 @@ import ProjectRecruitPreview from './pages/ProjectRecruit/ProjectRecruitPreview/
 import ProjectRecruitPublish from "./pages/ProjectRecruit/ProjectRecruitPublish/ProjectRecruitPublish";
 import ProjectRecruitPublishDone from "./pages/ProjectRecruit/ProjectRecruitPublish/ProjectRecruitPublishDone";
 
-// PhoneAuthTestPage 임포트 제거 (Line 53 에러 해결)
-
-// 휴대폰 본인인증
 import PhoneVerifyPage from './pages/PhoneVerifyPage/PhoneVerifyPage';
 import VerificationCodePage from './pages/VerificationCodePage/VerificationCodePage';
 import ProfileSetupPage from './pages/ProfileSetupPage/ProfileSetupPage';
 import WelcomePage from './pages/WelcomePage/WelcomePage';
 import RegisterCompletePage from './pages/RegisterCompletePage/RegisterCompletePage';
 
-// 인증 관련
+// 인증 및 컨텍스트
 import { AuthProvider } from './contexts/AuthContext';
 import { UniversityFilterProvider } from './contexts/UniversityFilterContext';
 import GlobalToastSystem from './components/Common/GlobalToastSystem';
@@ -72,7 +66,6 @@ import AuthEventBridge from './components/Common/AuthEventBridge';
 import ProtectedRoute, { PublicRoute } from './components/ProtectedRoute';
 import ProfileVerificationPage from './pages/Profile/ProfileVerificationPage';
 
-// 라우팅 상수 (미사용 변수 제거: LEGACY_EVALUATION_ROUTES, DEMO_ROUTES)
 import {
   MAIN_ROUTES,
   PROJECT_ROUTES,
@@ -100,7 +93,7 @@ const EvaluationGuard = ({ children }) => {
 };
 
 const ProjectPermissionGuard = ({ children, projectId }) => {
-  const [hasPermission] = React.useState(true); // 임시 권한 허용
+  const [hasPermission] = React.useState(true);
   return hasPermission ? children : <Navigate to={PROJECT_ROUTES.MANAGEMENT} replace />;
 };
 
@@ -167,6 +160,7 @@ const App = () => {
             <Route path={PROFILE_ROUTES.MAIN} element={<ProfileMainPage />} />
             <Route path={PROFILE_ROUTES.EDIT} element={<ProfileEditPage />} />
             <Route path={PROFILE_ROUTES.VERIFICATION || "/profile/verification"} element={<ProfileVerificationPage />} />
+            <Route path="/project/:projectId" element={<ProjectDetailPage />} /> 
 
             {/* 프로젝트 관리 */}
             <Route path={PROJECT_ROUTES.MANAGEMENT} element={<ProjectManagement />} />
