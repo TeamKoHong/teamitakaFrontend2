@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import DefaultHeader from "../../components/Common/DefaultHeader";
 import projectDefaultImg from "../../assets/icons/project_default_img.png";
@@ -8,6 +8,7 @@ import BookmarkCalendarIcon from "../../assets/icons/bookMark_calendar.svg";
 import ApplicationHistorySlide from "../../components/BookmarkPage/ApplicationHistorySlide";
 import MyRecruitmentSlide from "../../components/BookmarkPage/MyRecruitmentSlide";
 import { getBookmarkedRecruitments } from "../../services/recruitment";
+import { useUniversityFilter } from "../../hooks/useUniversityFilter";
 import "./BookmarkPage.scss";
 
 function BookmarkPage() {
@@ -15,6 +16,7 @@ function BookmarkPage() {
   const [activeTab, setActiveTab] = useState("recruiting"); // "recruiting" | "completed"
   const [isApplicationHistoryOpen, setIsApplicationHistoryOpen] = useState(false);
   const [isMyRecruitmentOpen, setIsMyRecruitmentOpen] = useState(false);
+  const { filterByUniv } = useUniversityFilter();
 
   const [bookmarks, setBookmarks] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -26,7 +28,13 @@ function BookmarkPage() {
         setIsLoading(true);
         setError(null);
         const response = await getBookmarkedRecruitments();
-        setBookmarks(response.data || []);
+        const data = response.data || [];
+        // 대학 필터링을 위해 university 필드 추가
+        const bookmarksWithUniv = data.map(item => ({
+          ...item,
+          university: item.university || item.author?.university || item.User?.university || null,
+        }));
+        setBookmarks(bookmarksWithUniv);
       } catch (err) {
         console.error('북마크 목록 조회 실패:', err);
         if (err.message === 'UNAUTHORIZED' || err.code === 'UNAUTHORIZED') {
@@ -43,8 +51,13 @@ function BookmarkPage() {
     fetchBookmarks();
   }, []);
 
+  // 대학 필터 적용
+  const univFilteredBookmarks = useMemo(() => {
+    return filterByUniv(bookmarks, 'university');
+  }, [bookmarks, filterByUniv]);
+
   // 모집 중/마감 필터링
-  const filteredProjects = bookmarks.filter(project => {
+  const filteredProjects = univFilteredBookmarks.filter(project => {
     if (activeTab === "recruiting") {
       return project.status === 'open' || project.status === 'recruiting' || !project.status;
     } else {
@@ -52,12 +65,12 @@ function BookmarkPage() {
     }
   });
 
-  // 통계 계산
+  // 통계 계산 (대학 필터 적용된 데이터 기준)
   const bookmarkStats = {
-    totalBookmarks: bookmarks.length,
+    totalBookmarks: univFilteredBookmarks.length,
     appliedProjects: 0, // TODO: 지원 내역 API 연동 시 업데이트
     myRecruitmentPosts: 0, // TODO: 내 모집글 API 연동 시 업데이트
-    urgentDeadlines: bookmarks.filter(b => {
+    urgentDeadlines: univFilteredBookmarks.filter(b => {
       if (!b.deadline) return false;
       const deadline = new Date(b.deadline);
       const today = new Date();

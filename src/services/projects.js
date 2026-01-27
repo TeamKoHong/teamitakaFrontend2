@@ -1,4 +1,4 @@
-import { getApiConfig } from './auth';
+import { apiFetch } from './api';
 
 /**
  * Creates a new project
@@ -13,29 +13,10 @@ import { getApiConfig } from './auth';
  * @returns {Promise<Object>} Created project
  */
 export const createProject = async (projectData) => {
-    const { API_BASE_URL, headers } = getApiConfig();
-    const token = localStorage.getItem('authToken');
-
-    if (!token) {
-        const err = new Error('UNAUTHORIZED');
-        err.code = 'UNAUTHORIZED';
-        throw err;
-    }
-
-    const res = await fetch(`${API_BASE_URL}/api/projects`, {
+    const res = await apiFetch('/api/projects', {
         method: 'POST',
-        headers: {
-            ...headers,
-            Authorization: `Bearer ${token}`,
-        },
         body: JSON.stringify(projectData),
     });
-
-    if (res.status === 401 || res.status === 403) {
-        const err = new Error('UNAUTHORIZED');
-        err.code = 'UNAUTHORIZED';
-        throw err;
-    }
 
     if (!res.ok) {
         const errorData = await res.json();
@@ -48,22 +29,13 @@ export const createProject = async (projectData) => {
 };
 
 export const getMyProjects = async ({ status = 'ongoing', limit = 10, offset = 0, isFavorite, evaluation_status } = {}) => {
-    const { API_BASE_URL, headers } = getApiConfig();
-    const token = localStorage.getItem('authToken');
-
     const params = { status, limit: String(limit), offset: String(offset) };
     if (isFavorite !== undefined) params.isFavorite = String(isFavorite);
     if (evaluation_status) params.evaluation_status = evaluation_status;
 
     const qs = new URLSearchParams(params).toString();
-    const res = await fetch(`${API_BASE_URL}/api/projects/mine?${qs}`, {
-        headers: { ...headers, Authorization: `Bearer ${token}` },
-    });
-    if (res.status === 401 || res.status === 403) {
-        const err = new Error('UNAUTHORIZED');
-        err.code = 'UNAUTHORIZED';
-        throw err;
-    }
+    const res = await apiFetch(`/api/projects/mine?${qs}`);
+
     if (!res.ok) {
         const err = new Error('SERVER_ERROR');
         err.code = 'SERVER_ERROR';
@@ -87,28 +59,9 @@ export const getFavoriteProjects = async (options = {}) => {
  * @returns {Promise<Object>} Updated favorite status
  */
 export const toggleProjectFavorite = async (projectId) => {
-    const { API_BASE_URL, headers } = getApiConfig();
-    const token = localStorage.getItem('authToken');
-
-    if (!token) {
-        const err = new Error('UNAUTHORIZED');
-        err.code = 'UNAUTHORIZED';
-        throw err;
-    }
-
-    const res = await fetch(`${API_BASE_URL}/api/projects/${projectId}/favorite`, {
+    const res = await apiFetch(`/api/projects/${projectId}/favorite`, {
         method: 'PUT',
-        headers: {
-            ...headers,
-            Authorization: `Bearer ${token}`,
-        },
     });
-
-    if (res.status === 401 || res.status === 403) {
-        const err = new Error('UNAUTHORIZED');
-        err.code = 'UNAUTHORIZED';
-        throw err;
-    }
 
     if (!res.ok) {
         const errorData = await res.json();
@@ -126,24 +79,7 @@ export const toggleProjectFavorite = async (projectId) => {
  * @returns {Promise<Object>} Project details
  */
 export const fetchProjectDetails = async (projectId) => {
-    const { API_BASE_URL, headers } = getApiConfig();
-    const token = localStorage.getItem('authToken');
-
-    if (!token) {
-        const err = new Error('UNAUTHORIZED');
-        err.code = 'UNAUTHORIZED';
-        throw err;
-    }
-
-    const res = await fetch(`${API_BASE_URL}/api/projects/${projectId}`, {
-        headers: { ...headers, Authorization: `Bearer ${token}` },
-    });
-
-    if (res.status === 401 || res.status === 403) {
-        const err = new Error('UNAUTHORIZED');
-        err.code = 'UNAUTHORIZED';
-        throw err;
-    }
+    const res = await apiFetch(`/api/projects/${projectId}`);
 
     if (!res.ok) {
         const errorData = await res.json();
@@ -161,28 +97,7 @@ export const fetchProjectDetails = async (projectId) => {
  * @returns {Promise<Object>} Project members list
  */
 export const fetchProjectMembers = async (projectId) => {
-    const { API_BASE_URL, headers } = getApiConfig();
-    const token = localStorage.getItem('authToken');
-
-    if (!token) {
-        const err = new Error('UNAUTHORIZED');
-        err.code = 'UNAUTHORIZED';
-        throw err;
-    }
-
-    const res = await fetch(`${API_BASE_URL}/api/projects/${projectId}/members`, {
-        method: 'GET',
-        headers: {
-            ...headers,
-            Authorization: `Bearer ${token}`,
-        },
-    });
-
-    if (res.status === 401 || res.status === 403) {
-        const err = new Error('UNAUTHORIZED');
-        err.code = 'UNAUTHORIZED';
-        throw err;
-    }
+    const res = await apiFetch(`/api/projects/${projectId}/members`);
 
     if (res.status === 404) {
         const err = new Error('RESOURCE_NOT_FOUND');
@@ -206,28 +121,7 @@ export const fetchProjectMembers = async (projectId) => {
  * @returns {Promise<Object>} Meeting list with items and total
  */
 export const getProjectMeetings = async (projectId) => {
-    const { API_BASE_URL, headers } = getApiConfig();
-    const token = localStorage.getItem('authToken');
-
-    if (!token) {
-        const err = new Error('UNAUTHORIZED');
-        err.code = 'UNAUTHORIZED';
-        throw err;
-    }
-
-    const res = await fetch(`${API_BASE_URL}/api/projects/${projectId}/meetings`, {
-        method: 'GET',
-        headers: {
-            ...headers,
-            Authorization: `Bearer ${token}`,
-        },
-    });
-
-    if (res.status === 401 || res.status === 403) {
-        const err = new Error('UNAUTHORIZED');
-        err.code = 'UNAUTHORIZED';
-        throw err;
-    }
+    const res = await apiFetch(`/api/projects/${projectId}/meetings`);
 
     if (res.status === 404) {
         const err = new Error('RESOURCE_NOT_FOUND');
@@ -256,29 +150,10 @@ export const getProjectMeetings = async (projectId) => {
  * @returns {Promise<Object>} Created meeting data
  */
 export const createMeeting = async (projectId, meetingData) => {
-    const { API_BASE_URL, headers } = getApiConfig();
-    const token = localStorage.getItem('authToken');
-
-    if (!token) {
-        const err = new Error('UNAUTHORIZED');
-        err.code = 'UNAUTHORIZED';
-        throw err;
-    }
-
-    const res = await fetch(`${API_BASE_URL}/api/projects/${projectId}/meetings`, {
+    const res = await apiFetch(`/api/projects/${projectId}/meetings`, {
         method: 'POST',
-        headers: {
-            ...headers,
-            Authorization: `Bearer ${token}`,
-        },
         body: JSON.stringify(meetingData),
     });
-
-    if (res.status === 401 || res.status === 403) {
-        const err = new Error('UNAUTHORIZED');
-        err.code = 'UNAUTHORIZED';
-        throw err;
-    }
 
     if (res.status === 400) {
         const errorData = await res.json();
@@ -304,28 +179,7 @@ export const createMeeting = async (projectId, meetingData) => {
  * @returns {Promise<Array>} Schedule list
  */
 export const getProjectSchedules = async (projectId) => {
-    const { API_BASE_URL, headers } = getApiConfig();
-    const token = localStorage.getItem('authToken');
-
-    if (!token) {
-        const err = new Error('UNAUTHORIZED');
-        err.code = 'UNAUTHORIZED';
-        throw err;
-    }
-
-    const res = await fetch(`${API_BASE_URL}/api/schedule/project/${projectId}`, {
-        method: 'GET',
-        headers: {
-            ...headers,
-            Authorization: `Bearer ${token}`,
-        },
-    });
-
-    if (res.status === 401 || res.status === 403) {
-        const err = new Error('UNAUTHORIZED');
-        err.code = 'UNAUTHORIZED';
-        throw err;
-    }
+    const res = await apiFetch(`/api/schedule/project/${projectId}`);
 
     if (res.status === 404) {
         const err = new Error('RESOURCE_NOT_FOUND');
@@ -355,29 +209,10 @@ export const getProjectSchedules = async (projectId) => {
  * @returns {Promise<Object>} Update result
  */
 export const updateProjectMembers = async (projectId, members) => {
-    const { API_BASE_URL, headers } = getApiConfig();
-    const token = localStorage.getItem('authToken');
-
-    if (!token) {
-        const err = new Error('UNAUTHORIZED');
-        err.code = 'UNAUTHORIZED';
-        throw err;
-    }
-
-    const res = await fetch(`${API_BASE_URL}/api/projects/${projectId}/members`, {
+    const res = await apiFetch(`/api/projects/${projectId}/members`, {
         method: 'PUT',
-        headers: {
-            ...headers,
-            Authorization: `Bearer ${token}`,
-        },
         body: JSON.stringify({ members }),
     });
-
-    if (res.status === 401) {
-        const err = new Error('UNAUTHORIZED');
-        err.code = 'UNAUTHORIZED';
-        throw err;
-    }
 
     if (res.status === 403) {
         const errorData = await res.json();
@@ -417,28 +252,7 @@ export const updateProjectMembers = async (projectId, members) => {
  * @returns {Promise<Object>} Todo list with items and total
  */
 export const getProjectTodos = async (projectId) => {
-    const { API_BASE_URL, headers } = getApiConfig();
-    const token = localStorage.getItem('authToken');
-
-    if (!token) {
-        const err = new Error('UNAUTHORIZED');
-        err.code = 'UNAUTHORIZED';
-        throw err;
-    }
-
-    const res = await fetch(`${API_BASE_URL}/api/projects/${projectId}/todo`, {
-        method: 'GET',
-        headers: {
-            ...headers,
-            Authorization: `Bearer ${token}`,
-        },
-    });
-
-    if (res.status === 401 || res.status === 403) {
-        const err = new Error('UNAUTHORIZED');
-        err.code = 'UNAUTHORIZED';
-        throw err;
-    }
+    const res = await apiFetch(`/api/projects/${projectId}/todo`);
 
     if (res.status === 404) {
         const err = new Error('RESOURCE_NOT_FOUND');
@@ -466,29 +280,10 @@ export const getProjectTodos = async (projectId) => {
  * @returns {Promise<Object>} Updated todo data
  */
 export const updateProjectTodo = async (projectId, todoId, updateData) => {
-    const { API_BASE_URL, headers } = getApiConfig();
-    const token = localStorage.getItem('authToken');
-
-    if (!token) {
-        const err = new Error('UNAUTHORIZED');
-        err.code = 'UNAUTHORIZED';
-        throw err;
-    }
-
-    const res = await fetch(`${API_BASE_URL}/api/projects/${projectId}/todo/${todoId}`, {
+    const res = await apiFetch(`/api/projects/${projectId}/todo/${todoId}`, {
         method: 'PUT',
-        headers: {
-            ...headers,
-            Authorization: `Bearer ${token}`,
-        },
         body: JSON.stringify(updateData),
     });
-
-    if (res.status === 401 || res.status === 403) {
-        const err = new Error('UNAUTHORIZED');
-        err.code = 'UNAUTHORIZED';
-        throw err;
-    }
 
     if (res.status === 404) {
         const err = new Error('RESOURCE_NOT_FOUND');
@@ -513,15 +308,6 @@ export const updateProjectTodo = async (projectId, todoId, updateData) => {
  * @returns {Promise<Object>} Created todo data
  */
 export const createProjectTodo = async (projectId, content) => {
-    const { API_BASE_URL, headers } = getApiConfig();
-    const token = localStorage.getItem('authToken');
-
-    if (!token) {
-        const err = new Error('UNAUTHORIZED');
-        err.code = 'UNAUTHORIZED';
-        throw err;
-    }
-
     // content 유효성 검사
     if (!content || !content.trim()) {
         const err = new Error('내용을 입력해주세요');
@@ -531,20 +317,10 @@ export const createProjectTodo = async (projectId, content) => {
 
     const requestBody = { title: content.trim() };
 
-    const res = await fetch(`${API_BASE_URL}/api/projects/${projectId}/todo`, {
+    const res = await apiFetch(`/api/projects/${projectId}/todo`, {
         method: 'POST',
-        headers: {
-            ...headers,
-            Authorization: `Bearer ${token}`,
-        },
         body: JSON.stringify(requestBody),
     });
-
-    if (res.status === 401 || res.status === 403) {
-        const err = new Error('UNAUTHORIZED');
-        err.code = 'UNAUTHORIZED';
-        throw err;
-    }
 
     if (res.status === 400) {
         const errorData = await res.json().catch(() => ({ message: '유효성 검사 실패' }));
@@ -578,33 +354,12 @@ export const createProjectTodo = async (projectId, content) => {
  * @returns {Promise<Object>} Activity logs with pagination info
  */
 export const getProjectActivityLogs = async (projectId, limit = 5, offset = 0) => {
-    const { API_BASE_URL, headers } = getApiConfig();
-    const token = localStorage.getItem('authToken');
-
-    if (!token) {
-        const err = new Error('UNAUTHORIZED');
-        err.code = 'UNAUTHORIZED';
-        throw err;
-    }
-
     const qs = new URLSearchParams({
         limit: String(limit),
         offset: String(offset)
     }).toString();
 
-    const res = await fetch(`${API_BASE_URL}/api/projects/${projectId}/activity-log?${qs}`, {
-        method: 'GET',
-        headers: {
-            ...headers,
-            Authorization: `Bearer ${token}`,
-        },
-    });
-
-    if (res.status === 401 || res.status === 403) {
-        const err = new Error('UNAUTHORIZED');
-        err.code = 'UNAUTHORIZED';
-        throw err;
-    }
+    const res = await apiFetch(`/api/projects/${projectId}/activity-log?${qs}`);
 
     // 404는 활동 로그가 없거나 엔드포인트가 아직 구현되지 않은 경우로 처리
     // 조용히 빈 결과를 반환

@@ -1,9 +1,10 @@
-// src/Pages/ProjectRecruitImage/ProjectRecruitImage.js
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import './ProjectRecruitImage.scss';
 import { loadRecruitDraft, saveRecruitDraft } from '../../../api/recruit';
 import { useNavigate } from 'react-router-dom';
+
+import addImageIcon from '../../../assets/icons/add_image.png';
 
 export default function ProjectRecruitImage() {
   const nav = useNavigate();
@@ -102,7 +103,7 @@ export default function ProjectRecruitImage() {
       </div>
 
       <div className="container">
-        <h2 className="h2">모집글의 대표 이미지를 {"\n"} 추가해주세요!</h2>
+        <h2 className="h2">모집글의 대표 이미지를 {'\n'} 추가해주세요!</h2>
 
         {/* 업로드 카드 */}
         <button
@@ -114,15 +115,20 @@ export default function ProjectRecruitImage() {
           {imageDataUrl ? (
             <img src={imageDataUrl} alt="대표 이미지 미리보기" />
           ) : (
-            <span className="plus" aria-hidden="true" />
+            <img
+              className="add-image-icon"
+              src={addImageIcon}
+              alt=""
+              aria-hidden="true"
+            />
           )}
         </button>
 
         <input ref={fileRef} type="file" accept="image/*" hidden onChange={onPick} />
       </div>
 
-      {/* 하단 CTA */}
-      <div className="footer">
+      {/* 하단 CTA (✅ 시트 열리면 숨김) */}
+      <div className={`footer ${sheetOpen ? 'is-hidden' : ''}`}>
         {imageDataUrl ? (
           <button type="button" className="next-btn on" onClick={goNext}>다음</button>
         ) : (
@@ -134,6 +140,7 @@ export default function ProjectRecruitImage() {
       {sheetOpen && createPortal(
         <>
           <div className="recruit-action-sheet__backdrop" onClick={closeSheet} />
+
           <div
             className="recruit-action-sheet"
             role="dialog"

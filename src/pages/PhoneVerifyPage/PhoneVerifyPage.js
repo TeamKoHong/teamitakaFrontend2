@@ -6,80 +6,74 @@ import CarrierSelect from '../../components/auth/CarrierSelect';
 import SSNInput from '../../components/auth/SSNInput';
 import TermsBottomSheet from '../../components/auth/TermsBottomSheet';
 import Button from '../../components/DesignSystem/Button/Button';
-import { formatPhoneNumber, requestPhoneVerification } from '../../services/phoneVerify';
 import styles from './PhoneVerifyPage.module.scss';
+import { useSmsAuth } from '../../hooks/useSmsAuth';
 
 /**
- * 휴대폰 본인인증 - 정보 입력 페이지
+ * 휴대폰 본인인증 - 정보 입력 페이지 (Step 1)
  */
 function PhoneVerifyPage() {
     const navigate = useNavigate();
 
-    // 폼 상태
+    // SMS Auth Hook
+    const {
+        phone,
+        isLoading: isSmsLoading,
+        error: smsError,
+        handlePhoneChange,
+        sendSms,
+    } = useSmsAuth();
+
+    // Form States
     const [carrier, setCarrier] = useState('');
-    const [phone, setPhone] = useState('');
     const [birthDate, setBirthDate] = useState('');
     const [genderCode, setGenderCode] = useState('');
     const [name, setName] = useState('');
 
-    // UI 상태
+    // UI States
     const [isTermsOpen, setIsTermsOpen] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState('');
 
-    // 폼 유효성 검사
-    const isFormValid = carrier && phone.length >= 13 && birthDate.length === 6 &&
+    // Form Validation
+    const isBasicFormValid = carrier && phone.length >= 12 && birthDate.length === 6 &&
         genderCode.length === 1 && name.trim().length >= 2;
 
-    // 휴대폰 번호 변경
-    const handlePhoneChange = (e) => {
-        const formatted = formatPhoneNumber(e.target.value);
-        setPhone(formatted);
-    };
-
-    // 뒤로가기
+    // Handle Back
     const handleBack = () => {
         navigate(-1);
     };
 
-    // 본인인증 버튼 클릭 -> 약관 바텀시트 열기
-    const handleVerifyClick = () => {
-        if (isFormValid) {
+    // Open Terms Sheet
+    const handleMainButtonClick = () => {
+        if (isBasicFormValid) {
             setIsTermsOpen(true);
         }
     };
 
-    // 약관 동의 완료 -> SMS 발송 요청
+    // Terms Agreement -> Send SMS -> Navigate to Code Page
     const handleTermsAgree = async () => {
         setIsTermsOpen(false);
-        setIsLoading(true);
-        setError('');
-
         try {
-            const formData = { carrier, phone, birthDate, genderCode, name };
-            await requestPhoneVerification(formData);
-
-            // 인증번호 입력 페이지로 이동
-            navigate('/phone-verify/code', {
-                state: { formData }
-            });
-        } catch (err) {
-            if (err.code === 'ALREADY_REGISTERED') {
-                setError('이미 가입된 번호입니다. 로그인해주세요.');
-            } else {
-                setError(err.message || '오류가 발생했습니다.');
+            const sessionId = await sendSms();
+            if (sessionId) {
+                navigate('/phone-verify/code', {
+                    state: {
+                        formData: { name, phone, birthDate, genderCode, carrier },
+                        sessionId,
+                        timerStart: Date.now(),
+                    },
+                });
             }
-        } finally {
-            setIsLoading(false);
+        } catch (err) {
+            // Error is handled by useSmsAuth
         }
     };
 
     return (
         <div className={styles.container}>
-            {/* 헤더 */}
+            {/* Header */}
             <DefaultHeader title="본인 인증" onBack={handleBack} />
 
-            {/* 메인 컨텐츠 */}
+            {/* Main Content */}
             <div className={styles.content}>
                 <StepIndicator currentStep={1} totalSteps={5} />
 
@@ -88,7 +82,7 @@ function PhoneVerifyPage() {
                     <p>전화번호를 입력해주세요.</p>
                 </div>
 
-                {/* 휴대전화번호 */}
+                {/* Phone Number Section */}
                 <div className={styles.formSection}>
                     <label className={styles.label}>휴대전화번호</label>
                     <div className={styles.phoneRow}>
@@ -112,7 +106,7 @@ function PhoneVerifyPage() {
                     </div>
                 </div>
 
-                {/* 주민등록번호 */}
+                {/* SSN Section */}
                 <div className={styles.formSection}>
                     <label className={styles.label}>주민등록번호</label>
                     <SSNInput
@@ -123,7 +117,7 @@ function PhoneVerifyPage() {
                     />
                 </div>
 
-                {/* 이름 */}
+                {/* Name Section */}
                 <div className={styles.formSection}>
                     <label className={styles.label}>이름</label>
                     <input
@@ -135,33 +129,25 @@ function PhoneVerifyPage() {
                     />
                 </div>
 
-                {/* 에러 메시지 */}
-                {error && (
-                    <div className={styles.errorMessage}>{error}</div>
+                {/* Error Message */}
+                {smsError && (
+                    <div className={styles.errorMessage}>{smsError}</div>
                 )}
-
-                {/* Firebase reCAPTCHA 컨테이너 (invisible) */}
-                <div id="recaptcha-container"></div>
-
-                {/* 내 명의 휴대전화가 아니에요 */}
-                <button className={styles.notMyPhoneLink}>
-                    내 명의 휴대전화가 아니에요
-                </button>
             </div>
 
-            {/* 하단 버튼 */}
+            {/* Bottom Button */}
             <div className={styles.bottomButton}>
                 <Button
                     fullWidth
-                    disabled={!isFormValid || isLoading}
-                    onClick={handleVerifyClick}
-                    isLoading={isLoading}
+                    disabled={!isBasicFormValid || isSmsLoading}
+                    onClick={handleMainButtonClick}
+                    isLoading={isSmsLoading}
                 >
                     본인인증
                 </Button>
             </div>
 
-            {/* 약관 동의 바텀시트 */}
+            {/* Terms Sheet */}
             <TermsBottomSheet
                 isOpen={isTermsOpen}
                 onClose={() => setIsTermsOpen(false)}

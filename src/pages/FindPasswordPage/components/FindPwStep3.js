@@ -49,12 +49,12 @@ function FindPwStep3({ email, onComplete }) {
 
             {/* 새 비밀번호 입력 */}
             <div className={styles.formSection}>
-                <label className={styles.label}>비밀번호 ( 8자 이상 , 영문 , 숫자 , 특수문자 )</label>
+                <label className={styles.label}>새로운 비밀번호 입력</label>
                 <input
                     type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    placeholder="새로운 비밀번호 입력"
+                    placeholder="비밀번호 ( 8자 이상 , 영문 , 숫자 , 특수문자 )"
                     className={styles.input}
                 />
                 {passwordValidation.message && (
@@ -66,12 +66,11 @@ function FindPwStep3({ email, onComplete }) {
 
             {/* 비밀번호 확인 */}
             <div className={styles.formSection}>
-                <label className={styles.label}>비밀번호 확인</label>
                 <input
                     type="password"
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
-                    placeholder="비밀번호를 한번 더 입력해 확인해주세요."
+                    placeholder="비밀번호 확인"
                     className={styles.input}
                 />
                 {confirmValidation.message && (

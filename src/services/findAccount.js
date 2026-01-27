@@ -151,8 +151,8 @@ export const resetPassword = async (data) => {
         throw new Error('새 비밀번호를 입력해주세요.');
     }
 
-    // 비밀번호 형식 검증 (영문+숫자 8자 이상)
-    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d!@#$%^&*]{8,}$/;
+    // 비밀번호 형식 검증 (영문+숫자 혼용 8자 이상, 특수문자 허용)
+    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d).{8,}$/;
     if (!passwordRegex.test(data.newPassword)) {
         throw new Error('비밀번호는 영문, 숫자를 혼용해 8자 이상으로 설정하세요.');
     }

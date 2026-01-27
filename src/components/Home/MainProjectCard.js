@@ -1,11 +1,12 @@
 // [src/components/MainPage/MainProjectCard.js]
 import React from "react";
 import "./MainProjectCard.scss";
-import { IoCalendarOutline, IoTimeOutline } from "react-icons/io5";
 
+import projectPeriodIcon from "../../assets/icons/ProjectPeriod.png";
+import meetingTimeIcon from "../../assets/icons/MeetingTime.png";
+import defaultThumbnail from "../../assets/icons/DefaultImage.png";
 import CircularProgress from "../Common/CircularProgress";
-
-import { formatDateRange } from "../../utils/dateFormat"; //
+import { formatDateRange } from "../../utils/dateFormat";
 
 // 진행률 계산 (시작일~종료일 기준)
 const calculateProgress = (startDate, endDate) => {
@@ -38,10 +39,8 @@ const calcDDay = (endStr) => {
 const MainProjectCard = ({ project, onClick }) => {
   if (!project) return null;
 
-  //  title 후보들
   const title = project?.title || project?.name || project?.project_name || "프로젝트명";
 
-  // (ProjectCard와 동일) 모집/프로젝트 날짜 둘 다 지원
   const startDate =
     project?.recruitment_start ||
     project?.startDate ||
@@ -58,7 +57,6 @@ const MainProjectCard = ({ project, onClick }) => {
 
   const meetingTime = project?.meetingTime || project?.meeting_time || "고정 회의 시간";
 
-  // 썸네일 후보들
   const thumbnail =
     project?.thumbnailUrl ||
     project?.thumbnail_url ||
@@ -66,18 +64,15 @@ const MainProjectCard = ({ project, onClick }) => {
     project?.image_url ||
     project?.coverImage ||
     project?.cover_image ||
-    "";
+    defaultThumbnail;
 
-  // 기간 표기: 유틸 우선, 없으면 fallback
   const formattedPeriod = formatDateRange?.(startDate, endDate);
   const periodText =
     formattedPeriod ||
     (startDate && endDate ? `${startDate} ~ ${endDate}` : startDate ? `${startDate}` : "프로젝트 기간");
 
-  //  D-day
   const ddayText = calcDDay(endDate);
 
-  // 원형 진행률(없으면 서버값 progress_percent 사용)
   const progressValue =
     startDate && endDate
       ? Number(calculateProgress(startDate, endDate))
@@ -86,11 +81,7 @@ const MainProjectCard = ({ project, onClick }) => {
   return (
     <button type="button" className="main-project-card" onClick={onClick}>
       <div className="thumb">
-        {thumbnail ? (
-          <img src={thumbnail} alt={`${title} 썸네일`} />
-        ) : (
-          <div className="thumb-placeholder" aria-hidden />
-        )}
+        <img src={thumbnail} alt={`${title} 썸네일`} />
       </div>
 
       <div className="body">
@@ -99,22 +90,21 @@ const MainProjectCard = ({ project, onClick }) => {
 
           <div className="meta">
             <div className="meta-row">
-              <IoCalendarOutline className="meta-icon" aria-hidden />
+              <img src={projectPeriodIcon} alt="" className="meta-icon" aria-hidden />
               <span className="meta-text">{periodText}</span>
             </div>
 
             <div className="meta-row">
-              <IoTimeOutline className="meta-icon" aria-hidden />
+              <img src={meetingTimeIcon} alt="" className="meta-icon" aria-hidden />
               <span className="meta-text">{meetingTime}</span>
             </div>
           </div>
         </div>
 
-        {/* 오른쪽: D-day + 원형 프로그레스 */}
         <div className="right">
-           <div className="progress-wrap" aria-label={`진행률 ${progressValue}%`}>
-    <CircularProgress percentage={progressValue} />
-    <span className="progress-center-text">{ddayText}</span>
+          <div className="progress-wrap" aria-label={`진행률 ${progressValue}%`}>
+            <CircularProgress percentage={progressValue} />
+            <span className="progress-center-text">{ddayText}</span>
           </div>
         </div>
       </div>

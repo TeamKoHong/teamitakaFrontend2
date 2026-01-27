@@ -3,19 +3,34 @@ import './RegisterPage.scss';
 import './RegisterPage.step2.scss';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
-import { sendVerificationCode, verifyCode } from '../../services/auth.js';
-import VerificationLoading from '../../components/Common/VerificationLoading';
+import { sendVerificationCode, verifyCode, registerUser } from '../../services/auth.js';
 import StepIndicator from '../../components/DesignSystem/Feedback/StepIndicator';
 import DefaultHeader from '../../components/Common/DefaultHeader';
 
 function RegisterPage() {
     const navigate = useNavigate();
     const location = useLocation(); // location 훅 추가
-    const { isAuthenticated } = useAuth();
+    const { isAuthenticated, setRegistration } = useAuth();
 
     // 전달받은 step이 있으면 그걸 사용, 없으면 1 (약관동의)
     const initialStep = location.state?.step || 1;
     const [currentStep, setCurrentStep] = useState(initialStep);
+
+    // Form Data from Phone Verification
+    const [phoneData] = useState(location.state?.formData || null);
+
+    // 이미 로그인된 사용자는 메인 페이지로 리디렉션 + 데이터 검증
+    useEffect(() => {
+        if (isAuthenticated) {
+            navigate('/main');
+        }
+
+        // If accessed directly at step 2 without phone data, redirect to phone verify
+        if (currentStep > 1 && !location.state?.formData && !phoneData) {
+            // alert('본인 인증이 필요합니다.'); // Optional: Show toast/alert
+            navigate('/phone-verify');
+        }
+    }, [isAuthenticated, navigate, currentStep, location.state, phoneData]);
 
     const [email, setEmail] = useState('');
     const [verificationCode, setVerificationCode] = useState('');
@@ -29,8 +44,8 @@ function RegisterPage() {
         return emailRegex.test(value);
     };
     const isValidPassword = (value) => {
-        // 영문과 숫자를 모두 포함하고 8자 이상
-        const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+        // 영문과 숫자를 모두 포함하고 8자 이상 (특수문자 허용)
+        const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d).{8,}$/;
         return passwordRegex.test(value);
     };
 
@@ -69,7 +84,7 @@ function RegisterPage() {
                 // 약관 동의 완료 → 휴대전화 인증으로 이동
                 navigate('/phone-verify');
             } else if (currentStep === 3) {
-                // 인증코드 입력값 검증
+                // 인증코드 입력값 검증 (Step 3: Code Input)
                 if (!verificationCode || verificationCode.length !== 6) {
                     setCodeVerificationError('인증코드 6자리를 모두 입력해주세요.');
                     return;
@@ -94,15 +109,58 @@ function RegisterPage() {
                 } finally {
                     setIsVerificationLoading(false);
                 }
+            } else if (currentStep === 5) {
+                // 비밀번호 설정 완료 (Step 5) -> 회원가입 요청
+                if (!isValidPassword(password)) {
+                    // Should be handled by UI validation, but double check
+                    return;
+                }
+
+                try {
+                    setIsVerificationLoading(true);
+
+                    // Construct Payload
+                    // phoneData is { name, phone, birthDate, genderCode, carrier }
+                    // API expects: name, phoneNumber, residentNumber, schoolEmail, password
+                    const payload = {
+                        name: phoneData?.name || '',
+                        phoneNumber: phoneData?.phone || '',
+                        residentNumber: `${phoneData?.birthDate || ''}${phoneData?.genderCode || ''}`,
+                        schoolEmail: email,
+                        password: password,
+                        marketingAgreed: consents.marketing,
+                        thirdPartyAgreed: consents.thirdParty,
+                        isSmsVerified: true,
+                        isEmailVerified: true
+                    };
+
+                    const result = await registerUser(payload);
+
+                    if (result.success || result.token) {
+                        // 학교 이메일을 registration에 저장 (프로필 설정에서 학교 자동 감지용)
+                        setRegistration({ schoolEmail: email });
+                        // Success -> Go to Profile Setup
+                        navigate('/profile-setup');
+                    } else {
+                        alert(result.message || '회원가입에 실패했습니다.');
+                    }
+
+                } catch (error) {
+                    console.error('회원가입 실패:', error);
+                    alert(error.message || '회원가입 중 오류가 발생했습니다.');
+                } finally {
+                    setIsVerificationLoading(false);
+                }
+
             } else if (currentStep === 6) {
-                // case6에서 완료 버튼을 누르면 case7로 이동
-                navigate('/login');
+                // case6에서 완료 버튼을 누르면 Profile Setup으로 이동
+                navigate('/profile-setup');
             } else {
+                // Default progression (Step 2 -> 3, Step 4 -> 5)
                 setCurrentStep(currentStep + 1);
             }
         } else {
             // 로그인 처리
-            console.log('로그인 시도');
             // main 페이지로 이동
             navigate('/main');
         }
@@ -433,7 +491,6 @@ function RegisterPage() {
             case 2:
                 return (
                     <div className="step-content">
-                        {isVerificationLoading && <VerificationLoading />}
                         <StepIndicator currentStep={3} totalSteps={5} />
                         <div className="step-description">
                             <p>학생 인증을 위해</p>
@@ -481,8 +538,7 @@ function RegisterPage() {
             case 3:
                 return (
                     <div className="step-content">
-                        {isVerificationLoading && <VerificationLoading />}
-                        <StepIndicator currentStep={4} totalSteps={5} />
+                        <StepIndicator currentStep={3} totalSteps={5} />
                         <div className="step-description">
                             <p>입력하신 이메일로 받은</p>
                             <p>인증 코드를 입력해주세요.</p>
@@ -530,39 +586,33 @@ function RegisterPage() {
                 );
             case 4:
                 return (
-                    <div className="step-content">
-                        {isVerificationLoading && <VerificationLoading />}
-                        <StepIndicator currentStep={4} totalSteps={5} />
-                        <div className="step-description">
-                            <p>입력하신 이메일로 받은</p>
-                            <p>인증 코드를 입력해주세요.</p>
+                    <div className="step-content" style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        minHeight: 'calc(100vh - 200px)'
+                    }}>
+                        <div style={{ position: 'relative', display: 'inline-block' }}>
+                            <img src="/Star 92.png" alt="star" style={{ width: '64px', height: '64px' }} />
+                            <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="17" viewBox="0 0 22 17" fill="none">
+                                    <path d="M19.4501 0.978472C19.9877 0.420763 20.8752 0.40458 21.4332 0.941933C21.9913 1.47951 22.0083 2.36787 21.4707 2.92597L8.85762 16.0213C8.59314 16.2959 8.22765 16.4507 7.84641 16.4507C7.46536 16.4506 7.10053 16.2957 6.83613 16.0213L0.529591 9.47366C-0.00787739 8.91566 0.00834407 8.02723 0.56613 7.48962C1.12413 6.95215 2.01256 6.96837 2.55017 7.52616L7.84641 13.0243L19.4501 0.978472Z" fill="#140805" />
+                                </svg>
+                            </div>
                         </div>
-                        <div className="step-description-sub">
-                            <p>인증 코드를 이메일로 보냈습니다.</p>
+                        <div style={{ marginTop: '16px', color: '#140805', textAlign: 'center', fontFamily: 'Pretendard', fontSize: '25px', fontStyle: 'normal', fontWeight: 700, lineHeight: 'normal' }}>
+                            대학교 인증 완료
                         </div>
-                        <div></div>
-                        <div style={{ textAlign: 'center', marginTop: '122px' }}>
-                            <div style={{ position: 'relative', display: 'inline-block' }}>
-                                <img src="/Star 92.png" alt="star" style={{ width: '64px', height: '64px' }} />
-                                <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="17" viewBox="0 0 22 17" fill="none">
-                                        <path d="M19.4501 0.978472C19.9877 0.420763 20.8752 0.40458 21.4332 0.941933C21.9913 1.47951 22.0083 2.36787 21.4707 2.92597L8.85762 16.0213C8.59314 16.2959 8.22765 16.4507 7.84641 16.4507C7.46536 16.4506 7.10053 16.2957 6.83613 16.0213L0.529591 9.47366C-0.00787739 8.91566 0.00834407 8.02723 0.56613 7.48962C1.12413 6.95215 2.01256 6.96837 2.55017 7.52616L7.84641 13.0243L19.4501 0.978472Z" fill="#140805" />
-                                    </svg>
-                                </div>
-                            </div>
-                            <div style={{ marginTop: '16px', color: '#140805', textAlign: 'center', fontFamily: 'Pretendard', fontSize: '25px', fontStyle: 'normal', fontWeight: 700, lineHeight: 'normal' }}>
-                                대학교 인증 완료
-                            </div>
-                            <div style={{ marginTop: '4px', color: '#807C7C', textAlign: 'center', fontFamily: 'Pretendard', fontSize: '14px', fontStyle: 'normal', fontWeight: 400, lineHeight: 'normal' }}>
-                                2022.03.10 부로 인증되었습니다.
-                            </div>
+                        <div style={{ marginTop: '4px', color: '#807C7C', textAlign: 'center', fontFamily: 'Pretendard', fontSize: '14px', fontStyle: 'normal', fontWeight: 400, lineHeight: 'normal' }}>
+                            {new Date().toLocaleDateString('ko-KR', { timeZone: 'Asia/Seoul', year: 'numeric', month: '2-digit', day: '2-digit' }).replace(/\. /g, '.').replace(/\.$/, '')} 부로 인증되었습니다.
                         </div>
                     </div>
                 );
             case 5:
                 return (
                     <div className="step-content">
-                        <StepIndicator currentStep={5} totalSteps={5} />
+                        <StepIndicator currentStep={4} totalSteps={5} />
                         <div className="step-description">
                             <p>계정 보안을 위한</p>
                             <p>비밀번호를 설정하세요</p>
@@ -601,7 +651,7 @@ function RegisterPage() {
                             if (password !== passwordConfirm) {
                                 return <div className='input-error-text'>비밀번호가 일치하지 않습니다.</div>;
                             }
-                            return null;
+                            return <div className='input-success-text'>비밀번호를 설정했습니다.</div>;
                         })()}
                     </div>
                 );
@@ -729,7 +779,7 @@ function RegisterPage() {
                                     className="next-button active"
                                     onClick={handleNext}
                                 >
-                                    로그인 하기
+                                    프로필 설정하러 가기
                                 </button>
                             ) : (
                                 <button

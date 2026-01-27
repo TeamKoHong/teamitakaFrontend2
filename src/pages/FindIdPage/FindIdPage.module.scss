@@ -7,7 +7,7 @@
 
 .content {
     flex: 1;
-    padding: 67px 22px 0;
+    padding: 67px 16px 0;
     display: flex;
     flex-direction: column;
 }
@@ -23,13 +23,20 @@
     margin-bottom: 32px;
 
     p {
-        color: #140805;
+        color: #000;
         font-family: Pretendard, sans-serif;
-        font-size: 20px;
-        font-weight: 700;
-        line-height: 1.4;
+        font-size: 24px;
+        font-weight: 600;
+        line-height: 36px;
         margin: 0;
     }
+}
+
+.subDescription {
+    font-size: 16px !important;
+    font-weight: 500 !important;
+    color: #403e3e !important;
+    margin-top: 8px !important;
 }
 
 .formSection {
@@ -47,22 +54,24 @@
 
 .input {
     width: 100%;
-    padding: 16px;
-    border: 1px solid #E0E0E0;
+    height: 64px;
+    padding: 26px 16px;
+    border: none;
     border-radius: 8px;
+    background-color: #f5f5f5;
     font-family: Pretendard, sans-serif;
     font-size: 16px;
     color: #140805;
     box-sizing: border-box;
     outline: none;
-    transition: border-color 0.2s;
+    transition: background-color 0.2s;
 
     &::placeholder {
         color: #807C7C;
     }
 
     &:focus {
-        border-color: #F76241;
+        background-color: #eeeeee;
     }
 }
 
@@ -73,26 +82,29 @@
 
 .carrierSelect {
     width: 120px;
-    padding: 16px 12px;
-    border: 1px solid #E0E0E0;
+    height: 64px;
+    padding: 26px 12px;
+    border: none;
     border-radius: 8px;
     font-family: Pretendard, sans-serif;
-    font-size: 14px;
-    color: #140805;
-    background-color: #fff;
+    font-size: 16px;
+    color: #807C7C;
+    background-color: #f5f5f5;
     cursor: pointer;
     outline: none;
 
     &:focus {
-        border-color: #F76241;
+        background-color: #eeeeee;
     }
 }
 
 .phoneInput {
     flex: 1;
-    padding: 16px;
-    border: 1px solid #E0E0E0;
+    height: 64px;
+    padding: 26px 16px;
+    border: none;
     border-radius: 8px;
+    background-color: #f5f5f5;
     font-family: Pretendard, sans-serif;
     font-size: 16px;
     color: #140805;
@@ -103,7 +115,7 @@
     }
 
     &:focus {
-        border-color: #F76241;
+        background-color: #eeeeee;
     }
 }
 
@@ -115,10 +127,12 @@
 
 .codeInput {
     width: 100%;
-    padding: 16px;
+    height: 64px;
+    padding: 26px 16px;
     padding-right: 70px;
-    border: 1px solid #E0E0E0;
+    border: none;
     border-radius: 8px;
+    background-color: #f5f5f5;
     font-family: Pretendard, sans-serif;
     font-size: 16px;
     color: #140805;
@@ -132,7 +146,7 @@
     }
 
     &:focus {
-        border-color: #F76241;
+        background-color: #eeeeee;
     }
 }
 
@@ -150,10 +164,11 @@
 }
 
 .successMessage {
-    color: #4CAF50;
+    color: #12a76d;
     font-family: Pretendard, sans-serif;
-    font-size: 13px;
-    margin-top: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 16px;
 }
 
 .errorMessage {
@@ -163,17 +178,23 @@
     margin-top: 8px;
 }
 
+.resendText {
+    font-family: Pretendard, sans-serif;
+    font-size: 16px;
+    color: #807C7C;
+    margin-top: 16px;
+}
+
 .resendButton {
     background: none;
     border: none;
-    color: #807C7C;
+    color: #ff5252;
     font-family: Pretendard, sans-serif;
-    font-size: 14px;
-    font-weight: 500;
+    font-size: 16px;
+    font-weight: 400;
     text-decoration: underline;
     cursor: pointer;
     padding: 0;
-    margin-top: 12px;
 
     &:disabled {
         opacity: 0.5;
@@ -183,7 +204,7 @@
 
 .bottomButton {
     margin-top: auto;
-    padding-bottom: 34px;
+    padding-bottom: 32px;
 }
 
 // 결과 페이지 스타일

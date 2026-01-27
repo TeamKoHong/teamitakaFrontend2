@@ -1,5 +1,6 @@
 export interface TypeMeta {
     code: string;
+    id: string;
     nickname: string;
     subtitle: string;
     description: string;
@@ -19,6 +20,7 @@ export interface TypeMeta {
 export const TYPE_METADATA: Record<string, TypeMeta> = {
     '활동티미': {
         code: '활동티미',
+        id: 'active',
         nickname: '활동티미',
         subtitle: '활동적이고 긍정적인',
         description: '활발하고 긍정적인 에너지로 팀 분위기를 이끄는 유형으로, 적극적으로 참여하며 분위기를 살리지만, 때로는 세부 계획보다는 즉흥적인 행동에 집중할 수 있습니다.',
@@ -44,6 +46,7 @@ export const TYPE_METADATA: Record<string, TypeMeta> = {
 
     '감각티미': {
         code: '감각티미',
+        id: 'sense',
         nickname: '감각티미',
         subtitle: '창의적이고 순발력 있는',
         description: '순간적인 상황 판단과 창의적인 아이디어로 팀 분위기를 살리는 유형으로, 빠른 순발력과 감각을 바탕으로 새로운 시도를 하지만, 체계적인 계획보다는 즉흥적인 선택이 많을 수 있습니다.',
@@ -69,6 +72,7 @@ export const TYPE_METADATA: Record<string, TypeMeta> = {
 
     '통찰티미': {
         code: '통찰티미',
+        id: 'insight',
         nickname: '통찰티미',
         subtitle: '깊이 보고 멀리 내다보는',
         description: '문제를 넓은 관점에서 직관적으로 파악하고 핵심을 빠르게 포착하는 유형으로, 직관과 통찰을 바탕으로 빠른 아이디어를 내지만, 세부 실행보다는 큰 그림에 집중하는 경향이 있습니다.',
@@ -94,6 +98,7 @@ export const TYPE_METADATA: Record<string, TypeMeta> = {
 
     '융합티미': {
         code: '융합티미',
+        id: 'fusion',
         nickname: '융합티미',
         subtitle: '다양한 생각을 엮어내는',
         description: '다양한 생각과 아이디어를 유기적으로 엮어내는 유형으로, 팀의 여러 의견을 조화롭게 연결하며 창의적인 해결책을 제시하지만, 아이디어가 많아 선택과 결정이 늦어질 수 있습니다.',
@@ -119,6 +124,7 @@ export const TYPE_METADATA: Record<string, TypeMeta> = {
 
     '긍정티미': {
         code: '긍정티미',
+        id: 'positive',
         nickname: '긍정티미',
         subtitle: '어려움 속에서도 팀의 사기를 지켜주는',
         description: '어려움 속에서도 팀의 사기를 지켜주고 분위기를 북돋우는 유형으로, 낙관적이고 따뜻한 태도로 팀을 안정시키지만, 때로는 현실적인 문제보다는 분위기 유지에 집중할 수 있습니다.',
@@ -144,6 +150,7 @@ export const TYPE_METADATA: Record<string, TypeMeta> = {
 
     '실험티미': {
         code: '실험티미',
+        id: 'experiment',
         nickname: '실험티미',
         subtitle: '도전적이고 과감한',
         description: '도전적이고 과감하게 새로운 시도를 하는 유형으로, 창의적인 아이디어를 빠르게 실행하며 팀에 신선한 변화를 주지만, 계획보다는 즉흥적인 선택에 의존할 수 있습니다.',
@@ -169,6 +176,7 @@ export const TYPE_METADATA: Record<string, TypeMeta> = {
 
     '적응티미': {
         code: '적응티미',
+        id: 'adaptive',
         nickname: '적응티미',
         subtitle: '어떤 환경에서도 제 역할을 해내는',
         description: '변화하는 상황에 유연하게 대응하고 팀의 흐름에 맞춰 조율합니다. 다양한 역할을 소화하며 안정적으로 문제를 해결하지만, 자신만의 주도적 결정보다는 주변 상황에 맞춰 움직이는 경향이 있습니다.',
@@ -194,6 +202,7 @@ export const TYPE_METADATA: Record<string, TypeMeta> = {
 
     '안정티미': {
         code: '안정티미',
+        id: 'stable',
         nickname: '안정티미',
         subtitle: '차분하게 팀을 이끄는',
         description: '차분하게 팀을 이끌며 균형과 조화를 중요시하며, 상황을 침착하게 판단하고 팀의 흐름을 안정적으로 유지하지만, 변화나 즉각적 대응에서는 다소 느릴 수 있습니다.',
@@ -219,6 +228,7 @@ export const TYPE_METADATA: Record<string, TypeMeta> = {
 
     '분석티미': {
         code: '분석티미',
+        id: 'analysis',
         nickname: '분석티미',
         subtitle: '근거로 설득하고 방향을 잡아주는',
         description: '문제를 논리적으로 분석하고 데이터 기반으로 해결하는 유형으로, 논리적이고 체계적인 판단으로 문제를 해결합니다. 논리적이고 체계적인 판단으로 문제를 해결하지만 가끔, 분석에 집중해 속도가 느려지기도 합니다.',
@@ -244,6 +254,7 @@ export const TYPE_METADATA: Record<string, TypeMeta> = {
 
     '창의티미': {
         code: '창의티미',
+        id: 'creative',
         nickname: '창의티미',
         subtitle: '남들이 생각하지 못한 길을 제시하는',
         description: '남들이 생각하지 못한 새로운 길을 제시하는 유형으로, 독창적인 아이디어와 발상으로 팀에 신선한 시도를 가져오지만, 계획보다 아이디어 중심으로 움직이는 경향이 있습니다.',
@@ -269,6 +280,7 @@ export const TYPE_METADATA: Record<string, TypeMeta> = {
 
     '조율티미': {
         code: '조율티미',
+        id: 'coordination',
         nickname: '조율티미',
         subtitle: '다양한 의견을 맞춰 팀의 조화를 이끄는',
         description: '다양한 의견을 조화롭게 맞춰 팀의 균형을 이끄는 유형으로, 모두의 생각을 고려하며 협업을 원활하게 합니다. 하지만, 결정 과정에서 속도가 느려질 수 있습니다.',
@@ -294,6 +306,7 @@ export const TYPE_METADATA: Record<string, TypeMeta> = {
 
     '완벽티미': {
         code: '완벽티미',
+        id: 'perfect',
         nickname: '완벽티미',
         subtitle: '실수를 최소화해 완성도를 높이는',
         description: '모든 일을 꼼꼼하게 계획하고 철저하게 실행하는 유형으로, 높은 완성도와 품질을 중요시하며 실수 없이 일을 처리하지만, 세부까지 신경 쓰다 보니 속도가 느려질 수 있습니다.',

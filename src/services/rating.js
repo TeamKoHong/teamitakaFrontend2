@@ -1,5 +1,5 @@
 // src/services/rating.js
-import { getApiConfig } from './auth';
+import { apiFetch } from './api';
 
 // ========== 백엔드 → 프론트엔드 필드 매핑 ==========
 
@@ -35,15 +35,7 @@ export function mapCategoryAveragesToSliders(categoryAverages) {
  * 프로젝트 상세 정보 조회
  */
 export async function fetchProjectDetails(projectId) {
-  const { API_BASE_URL, headers } = getApiConfig();
-  const token = localStorage.getItem('authToken');
-
-  if (!token) throw new Error('로그인이 필요합니다.');
-
-  const response = await fetch(`${API_BASE_URL}/api/projects/${projectId}`, {
-    method: 'GET',
-    headers: { ...headers, Authorization: `Bearer ${token}` },
-  });
+  const response = await apiFetch(`/api/projects/${projectId}`);
 
   if (!response.ok) {
     const errorData = await response.json();
@@ -57,15 +49,7 @@ export async function fetchProjectDetails(projectId) {
  * 프로젝트 평가 요약 조회 (신규 API)
  */
 export async function fetchReviewSummary(projectId) {
-  const { API_BASE_URL, headers } = getApiConfig();
-  const token = localStorage.getItem('authToken');
-
-  if (!token) throw new Error('로그인이 필요합니다.');
-
-  const response = await fetch(`${API_BASE_URL}/api/reviews/project/${projectId}/summary`, {
-    method: 'GET',
-    headers: { ...headers, Authorization: `Bearer ${token}` },
-  });
+  const response = await apiFetch(`/api/reviews/project/${projectId}/summary`);
 
   if (!response.ok) {
     const errorData = await response.json();
@@ -79,15 +63,7 @@ export async function fetchReviewSummary(projectId) {
  * 내가 한 평가 조회 (신규 API)
  */
 export async function fetchMyGivenReviews(projectId, userId) {
-  const { API_BASE_URL, headers } = getApiConfig();
-  const token = localStorage.getItem('authToken');
-
-  if (!token) throw new Error('로그인이 필요합니다.');
-
-  const response = await fetch(`${API_BASE_URL}/api/reviews/project/${projectId}/reviewer/${userId}`, {
-    method: 'GET',
-    headers: { ...headers, Authorization: `Bearer ${token}` },
-  });
+  const response = await apiFetch(`/api/reviews/project/${projectId}/reviewer/${userId}`);
 
   if (!response.ok) {
     const errorData = await response.json();

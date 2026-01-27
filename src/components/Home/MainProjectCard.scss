@@ -4,7 +4,7 @@
 
   border: 0;
   background: #fff;
-  border-radius: 20px; // Updated radius (was 8px/10px)
+  border-radius: 20px;
 
   width: 280px;
   min-width: 280px;
@@ -62,6 +62,7 @@
     font-size: 15px;
     font-weight: 800;
     color: #111;
+
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -80,29 +81,30 @@
   .meta-row {
     display: flex;
     align-items: center;
+    gap: 6px;
     min-width: 0;
 
-    gap: 6px;
-
+    /* ✅ 아이콘 칸 고정 + 중앙정렬 (두 아이콘의 x좌표 동일) */
     .meta-icon {
-      width: 18px;
-      height: 18px;
-      display: inline-flex;
+      width: 14px;
+      height: 14px;
+      flex: 0 0 14px;
+
+      display: flex;
       align-items: center;
       justify-content: center;
 
-      font-size: 16px;
-      flex: 0 0 18px;
-      line-height: 1;
+      object-fit: contain;
     }
 
     .meta-text {
       flex: 1;
+      min-width: 0;
+
       text-align: left;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      min-width: 0;
     }
   }
 
@@ -111,17 +113,14 @@
     flex-shrink: 0;
     align-self: center;
 
-    /* 오른쪽에 원형 + 텍스트를 안정적으로 배치 */
     display: flex;
     align-items: center;
     justify-content: center;
   }
 
-  /* ✅ 주황 원형 프로그레스 + 중앙 D-day 텍스트 오버레이 */
   .progress-wrap {
     position: relative;
     width: 60px;
-    /* CircularProgress 기본 크기에 맞춤 */
     height: 60px;
     display: grid;
     place-items: center;
@@ -143,8 +142,6 @@
 
 @media (max-width: 375px) {
   .main-project-card {
-    border-radius: 20px; // Updated radius
-
     width: 260px;
     min-width: 260px;
 
@@ -156,7 +153,6 @@
       padding: 12px 12px 14px;
     }
 
-    /* 모바일에서는 아이콘 칸도 조금 줄이기 */
     .meta-row {
       gap: 6px;
 
@@ -164,11 +160,9 @@
         width: 16px;
         height: 16px;
         flex: 0 0 16px;
-        font-size: 15px;
       }
     }
 
-    /* 모바일 원형도 살짝 줄임 */
     .progress-wrap {
       width: 56px;
       height: 56px;
