@@ -73,7 +73,7 @@ import { AuthProvider } from './contexts/AuthContext';
 import GlobalToastSystem from './components/Common/GlobalToastSystem';
 import AuthEventBridge from './components/Common/AuthEventBridge';
 import ProtectedRoute, { PublicRoute } from './components/ProtectedRoute';
-
+import ProfileVerificationPage from './pages/Profile/ProfileVerificationPage'; // 추가 확인
 // 라우팅 상수 임포트
 import {
   MAIN_ROUTES,
@@ -303,7 +303,7 @@ const App = () => {
           <Route path={MAIN_ROUTES.MAIN} element={<MainPage />} />
           <Route path={PROFILE_ROUTES.MAIN} element={<ProfileMainPage />} />
           <Route path={PROFILE_ROUTES.EDIT} element={<ProfileEditPage />} />
-
+            <Route path="/profile/verification" element={<ProfileVerificationPage />} />
 
 
           {/* ===== 프로젝트 관리 라우트 (로그인 제한 없음) ===== */}

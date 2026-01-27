@@ -14,7 +14,7 @@ import profileDefault from '../../../assets/profile_default.png';
 import defaultProfileImage from '../../../images/profileImage.png';
 import verificationBadge from '../../../assets/대학_인증_완료.svg';
 import 비회원배너 from '../../../assets/character_banner/비회원 캐릭터 배너_테스트유도용.png';
-import skillDefaultImg from '../../../assets/skill_default.png'; // 💡 스킬 기본 이미지 추가
+import skillDefaultImg from '../../../assets/skill_default.png';
 
 // Character Banners
 import 활동티미 from '../../../assets/character_banner/활동티미.png';
@@ -140,7 +140,7 @@ export default function ProfileMainPage() {
     currentProjects: profileData?.totalProjects || profileData?.currentProjects || 0,
     totalTeamExperience: userData?.teamExperience || profileData?.totalTeamExperience || 0,
     tags: userData?.keywords || profileData?.tags || [],
-    isVerified: true, // 💡 로그인 시 무조건 배지 표시
+    isVerified: !!userData?.university,
     activityType: { type: userData?.mbti_type || localMbtiType || profileData?.activityType?.type || null },
     skills: profileData?.skills || null,
     feedback: { positive: profileData?.feedback?.positive || [], negative: profileData?.feedback?.negative || [] },
@@ -151,8 +151,7 @@ export default function ProfileMainPage() {
   const isProfileEmpty = !userData?.university && !userData?.major;
   const hasNoTeamiType = !displayData.activityType?.type;
   const hasNoProjects = displayData.totalProjects === 0;
-  
-  // 💡 스킬 데이터가 비었거나 프로젝트가 0인 경우 판단
+  // 💡 스킬이 비었거나 프로젝트 평가가 0일 때
   const hasNoEvaluations = !displayData.skills || Object.keys(displayData.skills).length === 0 || displayData.totalProjects === 0;
 
   if (isLoading) return <div className={styles.container}>로딩 중...</div>;
@@ -167,88 +166,56 @@ export default function ProfileMainPage() {
       <div className={styles.content}>
         <div className={styles.profileCard}>
           <div className={styles.profileImageWrapper}>
-            <ProfileImageEdit 
-              src={displayData.profileImage} 
-              isEditable={false}
-              onChange={handleImageChange} 
-            />
-            {/* 로그인 상태면 인증 뱃지는 항상 노출 */}
-            {userData && <img src={verificationBadge} alt="인증" className={styles.verificationBadge} onClick={handleVerificationClick} />}
+            <ProfileImageEdit src={displayData.profileImage} isEditable={false} onChange={handleImageChange} />
+            {userData && (
+              <img 
+                src={verificationBadge} 
+                alt="인증" 
+                className={styles.verificationBadge} 
+                onClick={handleVerificationClick} 
+                style={{ cursor: 'pointer' }}
+              />
+            )}
           </div>
           <div className={styles.profileInfo}>
             <div className={styles.profileName}>
-              {isProfileEmpty ? (
-                '프로필을 입력하세요.'
-              ) : (
+              {isProfileEmpty ? '프로필을 입력하세요.' : (
                 <>
                   <span className={styles.nameBold}>{displayData.username}</span>
                   <span className={styles.nameRegular}>&nbsp;티미님</span>
                 </>
               )}
             </div>      
-            
             <div className={styles.profileUniversity}>
               <GraduationCapIcon />
               <span>
-                {/* 💡 학교 정보가 존재하면 출력, 없으면 기본 텍스트 */}
-                {userData?.university && userData?.major 
-                  ? `${userData.university} ${userData.major} 재학 중` 
-                  : '대학교명 재학 중'}
+                {userData?.university ? `${displayData.university} ${displayData.department} ${displayData.enrollmentStatus}` : '대학교명 재학 중'}
               </span>
             </div>
-
             <div className={styles.profileStats}>
               <div className={styles.statHighlight}>
                 {isProfileEmpty ? '현재 진행중인 프로젝트가 없어요.' : <>현재 진행중인 프로젝트 <span className={styles.statOrange}>총 {displayData.currentProjects}건</span></>}
               </div>
               <div className={styles.statNormal}>{isProfileEmpty ? '팀플 경험이 없어요.' : `전체 팀플 경험 ${displayData.totalTeamExperience}회`}</div>
             </div>
-            {!isProfileEmpty && displayData.tags.length > 0 && (
-              <div className={styles.profileTags}>{displayData.tags.map((tag, i) => <span key={i} className={styles.tag}>{tag}</span>)}</div>
-            )}
           </div>
         </div>
 
-        <div 
-          className={styles.activityCard} 
-          onClick={() => navigate(hasNoTeamiType ? '/type-test' : `/type-test/result/${displayData.activityType.type}`)} 
-          style={{ cursor: 'pointer' }}
-        >
-          <img 
-            src={(!hasNoTeamiType && CHARACTER_IMAGES[displayData.activityType.type]) || 비회원배너} 
-            alt="활동타입" 
-          />
-        </div>
-
-        <div className={styles.profileIntro}>
-          {isProfileEmpty ? (
-            <>프로필을 작성하고 <br/>
-            <span className={styles.profileIntroHighlight}>
-              내 팀플 분석</span>을 완성해보세요!</>
-          ) : (
-            <>지난 활동을 돌아보고, <br/>
-            <span className={styles.profileIntroHighlight}>
-              더 나은 팀원</span>이 되어가요.</>
-          )}
+        <div className={styles.activityCard} onClick={() => navigate(hasNoTeamiType ? '/type-test' : `/type-test/result/${displayData.activityType.type}`)}>
+          <img src={(!hasNoTeamiType && CHARACTER_IMAGES[displayData.activityType.type]) || 비회원배너} alt="활동타입" />
         </div>
 
         <div className={styles.skillSection}>
           <div className={styles.skillHeader}>
             <span className={styles.skillTitle}>팀플 능력치 분석</span>
             <span className={styles.skillProjectCount}>
-              {hasNoEvaluations ? '프로젝트 종합 결과가 없어요.' 
-              : `${displayData.totalProjects}회 프로젝트 종합결과`}
+              {hasNoEvaluations ? '프로젝트 종합 결과가 없어요.' : `${displayData.totalProjects}회 프로젝트 종합결과`}
             </span>
           </div>
 
-          {/* 💡 [수정됨] 평가 데이터가 없을 때 skill_default 이미지만 표시 */}
           {hasNoEvaluations ? (
-            <div className={styles.defaultSkillWrapper} style={{ textAlign: 'center', paddingTop: '16px' }}>
-              <img 
-                src={skillDefaultImg} 
-                alt="기본 스킬 분석 이미지" 
-                style={{ width: '100%', height: 'auto', display: 'block' }} 
-              />
+            <div className={styles.defaultSkillWrapper}>
+              <img src={skillDefaultImg} alt="평가 없음" style={{ width: '100%', height: 'auto' }} />
             </div>
           ) : (
             <>
@@ -262,24 +229,10 @@ export default function ProfileMainPage() {
               {isSkillExpanded && (
                 <div className={styles.expandedContent}>
                   <div className={styles.radarChartContainer}><PentagonChart skills={displayData.skills} /></div>
-                  <div style={{ 
-                    display: 'flex', 
-                    width: '100%', 
-                    maxWidth: '364px', 
-                    position: 'relative', 
-                    margin: '32px auto 0' }}>
+                  <div style={{ display: 'flex', width: '100%', maxWidth: '364px', position: 'relative', margin: '32px auto 0' }}>
                     <FeedbackCard type="positive" title="이런 점이 좋아요👍" items={displayData.feedback.positive} />
-                    <div style={{ 
-                      position: 'absolute', 
-                      top: '11px', 
-                      left: '50%', 
-                      width: '1px', 
-                      height: '52px', 
-                      borderLeft: '1px dashed #D1CCCB' }} />
-                    <FeedbackCard 
-                    type="negative" 
-                    title="이런 점은 개선이 필요해요🚨" 
-                    items={displayData.feedback.negative} />
+                    <div style={{ position: 'absolute', top: '11px', left: '50%', width: '1px', height: '52px', borderLeft: '1px dashed #D1CCCB' }} />
+                    <FeedbackCard type="negative" title="이런 점은 개선이 필요해요🚨" items={displayData.feedback.negative} />
                   </div>
                 </div>
               )}

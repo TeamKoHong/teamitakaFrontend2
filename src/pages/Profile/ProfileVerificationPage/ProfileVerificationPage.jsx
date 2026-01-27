@@ -2,18 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getMe } from '../../../services/user';
 import { getVerificationInfo } from '../../../services/profile';
+import { PROFILE_ROUTES } from '../../../constants/routes';
 import styles from './ProfileVerificationPage.module.scss';
+
+// Assets
+import verificationBadgeImg from '../../../assets/대학_인증_완료.svg';
 
 // 아이콘 컴포넌트
 const BackIcon = () => (
   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
     <polyline points="15 18 9 12 15 6" />
-  </svg>
-);
-
-const CheckIcon = () => (
-  <svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="white" strokeWidth="3">
-    <polyline points="6 16 12 22 26 8" />
   </svg>
 );
 
@@ -31,29 +29,25 @@ export default function ProfileVerificationPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // 데이터 로드
   useEffect(() => {
     const loadData = async () => {
       try {
         setIsLoading(true);
 
-        // 사용자 정보 로드
-        const userRes = await getMe();
-        if (userRes?.success && userRes.user) {
-          setUserData(userRes.user);
-        }
+        // API 호출: 사용자 정보와 인증 상세 정보를 동시에 가져옵니다.
+        const [userRes, verifyRes] = await Promise.all([
+          getMe(),
+          getVerificationInfo().catch(() => ({ success: false })) 
+        ]);
 
-        // 인증 정보 로드
-        const verifyRes = await getVerificationInfo();
-        if (verifyRes?.success) {
-          setVerificationData(verifyRes.data);
-        }
+        if (userRes?.success) setUserData(userRes.user);
+        if (verifyRes?.success) setVerificationData(verifyRes.data);
       } catch (err) {
         if (err?.code === 'UNAUTHORIZED') {
           navigate('/login', { replace: true });
           return;
         }
-        setError(err.message || '데이터를 불러올 수 없습니다.');
+        setError('인증 정보를 불러올 수 없습니다.');
       } finally {
         setIsLoading(false);
       }
@@ -62,63 +56,29 @@ export default function ProfileVerificationPage() {
     loadData();
   }, [navigate]);
 
-  // 뒤로가기
-  const handleBack = () => {
-    navigate(-1);
-  };
+  const handleBack = () => navigate(-1);
 
-  // 로딩 상태
-  if (isLoading) {
-    return (
-      <div className={styles.container}>
-        <div className={styles.header}>
-          <button className={styles.backButton} onClick={handleBack}>
-            <BackIcon />
-          </button>
-          <span className={styles.headerTitle}>대학 인증 내역</span>
-        </div>
-        <div className={styles.loadingContainer}>
-          <p>로딩 중...</p>
-        </div>
-      </div>
-    );
-  }
+  // 💡 데이터 연동 로직 강화: 여러 필드 후보군을 체크합니다.
+  const university = userData?.university || verificationData?.university || userData?.schoolName || '';
+  const department = userData?.major || userData?.department || verificationData?.department || '';
+  const isVerified = !!university; // 학교 정보가 있으면 인증된 것으로 간주
 
-  // 에러 상태
-  if (error) {
-    return (
-      <div className={styles.container}>
-        <div className={styles.header}>
-          <button className={styles.backButton} onClick={handleBack}>
-            <BackIcon />
-          </button>
-          <span className={styles.headerTitle}>대학 인증 내역</span>
-        </div>
-        <div className={styles.errorContainer}>
-          <p>{error}</p>
-        </div>
-      </div>
-    );
-  }
-
-  // 인증 여부 확인
-  const isVerified = verificationData?.isVerified || !!userData?.university;
-
-  // 표시 데이터
   const displayData = {
-    university: verificationData?.university || userData?.university || '',
-    department: verificationData?.department || userData?.department || '',
-    username: verificationData?.username || userData?.username || '',
-    verifiedAt: verificationData?.verifiedAt || '',
-    status: verificationData?.status || (isVerified ? '인증 완료' : '미인증'),
+    university,
+    department,
+    username: userData?.username || userData?.nickname || '사용자',
+    verifiedAt: verificationData?.verifiedAt || userData?.createdAt || '',
+    status: isVerified ? '인증 완료' : '미인증',
   };
 
-  // 날짜 포맷팅
   const formatDate = (dateString) => {
     if (!dateString) return '';
     const date = new Date(dateString);
+    if (isNaN(date.getTime())) return '';
     return `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일`;
   };
+
+  if (isLoading) return <div className={styles.container}><div className={styles.loading}>로딩 중...</div></div>;
 
   return (
     <div className={styles.container}>
@@ -133,10 +93,10 @@ export default function ProfileVerificationPage() {
       <div className={styles.content}>
         {isVerified ? (
           <>
-            {/* 인증 상태 */}
+            {/* 인증 상태 - 💡 체크 아이콘을 뱃지 이미지로 변경 */}
             <div className={styles.verificationStatus}>
-              <div className={styles.verificationBadge}>
-                <CheckIcon />
+              <div className={styles.verificationBadgeImage}>
+                <img src={verificationBadgeImg} alt="인증 뱃지" style={{ width: '80px', height: '80px' }} />
               </div>
               <div className={styles.verificationTitle}>대학교 인증 완료</div>
               {displayData.verifiedAt && (
@@ -150,7 +110,6 @@ export default function ProfileVerificationPage() {
             <div className={styles.verificationCard}>
               <div className={styles.universityRow}>
                 <div className={styles.universityLogo}>
-                  {/* 대학 로고 - 추후 API에서 제공 */}
                   <span style={{ fontSize: '24px' }}>🎓</span>
                 </div>
                 <div className={styles.universityInfo}>
@@ -166,13 +125,6 @@ export default function ProfileVerificationPage() {
                 <span className={styles.infoValue}>{displayData.username}</span>
               </div>
 
-              {displayData.verifiedAt && (
-                <div className={styles.infoRow}>
-                  <span className={styles.infoLabel}>인증 날짜</span>
-                  <span className={styles.infoValue}>{formatDate(displayData.verifiedAt)}</span>
-                </div>
-              )}
-
               <div className={styles.infoRow}>
                 <span className={styles.infoLabel}>인증 상태</span>
                 <span className={`${styles.statusBadge} ${styles.verified}`}>
@@ -182,7 +134,6 @@ export default function ProfileVerificationPage() {
             </div>
           </>
         ) : (
-          /* 미인증 상태 */
           <div className={styles.notVerified}>
             <ShieldIcon />
             <div className={styles.notVerifiedTitle}>대학 인증이 필요합니다</div>
@@ -190,7 +141,10 @@ export default function ProfileVerificationPage() {
               대학 이메일로 인증하면<br />
               다른 사용자들에게 신뢰성을 높일 수 있어요.
             </div>
-            <button className={styles.verifyButton}>
+            <button 
+              className={styles.verifyButton} 
+              onClick={() => navigate(PROFILE_ROUTES.EDIT)}
+            >
               대학 인증하기
             </button>
           </div>
