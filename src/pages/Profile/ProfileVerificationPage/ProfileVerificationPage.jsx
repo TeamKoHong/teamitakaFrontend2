@@ -27,7 +27,6 @@ export default function ProfileVerificationPage() {
   const [userData, setUserData] = useState(null);
   const [verificationData, setVerificationData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
 
   useEffect(() => {
     const loadData = async () => {
