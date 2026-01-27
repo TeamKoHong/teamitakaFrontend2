@@ -82,7 +82,7 @@ export default function UnifiedAdaptiveResultCard({
                     style={{ marginBottom: 'clamp(24px, calc(48px * (100vw / 390px)), 72px)' }}
                 >
                     <img
-                        src={`/assets/result/${typeMeta.nickname}.png`}
+                        src={`/assets/result/${typeMeta.id}.png`}
                         alt={typeMeta.nickname}
                         className="tw-w-full tw-h-auto tw-object-contain"
                     />
