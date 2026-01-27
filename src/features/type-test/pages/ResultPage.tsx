@@ -10,16 +10,27 @@ export default function ResultPage() {
     const typeCode = rawTypeCode ? decodeURIComponent(rawTypeCode) : '';
     const [isLoading, setIsLoading] = useState(true);
 
-    const typeMeta = TYPE_METADATA[typeCode];
+    // Find TypeMeta by strictly matching code (legacy) or id (new English URLs)
+    const typeMeta = (() => {
+        if (!typeCode) return null;
+        // 1. Try direct lookup (Korean Key)
+        if (TYPE_METADATA[typeCode]) return TYPE_METADATA[typeCode];
+
+        // 2. Try looking up by ID (English)
+        return Object.values(TYPE_METADATA).find(meta => meta.id === typeCode) || null;
+    })();
 
     useEffect(() => {
-        if (!typeMeta) {
-            // notFound logic replacement -> navigate home or show error
-            if (!isLoading) router.push('/');
-            return;
-        }
+        // Force loading to finish regardless of whether we found data or not
         setIsLoading(false);
-    }, [typeMeta, typeCode, isLoading, router]);
+
+        if (!typeMeta) {
+            // Optional: redirect logic could go here, but for now we just show empty or let the UI handle it
+            // if (!isLoading) router.push('/'); 
+            // ^ accessing isLoading inside useEffect like this might depend on stale closure if not careful,
+            // but setting isLoading(false) above covers the state update.
+        }
+    }, [typeMeta, typeCode, router]);
 
     const handleRetest = () => {
         router.push('/type-test');
