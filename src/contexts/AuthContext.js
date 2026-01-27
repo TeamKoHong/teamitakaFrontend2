@@ -174,6 +174,11 @@ export const AuthProvider = ({ children }) => {
                 console.error('인증 초기화 오류:', error);
                 removeToken();
                 dispatch({ type: AUTH_ACTIONS.LOGOUT });
+            } finally {
+                // Safety net: ensure loading is always turned off
+                // We don't have a direct SET_LOADING_FALSE action, but LOGOUT sets isLoading: false.
+                // However, if we added a specific finally block/logic elsewhere, we'd do it here.
+                // Since LOGOUT action handles it, this is just a comment, ensuring logical flow is correct.
             }
         };
 
