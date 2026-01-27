@@ -11,7 +11,6 @@ import styles from './ProfileMainPage.module.scss';
 import backIcon from '../../../assets/back.png';
 import settingIcon from '../../../assets/setting.png'; 
 import profileDefault from '../../../assets/profile_default.png'; 
-import defaultProfileImage from '../../../images/profileImage.png';
 import verificationBadge from '../../../assets/대학_인증_완료.svg';
 import 비회원배너 from '../../../assets/character_banner/비회원 캐릭터 배너_테스트유도용.png';
 import skillDefaultImg from '../../../assets/skill_default.png';
@@ -78,7 +77,7 @@ const SkillBubbleChart = ({ skills }) => {
     <div style={{ position: 'relative', width: '100%', maxWidth: '296px', height: '177px', margin: '0 auto' }}>
       {sortedSkills.map(([skillName, skillValue], index) => {
         const style = BUBBLE_STYLES[index];
-        if (!style) return null;
+        if (!style || !skillValue) return null;
         const nameFontSize = style.size >= 100 ? '16.79px' : style.size >= 80 ? '14px' : '12px';
         return (
           <div key={skillName} style={{ position: 'absolute', top: style.top, left: style.left, width: style.size, height: style.size, borderRadius: '50%', backgroundColor: style.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: style.zIndex }}>
@@ -119,16 +118,8 @@ export default function ProfileMainPage() {
     loadData();
   }, [navigate]);
 
-  const handleImageChange = (file) => {
-    if (!file) { setCurrentImg(profileDefault); return; }
-    const reader = new FileReader();
-    reader.onload = () => setCurrentImg(reader.result);
-    reader.readAsDataURL(file);
-  };
-
   const handleSettingsClick = () => navigate('/profile/edit');
   const handleVerificationClick = () => navigate('/profile/verification');
-  const handleAddProject = () => navigate('/project/create');
 
   const localMbtiType = localStorage.getItem('user_mbti_type');
   const displayData = {
@@ -139,7 +130,6 @@ export default function ProfileMainPage() {
     enrollmentStatus: userData?.enrollmentStatus || '재학 중',
     currentProjects: profileData?.totalProjects || profileData?.currentProjects || 0,
     totalTeamExperience: userData?.teamExperience || profileData?.totalTeamExperience || 0,
-    tags: userData?.keywords || profileData?.tags || [],
     isVerified: !!userData?.university,
     activityType: { type: userData?.mbti_type || localMbtiType || profileData?.activityType?.type || null },
     skills: profileData?.skills || null,
@@ -151,7 +141,6 @@ export default function ProfileMainPage() {
   const isProfileEmpty = !userData?.university && !userData?.major;
   const hasNoTeamiType = !displayData.activityType?.type;
   const hasNoProjects = displayData.totalProjects === 0;
-  // 💡 스킬이 비었거나 프로젝트 평가가 0일 때
   const hasNoEvaluations = !displayData.skills || Object.keys(displayData.skills).length === 0 || displayData.totalProjects === 0;
 
   if (isLoading) return <div className={styles.container}>로딩 중...</div>;
@@ -160,17 +149,17 @@ export default function ProfileMainPage() {
     <div className={styles.container}>
       <div className={styles.header}>
         <span className={styles.headerTitle}>프로필</span>
-        <button className={styles.settingsButton} onClick={handleSettingsClick}><SettingsIcon /></button>
+        <button className={styles.settingsButton} onClick={handleSettingsClick} aria-label="설정"><SettingsIcon /></button>
       </div>
 
       <div className={styles.content}>
         <div className={styles.profileCard}>
           <div className={styles.profileImageWrapper}>
-            <ProfileImageEdit src={displayData.profileImage} isEditable={false} onChange={handleImageChange} />
+            <ProfileImageEdit src={displayData.profileImage} isEditable={false} />
             {userData && (
               <img 
                 src={verificationBadge} 
-                alt="인증" 
+                alt="대학교 인증 완료" 
                 className={styles.verificationBadge} 
                 onClick={handleVerificationClick} 
                 style={{ cursor: 'pointer' }}
@@ -202,7 +191,7 @@ export default function ProfileMainPage() {
         </div>
 
         <div className={styles.activityCard} onClick={() => navigate(hasNoTeamiType ? '/type-test' : `/type-test/result/${displayData.activityType.type}`)}>
-          <img src={(!hasNoTeamiType && CHARACTER_IMAGES[displayData.activityType.type]) || 비회원배너} alt="활동타입" />
+          <img src={(!hasNoTeamiType && CHARACTER_IMAGES[displayData.activityType.type]) || 비회원배너} alt="티미 유형 배너" />
         </div>
 
         <div className={styles.skillSection}>
@@ -215,7 +204,7 @@ export default function ProfileMainPage() {
 
           {hasNoEvaluations ? (
             <div className={styles.defaultSkillWrapper}>
-              <img src={skillDefaultImg} alt="평가 없음" style={{ width: '100%', height: 'auto' }} />
+              <img src={skillDefaultImg} alt="평가 데이터 없음" style={{ width: '100%', height: 'auto' }} />
             </div>
           ) : (
             <>
@@ -223,7 +212,7 @@ export default function ProfileMainPage() {
               <button className={styles.expandButton} onClick={() => setIsSkillExpanded(!isSkillExpanded)}>
                 나의 능력치 분석 자세히보기
                 <span className={`${styles.expandIcon} ${isSkillExpanded ? styles.expandIconRotated : ''}`}>
-                   <img src={backIcon} alt="arrow" />
+                   <img src={backIcon} alt="펼치기" />
                 </span>
               </button>
               {isSkillExpanded && (
@@ -243,7 +232,7 @@ export default function ProfileMainPage() {
         <div className={styles.projectSection}>
           <div className={styles.sectionTitle}>나의 프로젝트</div>
           {hasNoProjects ? (
-            <div className={styles.emptyProjectCard} onClick={handleAddProject}>
+            <div className={styles.emptyProjectCard} onClick={() => navigate('/recruit')}>
               <span className={styles.emptyProjectIcon}>+</span>
               <span className={styles.emptyProjectText}>프로젝트 등록하기</span>
             </div>
@@ -251,7 +240,7 @@ export default function ProfileMainPage() {
             <div className={styles.projectGrid}>
               {displayData.projects.map((p, i) => (
                 <div key={p.id || i} className={styles.projectCard} onClick={() => navigate(`/project/${p.id}`)}>
-                  <img src={p.thumbnail || defaultProfileImage} alt={p.title} className={styles.projectThumbnail} />
+                  <img src={p.thumbnail || profileDefault} alt={p.title || "프로젝트 섬네일"} className={styles.projectThumbnail} />
                   <div className={styles.projectTitle}>{p.title}</div>
                 </div>
               ))}
