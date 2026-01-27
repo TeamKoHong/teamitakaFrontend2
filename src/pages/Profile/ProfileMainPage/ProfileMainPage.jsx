@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getMe } from '../../../services/user';
-import { getProfileDetail } from '../../../services/profile';
+import { getProfileDetail } from '../../../services/profile'; // ✅ 존재하는 것만 남겼습니다.
 import BottomNav from '../../../components/Common/BottomNav/BottomNav';
 import PentagonChart from '../../../components/Common/UI/PentagonChart';
 import ProfileImageEdit from '../../../components/ProfileImage';
@@ -96,9 +96,7 @@ export default function ProfileMainPage() {
       try {
         setIsLoading(true);
         const [userRes, profileRes] = await Promise.all([getMe(), getProfileDetail()]);
-        
         if (userRes?.success) setUserData(userRes.user);
-        // 백엔드 반환 구조: { success: true, data: { currentProjects, projects, skills ... } }
         if (profileRes?.success) setProfileData(profileRes.data);
       } catch (err) {
         console.error('데이터 로드 실패:', err);
@@ -109,29 +107,18 @@ export default function ProfileMainPage() {
     loadData();
   }, []);
 
-// --- 데이터 가공 최종본 ---
+  const allProjects = profileData?.projects || [];
+  const displayProjects = allProjects.filter(p => {
+    const title = p.title || "";
+    const status = String(p.status || "").toUpperCase();
+    return title.includes("[상호평가 완료]") && status === "COMPLETED";
+  });
 
-// 1. 진행 중인 프로젝트 수
-const ongoingCount = profileData?.currentProjects || 0;
+  const skills = profileData?.skills || null;
+  const feedback = profileData?.feedback || { positive: [], negative: [] };
+  const mbtiType = profileData?.activityType?.type || userData?.mbti_type;
 
-// 2. 전체 프로젝트 리스트
-const allProjects = profileData?.projects || [];
-
-// 3. ⭐ '상호평가 완료' 프로젝트만 필터링 ⭐
-const displayProjects = allProjects.filter(p => {
-  const title = p.title || "";
-  const status = String(p.status || "").toUpperCase();
-
-  // 조건 1: 제목에 [상호평가 완료]가 포함되어 있는가?
-  // 조건 2: 상태가 COMPLETED(완료)인가?
-  return title.includes("[상호평가 완료]") && status === "COMPLETED";
-});
-
-// 4. 나머지 데이터 매핑
-const skills = profileData?.skills || null;
-const feedback = profileData?.feedback || { positive: [], negative: [] };
-const mbtiType = profileData?.activityType?.type || userData?.mbti_type;
-if (isLoading) return <div className={styles.container}>데이터를 불러오는 중입니다...</div>;
+  if (isLoading) return <div className={styles.container}>데이터를 불러오는 중입니다...</div>;
 
   return (
     <div className={styles.container}>
@@ -141,7 +128,6 @@ if (isLoading) return <div className={styles.container}>데이터를 불러오�
       </div>
 
       <div className={styles.content}>
-        {/* 상단 프로필 카드 */}
         <div className={styles.profileCard}>
           <div className={styles.profileImageWrapper}>
             <ProfileImageEdit src={userData?.profileImage || userData?.avatar || profileDefault} isEditable={false} />
@@ -158,27 +144,18 @@ if (isLoading) return <div className={styles.container}>데이터를 불러오�
               <GraduationCapIcon />
               <span>{userData?.university ? `${userData.university} ${userData.major || ''}` : '정보를 입력해주세요'}</span>
             </div>
-            <div className={styles.profileStats}>
-              <div className={styles.statHighlight}>
-                현재 진행중인 프로젝트 <span className={styles.statOrange}>총 {ongoingCount}건</span>
-              </div>
-              <div className={styles.statNormal}>{`전체 팀플 경험 ${profileData?.totalTeamExperience || 0}회`}</div>
-            </div>
           </div>
         </div>
 
-        {/* 티미 유형 배너 */}
         <div className={styles.activityCard} onClick={() => navigate('/type-test')}>
           <img src={CHARACTER_IMAGES[mbtiType] || 비회원배너} alt="배너" />
         </div>
 
-        {/* 팀플 능력치 분석 섹션 */}
         <div className={styles.skillSection}>
           <div className={styles.skillHeader}>
             <span className={styles.skillTitle}>팀플 능력치 분석</span>
             <span className={styles.skillProjectCount}>{allProjects.length}회 프로젝트 종합결과</span>
           </div>
-
           {!skills || Object.keys(skills).length === 0 ? (
             <div className={styles.defaultSkillWrapper}>
               <img src={skillDefaultImg} alt="데이터 없음" style={{ width: '100%' }} />
@@ -203,7 +180,6 @@ if (isLoading) return <div className={styles.container}>데이터를 불러오�
           )}
         </div>
 
-        {/* 나의 프로젝트 리스트 */}
         <div className={styles.projectSection}>
           <div className={styles.sectionTitle}>나의 프로젝트</div>
           {displayProjects.length === 0 ? (
@@ -212,12 +188,19 @@ if (isLoading) return <div className={styles.container}>데이터를 불러오�
             </div>
           ) : (
             <div className={styles.projectGrid}>
-              {displayProjects.map((p, i) => (
-                <div key={p.projectId || i} className={styles.projectCard} onClick={() => navigate(`/project/${p.projectId}`)}>
-                  <img src={p.thumbnail || profileDefault} alt="썸네일" className={styles.projectThumbnail} />
-                  <div className={styles.projectTitle}>{p.title}</div>
-                </div>
-              ))}
+              {displayProjects.map((p, i) => {
+                const targetId = p.projectId || p.id || p._id;
+                return (
+                  <div 
+                    key={targetId || i} 
+                    className={styles.projectCard} 
+                    onClick={() => { if (targetId) navigate(`/profile/project/view/${targetId}`); }}
+                  >
+                    <img src={p.thumbnail || profileDefault} alt="썸네일" className={styles.projectThumbnail} />
+                    <div className={styles.projectTitle}>{p.title}</div>
+                  </div>
+                );
+              })}
             </div>
           )}
         </div>
