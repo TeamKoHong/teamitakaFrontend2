@@ -16,6 +16,7 @@ export default function ProfileVerificationPage() {
           setUserData(res.user);
         }
       } catch (err) {
+        // [수정 포인트] setError(err) 대신 console.error를 사용하여 에러를 방지합니다.
         console.error('데이터 로드 실패:', err);
       } finally {
         setIsLoading(false);
