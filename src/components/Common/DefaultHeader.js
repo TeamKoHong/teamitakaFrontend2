@@ -11,6 +11,8 @@ export default function DefaultHeader({
   backPath = -1, // useNavigate() 에 넘길 값을 기본으로
   onBack, // 슬라이드 닫기
   rightElement, // Custom right element (e.g., Close button)
+  className = "",
+  style = {},
 }) {
   const navigate = useNavigate();
 
@@ -23,7 +25,7 @@ export default function DefaultHeader({
   };
 
   return (
-    <div className="member-header-container">
+    <div className={`member-header-container ${className}`} style={style}>
       {(onBack !== undefined || (backPath !== undefined && backPath !== null)) && (
         <button
           className="member-header-back"

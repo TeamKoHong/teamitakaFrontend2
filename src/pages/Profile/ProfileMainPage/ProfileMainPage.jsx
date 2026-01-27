@@ -36,7 +36,7 @@ const CHARACTER_IMAGES = {
 };
 
 const SettingsIcon = () => (
-  <img src={settingIcon} alt="설정" style={{ width: '24px', height: '24px', objectFit: 'contain', display: 'block' }} />
+  <img src={settingIcon} alt="설정" style={{ width: '24px', height: '24px', objectFit: 'contain' }} />
 );
 
 const GraduationCapIcon = () => (
@@ -48,40 +48,35 @@ const GraduationCapIcon = () => (
 
 const FeedbackCard = ({ type, title, items = [] }) => {
   const isPositive = type === 'positive';
-  const displayItems = items.length > 0 ? items : ['피드백이 없습니다'];
+  const displayItems = items && items.length > 0 ? items : ['피드백이 없습니다'];
   return (
-    <div style={{ flex: 1, minWidth: 0, minHeight: '72px', padding: '12px', borderRadius: '10px', backgroundColor: isPositive ? '#FFFDFC' : '#F76241', boxSizing: 'border-box' }}>
-      <div style={{ fontFamily: 'Pretendard', fontSize: '13px', fontWeight: 600, color: isPositive ? '#000' : '#fff', marginBottom: '6px' }}>{title}</div>
-      <div style={{ color: isPositive ? '#444' : '#efefef', fontSize: '11px', lineHeight: '165.04%' }}>
-        {displayItems.map((item, index) => <div key={index} style={{ marginBottom: '2px' }}>• {item}</div>)}
+    <div style={{ flex: 1, minWidth: 0, minHeight: '72px', padding: '12px', borderRadius: '10px', backgroundColor: isPositive ? '#FFFDFC' : '#F76241' }}>
+      <div style={{ fontSize: '13px', fontWeight: 600, color: isPositive ? '#000' : '#fff', marginBottom: '6px' }}>{title}</div>
+      <div style={{ color: isPositive ? '#444' : '#efefef', fontSize: '11px', lineHeight: '1.6' }}>
+        {displayItems.map((item, index) => <div key={index}>• {item}</div>)}
       </div>
     </div>
   );
 };
 
-const BUBBLE_STYLES = [
-  { size: 123, bg: '#F76241', textColor: '#FFFDFC', top: 0, left: 114, zIndex: 5 },
-  { size: 107, bg: '#FF9780', textColor: '#FFFDFC', top: 18, left: 0, zIndex: 4 },
-  { size: 94, bg: '#FFC5B8', textColor: '#FFFDFC', top: 84, left: 60, zIndex: 3 },
-  { size: 65, bg: '#D1CCCB', textColor: '#FFFDFC', top: 54, left: 232, zIndex: 2 },
-  { size: 54, bg: '#ECECEC', textColor: '#D1CCCB', top: 104, left: 210, zIndex: 1 },
-];
-
-const DEFAULT_SKILLS = { 노력: 80, 업무능력: 75, 소통: 85, 성장: 90, 의지: 70 };
-
 const SkillBubbleChart = ({ skills }) => {
-  const skillData = skills && Object.keys(skills).length > 0 ? skills : DEFAULT_SKILLS;
-  const sortedSkills = Object.entries(skillData).sort(([, a], [, b]) => b - a);
-
+  if (!skills || Object.keys(skills).length === 0) return null;
+  const sortedSkills = Object.entries(skills).sort(([, a], [, b]) => b - a);
+  const BUBBLE_STYLES = [
+    { size: 123, bg: '#F76241', textColor: '#FFFDFC', top: 0, left: 114, zIndex: 5 },
+    { size: 107, bg: '#FF9780', textColor: '#FFFDFC', top: 18, left: 0, zIndex: 4 },
+    { size: 94, bg: '#FFC5B8', textColor: '#FFFDFC', top: 84, left: 60, zIndex: 3 },
+    { size: 65, bg: '#D1CCCB', textColor: '#FFFDFC', top: 54, left: 232, zIndex: 2 },
+    { size: 54, bg: '#ECECEC', textColor: '#D1CCCB', top: 104, left: 210, zIndex: 1 },
+  ];
   return (
     <div style={{ position: 'relative', width: '100%', maxWidth: '296px', height: '177px', margin: '0 auto' }}>
-      {sortedSkills.map(([skillName, skillValue], index) => {
-        const style = BUBBLE_STYLES[index];
-        if (!style || !skillValue) return null;
-        const nameFontSize = style.size >= 100 ? '16.79px' : style.size >= 80 ? '14px' : '12px';
+      {sortedSkills.map(([name, val], i) => {
+        const style = BUBBLE_STYLES[i];
+        if (!style) return null;
         return (
-          <div key={skillName} style={{ position: 'absolute', top: style.top, left: style.left, width: style.size, height: style.size, borderRadius: '50%', backgroundColor: style.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: style.zIndex }}>
-            <span style={{ fontSize: nameFontSize, fontWeight: 800, color: style.textColor, fontFamily: 'Pretendard' }}>{skillName}</span>
+          <div key={name} style={{ position: 'absolute', top: style.top, left: style.left, width: style.size, height: style.size, borderRadius: '50%', backgroundColor: style.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: style.zIndex }}>
+            <span style={{ fontSize: style.size >= 100 ? '16px' : '12px', fontWeight: 800, color: style.textColor }}>{name}</span>
           </div>
         );
       })}
@@ -95,133 +90,112 @@ export default function ProfileMainPage() {
   const [profileData, setProfileData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSkillExpanded, setIsSkillExpanded] = useState(false);
-  const [currentImg, setCurrentImg] = useState(profileDefault);
 
   useEffect(() => {
     const loadData = async () => {
       try {
         setIsLoading(true);
-        const userRes = await getMe();
-        if (userRes?.success && userRes.user) {
-          setUserData(userRes.user);
-          setCurrentImg(userRes.user.profileImage || profileDefault);
-        }
-        const profileRes = await getProfileDetail();
+        const [userRes, profileRes] = await Promise.all([getMe(), getProfileDetail()]);
+        
+        if (userRes?.success) setUserData(userRes.user);
+        // 백엔드 반환 구조: { success: true, data: { currentProjects, projects, skills ... } }
         if (profileRes?.success) setProfileData(profileRes.data);
       } catch (err) {
-        if (err?.code === 'UNAUTHORIZED') navigate('/login', { replace: true });
-        else console.error(err.message || '데이터 로드 실패');
+        console.error('데이터 로드 실패:', err);
       } finally {
         setIsLoading(false);
       }
     };
     loadData();
-  }, [navigate]);
+  }, []);
 
-  const handleSettingsClick = () => navigate('/profile/edit');
-  const handleVerificationClick = () => navigate('/profile/verification');
+// --- 데이터 가공 최종본 ---
 
-  const localMbtiType = localStorage.getItem('user_mbti_type');
-  const displayData = {
-    profileImage: currentImg || profileDefault,
-    username: userData?.username || userData?.email || '사용자',
-    university: userData?.university,
-    department: userData?.major || userData?.department,
-    enrollmentStatus: userData?.enrollmentStatus || '재학 중',
-    currentProjects: profileData?.totalProjects || profileData?.currentProjects || 0,
-    totalTeamExperience: userData?.teamExperience || profileData?.totalTeamExperience || 0,
-    isVerified: !!userData?.university,
-    activityType: { type: userData?.mbti_type || localMbtiType || profileData?.activityType?.type || null },
-    skills: profileData?.skills || null,
-    feedback: { positive: profileData?.feedback?.positive || [], negative: profileData?.feedback?.negative || [] },
-    projects: profileData?.projects || [],
-    totalProjects: profileData?.totalProjects || 0,
-  };
+// 1. 진행 중인 프로젝트 수
+const ongoingCount = profileData?.currentProjects || 0;
 
-  const isProfileEmpty = !userData?.university && !userData?.major;
-  const hasNoTeamiType = !displayData.activityType?.type;
-  const hasNoProjects = displayData.totalProjects === 0;
-  const hasNoEvaluations = !displayData.skills || Object.keys(displayData.skills).length === 0 || displayData.totalProjects === 0;
+// 2. 전체 프로젝트 리스트
+const allProjects = profileData?.projects || [];
 
-  if (isLoading) return <div className={styles.container}>로딩 중...</div>;
+// 3. ⭐ '상호평가 완료' 프로젝트만 필터링 ⭐
+const displayProjects = allProjects.filter(p => {
+  const title = p.title || "";
+  const status = String(p.status || "").toUpperCase();
+
+  // 조건 1: 제목에 [상호평가 완료]가 포함되어 있는가?
+  // 조건 2: 상태가 COMPLETED(완료)인가?
+  return title.includes("[상호평가 완료]") && status === "COMPLETED";
+});
+
+// 4. 나머지 데이터 매핑
+const skills = profileData?.skills || null;
+const feedback = profileData?.feedback || { positive: [], negative: [] };
+const mbtiType = profileData?.activityType?.type || userData?.mbti_type;
+if (isLoading) return <div className={styles.container}>데이터를 불러오는 중입니다...</div>;
 
   return (
     <div className={styles.container}>
       <div className={styles.header}>
         <span className={styles.headerTitle}>프로필</span>
-        <button className={styles.settingsButton} onClick={handleSettingsClick} aria-label="설정"><SettingsIcon /></button>
+        <button className={styles.settingsButton} onClick={() => navigate('/profile/edit')}><SettingsIcon /></button>
       </div>
 
       <div className={styles.content}>
+        {/* 상단 프로필 카드 */}
         <div className={styles.profileCard}>
           <div className={styles.profileImageWrapper}>
-            <ProfileImageEdit src={displayData.profileImage} isEditable={false} />
-            {userData && (
-              <img 
-                src={verificationBadge} 
-                alt="대학교 인증 완료" 
-                className={styles.verificationBadge} 
-                onClick={handleVerificationClick} 
-                style={{ cursor: 'pointer' }}
-              />
+            <ProfileImageEdit src={userData?.profileImage || userData?.avatar || profileDefault} isEditable={false} />
+            {userData?.university && (
+              <img src={verificationBadge} alt="인증" className={styles.verificationBadge} onClick={() => navigate('/profile/verification')} />
             )}
           </div>
           <div className={styles.profileInfo}>
             <div className={styles.profileName}>
-              {isProfileEmpty ? '프로필을 입력하세요.' : (
-                <>
-                  <span className={styles.nameBold}>{displayData.username}</span>
-                  <span className={styles.nameRegular}>&nbsp;티미님</span>
-                </>
-              )}
+              <span className={styles.nameBold}>{userData?.username || '사용자'}</span>
+              <span className={styles.nameRegular}>&nbsp;티미님</span>
             </div>      
             <div className={styles.profileUniversity}>
               <GraduationCapIcon />
-              <span>
-                {userData?.university ? `${displayData.university} ${displayData.department} ${displayData.enrollmentStatus}` : '대학교명 재학 중'}
-              </span>
+              <span>{userData?.university ? `${userData.university} ${userData.major || ''}` : '정보를 입력해주세요'}</span>
             </div>
             <div className={styles.profileStats}>
               <div className={styles.statHighlight}>
-                {isProfileEmpty ? '현재 진행중인 프로젝트가 없어요.' : <>현재 진행중인 프로젝트 <span className={styles.statOrange}>총 {displayData.currentProjects}건</span></>}
+                현재 진행중인 프로젝트 <span className={styles.statOrange}>총 {ongoingCount}건</span>
               </div>
-              <div className={styles.statNormal}>{isProfileEmpty ? '팀플 경험이 없어요.' : `전체 팀플 경험 ${displayData.totalTeamExperience}회`}</div>
+              <div className={styles.statNormal}>{`전체 팀플 경험 ${profileData?.totalTeamExperience || 0}회`}</div>
             </div>
           </div>
         </div>
 
-        <div className={styles.activityCard} onClick={() => navigate(hasNoTeamiType ? '/type-test' : `/type-test/result/${displayData.activityType.type}`)}>
-          <img src={(!hasNoTeamiType && CHARACTER_IMAGES[displayData.activityType.type]) || 비회원배너} alt="티미 유형 배너" />
+        {/* 티미 유형 배너 */}
+        <div className={styles.activityCard} onClick={() => navigate('/type-test')}>
+          <img src={CHARACTER_IMAGES[mbtiType] || 비회원배너} alt="배너" />
         </div>
 
+        {/* 팀플 능력치 분석 섹션 */}
         <div className={styles.skillSection}>
           <div className={styles.skillHeader}>
             <span className={styles.skillTitle}>팀플 능력치 분석</span>
-            <span className={styles.skillProjectCount}>
-              {hasNoEvaluations ? '프로젝트 종합 결과가 없어요.' : `${displayData.totalProjects}회 프로젝트 종합결과`}
-            </span>
+            <span className={styles.skillProjectCount}>{allProjects.length}회 프로젝트 종합결과</span>
           </div>
 
-          {hasNoEvaluations ? (
+          {!skills || Object.keys(skills).length === 0 ? (
             <div className={styles.defaultSkillWrapper}>
-              <img src={skillDefaultImg} alt="평가 데이터 없음" style={{ width: '100%', height: 'auto' }} />
+              <img src={skillDefaultImg} alt="데이터 없음" style={{ width: '100%' }} />
             </div>
           ) : (
             <>
-              <div className={styles.bubbleChartContainer}><SkillBubbleChart skills={displayData.skills} /></div>
+              <div className={styles.bubbleChartContainer}><SkillBubbleChart skills={skills} /></div>
               <button className={styles.expandButton} onClick={() => setIsSkillExpanded(!isSkillExpanded)}>
                 나의 능력치 분석 자세히보기
-                <span className={`${styles.expandIcon} ${isSkillExpanded ? styles.expandIconRotated : ''}`}>
-                   <img src={backIcon} alt="펼치기" />
-                </span>
+                <span className={`${styles.expandIcon} ${isSkillExpanded ? styles.expandIconRotated : ''}`}><img src={backIcon} alt="V" /></span>
               </button>
               {isSkillExpanded && (
                 <div className={styles.expandedContent}>
-                  <div className={styles.radarChartContainer}><PentagonChart skills={displayData.skills} /></div>
-                  <div style={{ display: 'flex', width: '100%', maxWidth: '364px', position: 'relative', margin: '32px auto 0' }}>
-                    <FeedbackCard type="positive" title="이런 점이 좋아요👍" items={displayData.feedback.positive} />
-                    <div style={{ position: 'absolute', top: '11px', left: '50%', width: '1px', height: '52px', borderLeft: '1px dashed #D1CCCB' }} />
-                    <FeedbackCard type="negative" title="이런 점은 개선이 필요해요🚨" items={displayData.feedback.negative} />
+                  <div className={styles.radarChartContainer}><PentagonChart skills={skills} /></div>
+                  <div style={{ display: 'flex', gap: '10px', marginTop: '20px' }}>
+                    <FeedbackCard type="positive" title="이런 점이 좋아요👍" items={feedback.positive} />
+                    <FeedbackCard type="negative" title="개선이 필요해요🚨" items={feedback.negative} />
                   </div>
                 </div>
               )}
@@ -229,18 +203,18 @@ export default function ProfileMainPage() {
           )}
         </div>
 
+        {/* 나의 프로젝트 리스트 */}
         <div className={styles.projectSection}>
           <div className={styles.sectionTitle}>나의 프로젝트</div>
-          {hasNoProjects ? (
+          {displayProjects.length === 0 ? (
             <div className={styles.emptyProjectCard} onClick={() => navigate('/recruit')}>
-              <span className={styles.emptyProjectIcon}>+</span>
-              <span className={styles.emptyProjectText}>프로젝트 등록하기</span>
+              <span className={styles.emptyProjectText}>참여 중인 프로젝트가 없습니다.</span>
             </div>
           ) : (
             <div className={styles.projectGrid}>
-              {displayData.projects.map((p, i) => (
-                <div key={p.id || i} className={styles.projectCard} onClick={() => navigate(`/project/${p.id}`)}>
-                  <img src={p.thumbnail || profileDefault} alt={p.title || "프로젝트 섬네일"} className={styles.projectThumbnail} />
+              {displayProjects.map((p, i) => (
+                <div key={p.projectId || i} className={styles.projectCard} onClick={() => navigate(`/project/${p.projectId}`)}>
+                  <img src={p.thumbnail || profileDefault} alt="썸네일" className={styles.projectThumbnail} />
                   <div className={styles.projectTitle}>{p.title}</div>
                 </div>
               ))}
