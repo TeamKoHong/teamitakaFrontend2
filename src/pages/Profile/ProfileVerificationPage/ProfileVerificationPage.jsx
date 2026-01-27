@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { getMe } from '../../../services/user';
 import DefaultHeader from '../../../components/Common/DefaultHeader';
 import styles from './ProfileVerificationPage.module.scss';
