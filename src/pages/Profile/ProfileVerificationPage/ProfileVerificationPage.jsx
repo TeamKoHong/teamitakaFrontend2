@@ -1,11 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { getMe } from '../../../services/user';
+import DefaultHeader from '../../../components/Common/DefaultHeader';
+import styles from './ProfileVerificationPage.module.scss';
+// Using the university_verified.png from assets as the badge icon
+import verificationBadge from '../../../assets/university_verified.png';
+import profileDefault from '../../../assets/profile_default.png';
 
 export default function ProfileVerificationPage() {
-  const navigate = useNavigate();
   const [userData, setUserData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+
+  // Fallback date if not present in data
+  const [authDate, setAuthDate] = useState('');
 
   useEffect(() => {
     const fetchData = async () => {
@@ -14,9 +20,12 @@ export default function ProfileVerificationPage() {
         const res = await getMe();
         if (res?.success) {
           setUserData(res.user);
+          // Demo date formatting
+          const date = new Date();
+          const formattedDate = `${date.getFullYear()}.${String(date.getMonth() + 1).padStart(2, '0')}.${String(date.getDate()).padStart(2, '0')}`;
+          setAuthDate(formattedDate);
         }
       } catch (err) {
-        // [수정 포인트] setError(err) 대신 console.error를 사용하여 에러를 방지합니다.
         console.error('데이터 로드 실패:', err);
       } finally {
         setIsLoading(false);
@@ -25,52 +34,73 @@ export default function ProfileVerificationPage() {
     fetchData();
   }, []);
 
-  const handleBack = () => navigate(-1);
+  // handleBack is handled by DefaultHeader internally (or via backPath), 
+  // so we don't need to define it here if we just use default behavior.
 
   if (isLoading) {
-    return <div style={{ padding: '20px' }}>로딩 중...</div>;
+    return <div className={styles.container} style={{ justifyContent: 'center', alignItems: 'center' }}>로딩 중...</div>;
+  }
+
+  // Determine if verified.
+  const isVerified = !!userData?.university;
+
+  if (!isVerified) {
+    return (
+      <div className={styles.container}>
+        <DefaultHeader title="대학 인증" className={styles.customHeader} />
+        <div style={{ padding: '20px', textAlign: 'center', marginTop: '50px' }}>
+          인증된 정보가 없습니다.
+        </div>
+      </div>
+    );
   }
 
   return (
-    <div style={{ padding: '20px', fontFamily: 'Pretendard' }}>
-      <div style={{ display: 'flex', alignItems: 'center', marginBottom: '24px' }}>
-        <button 
-          onClick={handleBack}
-          style={{ border: 'none', background: 'none', cursor: 'pointer', fontSize: '20px' }}
-        >
-          &larr;
-        </button>
-        <h1 style={{ fontSize: '18px', margin: '0 0 0 10px' }}>학교 인증</h1>
-      </div>
+    <div className={styles.container}>
+      {/* Header */}
+      <DefaultHeader title="대학 인증 내역" className={styles.customHeader} />
 
-      <div style={{ backgroundColor: '#f9f9f9', padding: '20px', borderRadius: '12px' }}>
-        <p style={{ fontSize: '12px', color: '#666', marginBottom: '4px' }}>현재 인증 상태</p>
-        <h2 style={{ fontSize: '18px', margin: '0 0 8px 0' }}>
-          {userData?.university ? `${userData.university} 인증 완료` : '미인증 상태'}
-        </h2>
-        {userData?.major && (
-          <p style={{ fontSize: '14px', color: '#888' }}>학과: {userData.major}</p>
-        )}
-      </div>
+      {/* Main Content */}
+      <div className={styles.content}>
+        {/* Certification Badge & Status */}
+        <div className={styles.badgeSection}>
+          <div className={styles.badgeIconWrapper}>
+            <img src={verificationBadge} className={styles.badgeIcon} alt="인증 뱃지" />
+          </div>
+          <div className={styles.badgeText}>
+            <div className={styles.badgeTitle}>대학교 인증 완료</div>
+            <div className={styles.badgeDate}>{authDate} 부로 인증되었습니다.</div>
+          </div>
+        </div>
 
-      {!userData?.university && (
-        <button
-          style={{
-            width: '100%',
-            padding: '16px',
-            backgroundColor: '#F76241',
-            color: 'white',
-            border: 'none',
-            borderRadius: '8px',
-            marginTop: '20px',
-            fontWeight: 'bold',
-            cursor: 'pointer'
-          }}
-          onClick={() => alert('인증 페이지로 이동합니다.')}
-        >
-          학교 인증 시작하기
-        </button>
-      )}
+        {/* Bottom Sheet Card */}
+        <div className={styles.bottomSheet}>
+          <div className={styles.sheetTitle}>인증 정보</div>
+
+          <div className={styles.profileSection}>
+            <img
+              src={userData?.profileImage || profileDefault}
+              alt="프로필 이미지"
+              className={styles.profileImage}
+            />
+            <div className={styles.profileTexts}>
+              <div className={styles.univText}>{userData?.university}</div>
+              <div className={styles.nameText}>{userData?.username || '사용자'}</div>
+            </div>
+          </div>
+
+          <div className={styles.infoList}>
+            <div className={styles.infoRow}>
+              <span className={styles.label}>인증 날짜</span>
+              <span className={styles.value}>{authDate}</span>
+            </div>
+            <div className={styles.infoRow}>
+              <span className={styles.label}>인증 상태</span>
+              <span className={styles.value}>인증 완료</span>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
