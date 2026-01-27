@@ -79,7 +79,7 @@ export default function AnalysisCompletePage() {
                             <div className="tw-absolute tw-inset-0 tw-w-full tw-h-full" style={{ backfaceVisibility: 'hidden' }}>
                                 {currentTimiCard ? (
                                     <img
-                                        src={`/assets/timi-cards/${currentTimiCard.name}카드_앞.png`}
+                                        src={currentTimiCard.front}
                                         alt={`${currentTimiCard.name} 캐릭터`}
                                         className="tw-w-full tw-h-full tw-object-contain"
                                     />
@@ -100,7 +100,7 @@ export default function AnalysisCompletePage() {
                             >
                                 {currentTimiCard ? (
                                     <img
-                                        src={`/assets/timi-cards/${currentTimiCard.name}카드_뒤.png`}
+                                        src={currentTimiCard.back}
                                         alt={`${currentTimiCard.name} 뒷면`}
                                         className="tw-w-full tw-h-full tw-object-contain"
                                     />
