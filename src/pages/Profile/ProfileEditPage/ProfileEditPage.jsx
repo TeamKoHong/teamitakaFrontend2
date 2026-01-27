@@ -20,7 +20,6 @@ export default function ProfileEditPage() {
   // 사용자 데이터 상태
   const [userData, setUserData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState(null);
 
   // 이미지 파일 상태 (업로드용)
@@ -77,6 +76,73 @@ export default function ProfileEditPage() {
     loadUserData();
   }, [location.state, navigate]);
 
+  // 이전 데이터와 비교를 위한 참조
+  const prevDataRef = React.useRef(null);
+
+  // 자동 저장 로직
+  const saveData = React.useCallback(async (currentFormData, currentImageFile) => {
+    // 저장 중이거나 데이터 로드 전이면 중단
+    if (!userData) return;
+
+    try {
+      let profileImageUrl = userData.avatar || userData.profileImage;
+
+      // 이미지가 변경되었다면 업로드
+      if (currentImageFile) {
+        // 이미 업로드 중인 경우 등 방어 로직이 필요할 수 있으나, 
+        // 간단히 파일이 있을 때만 업로드 수행
+        const uploadRes = await uploadProfileImage(currentImageFile);
+        if (uploadRes?.success) {
+          profileImageUrl = uploadRes.data.photo_url;
+          setImageFile(null); // 업로드 완료 후 초기화하여 재업로드 방지
+        }
+      }
+
+      // 프로필 데이터 구성
+      const updatedData = {
+        ...userData,
+        profileImage: profileImageUrl,
+        major: currentFormData.major,
+        teamExperience: currentFormData.teamExperience,
+        keywords: currentFormData.keywords,
+      };
+
+      // API 호출
+      // 사용자 경험을 위해 백그라운드에서 조용히 처리 (에러만 표시)
+      const res = await updateProfile(updatedData);
+
+      if (res?.success) {
+        // 성공 시 로컬 상태 동기화 (재저장 방지용)
+        setUserData(updatedData);
+        prevDataRef.current = updatedData;
+        setError(null);
+      } else {
+        console.error("Autosave failed without exception");
+      }
+    } catch (err) {
+      console.error("Autosave error:", err);
+      // 토큰 만료 등 치명적 에러 외에는 사용자에게 방해되지 않도록 조용히 처리하거나
+      // 우측 상단에 작게 표시할 수 있음. 여기선 치명적 에러만 처리.
+      if (err?.code === "UNAUTHORIZED") {
+        navigate("/login", { replace: true });
+      }
+    }
+  }, [userData, navigate]);
+
+  // Debounce Effect
+  useEffect(() => {
+    // 초기 로딩 시 실행 방지
+    if (isLoading || !userData) return;
+
+    // 변경 사항 확인 (Simple Deep Compare or Field Check)
+    // 실제 변경이 있을 때만 타이머 설정
+    const timeoutId = setTimeout(() => {
+      saveData(formData, imageFile);
+    }, 1000); // 1초 디바운스
+
+    return () => clearTimeout(timeoutId);
+  }, [formData, imageFile, userData, isLoading, saveData]);
+
   // 뒤로가기 핸들러
   const handleBack = () => {
     navigate("/profile");
@@ -84,7 +150,7 @@ export default function ProfileEditPage() {
 
   // 로그아웃 핸들러
   const handleLogout = () => {
-    try { sessionStorage.setItem('suppress-session-expired', '1'); } catch (e) {}
+    try { sessionStorage.setItem('suppress-session-expired', '1'); } catch (e) { }
     try { logout(); } catch (e) {
       localStorage.removeItem('authToken');
       localStorage.removeItem('user');
@@ -95,51 +161,7 @@ export default function ProfileEditPage() {
   // 이미지 변경 핸들러
   const handleImageChange = (file) => {
     setImageFile(file);
-  };
-
-  // 저장 핸들러
-  const handleSave = async () => {
-    if (isSaving) return;
-
-    setIsSaving(true);
-    setError(null);
-
-    try {
-      let profileImageUrl = userData?.avatar || userData?.profileImage;
-
-      // 새 이미지가 선택되었으면 먼저 업로드
-      if (imageFile) {
-        const uploadRes = await uploadProfileImage(imageFile);
-        if (uploadRes?.success) {
-          profileImageUrl = uploadRes.data.photo_url;
-        }
-      }
-
-      // 프로필 업데이트
-      const updatedData = {
-        ...userData,
-        profileImage: profileImageUrl,
-        major: formData.major,
-        teamExperience: formData.teamExperience,
-        keywords: formData.keywords,
-      };
-
-      const res = await updateProfile(updatedData);
-      if (res?.success) {
-        // 성공 시 /profile 페이지로 이동 (업데이트된 데이터 전달)
-        navigate("/profile", { replace: true, state: { user: updatedData } });
-      } else {
-        throw new Error("프로필 저장에 실패했습니다.");
-      }
-    } catch (err) {
-      if (err?.code === "UNAUTHORIZED") {
-        navigate("/login", { replace: true });
-        return;
-      }
-      setError(err.message || "저장 중 오류가 발생했습니다.");
-    } finally {
-      setIsSaving(false);
-    }
+    // 이미지는 파일 선택 즉시 저장을 시도하거나, useEffect에 의해 감지됨.
   };
 
   // 로그아웃 버튼 컴포넌트
@@ -214,17 +236,8 @@ export default function ProfileEditPage() {
         )}
       </div>
 
-      {/* 저장 버튼 */}
+      {/* 하단 영역: 저장 버튼 제거됨 */}
       <div className={styles.bottomSection}>
-        <Button
-          fullWidth
-          onClick={handleSave}
-          disabled={isSaving}
-          isLoading={isSaving}
-        >
-          {isSaving ? "저장 중..." : "저장하기"}
-        </Button>
-
         {/* 탈퇴하기 */}
         <Withdrawal />
       </div>
