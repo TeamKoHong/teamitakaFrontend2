@@ -14,9 +14,9 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px;
-  padding-left: 12px;
-  background-color: transparent;
+  padding: 16px;
+  height: 57px;
+  background-color: #fffdfc;
 }
 
 .headerTitle {
@@ -30,7 +30,6 @@
   background: none;
   border: none;
   cursor: pointer;
-  padding: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
