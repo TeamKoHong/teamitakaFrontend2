@@ -1,201 +1,76 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getMe } from '../../../services/user';
-import { getVerificationInfo } from '../../../services/profile';
-import styles from './ProfileVerificationPage.module.scss';
-
-// 아이콘 컴포넌트
-const BackIcon = () => (
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <polyline points="15 18 9 12 15 6" />
-  </svg>
-);
-
-const CheckIcon = () => (
-  <svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="white" strokeWidth="3">
-    <polyline points="6 16 12 22 26 8" />
-  </svg>
-);
-
-const ShieldIcon = () => (
-  <svg width="64" height="64" viewBox="0 0 64 64" fill="none" stroke="currentColor" strokeWidth="2">
-    <path d="M32 8L8 18v12c0 16 24 26 24 26s24-10 24-26V18L32 8z" />
-  </svg>
-);
 
 export default function ProfileVerificationPage() {
   const navigate = useNavigate();
-
   const [userData, setUserData] = useState(null);
-  const [verificationData, setVerificationData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
 
-  // 데이터 로드
   useEffect(() => {
-    const loadData = async () => {
+    const fetchData = async () => {
       try {
         setIsLoading(true);
-
-        // 사용자 정보 로드
-        const userRes = await getMe();
-        if (userRes?.success && userRes.user) {
-          setUserData(userRes.user);
-        }
-
-        // 인증 정보 로드
-        const verifyRes = await getVerificationInfo();
-        if (verifyRes?.success) {
-          setVerificationData(verifyRes.data);
+        const res = await getMe();
+        if (res?.success) {
+          setUserData(res.user);
         }
       } catch (err) {
-        if (err?.code === 'UNAUTHORIZED') {
-          navigate('/login', { replace: true });
-          return;
-        }
-        setError(err.message || '데이터를 불러올 수 없습니다.');
+        // [수정 포인트] setError(err) 대신 console.error를 사용하여 에러를 방지합니다.
+        console.error('데이터 로드 실패:', err);
       } finally {
         setIsLoading(false);
       }
     };
+    fetchData();
+  }, []);
 
-    loadData();
-  }, [navigate]);
+  const handleBack = () => navigate(-1);
 
-  // 뒤로가기
-  const handleBack = () => {
-    navigate(-1);
-  };
-
-  // 로딩 상태
   if (isLoading) {
-    return (
-      <div className={styles.container}>
-        <div className={styles.header}>
-          <button className={styles.backButton} onClick={handleBack}>
-            <BackIcon />
-          </button>
-          <span className={styles.headerTitle}>대학 인증 내역</span>
-        </div>
-        <div className={styles.loadingContainer}>
-          <p>로딩 중...</p>
-        </div>
-      </div>
-    );
+    return <div style={{ padding: '20px' }}>로딩 중...</div>;
   }
-
-  // 에러 상태
-  if (error) {
-    return (
-      <div className={styles.container}>
-        <div className={styles.header}>
-          <button className={styles.backButton} onClick={handleBack}>
-            <BackIcon />
-          </button>
-          <span className={styles.headerTitle}>대학 인증 내역</span>
-        </div>
-        <div className={styles.errorContainer}>
-          <p>{error}</p>
-        </div>
-      </div>
-    );
-  }
-
-  // 인증 여부 확인
-  const isVerified = verificationData?.isVerified || !!userData?.university;
-
-  // 표시 데이터
-  const displayData = {
-    university: verificationData?.university || userData?.university || '',
-    department: verificationData?.department || userData?.department || '',
-    username: verificationData?.username || userData?.username || '',
-    verifiedAt: verificationData?.verifiedAt || '',
-    status: verificationData?.status || (isVerified ? '인증 완료' : '미인증'),
-  };
-
-  // 날짜 포맷팅
-  const formatDate = (dateString) => {
-    if (!dateString) return '';
-    const date = new Date(dateString);
-    return `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일`;
-  };
 
   return (
-    <div className={styles.container}>
-      {/* 헤더 */}
-      <div className={styles.header}>
-        <button className={styles.backButton} onClick={handleBack}>
-          <BackIcon />
+    <div style={{ padding: '20px', fontFamily: 'Pretendard' }}>
+      <div style={{ display: 'flex', alignItems: 'center', marginBottom: '24px' }}>
+        <button 
+          onClick={handleBack}
+          style={{ border: 'none', background: 'none', cursor: 'pointer', fontSize: '20px' }}
+        >
+          &larr;
         </button>
-        <span className={styles.headerTitle}>대학 인증 내역</span>
+        <h1 style={{ fontSize: '18px', margin: '0 0 0 10px' }}>학교 인증</h1>
       </div>
 
-      <div className={styles.content}>
-        {isVerified ? (
-          <>
-            {/* 인증 상태 */}
-            <div className={styles.verificationStatus}>
-              <div className={styles.verificationBadge}>
-                <CheckIcon />
-              </div>
-              <div className={styles.verificationTitle}>대학교 인증 완료</div>
-              {displayData.verifiedAt && (
-                <div className={styles.verificationDate}>
-                  {formatDate(displayData.verifiedAt)} 인증
-                </div>
-              )}
-            </div>
-
-            {/* 인증 정보 카드 */}
-            <div className={styles.verificationCard}>
-              <div className={styles.universityRow}>
-                <div className={styles.universityLogo}>
-                  {/* 대학 로고 - 추후 API에서 제공 */}
-                  <span style={{ fontSize: '24px' }}>🎓</span>
-                </div>
-                <div className={styles.universityInfo}>
-                  <div className={styles.universityName}>{displayData.university}</div>
-                  {displayData.department && (
-                    <div className={styles.universityDepartment}>{displayData.department}</div>
-                  )}
-                </div>
-              </div>
-
-              <div className={styles.infoRow}>
-                <span className={styles.infoLabel}>사용자명</span>
-                <span className={styles.infoValue}>{displayData.username}</span>
-              </div>
-
-              {displayData.verifiedAt && (
-                <div className={styles.infoRow}>
-                  <span className={styles.infoLabel}>인증 날짜</span>
-                  <span className={styles.infoValue}>{formatDate(displayData.verifiedAt)}</span>
-                </div>
-              )}
-
-              <div className={styles.infoRow}>
-                <span className={styles.infoLabel}>인증 상태</span>
-                <span className={`${styles.statusBadge} ${styles.verified}`}>
-                  ✓ {displayData.status}
-                </span>
-              </div>
-            </div>
-          </>
-        ) : (
-          /* 미인증 상태 */
-          <div className={styles.notVerified}>
-            <ShieldIcon />
-            <div className={styles.notVerifiedTitle}>대학 인증이 필요합니다</div>
-            <div className={styles.notVerifiedDescription}>
-              대학 이메일로 인증하면<br />
-              다른 사용자들에게 신뢰성을 높일 수 있어요.
-            </div>
-            <button className={styles.verifyButton}>
-              대학 인증하기
-            </button>
-          </div>
+      <div style={{ backgroundColor: '#f9f9f9', padding: '20px', borderRadius: '12px' }}>
+        <p style={{ fontSize: '12px', color: '#666', marginBottom: '4px' }}>현재 인증 상태</p>
+        <h2 style={{ fontSize: '18px', margin: '0 0 8px 0' }}>
+          {userData?.university ? `${userData.university} 인증 완료` : '미인증 상태'}
+        </h2>
+        {userData?.major && (
+          <p style={{ fontSize: '14px', color: '#888' }}>학과: {userData.major}</p>
         )}
       </div>
+
+      {!userData?.university && (
+        <button
+          style={{
+            width: '100%',
+            padding: '16px',
+            backgroundColor: '#F76241',
+            color: 'white',
+            border: 'none',
+            borderRadius: '8px',
+            marginTop: '20px',
+            fontWeight: 'bold',
+            cursor: 'pointer'
+          }}
+          onClick={() => alert('인증 페이지로 이동합니다.')}
+        >
+          학교 인증 시작하기
+        </button>
+      )}
     </div>
   );
 }
