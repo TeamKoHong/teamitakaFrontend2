@@ -1,248 +1,190 @@
-@import '../../../styles/variables';
-
 .container {
+  width: 100%;
+  min-height: 100vh;
+  position: relative;
+  background-color: #fffdfc;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
-  min-height: 100svh;
-  background-color: #f5f5f5;
-}
-
-.header {
-  display: flex;
-  align-items: center;
-  padding: 16px;
-  background-color: #fff;
-  gap: 12px;
-}
-
-.backButton {
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-left: -8px;
-}
-
-.backIcon {
-  width: 24px;
-  height: 24px;
-  color: #666;
-}
-
-.headerTitle {
-  font-family: 'Pretendard';
-  font-size: 18px;
-  font-weight: 700;
+  font-family: 'Pretendard', sans-serif;
   color: #140805;
 }
 
+/* Custom Header Override */
+.customHeader {
+  position: absolute !important;
+  top: 0;
+  left: 0;
+  width: 100%;
+  box-shadow: none !important;
+  background-color: transparent !important;
+  padding: 24px 16px !important;
+  z-index: 10;
+}
+
+/* Wrapper for DefaultHeader padding/sizing adjustments if needed, 
+   but usually DefaultHeader handles itself. 
+   We keep .container etc. */
+
+/* Main Content Area */
 .content {
   flex: 1;
-  padding: 24px 16px;
-}
-
-// 인증 상태 헤더
-.verificationStatus {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-bottom: 32px;
+  padding-top: 0;
 }
 
-.verificationBadge {
-  width: 64px;
-  height: 64px;
-  border-radius: 50%;
-  background-color: $primary-color;
+/* Badge Section */
+.badgeSection {
   display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  /* Content starts from top padding position */
+  gap: 16px;
+  width: 100%;
+  height: 67vh;
+  /* Responsive height (approx 565/844) */
+  padding-top: 28vh;
+  /* Responsive top offset (approx 235/844) */
+  padding-bottom: 0;
+  box-sizing: border-box;
+  margin-top: 0;
+}
+
+.badgeIconWrapper {
+  width: 73px;
+  height: 73px;
+  display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  margin-bottom: 16px;
+  position: relative;
+
+  /* Circle background if needed */
+  .badgeBg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background-color: #FFFDFC;
+    z-index: 0;
+  }
+
+  .badgeIcon {
+    width: 73px;
+    height: 73px;
+    position: relative;
+    z-index: 1;
+    object-fit: contain;
+  }
 }
 
-.checkIcon {
-  width: 32px;
-  height: 32px;
-  color: #fff;
-}
-
-.verificationTitle {
-  font-family: 'Pretendard';
-  font-size: 18px;
-  font-weight: 700;
-  color: #140805;
-  margin-bottom: 8px;
-}
-
-.verificationDate {
-  font-family: 'Pretendard';
-  font-size: 14px;
-  font-weight: 500;
-  color: #807C7C;
-}
-
-// 인증 정보 카드
-.verificationCard {
-  background-color: #fff;
-  border-radius: 20px;
-  padding: 24px;
+.badgeText {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  align-items: center;
+  gap: 4px;
+
+  .badgeTitle {
+    font-size: 25px;
+    font-weight: 700;
+    color: #140805;
+    letter-spacing: -0.02em;
+    /* Polished tight spacing */
+  }
+
+  .badgeDate {
+    font-size: 14px;
+    font-weight: 400;
+    /* Regular */
+    color: #807c7c;
+  }
 }
 
-.universityRow {
+/* Bottom Sheet Section */
+.bottomSheet {
+  width: 100%;
+  flex: 1;
+  background-color: #f6f6f6;
+  border-top-left-radius: 30px;
+  border-top-right-radius: 30px;
+  padding: 30px 24px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 0;
+}
+
+.sheetTitle {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 30px;
+  color: #140805;
+}
+
+.profileSection {
+  width: 100%;
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 24px;
+  margin-bottom: 40px;
 }
 
-.universityLogo {
-  width: 48px;
-  height: 48px;
-  border-radius: 12px;
-  object-fit: contain;
-  background-color: #f5f5f5;
-  padding: 8px;
+.profileImage {
+  width: 67px;
+  height: 67px;
+  border-radius: 24px;
+  object-fit: cover;
+  background-color: #f0f0f0;
 }
 
-.universityInfo {
-  flex: 1;
+.profileTexts {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
-.universityName {
-  font-family: 'Pretendard';
-  font-size: 16px;
-  font-weight: 700;
+.univText {
+  font-size: 18px;
+  font-weight: 600;
   color: #140805;
-  margin-bottom: 4px;
 }
 
-.universityDepartment {
-  font-family: 'Pretendard';
-  font-size: 14px;
-  font-weight: 500;
-  color: #807C7C;
+.nameText {
+  font-size: 16px;
+  font-weight: 600;
+  color: #140805;
+}
+
+.infoList {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: auto;
+  padding-bottom: 56px;
 }
 
 .infoRow {
   display: flex;
   justify-content: space-between;
-  padding: 12px 0;
-  border-bottom: 1px solid #f0f0f0;
-
-  &:last-child {
-    border-bottom: none;
-  }
-}
-
-.infoLabel {
-  font-family: 'Pretendard';
-  font-size: 14px;
-  font-weight: 500;
-  color: #807C7C;
-}
-
-.infoValue {
-  font-family: 'Pretendard';
-  font-size: 14px;
-  font-weight: 600;
-  color: #140805;
-}
-
-.statusBadge {
-  display: inline-flex;
   align-items: center;
-  gap: 4px;
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 12px;
-  font-weight: 600;
+  font-size: 14px;
+  color: #403e3e;
+  padding: 0;
 
-  &.verified {
-    background-color: #E8F5E9;
-    color: #4CAF50;
+  .label {
+    font-weight: 600;
+    color: #403e3e;
   }
 
-  &.pending {
-    background-color: #FFF3E0;
-    color: #FF9800;
+  .value {
+    font-weight: 400;
+    /* Regular */
   }
-}
-
-// 미인증 상태
-.notVerified {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  flex: 1;
-  padding: 40px;
-  text-align: center;
-}
-
-.notVerifiedIcon {
-  width: 64px;
-  height: 64px;
-  color: #D1CCCB;
-  margin-bottom: 16px;
-}
-
-.notVerifiedTitle {
-  font-family: 'Pretendard';
-  font-size: 18px;
-  font-weight: 700;
-  color: #140805;
-  margin-bottom: 8px;
-}
-
-.notVerifiedDescription {
-  font-family: 'Pretendard';
-  font-size: 14px;
-  font-weight: 500;
-  color: #807C7C;
-  margin-bottom: 24px;
-  line-height: 1.5;
-}
-
-.verifyButton {
-  padding: 14px 32px;
-  background-color: $primary-color;
-  color: #fff;
-  border: none;
-  border-radius: 8px;
-  font-family: 'Pretendard';
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-// 로딩 상태
-.loadingContainer {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex: 1;
-  min-height: 300px;
-  color: #807C7C;
-  font-family: 'Pretendard';
-  font-size: 14px;
-}
-
-// 에러 상태
-.errorContainer {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  flex: 1;
-  min-height: 300px;
-  color: $primary-color;
-  gap: 16px;
-  font-family: 'Pretendard';
-  font-size: 14px;
 }
