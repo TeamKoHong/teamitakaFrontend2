@@ -1,8 +1,8 @@
 // src/components/ProjectRecruit/DateRangePicker/DateRangePickerSheet.js
-import React, { useState } from 'react';
-import BottomSheet from '../../Common/BottomSheet';
-import DateRangePicker from './DateRangePicker';
-import './DateRangePickerSheet.scss';
+import React, { useEffect, useState } from "react";
+import BottomSheet from "../../Common/BottomSheet";
+import DateRangePicker from "./DateRangePicker";
+import "./DateRangePickerSheet.scss";
 
 export default function DateRangePickerSheet({
   open,
@@ -15,6 +15,14 @@ export default function DateRangePickerSheet({
 }) {
   const [startDate, setStartDate] = useState(initialStart);
   const [endDate, setEndDate] = useState(initialEnd);
+
+  // ✅ 바텀시트가 다시 열릴 때 props 초기값과 동기화(재오픈 시 이전 선택값 잔상 방지)
+  useEffect(() => {
+    if (open) {
+      setStartDate(initialStart);
+      setEndDate(initialEnd);
+    }
+  }, [open, initialStart, initialEnd]);
 
   const handleDateSelect = (start, end) => {
     setStartDate(start);
@@ -35,7 +43,7 @@ export default function DateRangePickerSheet({
     onDismiss();
   };
 
-  const bothSelected = startDate && endDate;
+  const bothSelected = Boolean(startDate && endDate);
 
   return (
     <BottomSheet
@@ -47,9 +55,16 @@ export default function DateRangePickerSheet({
       <div className="picker-sheet-container">
         {/* Header */}
         <div className="picker-sheet-header">
-          <h3 className="picker-sheet-title">{title}</h3>
+          <div className="title-wrap">
+            <h3 className="picker-sheet-title">{title}</h3>
+            <p className="picker-sheet-sub">
+              기간은 최대 2주까지 설정할 수 있어요.
+            </p>
+          </div>
+
           <button
-            className={`complete-btn ${!bothSelected ? 'disabled' : ''}`}
+            type="button"
+            className={`complete-btn ${!bothSelected ? "disabled" : ""}`}
             onClick={handleComplete}
             disabled={!bothSelected}
             aria-label="완료"

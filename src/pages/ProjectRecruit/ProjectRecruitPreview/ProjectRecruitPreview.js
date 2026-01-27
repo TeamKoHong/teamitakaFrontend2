@@ -21,11 +21,12 @@ const transformDraft = (raw) => {
   }
 
   // 타입 변환
-  const typeText = raw.type === 'course'
-    ? '수업 프로젝트'
-    : raw.type === 'side'
-    ? '사이드 프로젝트'
-    : '연결 예정';
+  const typeText =
+    raw.type === 'course'
+      ? '수업 프로젝트'
+      : raw.type === 'side'
+        ? '사이드 프로젝트'
+        : '연결 예정';
 
   return {
     basic: {
@@ -34,15 +35,15 @@ const transformDraft = (raw) => {
       info: raw.desc || '강의정보 없음',
       typeText,
       type: raw.type,
-      timeText: '방금 전'
+      timeText: '방금 전',
     },
     detail: raw.detail,
     keywords: raw.keywords || [],
     metrics: {
       views: 0,
-      applicants: 0
+      applicants: 0,
     },
-    coverImage: raw.coverImage
+    coverImage: raw.coverImage,
   };
 };
 
@@ -57,20 +58,21 @@ export default function ProjectRecruitPreview() {
   }, []);
 
   // 안전한 값(없으면 디폴트)
-  const title   = draft?.basic?.title || '팀프로젝트 제목';
-  const period  = draft?.basic?.periodText || '연결 예정';
-  const info    = draft?.basic?.info || '연결 예정';
-  const type    = draft?.basic?.typeText || draft?.basic?.type || '연결 예정';
-  const detail  = draft?.detail || '';
+  const title = draft?.basic?.title || '팀프로젝트 제목';
+  const period = draft?.basic?.periodText || '연결 예정';
+  const info = draft?.basic?.info || '연결 예정';
+  const type = draft?.basic?.typeText || draft?.basic?.type || '연결 예정';
+  const detail = draft?.detail || '';
 
   // 메타(조회/지원/시간)
-  const views       = draft?.metrics?.views ?? 0;
-  const applicants  = draft?.metrics?.applicants ?? 0;
-  const timeText    = draft?.basic?.timeText || '방금 전';
+  const views = draft?.metrics?.views ?? 0;
+  const applicants = draft?.metrics?.applicants ?? 0;
+  const timeText = draft?.basic?.timeText || '방금 전';
 
-  const tags = Array.isArray(draft?.keywords) && draft.keywords.length > 0
-    ? draft.keywords
-    : ['#연결예정'];
+  const tags =
+    Array.isArray(draft?.keywords) && draft.keywords.length > 0
+      ? draft.keywords
+      : ['#연결예정'];
 
   return (
     <div className="page preview-page">
@@ -98,18 +100,18 @@ export default function ProjectRecruitPreview() {
         <div className="meta">
           <div className="left">
             <span className="meta-item">
-              <img src={viewIcon} alt="조회수" />
+              <img className="view-icon" src={viewIcon} alt="조회수" />
               <span className="num">{views}</span>
             </span>
             <span className="meta-item">
-              <img src={applyIcon} alt="지원자 수" />
+              <img className="apply-icon" src={applyIcon} alt="지원자 수" />
               <span className="num">{applicants}</span>
             </span>
           </div>
           <div className="right">{timeText}</div>
         </div>
 
-        {/* 라벨/값 (박스 제거, 좌라벨/우값) */}
+        {/* 라벨/값 */}
         <div className="kv">
           <div className="row">
             <span className="k">모집 기간</span>
@@ -132,7 +134,7 @@ export default function ProjectRecruitPreview() {
         <div className="detail">
           <div className="detail-label">(400자 예시입니다.)</div>
           <pre className="detail-body">
-{(detail && String(detail)) || `상세 내용이 아직 없습니다.
+            {(detail && String(detail)) || `상세 내용이 아직 없습니다.
 입력한 내용이 이 영역에 그대로 표시됩니다.`}
           </pre>
         </div>
@@ -142,20 +144,20 @@ export default function ProjectRecruitPreview() {
           <div className="label">키워드</div>
           <div className="chips">
             {tags.map((t, i) => (
-              <span className="chip chip-orange" key={t + i}>{t}</span>
+              <span className="chip chip-orange" key={t + i}>
+                {t}
+              </span>
             ))}
           </div>
         </div>
       </div>
 
-      {/* 하단 CTA → 업로드 진행 페이지로 이동 */}
+      {/* 하단 CTA */}
       <div className="footer">
         <button
           className="submit-btn"
           type="button"
-          onClick={() =>
-            nav("/recruit/publish", { state: { redirectTo: "/recruit" } })
-          }
+          onClick={() => nav('/recruit/publish', { state: { redirectTo: '/recruit' } })}
         >
           작성 완료
         </button>

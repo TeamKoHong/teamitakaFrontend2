@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import view from "../../assets/view.png";
 import apply from "../../assets/apply.png";
@@ -7,13 +7,15 @@ import './RecruitmentPage.scss';
 import BottomNav from "../../components/Common/BottomNav/BottomNav";
 import back from "../../assets/back.png";
 import { getAllRecruitments } from '../../api/recruit';
+import { useUniversityFilter } from '../../hooks/useUniversityFilter';
 
 export default function RecruitmentPage() {
   const navigate = useNavigate();
   const [activeFilter, setActiveFilter] = useState('전체');
   const [recruitments, setRecruitments] = useState([]);
-  const [filterOptions, setFilterOptions] = useState(['전체']); 
+  const [filterOptions, setFilterOptions] = useState(['전체']);
   const [loading, setLoading] = useState(true);
+  const { filterByUniv } = useUniversityFilter();
 
   useEffect(() => {
     const fetchRecruitments = async () => {
@@ -23,18 +25,20 @@ export default function RecruitmentPage() {
         const formatted = data.map(post => {
             const viewCount = Number(post.views || post.view_count || 0);
             const appCount = Number(post.applicationCount || post.applicant_count || post.applicantCount || 0);
-            
+            const authorUniversity = post.university || post.author?.university || post.User?.university || null;
+
             return {
               id: post.recruitment_id,
               title: post.title,
               description: post.description || post.content || '설명 없음',
-              imageUrl: post.photo_url, 
+              imageUrl: post.photo_url,
               views: viewCount,
               applicantCount: appCount,
               date: post.created_at?.substring(0, 10).replace(/-/g, '.').substring(2),
               category: post.project_type === 'course' ? '수업' : '사이드',
               tags: (post.Hashtags || post.hashtags || []).map(h => h.name || h),
               isBest: viewCount > 100,
+              university: authorUniversity,
             };
         });
         setRecruitments(formatted);
@@ -59,7 +63,13 @@ export default function RecruitmentPage() {
     fetchRecruitments();
   }, []);
 
-  const filtered = recruitments.filter(item => {
+  // 대학 필터 적용
+  const univFilteredRecruitments = useMemo(() => {
+    return filterByUniv(recruitments, 'university');
+  }, [recruitments, filterByUniv]);
+
+  // 태그 필터 적용
+  const filtered = univFilteredRecruitments.filter(item => {
     if (activeFilter === '전체') return true;
     return item.tags && item.tags.includes(activeFilter);
   });

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { TYPE_METADATA } from 'features/type-test/lib/types';
 
 interface ShareBarProps {
     typeCode: string;
@@ -49,7 +50,11 @@ export default function ShareBar({ typeCode, nickname, onRetest, className = '' 
     const handleSaveImage = async () => {
         setIsSaving(true);
         try {
-            const imagePath = `/assets/saved-image/${nickname}.png`;
+            // Use English ID for file path to avoid encoding issues
+            const typeMeta = TYPE_METADATA[typeCode];
+            const imageId = typeMeta?.id || 'unknown'; // Should not happen if data is correct
+
+            const imagePath = `/assets/saved-image/${imageId}.png`;
             const fileName = `${nickname}.png`;
 
             const response = await fetch(imagePath);

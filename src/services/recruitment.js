@@ -1,33 +1,14 @@
-import { getApiConfig } from './auth';
+import { apiFetch } from './api';
 
 /**
  * Creates a new recruitment
  * @param {Object} recruitmentData - Recruitment data
  */
 export const createRecruitment = async (recruitmentData) => {
-    const { API_BASE_URL, headers } = getApiConfig();
-    const token = localStorage.getItem('authToken');
-
-    if (!token) {
-        const err = new Error('UNAUTHORIZED');
-        err.code = 'UNAUTHORIZED';
-        throw err;
-    }
-
-    const res = await fetch(`${API_BASE_URL}/api/recruitments`, {
+    const res = await apiFetch('/api/recruitments', {
         method: 'POST',
-        headers: {
-            ...headers,
-            Authorization: `Bearer ${token}`,
-        },
         body: JSON.stringify(recruitmentData),
     });
-
-    if (res.status === 401 || res.status === 403) {
-        const err = new Error('UNAUTHORIZED');
-        err.code = 'UNAUTHORIZED';
-        throw err;
-    }
 
     if (!res.ok) {
         const errorData = await res.json();
@@ -44,15 +25,6 @@ export const createRecruitment = async (recruitmentData) => {
  * Uploads a recruitment image
  */
 export const uploadRecruitmentImage = async (imageFile) => {
-    const { API_BASE_URL } = getApiConfig();
-    const token = localStorage.getItem('authToken');
-
-    if (!token) {
-        const err = new Error('UNAUTHORIZED');
-        err.code = 'UNAUTHORIZED';
-        throw err;
-    }
-
     const MAX_SIZE = 5 * 1024 * 1024;
     if (imageFile.size > MAX_SIZE) {
         const err = new Error('파일 크기는 5MB를 초과할 수 없습니다.');
@@ -70,19 +42,11 @@ export const uploadRecruitmentImage = async (imageFile) => {
     const formData = new FormData();
     formData.append('image', imageFile);
 
-    const res = await fetch(`${API_BASE_URL}/api/upload/recruitment-image`, {
+    const res = await apiFetch('/api/upload/recruitment-image', {
         method: 'POST',
-        headers: {
-            Authorization: `Bearer ${token}`,
-        },
+        headers: { 'Content-Type': undefined }, // Let browser set multipart boundary
         body: formData,
     });
-
-    if (res.status === 401 || res.status === 403) {
-        const err = new Error('UNAUTHORIZED');
-        err.code = 'UNAUTHORIZED';
-        throw err;
-    }
 
     if (!res.ok) {
         const errorData = await res.json();
@@ -99,31 +63,12 @@ export const uploadRecruitmentImage = async (imageFile) => {
  * Gets a recruitment by ID
  */
 export const getRecruitment = async (recruitmentId) => {
-    const { API_BASE_URL, headers } = getApiConfig();
-    const token = localStorage.getItem('authToken');
-
-    // 토큰이 있으면 헤더에 추가 (로그인 유저 구분용)
-    const requestHeaders = { ...headers };
-    if (token) {
-        requestHeaders['Authorization'] = `Bearer ${token}`;
-    }
-
-    const res = await fetch(`${API_BASE_URL}/api/recruitments/${recruitmentId}`, {
-        method: 'GET',
-        headers: requestHeaders,
-    });
+    const res = await apiFetch(`/api/recruitments/${recruitmentId}`);
 
     if (res.status === 404) {
         const err = new Error('모집글을 찾을 수 없습니다.');
         err.code = 'NOT_FOUND';
         throw err;
-    }
-
-    // 401 처리는 상황에 따라 다를 수 있음 (비공개 글 등)
-    if (res.status === 401) {
-         const err = new Error('로그인이 필요하거나 권한이 없습니다.');
-         err.code = 'UNAUTHORIZED';
-         throw err;
     }
 
     if (!res.ok) {
@@ -140,28 +85,7 @@ export const getRecruitment = async (recruitmentId) => {
  * Gets applicants for a recruitment
  */
 export const getRecruitmentApplicants = async (recruitmentId) => {
-    const { API_BASE_URL, headers } = getApiConfig();
-    const token = localStorage.getItem('authToken');
-
-    if (!token) {
-        const err = new Error('UNAUTHORIZED');
-        err.code = 'UNAUTHORIZED';
-        throw err;
-    }
-
-    const res = await fetch(`${API_BASE_URL}/api/recruitments/${recruitmentId}/applications`, {
-        method: 'GET',
-        headers: {
-            ...headers,
-            Authorization: `Bearer ${token}`,
-        },
-    });
-
-    if (res.status === 401 || res.status === 403) {
-        const err = new Error('UNAUTHORIZED');
-        err.code = 'UNAUTHORIZED';
-        throw err;
-    }
+    const res = await apiFetch(`/api/recruitments/${recruitmentId}/applications`);
 
     if (!res.ok) {
         const errorData = await res.json();
@@ -177,28 +101,9 @@ export const getRecruitmentApplicants = async (recruitmentId) => {
  * Approves an applicant
  */
 export const approveApplicant = async (applicationId) => {
-    const { API_BASE_URL, headers } = getApiConfig();
-    const token = localStorage.getItem('authToken');
-
-    if (!token) {
-        const err = new Error('UNAUTHORIZED');
-        err.code = 'UNAUTHORIZED';
-        throw err;
-    }
-
-    const res = await fetch(`${API_BASE_URL}/api/applications/${applicationId}/approve`, {
+    const res = await apiFetch(`/api/applications/${applicationId}/approve`, {
         method: 'POST',
-        headers: {
-            ...headers,
-            Authorization: `Bearer ${token}`,
-        },
     });
-
-    if (res.status === 401 || res.status === 403) {
-        const err = new Error('UNAUTHORIZED');
-        err.code = 'UNAUTHORIZED';
-        throw err;
-    }
 
     if (!res.ok) {
         const errorData = await res.json();
@@ -214,21 +119,8 @@ export const approveApplicant = async (applicationId) => {
  * Submits an application to a recruitment
  */
 export const submitApplication = async (recruitmentId, applicationData) => {
-    const { API_BASE_URL, headers } = getApiConfig();
-    const token = localStorage.getItem('authToken');
-
-    if (!token) {
-        const err = new Error('로그인이 필요합니다.');
-        err.code = 'UNAUTHORIZED';
-        throw err;
-    }
-
-    const res = await fetch(`${API_BASE_URL}/api/applications/${recruitmentId}`, {
+    const res = await apiFetch(`/api/applications/${recruitmentId}`, {
         method: 'POST',
-        headers: {
-            ...headers,
-            Authorization: `Bearer ${token}`,
-        },
         body: JSON.stringify(applicationData),
     });
 
@@ -249,21 +141,8 @@ export const submitApplication = async (recruitmentId, applicationData) => {
  * @param {string} applicationId - The application ID to cancel
  */
 export const cancelApplication = async (applicationId) => {
-    const { API_BASE_URL, headers } = getApiConfig();
-    const token = localStorage.getItem('authToken');
-
-    if (!token) {
-        const err = new Error('로그인이 필요합니다.');
-        err.code = 'UNAUTHORIZED';
-        throw err;
-    }
-
-    const res = await fetch(`${API_BASE_URL}/api/applications/${applicationId}/cancel`, {
+    const res = await apiFetch(`/api/applications/${applicationId}/cancel`, {
         method: 'POST',
-        headers: {
-            ...headers,
-            Authorization: `Bearer ${token}`,
-        },
     });
 
     const data = await res.json();
@@ -282,22 +161,7 @@ export const cancelApplication = async (applicationId) => {
  * Gets user's own applications
  */
 export const getMyApplications = async () => {
-    const { API_BASE_URL, headers } = getApiConfig();
-    const token = localStorage.getItem('authToken');
-
-    if (!token) {
-        const err = new Error('로그인이 필요합니다.');
-        err.code = 'UNAUTHORIZED';
-        throw err;
-    }
-
-    const res = await fetch(`${API_BASE_URL}/api/applications/mine`, {
-        method: 'GET',
-        headers: {
-            ...headers,
-            Authorization: `Bearer ${token}`,
-        },
-    });
+    const res = await apiFetch('/api/applications/mine');
 
     const data = await res.json();
 
@@ -315,28 +179,9 @@ export const getMyApplications = async () => {
  * Converts recruitment to project
  */
 export const convertToProject = async (recruitmentId) => {
-    const { API_BASE_URL, headers } = getApiConfig();
-    const token = localStorage.getItem('authToken');
-
-    if (!token) {
-        const err = new Error('UNAUTHORIZED');
-        err.code = 'UNAUTHORIZED';
-        throw err;
-    }
-
-    const res = await fetch(`${API_BASE_URL}/api/projects/from-recruitment/${recruitmentId}`, {
+    const res = await apiFetch(`/api/projects/from-recruitment/${recruitmentId}`, {
         method: 'POST',
-        headers: {
-            ...headers,
-            Authorization: `Bearer ${token}`,
-        },
     });
-
-    if (res.status === 401 || res.status === 403) {
-        const err = new Error('UNAUTHORIZED');
-        err.code = 'UNAUTHORIZED';
-        throw err;
-    }
 
     if (!res.ok) {
         const errorData = await res.json();
@@ -352,32 +197,12 @@ export const convertToProject = async (recruitmentId) => {
  * Gets user's own recruitments
  */
 export const getMyRecruitments = async ({ limit = 10, offset = 0 } = {}) => {
-    const { API_BASE_URL, headers } = getApiConfig();
-    const token = localStorage.getItem('authToken');
-
-    if (!token) {
-        const err = new Error('UNAUTHORIZED');
-        err.code = 'UNAUTHORIZED';
-        throw err;
-    }
-
     const qs = new URLSearchParams({
         limit: String(limit),
         offset: String(offset)
     }).toString();
 
-    const res = await fetch(`${API_BASE_URL}/api/recruitments/mine?${qs}`, {
-        headers: {
-            ...headers,
-            Authorization: `Bearer ${token}`
-        },
-    });
-
-    if (res.status === 401 || res.status === 403) {
-        const err = new Error('UNAUTHORIZED');
-        err.code = 'UNAUTHORIZED';
-        throw err;
-    }
+    const res = await apiFetch(`/api/recruitments/mine?${qs}`);
 
     if (!res.ok) {
         const err = new Error('SERVER_ERROR');
@@ -392,25 +217,12 @@ export const getMyRecruitments = async ({ limit = 10, offset = 0 } = {}) => {
  * Updates a recruitment
  */
 export const updateRecruitment = async (recruitmentId, recruitmentData) => {
-    const { API_BASE_URL, headers } = getApiConfig();
-    const token = localStorage.getItem('authToken');
-
-    if (!token) {
-        const err = new Error('로그인이 필요합니다.');
-        err.code = 'UNAUTHORIZED';
-        throw err;
-    }
-
-    const res = await fetch(`${API_BASE_URL}/api/recruitments/${recruitmentId}`, {
+    const res = await apiFetch(`/api/recruitments/${recruitmentId}`, {
         method: 'PUT',
-        headers: {
-            ...headers,
-            Authorization: `Bearer ${token}`,
-        },
         body: JSON.stringify(recruitmentData),
     });
 
-    if (res.status === 401 || res.status === 403) {
+    if (res.status === 403) {
         const err = new Error('권한이 없습니다.');
         err.code = 'UNAUTHORIZED';
         throw err;
@@ -437,24 +249,11 @@ export const updateRecruitment = async (recruitmentId, recruitmentData) => {
  * Deletes a recruitment
  */
 export const deleteRecruitment = async (recruitmentId) => {
-    const { API_BASE_URL, headers } = getApiConfig();
-    const token = localStorage.getItem('authToken');
-
-    if (!token) {
-        const err = new Error('로그인이 필요합니다.');
-        err.code = 'UNAUTHORIZED';
-        throw err;
-    }
-
-    const res = await fetch(`${API_BASE_URL}/api/recruitments/${recruitmentId}`, {
+    const res = await apiFetch(`/api/recruitments/${recruitmentId}`, {
         method: 'DELETE',
-        headers: {
-            ...headers,
-            Authorization: `Bearer ${token}`,
-        },
     });
 
-    if (res.status === 401 || res.status === 403) {
+    if (res.status === 403) {
         const err = new Error('권한이 없습니다.');
         err.code = 'UNAUTHORIZED';
         throw err;
@@ -478,24 +277,10 @@ export const deleteRecruitment = async (recruitmentId) => {
 };
 
 export const toggleRecruitmentScrap = async (recruitmentId) => {
-    const { API_BASE_URL, headers } = getApiConfig();
-    const token = localStorage.getItem('authToken');
-
-    if (!token) {
-        const err = new Error('UNAUTHORIZED');
-        err.code = 'UNAUTHORIZED';
-        throw err;
-    }
-
-    const res = await fetch(`${API_BASE_URL}/api/scraps/recruitment/${recruitmentId}/scrap`, {
+    const res = await apiFetch(`/api/scraps/recruitment/${recruitmentId}/scrap`, {
         method: 'PUT',
-        headers: {
-            ...headers,
-            Authorization: `Bearer ${token}`,
-        },
     });
 
-    if (res.status === 401) throw new Error('UNAUTHORIZED');
     if (!res.ok) throw new Error('북마크 변경 실패');
 
     // 백엔드가 plain text 반환 ("스크랩 추가" / "스크랩 취소")
@@ -503,24 +288,8 @@ export const toggleRecruitmentScrap = async (recruitmentId) => {
 };
 
 export const getBookmarkedRecruitments = async () => {
-    const { API_BASE_URL, headers } = getApiConfig();
-    const token = localStorage.getItem('authToken');
+    const res = await apiFetch('/api/scraps/recruitments');
 
-    if (!token) {
-        const err = new Error('UNAUTHORIZED');
-        err.code = 'UNAUTHORIZED';
-        throw err;
-    }
-
-    const res = await fetch(`${API_BASE_URL}/api/scraps/recruitments`, {
-        method: 'GET',
-        headers: {
-            ...headers,
-            Authorization: `Bearer ${token}`,
-        },
-    });
-
-    if (res.status === 401) throw new Error('UNAUTHORIZED');
     if (!res.ok) throw new Error('북마크 목록 조회 실패');
 
     return res.json();
@@ -530,25 +299,12 @@ export const getBookmarkedRecruitments = async () => {
  * Creates a project from recruitment (Kickoff)
  */
 export const createProjectFromRecruitment = async (recruitmentId, kickoffData) => {
-    const { API_BASE_URL, headers } = getApiConfig();
-    const token = localStorage.getItem('authToken');
-
-    if (!token) {
-        const err = new Error('로그인이 필요합니다.');
-        err.code = 'UNAUTHORIZED';
-        throw err;
-    }
-
-    const res = await fetch(`${API_BASE_URL}/api/projects/from-recruitment/${recruitmentId}`, {
+    const res = await apiFetch(`/api/projects/from-recruitment/${recruitmentId}`, {
         method: 'POST',
-        headers: {
-            ...headers,
-            Authorization: `Bearer ${token}`,
-        },
         body: JSON.stringify(kickoffData),
     });
 
-    if (res.status === 401 || res.status === 403) {
+    if (res.status === 403) {
         const err = new Error('권한이 없습니다.');
         err.code = 'UNAUTHORIZED';
         throw err;

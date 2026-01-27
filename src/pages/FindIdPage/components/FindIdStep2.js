@@ -78,7 +78,13 @@ function FindIdStep2({ formData, onComplete, onBack }) {
 
             {/* 인증번호 입력 */}
             <div className={styles.formSection}>
-                <label className={styles.label}>인증번호 입력</label>
+                {/* 성공/에러 메시지 */}
+                {error ? (
+                    <div className={styles.errorMessage}>{error}</div>
+                ) : successMessage && (
+                    <div className={styles.successMessage}>{successMessage}</div>
+                )}
+
                 <div className={styles.codeInputWrapper}>
                     <input
                         type="text"
@@ -94,22 +100,18 @@ function FindIdStep2({ formData, onComplete, onBack }) {
                     </span>
                 </div>
 
-                {/* 성공/에러 메시지 */}
-                {error ? (
-                    <div className={styles.errorMessage}>{error}</div>
-                ) : successMessage && (
-                    <div className={styles.successMessage}>{successMessage}</div>
-                )}
-
                 {/* 다시 보내기 */}
-                <button
-                    type="button"
-                    className={styles.resendButton}
-                    onClick={handleResend}
-                    disabled={isLoading}
-                >
-                    다시 보내기
-                </button>
+                <div className={styles.resendText}>
+                    인증 문자를 받지 못하셨나요?{' '}
+                    <button
+                        type="button"
+                        className={styles.resendButton}
+                        onClick={handleResend}
+                        disabled={isLoading}
+                    >
+                        다시 보내기
+                    </button>
+                </div>
             </div>
 
             {/* 하단 버튼 */}
@@ -120,7 +122,7 @@ function FindIdStep2({ formData, onComplete, onBack }) {
                     onClick={handleVerify}
                     isLoading={isLoading}
                 >
-                    {isCodeValid ? '본인인증' : '다음'}
+                    다음
                 </Button>
             </div>
         </div>

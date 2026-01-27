@@ -37,6 +37,7 @@ const initialState = {
         verifiedName: null,
         verifiedPhone: null,
         ci: null,
+        schoolEmail: null, // 학교 이메일 (프로필 설정에서 학교 자동 감지용)
     }
 };
 

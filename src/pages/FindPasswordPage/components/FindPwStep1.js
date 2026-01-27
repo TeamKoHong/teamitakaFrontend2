@@ -41,12 +41,12 @@ function FindPwStep1({ email: initialEmail, onComplete }) {
 
             {/* 이메일 입력 */}
             <div className={styles.formSection}>
-                <label className={styles.label}>이메일</label>
+                <label className={styles.label}>이메일 입력</label>
                 <input
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="이메일 입력"
+                    placeholder="이메일"
                     className={styles.input}
                 />
             </div>
@@ -64,7 +64,7 @@ function FindPwStep1({ email: initialEmail, onComplete }) {
                     onClick={handleSubmit}
                     isLoading={isLoading}
                 >
-                    인증번호 전송
+                    재설정 메일 보내기
                 </Button>
             </div>
         </div>

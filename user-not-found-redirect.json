@@ -1,0 +1,176 @@
+{
+  "feature": "사용자 미발견 시 로그인 페이지 리다이렉트",
+  "description": "API 응답에서 '사용자를 찾을 수 없습니다' 에러 발생 시 자동으로 로그인 페이지로 이동",
+
+  "trigger_condition": {
+    "response": {
+      "success": false,
+      "message": "사용자를 찾을 수 없습니다."
+    },
+    "possible_status_codes": [401, 404],
+    "possible_endpoints": [
+      "/api/auth/*",
+      "/api/user/*",
+      "인증이 필요한 모든 API"
+    ]
+  },
+
+  "implementation_options": {
+    "option_1_global_interceptor": {
+      "description": "Axios/Fetch 인터셉터에서 전역 처리 (권장)",
+      "pros": ["모든 API에 일괄 적용", "코드 중복 없음"],
+      "cons": ["특정 API만 예외 처리 필요할 수 있음"],
+      "file": "src/services/api.js 또는 src/utils/axiosInstance.js",
+      "code_example": [
+        "// Axios 인터셉터 예시",
+        "api.interceptors.response.use(",
+        "  (response) => response,",
+        "  (error) => {",
+        "    const message = error.response?.data?.message;",
+        "    ",
+        "    // 사용자 미발견 시 로그인 페이지로 리다이렉트",
+        "    if (message === '사용자를 찾을 수 없습니다.') {",
+        "      // 토큰 및 사용자 정보 제거",
+        "      localStorage.removeItem('authToken');",
+        "      localStorage.removeItem('user');",
+        "      ",
+        "      // 로그인 페이지로 이동",
+        "      window.location.href = '/login';",
+        "      return Promise.reject(error);",
+        "    }",
+        "    ",
+        "    return Promise.reject(error);",
+        "  }",
+        ");"
+      ]
+    },
+    "option_2_auth_context": {
+      "description": "AuthContext에서 처리",
+      "pros": ["React 생태계 내에서 처리", "상태 관리와 통합"],
+      "cons": ["AuthContext를 사용하는 곳에서만 동작"],
+      "file": "src/contexts/AuthContext.js",
+      "code_example": [
+        "// AuthContext 내부에 함수 추가",
+        "const handleApiError = useCallback((error) => {",
+        "  const message = error.response?.data?.message;",
+        "  ",
+        "  if (message === '사용자를 찾을 수 없습니다.') {",
+        "    logout(); // 기존 logout 함수 호출",
+        "    navigate('/login', { ",
+        "      state: { message: '세션이 만료되었습니다. 다시 로그인해주세요.' }",
+        "    });",
+        "  }",
+        "}, [logout, navigate]);"
+      ]
+    },
+    "option_3_individual_handling": {
+      "description": "각 컴포넌트에서 개별 처리",
+      "pros": ["세밀한 제어 가능"],
+      "cons": ["코드 중복", "유지보수 어려움"],
+      "not_recommended": true
+    }
+  },
+
+  "recommended_implementation": {
+    "approach": "option_1_global_interceptor",
+    "reason": "모든 API 호출에 일관되게 적용, 유지보수 용이",
+
+    "files_to_modify": [
+      {
+        "file": "src/services/api.js (또는 axiosInstance.js)",
+        "action": "응답 인터셉터에 에러 처리 로직 추가"
+      }
+    ],
+
+    "full_implementation": {
+      "file": "src/services/api.js",
+      "code": [
+        "import axios from 'axios';",
+        "",
+        "const api = axios.create({",
+        "  baseURL: process.env.REACT_APP_API_BASE_URL,",
+        "  headers: {",
+        "    'Content-Type': 'application/json',",
+        "  },",
+        "});",
+        "",
+        "// 요청 인터셉터 - 토큰 자동 추가",
+        "api.interceptors.request.use((config) => {",
+        "  const token = localStorage.getItem('authToken');",
+        "  if (token) {",
+        "    config.headers.Authorization = `Bearer ${token}`;",
+        "  }",
+        "  return config;",
+        "});",
+        "",
+        "// 응답 인터셉터 - 에러 처리",
+        "api.interceptors.response.use(",
+        "  (response) => response,",
+        "  (error) => {",
+        "    const message = error.response?.data?.message;",
+        "    const status = error.response?.status;",
+        "    ",
+        "    // 사용자 미발견 또는 인증 실패 시 로그인 페이지로",
+        "    if (",
+        "      message === '사용자를 찾을 수 없습니다.' ||",
+        "      status === 401",
+        "    ) {",
+        "      console.log('🔐 인증 오류 - 로그인 페이지로 이동');",
+        "      ",
+        "      // 저장된 인증 정보 제거",
+        "      localStorage.removeItem('authToken');",
+        "      localStorage.removeItem('user');",
+        "      ",
+        "      // 현재 페이지가 로그인 페이지가 아닌 경우에만 리다이렉트",
+        "      if (!window.location.pathname.includes('/login')) {",
+        "        window.location.href = '/login?expired=true';",
+        "      }",
+        "    }",
+        "    ",
+        "    return Promise.reject(error);",
+        "  }",
+        ");",
+        "",
+        "export default api;"
+      ]
+    }
+  },
+
+  "login_page_enhancement": {
+    "description": "로그인 페이지에서 만료 메시지 표시 (선택사항)",
+    "file": "src/pages/LoginPage/LoginPage.js",
+    "code": [
+      "// URL 파라미터로 만료 여부 확인",
+      "const [searchParams] = useSearchParams();",
+      "const isExpired = searchParams.get('expired') === 'true';",
+      "",
+      "// 만료 메시지 표시",
+      "{isExpired && (",
+      "  <div className={styles.expiredMessage}>",
+      "    세션이 만료되었습니다. 다시 로그인해주세요.",
+      "  </div>",
+      ")}"
+    ]
+  },
+
+  "testing": [
+    {
+      "case": "인증된 사용자가 삭제된 경우",
+      "expected": "로그인 페이지로 자동 이동, 토큰 삭제"
+    },
+    {
+      "case": "토큰 만료된 경우",
+      "expected": "로그인 페이지로 자동 이동"
+    },
+    {
+      "case": "이미 로그인 페이지에 있는 경우",
+      "expected": "리다이렉트 루프 방지"
+    }
+  ],
+
+  "notes": [
+    "회원가입 플로우에서는 이 에러가 정상일 수 있으므로 예외 처리 고려",
+    "로그인 페이지 자체에서 발생하는 에러는 리다이렉트하지 않음",
+    "React Router의 navigate 대신 window.location.href 사용 (인터셉터에서 훅 사용 불가)"
+  ]
+}
