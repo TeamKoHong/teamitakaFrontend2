@@ -22,7 +22,7 @@ export default function UnifiedAdaptiveResultCard({
         try {
             setIsSaving(true);
 
-            const imagePath = `/assets/saved-image/${typeMeta.nickname}.png`;
+            const imagePath = `/assets/saved-image/${typeMeta.id}.png`;
             const fileName = `${typeMeta.nickname}_result.png`;
 
             const response = await fetch(imagePath);
