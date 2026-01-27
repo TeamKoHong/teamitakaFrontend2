@@ -8,7 +8,6 @@ import verificationBadge from '../../../assets/university_verified.png';
 import profileDefault from '../../../assets/profile_default.png';
 
 export default function ProfileVerificationPage() {
-  const navigate = useNavigate();
   const [userData, setUserData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
