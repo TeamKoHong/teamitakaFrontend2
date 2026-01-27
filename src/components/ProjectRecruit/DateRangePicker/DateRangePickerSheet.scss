@@ -20,24 +20,43 @@ $gray-light: #d1d5db;
   .picker-sheet-header {
     position: relative;
     display: flex;
-    align-items: center;
-    justify-content: center;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
     padding: 16px 16px 12px;
     border-bottom: 1px solid #f3f4f6;
 
+    .title-wrap {
+      flex: 1;
+      min-width: 0;
+      text-align: left;
+    }
+
     .picker-sheet-title {
-      text-align: center;
-      font-size: 16px;
+      margin: 0;
+      text-align: left;
+      font-family: "Pretendard", -apple-system, BlinkMacSystemFont, "Segoe UI",
+        Roboto, "Noto Sans KR", Arial, sans-serif;
+      font-size: 18px;
       font-weight: 700;
       color: $dark-text;
-      margin: 0;
+      line-height: 1.3;
+    }
+
+    .picker-sheet-sub {
+      margin: 6px 0 0;
+      text-align: left;
+      font-family: "Pretendard", -apple-system, BlinkMacSystemFont, "Segoe UI",
+        Roboto, "Noto Sans KR", Arial, sans-serif;
+      font-size: 13px;
+      font-weight: 400;
+      color: $gray-text;
+      line-height: 1.35;
     }
 
     .complete-btn {
-      position: absolute;
-      right: 16px;
-      top: 50%;
-      transform: translateY(-50%);
+      position: static;
+      transform: none;
 
       padding: 0;
       background: none;
@@ -62,14 +81,11 @@ $gray-light: #d1d5db;
 }
 
 // Override react-spring-bottom-sheet default styles
-// react-spring-bottom-sheet의 overlay와 root에 z-index 적용
 body {
-  // DateRangePicker BottomSheet용 전역 z-index 설정
-  // KickoffSlide(10999)보다 위에 표시되어야 함
   [data-rsbs-overlay] {
     z-index: 11000 !important;
   }
-  
+
   [data-rsbs-root] {
     z-index: 11001 !important;
   }
