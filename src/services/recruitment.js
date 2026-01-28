@@ -133,7 +133,7 @@ export const submitApplication = async (recruitmentId, applicationData) => {
         throw err;
     }
 
-    return data.data;
+    return data;
 };
 
 /**
