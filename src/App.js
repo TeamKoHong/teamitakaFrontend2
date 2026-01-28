@@ -28,6 +28,8 @@ import ProfileEditPage from './pages/Profile/ProfileEditPage';
 import BookmarkPage from './pages/BookmarkPage/BookmarkPage';
 import RecruitmentViewPage from './pages/RecruitmentViewPage/RecruitmentViewPage';
 import TeamSelectPage from './pages/TeamSelectPage/TeamSelectPage';
+// 🔥 [추가됨] 프로젝트 등록 페이지 import
+import ProjectRegisterPage from './pages/Profile/ProjectRegisterPage/ProjectRegisterPage';
 
 import QuizPage from './features/type-test/pages/QuizPage';
 import AnalysisCompletePage from './features/type-test/pages/AnalysisCompletePage';
@@ -151,10 +153,14 @@ const App = () => {
 
             <Route path="/main" element={<MainPage />} />
             <Route path={MAIN_ROUTES.MAIN} element={<MainPage />} />
+            
             <Route path={PROFILE_ROUTES.MAIN} element={<ProfileMainPage />} />
             <Route path={PROFILE_ROUTES.EDIT} element={<ProfileEditPage />} />
             <Route path={PROFILE_ROUTES.VERIFICATION || "/profile/verification"} element={<ProfileVerificationPage />} />
+            {/* 🔥 [추가됨] 프로젝트 등록 페이지 라우트 */}
+            <Route path="/profile/register-project" element={<ProtectedRoute><ProjectRegisterPage /></ProtectedRoute>} />
             <Route path="/profile/project/view/:projectId" element={<ProjectDetailPage />} />
+            
             <Route path={PROJECT_ROUTES.MANAGEMENT} element={<ProjectManagement />} />
             <Route path={PROJECT_ROUTES.DETAIL} element={<ProjectDetailPage />} /> 
             <Route path={PROJECT_ROUTES.MEMBER} element={<ProjectMemberPage />} />
