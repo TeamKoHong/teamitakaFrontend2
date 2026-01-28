@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getMe } from '../../../services/user';
-import { getProfileDetail } from '../../../services/profile'; // ✅ 존재하는 것만 남겼습니다.
+import { getProfileDetail } from '../../../services/profile';
 import BottomNav from '../../../components/Common/BottomNav/BottomNav';
 import PentagonChart from '../../../components/Common/UI/PentagonChart';
 import ProfileImageEdit from '../../../components/ProfileImage';
@@ -88,6 +88,7 @@ export default function ProfileMainPage() {
   const navigate = useNavigate();
   const [userData, setUserData] = useState(null);
   const [profileData, setProfileData] = useState(null);
+  const [summaryData, setSummaryData] = useState({ strengths: [], improvements: [] });
   const [isLoading, setIsLoading] = useState(true);
   const [isSkillExpanded, setIsSkillExpanded] = useState(false);
 
@@ -96,8 +97,19 @@ export default function ProfileMainPage() {
       try {
         setIsLoading(true);
         const [userRes, profileRes] = await Promise.all([getMe(), getProfileDetail()]);
+        
         if (userRes?.success) setUserData(userRes.user);
         if (profileRes?.success) setProfileData(profileRes.data);
+
+        const cached = localStorage.getItem('cached_evaluation_summary');
+        if (cached) {
+          const parsed = JSON.parse(cached);
+          setSummaryData({
+            strengths: parsed.summary?.strengths || [],
+            improvements: parsed.summary?.improvements || []
+          });
+        }
+
       } catch (err) {
         console.error('데이터 로드 실패:', err);
       } finally {
@@ -107,7 +119,11 @@ export default function ProfileMainPage() {
     loadData();
   }, []);
 
+  // --- 데이터 가공 ---
+  const ongoingCount = profileData?.currentProjects || 0;
   const allProjects = profileData?.projects || [];
+  
+  // 상호평가 완료 필터링
   const displayProjects = allProjects.filter(p => {
     const title = p.title || "";
     const status = String(p.status || "").toUpperCase();
@@ -115,7 +131,9 @@ export default function ProfileMainPage() {
   });
 
   const skills = profileData?.skills || null;
-  const feedback = profileData?.feedback || { positive: [], negative: [] };
+  const feedbackStrengths = summaryData.strengths.length > 0 ? summaryData.strengths : (profileData?.feedback?.positive || []);
+  const feedbackImprovements = summaryData.improvements.length > 0 ? summaryData.improvements : (profileData?.feedback?.negative || []);
+
   const mbtiType = profileData?.activityType?.type || userData?.mbti_type;
 
   if (isLoading) return <div className={styles.container}>데이터를 불러오는 중입니다...</div>;
@@ -144,6 +162,12 @@ export default function ProfileMainPage() {
               <GraduationCapIcon />
               <span>{userData?.university ? `${userData.university} ${userData.major || ''}` : '정보를 입력해주세요'}</span>
             </div>
+            <div className={styles.profileStats}>
+              <div className={styles.statHighlight}>
+                현재 진행중인 프로젝트 <span className={styles.statOrange}>총 {ongoingCount}건</span>
+              </div>
+              <div className={styles.statNormal}>{`전체 팀플 경험 ${profileData?.totalTeamExperience || 0}회`}</div>
+            </div>
           </div>
         </div>
 
@@ -156,6 +180,7 @@ export default function ProfileMainPage() {
             <span className={styles.skillTitle}>팀플 능력치 분석</span>
             <span className={styles.skillProjectCount}>{allProjects.length}회 프로젝트 종합결과</span>
           </div>
+
           {!skills || Object.keys(skills).length === 0 ? (
             <div className={styles.defaultSkillWrapper}>
               <img src={skillDefaultImg} alt="데이터 없음" style={{ width: '100%' }} />
@@ -171,8 +196,8 @@ export default function ProfileMainPage() {
                 <div className={styles.expandedContent}>
                   <div className={styles.radarChartContainer}><PentagonChart skills={skills} /></div>
                   <div style={{ display: 'flex', gap: '10px', marginTop: '20px' }}>
-                    <FeedbackCard type="positive" title="이런 점이 좋아요👍" items={feedback.positive} />
-                    <FeedbackCard type="negative" title="개선이 필요해요🚨" items={feedback.negative} />
+                    <FeedbackCard type="positive" title="이런 점이 좋아요👍" items={feedbackStrengths} />
+                    <FeedbackCard type="negative" title="개선이 필요해요🚨" items={feedbackImprovements} />
                   </div>
                 </div>
               )}
@@ -191,14 +216,15 @@ export default function ProfileMainPage() {
               {displayProjects.map((p, i) => {
                 const targetId = p.projectId || p.id || p._id;
                 return (
-                  <div 
-                    key={targetId || i} 
-                    className={styles.projectCard} 
-                    onClick={() => { if (targetId) navigate(`/profile/project/view/${targetId}`); }}
-                  >
-                    <img src={p.thumbnail || profileDefault} alt="썸네일" className={styles.projectThumbnail} />
-                    <div className={styles.projectTitle}>{p.title}</div>
-                  </div>
+                    <div 
+                      key={targetId || i} 
+                      className={styles.projectCard} 
+                      // 이동 경로를 정확하게 /profile/project/view/... 로 변경
+                      onClick={() => targetId && navigate(`/profile/project/view/${targetId}`)}
+                    >
+                      <img src={p.thumbnail || profileDefault} alt="썸네일" className={styles.projectThumbnail} />
+                      <div className={styles.projectTitle}>{p.title}</div>
+                    </div>
                 );
               })}
             </div>

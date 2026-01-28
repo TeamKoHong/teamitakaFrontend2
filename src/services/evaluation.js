@@ -2,16 +2,6 @@ import { apiFetch } from './api';
 
 /**
  * Maps frontend evaluation field names to backend Review model fields
- *
- * Frontend → Backend:
- * - participation → effort
- * - communication → communication
- * - responsibility → commitment
- * - collaboration → reflection
- * - individualAbility → ability
- * - overallRating (0-5) → overall_rating (1-5)
- * - roleDescription → role_description
- * - encouragementMessage → comment
  */
 function mapEvaluationData(evaluationData, projectId, reviewerId, revieweeId) {
   const { categoryRatings, overallRating, roleDescription, encouragementMessage } = evaluationData;
@@ -26,18 +16,13 @@ function mapEvaluationData(evaluationData, projectId, reviewerId, revieweeId) {
     commitment: categoryRatings.responsibility,
     communication: categoryRatings.communication,
     reflection: categoryRatings.collaboration,
-    overall_rating: Math.max(1, overallRating), // Convert 0-5 to 1-5 (0 becomes 1)
+    overall_rating: Math.max(1, overallRating),
     comment: encouragementMessage || '',
   };
 }
 
 /**
  * Submits team member evaluation to backend
- * @param {string} projectId - Project UUID
- * @param {string} reviewerId - Reviewer user UUID
- * @param {string} revieweeId - Reviewee user UUID
- * @param {object} evaluationData - Frontend evaluation data
- * @returns {Promise<object>} Created review
  */
 export async function submitEvaluation(projectId, reviewerId, revieweeId, evaluationData) {
   try {
@@ -53,8 +38,7 @@ export async function submitEvaluation(projectId, reviewerId, revieweeId, evalua
       throw new Error(errorData.error || '평가 제출에 실패했습니다.');
     }
 
-    const result = await response.json();
-    return result;
+    return await response.json();
   } catch (error) {
     console.error('평가 제출 오류:', error);
     throw error;
@@ -62,12 +46,24 @@ export async function submitEvaluation(projectId, reviewerId, revieweeId, evalua
 }
 
 /**
- * Fetches all reviews for a project
- * @param {string} projectId - Project UUID
- * @returns {Promise<Array>} List of reviews
+ * [복구 및 개선] 프로젝트의 모든 리뷰 목록을 가져옵니다.
+ * 이 함수는 반드시 '배열'을 반환해야 다른 페이지가 터지지 않습니다.
  */
 export async function fetchProjectReviews(projectId) {
   try {
+    // 1. 프로필 페이지를 위해 '요약 데이터'만 몰래 따로 찌릅니다. (백그라운드 처리)
+    // 이 요청은 실패해도 메인 로직에 영향을 주지 않습니다.
+    apiFetch(`/api/reviews/project/${projectId}/summary`)
+      .then(res => res.ok ? res.json() : null)
+      .then(sData => {
+        if (sData && sData.summary) {
+          localStorage.setItem('cached_evaluation_summary', JSON.stringify(sData));
+          console.log('✅ 프로필용 요약 데이터 캐시 완료');
+        }
+      })
+      .catch(() => { /* 요약본 조회 실패 시 조용히 무시 */ });
+
+    // 2. 원래 RatingProjectPage 등이 기대하는 '리뷰 목록'을 가져옵니다.
     const response = await apiFetch(`/api/reviews/project/${projectId}`);
 
     if (!response.ok) {
@@ -76,7 +72,11 @@ export async function fetchProjectReviews(projectId) {
     }
 
     const reviews = await response.json();
-    return reviews.data || reviews;
+    
+    // 3. 반환값은 반드시 '배열' 형태여야 함 (.filter 에러 방지)
+    const result = Array.isArray(reviews) ? reviews : (reviews.data || []);
+    return result; 
+
   } catch (error) {
     console.error('평가 조회 오류:', error);
     throw error;
@@ -85,8 +85,6 @@ export async function fetchProjectReviews(projectId) {
 
 /**
  * Fetches project team members
- * @param {string} projectId - Project UUID
- * @returns {Promise<Array>} List of project members
  */
 export async function fetchProjectMembers(projectId) {
   try {
@@ -97,8 +95,7 @@ export async function fetchProjectMembers(projectId) {
       throw new Error(errorData.error || '팀원 조회에 실패했습니다.');
     }
 
-    const members = await response.json();
-    return members;
+    return await response.json();
   } catch (error) {
     console.error('팀원 조회 오류:', error);
     throw error;
@@ -107,9 +104,6 @@ export async function fetchProjectMembers(projectId) {
 
 /**
  * Determines evaluation targets and their completion status
- * @param {string} projectId - Project UUID
- * @param {string} currentUserId - Current user UUID
- * @returns {Promise<object>} Evaluation targets with status
  */
 export async function fetchEvaluationTargets(projectId, currentUserId) {
   try {
@@ -118,21 +112,17 @@ export async function fetchEvaluationTargets(projectId, currentUserId) {
       fetchProjectReviews(projectId),
     ]);
 
-    // API가 { data: [...] } 형태로 반환하는 경우 처리
     const members = Array.isArray(membersRes) ? membersRes : (membersRes?.data || []);
     const reviews = Array.isArray(reviewsRes) ? reviewsRes : (reviewsRes?.data || []);
 
-    // Filter out current user from evaluation targets
     const targets = members.filter(member => member.user_id !== currentUserId);
 
-    // Check which members have been reviewed by current user
     const reviewedMemberIds = new Set(
       reviews
         .filter(review => review.reviewer_id === currentUserId)
         .map(review => review.reviewee_id)
     );
 
-    // Map targets with completion status
     const targetsWithStatus = targets.map(member => ({
       id: member.user_id,
       name: member.User?.username || '알 수 없음',
@@ -141,7 +131,6 @@ export async function fetchEvaluationTargets(projectId, currentUserId) {
       status: reviewedMemberIds.has(member.user_id) ? 'completed' : 'pending',
     }));
 
-    // Get next pending member
     const nextPending = targetsWithStatus.find(target => target.status === 'pending');
 
     return {
