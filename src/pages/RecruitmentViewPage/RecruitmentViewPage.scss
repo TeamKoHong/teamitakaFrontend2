@@ -151,18 +151,31 @@ $success-green: #16C07E;
                     font-size: 14px; 
                     font-weight: 400; }
             }
-            .apply-btn-expanded { 
-                flex: 1; 
-                height: 59px; 
-                background: $primary-color; 
-                color: white; 
-                border: none; 
-                border-radius: 8px; 
+            .apply-btn-expanded {
+                flex: 1;
+                height: 59px;
+                background: $primary-color;
+                color: white;
+                border: none;
+                border-radius: 8px;
                 font-family: 'Pretendard';
-                font-size: 15px; 
-                font-weight: 700; 
-                text-align: center; 
-                cursor: pointer; 
+                font-size: 15px;
+                font-weight: 700;
+                text-align: center;
+                cursor: pointer;
+            }
+            .close-btn {
+                flex: 1;
+                height: 59px;
+                background: #FFFFFF;
+                color: #333;
+                border: 1px solid #E0E0E0;
+                border-radius: 8px;
+                font-family: 'Pretendard';
+                font-size: 15px;
+                font-weight: 700;
+                text-align: center;
+                cursor: pointer;
             }
         }
     }
