@@ -34,9 +34,6 @@ export default function ProfileVerificationPage() {
     fetchData();
   }, []);
 
-  // handleBack is handled by DefaultHeader internally (or via backPath), 
-  // so we don't need to define it here if we just use default behavior.
-
   if (isLoading) {
     return <div className={styles.container} style={{ justifyContent: 'center', alignItems: 'center' }}>로딩 중...</div>;
   }
@@ -79,9 +76,12 @@ export default function ProfileVerificationPage() {
 
           <div className={styles.profileSection}>
             <img
-              src={userData?.profileImage || profileDefault}
+              // 1. profileImage가 없으면 avatar를 확인하고, 그것도 없으면 profileDefault 사용
+              src={userData?.profileImage || userData?.avatar || profileDefault}
               alt="프로필 이미지"
               className={styles.profileImage}
+              // 2. 만약 이미지 URL은 있지만 로딩에 실패(404 등)하면 default 이미지로 교체
+              onError={(e) => { e.target.src = profileDefault; }}
             />
             <div className={styles.profileTexts}>
               <div className={styles.univText}>{userData?.university}</div>

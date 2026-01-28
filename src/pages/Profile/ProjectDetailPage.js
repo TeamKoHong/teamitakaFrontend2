@@ -3,25 +3,18 @@ import { useParams, useNavigate } from 'react-router-dom';
 import styles from './ProjectDetailPage.module.scss';
 
 // 서비스 함수 임포트
-import { fetchProjectDetails, fetchReviewSummary } from '../../services/rating';
+import { fetchProjectDetails, fetchReviewSummary, fetchProjectMembers } from '../../services/rating';
 
 // Assets
 import backIcon from '../../assets/back.png';
-import linkIconPng from '../../assets/icons/link.png';
-import profileDefault from '../../assets/profile_default.png';
 
-/**
- * URL에서 도메인만 추출하거나 프로토콜을 제거하여 표시용 텍스트 생성
- */
-function displayText(url) {
-  if (!url) return '';
-  try {
-    const u = new URL(url);
-    return u.host;
-  } catch (e) {
-    return url.replace(/^https?:\/\//, '');
-  }
-}
+const formatDateWithDay = (dateString) => {
+  if (!dateString) return '미정';
+  const date = new Date(dateString);
+  if (isNaN(date)) return dateString;
+  const days = ['일', '월', '화', '수', '목', '금', '토'];
+  return `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일(${days[date.getDay()]})`;
+};
 
 export default function ProjectDetailPage() {
   const { projectId } = useParams();
@@ -29,6 +22,7 @@ export default function ProjectDetailPage() {
   
   const [projectData, setProjectData] = useState(null);
   const [ratingData, setRatingData] = useState({ average: 0 }); 
+  const [memberCount, setMemberCount] = useState(0); // 🔥 팀원 수 상태 추가
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -36,19 +30,20 @@ export default function ProjectDetailPage() {
       try {
         setIsLoading(true);
         
-        // 1. 프로젝트 상세 정보와 별점 요약을 동시에 호출
-        const [projectRes, reviewRes] = await Promise.all([
+        // 1. 상세정보, 리뷰요약, 팀원정보를 동시에 호출
+        const [projectRes, reviewRes, membersRes] = await Promise.all([
           fetchProjectDetails(projectId),
-          fetchReviewSummary(projectId).catch(() => ({ data: { averageRating: 0 } }))
+          fetchReviewSummary(projectId).catch(() => ({ data: { averageRating: 0 } })),
+          fetchProjectMembers(projectId).catch(() => []) // 🔥 팀원 정보 호출
         ]);
         
         const pData = projectRes.data || projectRes;
         const rData = reviewRes.data || reviewRes;
+        const mData = Array.isArray(membersRes) ? membersRes : (membersRes?.data || []);
 
         setProjectData(pData);
-        setRatingData({
-          average: rData.averageRating || rData.average || 0
-        });
+        setRatingData({ average: rData.averageRating || rData.average || 0 });
+        setMemberCount(mData.length); // 🔥 팀원 배열의 길이 저장
 
       } catch (err) {
         console.error('데이터 로드 실패:', err);
@@ -63,29 +58,30 @@ export default function ProjectDetailPage() {
   if (isLoading) return <div className={styles.loading}>데이터를 불러오는 중입니다...</div>;
   if (!projectData) return <div className={styles.error}>프로젝트 정보를 찾을 수 없습니다.</div>;
 
-  const resultUrl = projectData.result_link || projectData.result_url;
+  // 🔥 이미지 존재 여부 확인
+  const projectImg = projectData.photo_url || projectData.thumbnail;
 
   return (
     <div className={styles.container}>
-      {/* 상단 헤더 */}
       <header className={styles.header}>
         <button onClick={() => navigate(-1)} className={styles.backButton}>
-          <img src={backIcon} alt="뒤로가기" />
+          <img src={backIcon} alt="뒤로가기" className={styles.backIconImg} />
         </button>
         <h1 className={styles.headerTitle}>나의 프로젝트</h1>
-        <div style={{ width: '24px' }} /> {/* 좌우 밸런스를 위한 더미 공간 */}
+        <div style={{ width: '15px' }} /> 
       </header>
 
-      {/* 메인 이미지 영역 */}
-      <div className={styles.mainImageArea}>
-        <img 
-          src={projectData.photo_url || projectData.thumbnail || profileDefault} 
-          alt="썸네일" 
-          className={styles.mainImage} 
-        />
-      </div>
+      {/* 🔥 4번 수정: 이미지 등록된 게 있을 때만 렌더링 (없으면 아예 삭제) */}
+      {projectImg && (
+        <div className={styles.mainImageArea}>
+          <img 
+            src={projectImg} 
+            alt="프로젝트 이미지" 
+            className={styles.mainImage} 
+          />
+        </div>
+      )}
 
-      {/* 프로젝트 상세 정보 섹션 */}
       <section className={styles.infoSection}>
         <h2 className={styles.projectTitle}>
           {projectData.title?.replace("[상호평가 완료]", "").trim()}
@@ -95,12 +91,15 @@ export default function ProjectDetailPage() {
           <div className={styles.infoRow}>
             <span className={styles.label}>프로젝트 기간</span>
             <span className={styles.value}>
-              {projectData.start_date || '미정'} - {projectData.end_date || '미정'}
+              {formatDateWithDay(projectData.start_date)} - {formatDateWithDay(projectData.end_date)}
             </span>
           </div>
           <div className={styles.infoRow}>
             <span className={styles.label}>프로젝트 정보</span>
-            <span className={styles.value}>{projectData.description || '정보가 없습니다.'}</span>
+            {/* 🔥 프로젝트 정보 없으면 없다고 표시 */}
+            <span className={styles.value}>
+              {projectData.description || '등록된 프로젝트 정보가 없습니다.'}
+            </span>
           </div>
           <div className={styles.infoRow}>
             <span className={styles.label}>프로젝트 유형</span>
@@ -111,12 +110,12 @@ export default function ProjectDetailPage() {
           <div className={styles.infoRow}>
             <span className={styles.label}>참여인원</span>
             <span className={styles.value}>
-               {projectData.memberCount || '정보 없음'}
+               {/* 🔥 실시간으로 불러온 팀원 수 반영 */}
+               {memberCount > 0 ? `${memberCount}명` : '정보 없음'}
             </span>
           </div>
         </div>
 
-        {/* 키워드/해시태그 영역 */}
         <div className={styles.tagWrapper}>
           <div className={styles.keywordLabel}>키워드</div>
           <div className={styles.tags}>
@@ -129,29 +128,8 @@ export default function ProjectDetailPage() {
         </div>
       </section>
 
-      <hr className={styles.sectionDivider} />
+      <hr className={styles.thickDivider} />
 
-      {/* 프로젝트 결과물 섹션 */}
-      <section className={styles.resultSection}>
-        <h3 className={styles.sectionTitle}>프로젝트 결과물</h3>
-        {resultUrl ? (
-          <a 
-            href={resultUrl} 
-            className={styles.resultLink} 
-            target="_blank" 
-            rel="noopener noreferrer"
-          >
-            <img src={linkIconPng} alt="링크" className={styles.linkIcon} />
-            <span className={styles.urlText}>{displayText(resultUrl)}</span>
-          </a>
-        ) : (
-          <p className={styles.emptyText}>등록된 결과물이 없습니다</p>
-        )}
-      </section>
-
-      <hr className={styles.sectionDivider} />
-
-      {/* 내가 받은 별점 섹션 */}
       <section className={styles.ratingSection}>
         <h3 className={styles.ratingTitle}>내가 받은 별점</h3>
         <div className={styles.starContainer}>
