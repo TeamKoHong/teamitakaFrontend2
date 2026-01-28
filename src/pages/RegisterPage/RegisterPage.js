@@ -6,6 +6,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { sendVerificationCode, verifyCode, registerUser } from '../../services/auth.js';
 import StepIndicator from '../../components/DesignSystem/Feedback/StepIndicator';
 import DefaultHeader from '../../components/Common/DefaultHeader';
+import BackArrow from '../../components/Common/UI/BackArrow';
 
 function RegisterPage() {
     const navigate = useNavigate();
@@ -703,9 +704,7 @@ function RegisterPage() {
             <div className="terms-page-container">
                 <div className="terms-header">
                     <button className="back-button" onClick={handleBackToRegister}>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="10" height="17" viewBox="0 0 10 17" fill="none">
-                            <path d="M8.81641 1L1.99822 8.5L8.81641 16" stroke="#140805" strokeWidth="2" />
-                        </svg>
+                        <BackArrow />
                     </button>
                     <div className="header-title">{getTermsContent(currentTermsType).title}</div>
                 </div>
