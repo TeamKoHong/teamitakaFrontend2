@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { useRouter, useSearchParams } from 'shared/shims/useNextRouterShim';
+import { useRouter, useSearchParams, useLocation } from 'shared/shims/useNextRouterShim';
 import { TYPE_METADATA } from 'features/type-test/lib/types';
 import { timiCards } from 'features/type-test/lib/data/timiCards';
 
 export default function AnalysisCompletePage() {
     const router = useRouter();
     const searchParams = useSearchParams();
+    const location = useLocation();
+    const from = (location.state as { from?: string })?.from || '/';
     const [typeCode, setTypeCode] = useState<string>('');
     const [isFlipped, setIsFlipped] = useState<boolean>(false);
 
@@ -26,7 +28,7 @@ export default function AnalysisCompletePage() {
             alert('결과 정보를 불러올 수 없습니다. 다시 시도해주세요.');
             return;
         }
-        router.push(`/type-test/result/${encodeURIComponent(typeCode)}`);
+        router.push(`/type-test/result/${encodeURIComponent(typeCode)}`, { state: { from } });
     };
 
     return (
@@ -49,9 +51,9 @@ export default function AnalysisCompletePage() {
                     }}
                 />
                 <button
-                    onClick={() => router.push('/')}
+                    onClick={() => router.push(from)}
                     className="tw-absolute tw-w-8 tw-h-8 tw-bg-transparent tw-rounded-full tw-flex tw-items-center tw-justify-center hover:tw-bg-gray-200 hover:tw-bg-opacity-20"
-                    title="메인 페이지로 이동"
+                    title="이전 페이지로 이동"
                     style={{ top: '16px', right: '16px' }}
                 >
                     <span className="tw-text-transparent tw-text-lg tw-font-bold">×</span>
@@ -124,7 +126,7 @@ export default function AnalysisCompletePage() {
 
                 <div className="tw-text-center">
                     <button
-                        onClick={() => router.push('/type-test')}
+                        onClick={() => router.push('/type-test', { state: { from } })}
                         className="tw-text-gray-600 tw-underline hover:tw-text-gray-800 tw-transition-colors tw-text-sm tw-font-medium"
                     >
                         테스트 다시하기
