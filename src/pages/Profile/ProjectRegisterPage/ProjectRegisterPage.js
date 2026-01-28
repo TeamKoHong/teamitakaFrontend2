@@ -4,7 +4,7 @@ import { getProfileDetail } from '../../../services/profile';
 import styles from './ProjectRegisterPage.module.scss';
 
 // Assets
-import backIcon from '../../../assets/back.png';
+import BackArrow from '../../../components/Common/UI/BackArrow';
 import draftInactive from '../../../assets/draft_inactive.png'; 
 import draftActive from '../../../assets/draft_active.png';     
 
@@ -100,7 +100,7 @@ export default function ProjectRegisterPage() {
     <div className={styles.container}>
       <div className={styles.header}>
         <button className={styles.backButton} onClick={() => navigate(-1)}>
-          <img src={backIcon} alt="뒤로가기" style={{ width: '24px', height: '24px' }} />
+          <BackArrow />
         </button>
         <div className={styles.headerTitle}>완료된 프로젝트 불러오기</div>
       </div>

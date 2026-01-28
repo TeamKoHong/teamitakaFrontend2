@@ -5,7 +5,7 @@ import apply from "../../assets/apply.png";
 import task_empty from "../../assets/task_empty.png";
 import './RecruitmentPage.scss';
 import BottomNav from "../../components/Common/BottomNav/BottomNav";
-import back from "../../assets/back.png";
+import BackArrow from "../../components/Common/UI/BackArrow";
 import { getAllRecruitments } from '../../api/recruit';
 import { useUniversityFilter } from '../../hooks/useUniversityFilter';
 
@@ -78,7 +78,7 @@ export default function RecruitmentPage() {
     <div className="recruitment-page">
       <header className="recruitment-header">
         <button className="back-button" onClick={() => navigate(-1)}>
-          <img src={back} alt="아이콘" />        
+          <BackArrow />
         </button>
         <h1 className="header-title">모집글</h1>
       </header>

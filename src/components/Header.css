@@ -30,9 +30,19 @@
   padding: 0;
 }
 
+.back-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .back-icon {
-  width: 8px;
-  height: 16px;
+  width: 6px;
+  height: 12px;
   object-fit: contain;
 }
 
