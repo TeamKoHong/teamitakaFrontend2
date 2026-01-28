@@ -1,10 +1,28 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter, useLocation } from 'shared/shims/useNextRouterShim';
+
+const FALLBACK_COUNT = 2358;
+
+const fetchParticipantCount = async (): Promise<number> => {
+    try {
+        const res = await fetch('/api/type-test/stats');
+        if (!res.ok) throw new Error('API error');
+        const data = await res.json();
+        return data.participant_count || FALLBACK_COUNT;
+    } catch {
+        return FALLBACK_COUNT; // fallback
+    }
+};
 
 export default function IntroPage() {
     const router = useRouter();
     const location = useLocation();
     const from = (location.state as { from?: string })?.from || '/';
+    const [participantCount, setParticipantCount] = useState<number>(2358);
+
+    useEffect(() => {
+        fetchParticipantCount().then(setParticipantCount);
+    }, []);
 
     const handleStartTest = () => {
         router.push('/type-test/quiz', { state: { from } });
@@ -60,20 +78,28 @@ export default function IntroPage() {
                 />
             </div>
 
-            {/* Participant Count Banner */}
+            {/* Participant Count Banner - CSS Speech Bubble */}
             <div className="tw-flex tw-flex-col tw-items-center tw-px-8 tw-mb-4">
-                <div className="tw-relative">
-                    <img
-                        src="/assets/main/2358.png"
-                        alt="참여자 배경"
-                        className="tw-w-[226px] tw-h-auto"
+                <div
+                    className="tw-relative tw-px-6 tw-py-3 tw-rounded-full tw-text-white tw-text-xs tw-font-medium"
+                    style={{
+                        backgroundColor: '#222222',
+                        letterSpacing: '-1px',
+                    }}
+                >
+                    현재 {participantCount.toLocaleString()} 명이 나의 티미를 찾았어요!
+                    {/* Speech bubble tail */}
+                    <div
+                        className="tw-absolute tw-left-1/2 tw--translate-x-1/2"
+                        style={{
+                            bottom: '-8px',
+                            width: 0,
+                            height: 0,
+                            borderLeft: '8px solid transparent',
+                            borderRight: '8px solid transparent',
+                            borderTop: '8px solid #222222',
+                        }}
                     />
-                    <p
-                        className="tw-absolute tw-inset-0 tw-flex tw-items-center tw-justify-center tw-text-white tw-text-xs tw-font-medium"
-                        style={{ letterSpacing: '-1px' }}
-                    >
-                        현재 2,358 명이 나의 티미를 찾았어요!
-                    </p>
                 </div>
             </div>
 
