@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useRouter } from 'shared/shims/useNextRouterShim';
+import { useRouter, useLocation } from 'shared/shims/useNextRouterShim';
 import QuestionCard from 'features/type-test/components/QuestionCard';
 import { questions } from 'features/type-test/lib/questions';
 import { calculateMBTIType, type Answer } from 'features/type-test/lib/scoring';
@@ -8,6 +8,8 @@ import 'features/type-test/styles/type-test-base.css';
 
 export default function QuizPage() {
     const router = useRouter();
+    const location = useLocation();
+    const from = (location.state as { from?: string })?.from || '/';
     const [currentQuestion, setCurrentQuestion] = useState(0);
     const [answers, setAnswers] = useState<Answer[]>([]);
     const [isProcessing, setIsProcessing] = useState(false);
@@ -53,7 +55,7 @@ export default function QuizPage() {
                         localStorage.setItem('user_mbti_type', mbtiType);
                     }
 
-                    router.push(`/type-test/complete?type=${encodeURIComponent(mbtiType)}`);
+                    router.push(`/type-test/complete?type=${encodeURIComponent(mbtiType)}`, { state: { from } });
                 } catch (error) {
                     console.error('타입 계산 오류:', error);
                     alert('결과 분석 중 오류가 발생했습니다. 다시 시도해주세요.');
@@ -70,9 +72,9 @@ export default function QuizPage() {
             setCurrentQuestion(currentQuestion - 1);
             setAnswers(prev => prev.slice(0, currentQuestion - 1));
         } else {
-            router.push('/');
+            router.push(from);
         }
-    }, [currentQuestion, router]);
+    }, [currentQuestion, router, from]);
 
     useEffect(() => {
         const handleKeyDown = (event: KeyboardEvent) => {

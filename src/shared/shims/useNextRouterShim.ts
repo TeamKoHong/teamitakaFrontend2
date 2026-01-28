@@ -1,12 +1,15 @@
-import { useNavigate, useLocation, useParams as useRxParams, useSearchParams as useRxSearchParams } from 'react-router-dom';
+import { useNavigate, useLocation as useRxLocation, useParams as useRxParams, useSearchParams as useRxSearchParams, NavigateOptions } from 'react-router-dom';
 import { useMemo } from 'react';
+
+// Re-export useLocation from react-router-dom
+export const useLocation = useRxLocation;
 
 // Shim for next/navigation useRouter
 export function useRouter() {
     const navigate = useNavigate();
     return useMemo(() => ({
-        push: (href: string) => navigate(href),
-        replace: (href: string) => navigate(href, { replace: true }),
+        push: (href: string, options?: NavigateOptions) => navigate(href, options),
+        replace: (href: string, options?: NavigateOptions) => navigate(href, { ...options, replace: true }),
         back: () => navigate(-1),
         forward: () => navigate(1),
         refresh: () => window.location.reload(),

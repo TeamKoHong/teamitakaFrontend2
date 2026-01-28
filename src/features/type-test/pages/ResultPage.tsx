@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { useRouter, useParams } from 'shared/shims/useNextRouterShim';
+import { useRouter, useParams, useLocation } from 'shared/shims/useNextRouterShim';
 import UnifiedAdaptiveResultCard from 'features/type-test/components/UnifiedAdaptiveResultCard';
 import { TYPE_METADATA } from 'features/type-test/lib/types';
 
 export default function ResultPage() {
     const router = useRouter();
+    const location = useLocation();
+    const from = (location.state as { from?: string })?.from || '/';
     const { type } = useParams();
     const rawTypeCode = type as string;
     const typeCode = rawTypeCode ? decodeURIComponent(rawTypeCode) : '';
@@ -33,7 +35,7 @@ export default function ResultPage() {
     }, [typeMeta, typeCode, router]);
 
     const handleRetest = () => {
-        router.push('/type-test');
+        router.push('/type-test', { state: { from } });
     };
 
     if (isLoading || !typeMeta) {
@@ -51,7 +53,7 @@ export default function ResultPage() {
         <div className="tw-min-h-screen result-page" style={{ backgroundColor: '#323030' }}>
             <div className="tw-max-w-sm tw-mx-auto tw-relative">
                 <button
-                    onClick={() => router.push('/')}
+                    onClick={() => router.push(from)}
                     className="tw-absolute tw-z-10"
                     style={{
                         width: '63.12px', height: '63.12px',
