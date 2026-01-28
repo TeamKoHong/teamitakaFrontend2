@@ -31,6 +31,7 @@ import TeamSelectPage from './pages/TeamSelectPage/TeamSelectPage';
 // 🔥 [추가됨] 프로젝트 등록 페이지 import
 import ProjectRegisterPage from './pages/Profile/ProjectRegisterPage/ProjectRegisterPage';
 
+import IntroPage from './features/type-test/pages/IntroPage';
 import QuizPage from './features/type-test/pages/QuizPage';
 import AnalysisCompletePage from './features/type-test/pages/AnalysisCompletePage';
 import ResultPage from './features/type-test/pages/ResultPage';
@@ -189,7 +190,8 @@ const App = () => {
             <Route path="/profile-setup" element={<ProtectedRoute><ProfileSetupPage /></ProtectedRoute>} />
             <Route path="/welcome" element={<ProtectedRoute><WelcomePage /></ProtectedRoute>} />
 
-            <Route path="/type-test" element={<QuizPage />} />
+            <Route path="/type-test" element={<IntroPage />} />
+            <Route path="/type-test/quiz" element={<QuizPage />} />
             <Route path="/type-test/complete" element={<AnalysisCompletePage />} />
             <Route path="/type-test/result/:type" element={<ResultPage />} />
 

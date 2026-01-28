@@ -72,7 +72,8 @@ export default function QuizPage() {
             setCurrentQuestion(currentQuestion - 1);
             setAnswers(prev => prev.slice(0, currentQuestion - 1));
         } else {
-            router.push(from);
+            // 첫 질문에서 뒤로가기 → 인트로 페이지로 (from state 유지)
+            router.push('/type-test', { state: { from } });
         }
     }, [currentQuestion, router, from]);
 
