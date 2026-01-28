@@ -677,11 +677,12 @@ $border-light: #e0e0e0;
 }
 
 // 별점(별 아이콘) 크기 및 간격 강제 오버라이드 (모듈 격리 우회)
+// Figma 스펙: star size 16.1px, star gap 4px, score gap 8px
 .ratingSection>section>div>div>span {
-  font-size: 16.08px !important;
-  width: 16.08px !important;
-  height: 16.08px !important;
-  margin-right: 8px !important;
+  font-size: 16.1px !important;
+  width: 16.1px !important;
+  height: 16.1px !important;
+  margin-right: 4px !important;
 
   &:last-child {
     margin-right: 0 !important;

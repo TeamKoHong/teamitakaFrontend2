@@ -13,7 +13,7 @@ export default function ProsConsCards({ good = [], improve = [] }) {
   return (
     <section className={styles.wrap} aria-label="한 줄 요약">
       <div className={`${styles.card} ${styles.good}`}>
-        <div className={styles.badge}>👍 이런 점이 좋아요</div>
+        <div className={styles.badge}>이런 점이 좋아요 👍</div>
         {good.length > 0 ? (
           renderList(good)
         ) : (
@@ -21,7 +21,7 @@ export default function ProsConsCards({ good = [], improve = [] }) {
         )}
       </div>
       <div className={`${styles.card} ${styles.improve}`}>
-        <div className={styles.badge}>🚨 이런 점은 개선이 필요해요</div>
+        <div className={styles.badge}>이런 점은 개선이 필요해요 🚨</div>
         {improve.length > 0 ? (
           renderList(improve)
         ) : (
