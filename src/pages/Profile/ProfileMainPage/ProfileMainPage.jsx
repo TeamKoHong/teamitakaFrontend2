@@ -60,7 +60,7 @@ const FeedbackCard = ({ type, title, items = [] }) => {
 };
 
 const SkillBubbleChart = ({ skills }) => {
-  if (!skills || Object.keys(skills).length === 0) return null;
+  if (!skills) return null;
   const sortedSkills = Object.entries(skills).sort(([, a], [, b]) => b - a);
   const BUBBLE_STYLES = [
     { size: 123, bg: '#F76241', textColor: '#FFFDFC', top: 0, left: 114, zIndex: 5 },
@@ -91,6 +91,7 @@ export default function ProfileMainPage() {
   const [summaryData, setSummaryData] = useState({ strengths: [], improvements: [] });
   const [isLoading, setIsLoading] = useState(true);
   const [isSkillExpanded, setIsSkillExpanded] = useState(false);
+  const [registeredProjectIds, setRegisteredProjectIds] = useState([]);
 
   useEffect(() => {
     const loadData = async () => {
@@ -101,7 +102,6 @@ export default function ProfileMainPage() {
         if (userRes?.success) setUserData(userRes.user);
         if (profileRes?.success) setProfileData(profileRes.data);
 
-        // 캐시된 피드백 데이터 로드
         const cached = localStorage.getItem('cached_evaluation_summary');
         if (cached) {
           const parsed = JSON.parse(cached);
@@ -110,6 +110,10 @@ export default function ProfileMainPage() {
             improvements: parsed.summary?.improvements || []
           });
         }
+
+        const savedIds = JSON.parse(localStorage.getItem('registered_project_ids') || '[]');
+        setRegisteredProjectIds(savedIds);
+
       } catch (err) {
         console.error('데이터 로드 실패:', err);
       } finally {
@@ -119,19 +123,20 @@ export default function ProfileMainPage() {
     loadData();
   }, []);
 
-  // --- 데이터 가공 ---
   const ongoingCount = profileData?.currentProjects || 0;
   const allProjects = profileData?.projects || [];
   
-  // 상호평가 완료 필터링
+  // 등록된 ID에 해당하는 프로젝트만 필터링
   const displayProjects = allProjects.filter(p => {
-    const title = p.title || "";
-    const status = String(p.status || "").toUpperCase();
-    return title.includes("[상호평가 완료]") && status === "COMPLETED";
+    const pId = p.projectId || p.id || p._id;
+    return registeredProjectIds.includes(pId);
   });
 
-  const skills = profileData?.skills || null;
-  // 피드백 데이터
+  const skills = profileData?.skills || {};
+  const hasValidSkills = skills && 
+                         Object.keys(skills).length > 0 && 
+                         Object.values(skills).some(value => value > 0);
+
   const feedbackStrengths = summaryData.strengths.length > 0 ? summaryData.strengths : (profileData?.feedback?.positive || []);
   const feedbackImprovements = summaryData.improvements.length > 0 ? summaryData.improvements : (profileData?.feedback?.negative || []);
 
@@ -182,9 +187,9 @@ export default function ProfileMainPage() {
             <span className={styles.skillProjectCount}>{allProjects.length}회 프로젝트 종합결과</span>
           </div>
 
-          {!skills || Object.keys(skills).length === 0 ? (
+          {!hasValidSkills ? (
             <div className={styles.defaultSkillWrapper}>
-              <img src={skillDefaultImg} alt="데이터 없음" style={{ width: '100%' }} />
+              <img src={skillDefaultImg} alt="아직 받은 평가가 없습니다" style={{ width: '100%' }} />
             </div>
           ) : (
             <>
@@ -209,14 +214,18 @@ export default function ProfileMainPage() {
         <div className={styles.projectSection}>
           <div className={styles.sectionTitle}>나의 프로젝트</div>
           {displayProjects.length === 0 ? (
-            /* 🔥 [수정됨] 프로젝트가 없을 때 클릭 시 '완료된 프로젝트 불러오기' 페이지로 이동 */
             <div className={styles.emptyProjectCard} onClick={() => navigate('/profile/register-project')}>
-              <span className={styles.emptyProjectText}>+ 프로젝트 등록하기</span>
+              <span className={styles.plusIcon}>+</span>
+              <span className={styles.emptyProjectText}>프로젝트 등록하기</span>
             </div>
           ) : (
             <div className={styles.projectGrid}>
               {displayProjects.map((p, i) => {
                 const targetId = p.projectId || p.id || p._id;
+                
+                // [UI] 제목에서 "[상호평가 완료]" 제거
+                const cleanTitle = (p.title || "").replace("[상호평가 완료]", "").trim();
+
                 return (
                     <div 
                       key={targetId || i} 
@@ -224,10 +233,26 @@ export default function ProfileMainPage() {
                       onClick={() => targetId && navigate(`/profile/project/view/${targetId}`)}
                     >
                       <img src={p.thumbnail || profileDefault} alt="썸네일" className={styles.projectThumbnail} />
-                      <div className={styles.projectTitle}>{p.title}</div>
+                      <div className={styles.projectTitle}>{cleanTitle}</div>
                     </div>
                 );
               })}
+              
+               {/* 🔥 등록된 프로젝트가 있을 때 뜨는 작은 추가 카드 */}
+               <div 
+                 className={styles.emptyProjectCard} 
+                 style={{height: 'auto', minHeight: '100px'}} 
+                 onClick={() => navigate('/profile/register-project')}
+               >
+                  <span className={styles.plusIcon}>+</span>
+                  {/* 🔥 아래 텍스트 추가 */}
+                  <span 
+                    className={styles.emptyProjectText} 
+                    style={{ fontSize: '12px', marginTop: '4px' }}
+                  >
+                    프로젝트 등록하기
+                  </span>
+               </div>
             </div>
           )}
         </div>
