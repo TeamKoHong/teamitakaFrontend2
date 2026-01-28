@@ -357,9 +357,9 @@ $border-light: #e0e0e0;
   color: #C7C7CB;
 }
 
-// 섹션 라벨 통일 - 좌우 16px, 하단 마진 8px
+// 섹션 라벨 통일 - 부모 섹션의 padding과 정렬되도록 padding 제거
 .sectionLabel {
-  padding: 0 16px;
+  padding: 0;
   font-size: 16px;
   font-weight: 600;
   color: #222;
@@ -367,7 +367,7 @@ $border-light: #e0e0e0;
 }
 
 .sectionLabelTight {
-  padding: 0 12px;
+  padding: 0;
   font-size: 16px;
   font-weight: 700;
   color: #222;
@@ -395,9 +395,9 @@ $border-light: #e0e0e0;
   }
 }
 
-// 섹션 부제목 스타일
+// 섹션 부제목 스타일 - 부모 섹션의 padding과 정렬
 .sectionSubLabel {
-  padding: 0 12px;
+  padding: 0;
   font-size: 14px;
   color: #666;
   margin-bottom: 12px;
