@@ -17,25 +17,23 @@
   position: sticky;
   top: 0;
   z-index: 10;
+  margin-top: 20px;
 }
 
 .backButton {
   background: none;
   border: none;
-  padding: 0;
   cursor: pointer;
   margin-right: 12px;
   display: flex;
   align-items: center;
+  width: 10px;
+  max-height: 5px;
   
-  img {
-    width: 24px;
-    height: 24px;
-  }
 }
 
 .headerTitle {
-  font-size: 18px;
+  font-size: 17px;
   font-weight: 700;
   color: #000;
   flex: 1;
@@ -56,13 +54,13 @@
   display: flex;
   align-items: center;
   padding: 20px;
-  border-radius: 12px;
+  border-radius: 9px;
   cursor: pointer;
   transition: all 0.2s ease;
+  height: 70px;
   
   // 기본 상태 (선택 안됨)
-  background-color: #fff;
-  border: 1px solid #EAEAEA;
+  background-color: #F5F5F5;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
 
   &.selected {
@@ -70,11 +68,6 @@
     background-color: #F76241;
     border-color: #F76241;
     box-shadow: 0 4px 12px rgba(247, 98, 65, 0.3);
-
-    .cardIconWrapper {
-      background-color: rgba(255, 255, 255, 0.2); // 아이콘 배경 반투명 흰색
-      color: #fff;
-    }
 
     .cardTitle {
       color: #fff;
@@ -86,27 +79,29 @@
   }
 }
 
+/* 기존 .projectCard 스타일 아래에 추가 */
+
 .cardIconWrapper {
-  width: 40px;
-  height: 40px;
-  border-radius: 8px;
-  background-color: #F5F5F5;
+  margin-right: 16px; /* 아이콘과 텍스트 사이 간격 */
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-right: 16px;
-  flex-shrink: 0;
+
+  img {
+    width: 36px;  /* 가로 크기 (원하는대로 조절: 32px, 40px 등) */
+    height: 36px; /* 세로 크기 */
+    object-fit: contain; /* 비율 유지 */
+  }
 }
 
 .cardInfo {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 4px;
 }
 
 .cardType {
-  font-size: 10px;
+  font-size: 12px;
   color: #888;
   margin-bottom: 2px;
 
@@ -118,16 +113,9 @@
 
 .cardTitle {
   font-size: 16px;
-  font-weight: 700;
+  font-weight: 500;
   color: #333;
-}
-
-.cardDesc {
-  font-size: 13px;
-  color: #666;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  margin-bottom: 5px;
 }
 
 .checkIcon {
@@ -143,22 +131,22 @@
   left: 0;
   width: 100%;
   padding: 20px;
-  background: linear-gradient(to top, #fff 80%, rgba(255,255,255,0));
 }
 
 .loadButton {
   width: 100%;
-  height: 52px;
-  border-radius: 12px;
+  height: 60px;
+  border-radius: 8px;
   border: none;
   font-size: 16px;
   font-weight: 700;
   cursor: pointer;
   transition: background-color 0.2s;
+  margin-bottom: 15px;
 
   // 비활성 상태
-  background-color: #E0E0E0;
-  color: #A0A0A0;
+  background-color: #D1CCCB;
+  color: #807C7C;
   cursor: not-allowed;
 
   // 활성 상태
