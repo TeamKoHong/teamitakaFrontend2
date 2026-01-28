@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter, useLocation } from 'shared/shims/useNextRouterShim';
 
-// TODO: API 완성 후 실제 엔드포인트로 교체
+const FALLBACK_COUNT = 2358;
+
 const fetchParticipantCount = async (): Promise<number> => {
     try {
-        // const res = await fetch('/api/type-test/stats');
-        // const data = await res.json();
-        // return data.participant_count;
-        return 2358; // 임시 하드코딩 값
+        const res = await fetch('/api/type-test/stats');
+        if (!res.ok) throw new Error('API error');
+        const data = await res.json();
+        return data.participant_count || FALLBACK_COUNT;
     } catch {
-        return 2358; // fallback
+        return FALLBACK_COUNT; // fallback
     }
 };
 
