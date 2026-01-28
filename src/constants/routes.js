@@ -54,6 +54,7 @@ export const PROFILE_ROUTES = {
   MAIN: '/profile',
   EDIT: '/profile/edit',
   VERIFICATION: '/profile/verification',
+  REGISTER_PROJECT: '/profile/register-project',
 };
 
 // ===== 데모 및 개발 도구 라우트 =====
