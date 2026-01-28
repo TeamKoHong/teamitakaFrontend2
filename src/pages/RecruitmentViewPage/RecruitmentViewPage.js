@@ -245,11 +245,20 @@ export default function RecruitmentViewPage() {
 
             <footer className="footer">
                 <div className="footer-buttons-new">
-                    <button onClick={handleBookmarkToggle} className="bookmark-btn">
-                        <img src={isBookmarked ? bookmarkActiveIcon : bookmarkIcon} alt="b" />
-                        <span className="bookmark-count">{post.bookmarkCount}</span>
-                    </button>
-                    <button onClick={handleApply} className="apply-btn-expanded">지원하기</button>
+                    {isOwner ? (
+                        <>
+                            <button onClick={handleViewApplicants} className="apply-btn-expanded">지원자 보기</button>
+                            <button onClick={() => navigate(-1)} className="close-btn">닫기</button>
+                        </>
+                    ) : (
+                        <>
+                            <button onClick={handleBookmarkToggle} className="bookmark-btn">
+                                <img src={isBookmarked ? bookmarkActiveIcon : bookmarkIcon} alt="b" />
+                                <span className="bookmark-count">{post.bookmarkCount}</span>
+                            </button>
+                            <button onClick={handleApply} className="apply-btn-expanded">지원하기</button>
+                        </>
+                    )}
                 </div>
             </footer>
 

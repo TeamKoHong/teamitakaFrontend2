@@ -15,6 +15,10 @@ const RecruitingProjectCard = ({ recruitment, onClick }) => {
   // 숫자로 변환 (문자열로 올 수 있음)
   const views = Number(recruitment.views) || 0;
   const applicantCount = Number(recruitment.applicant_count) || 0;
+  const maxApplicants = Number(recruitment.max_applicants) || 0;
+
+  // 목표 인원 충족 여부
+  const isGoalMet = maxApplicants > 0 && applicantCount >= maxApplicants;
 
   // D-day 계산 및 표시 포맷
   const getDDayText = () => {
@@ -51,7 +55,7 @@ const RecruitingProjectCard = ({ recruitment, onClick }) => {
 
   return (
     <div className="recruiting-project-card">
-      <div className={`recruiting-card ${isDDay() ? 'is-dday' : ''}`} onClick={onClick}>
+      <div className={`recruiting-card ${isDDay() ? 'is-dday' : ''} ${isGoalMet ? 'goal-met' : ''}`} onClick={onClick}>
         <h3>{title || '프로젝트명'}</h3>
         <p className="description">
           {description || '프로젝트 설명이 없습니다.'}
