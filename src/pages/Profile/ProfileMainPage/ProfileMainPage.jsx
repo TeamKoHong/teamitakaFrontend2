@@ -101,6 +101,7 @@ export default function ProfileMainPage() {
         if (userRes?.success) setUserData(userRes.user);
         if (profileRes?.success) setProfileData(profileRes.data);
 
+        // 캐시된 피드백 데이터 로드
         const cached = localStorage.getItem('cached_evaluation_summary');
         if (cached) {
           const parsed = JSON.parse(cached);
@@ -109,7 +110,6 @@ export default function ProfileMainPage() {
             improvements: parsed.summary?.improvements || []
           });
         }
-
       } catch (err) {
         console.error('데이터 로드 실패:', err);
       } finally {
@@ -131,6 +131,7 @@ export default function ProfileMainPage() {
   });
 
   const skills = profileData?.skills || null;
+  // 피드백 데이터
   const feedbackStrengths = summaryData.strengths.length > 0 ? summaryData.strengths : (profileData?.feedback?.positive || []);
   const feedbackImprovements = summaryData.improvements.length > 0 ? summaryData.improvements : (profileData?.feedback?.negative || []);
 
@@ -208,8 +209,9 @@ export default function ProfileMainPage() {
         <div className={styles.projectSection}>
           <div className={styles.sectionTitle}>나의 프로젝트</div>
           {displayProjects.length === 0 ? (
-            <div className={styles.emptyProjectCard} onClick={() => navigate('/recruit')}>
-              <span className={styles.emptyProjectText}>참여 중인 프로젝트가 없습니다.</span>
+            /* 🔥 [수정됨] 프로젝트가 없을 때 클릭 시 '완료된 프로젝트 불러오기' 페이지로 이동 */
+            <div className={styles.emptyProjectCard} onClick={() => navigate('/profile/register-project')}>
+              <span className={styles.emptyProjectText}>+ 프로젝트 등록하기</span>
             </div>
           ) : (
             <div className={styles.projectGrid}>
@@ -219,7 +221,6 @@ export default function ProfileMainPage() {
                     <div 
                       key={targetId || i} 
                       className={styles.projectCard} 
-                      // 이동 경로를 정확하게 /profile/project/view/... 로 변경
                       onClick={() => targetId && navigate(`/profile/project/view/${targetId}`)}
                     >
                       <img src={p.thumbnail || profileDefault} alt="썸네일" className={styles.projectThumbnail} />
