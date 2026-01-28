@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useBrowserOptimization } from 'features/type-test/lib/hooks/useBrowserOptimization';
 import { useSafariViewport } from 'features/type-test/lib/hooks/useSafariViewport';
+import BackArrow from 'components/Common/UI/BackArrow';
 
 interface QuestionCardProps {
     question: string;
@@ -98,17 +99,11 @@ export default function QuestionCard({
                     {/* 상단 영역 */}
                     <div className="tw-flex-shrink-0 tw-px-4 tw-pt-6">
                         <button
-                            className="tw-p-2 tw-mb-4 -tw-ml-2 tw-self-start tw-bg-transparent tw-border-none tw-cursor-pointer hover:tw-bg-gray-200 tw-rounded-full tw-transition-colors"
+                            className="tw-p-3 tw-mb-4 -tw-ml-2 tw-self-start tw-bg-transparent tw-border-none tw-cursor-pointer hover:tw-bg-gray-200 tw-rounded-full tw-transition-colors tw-flex tw-items-center tw-justify-center"
                             onClick={onBack || (() => window.history.back())}
                             aria-label="뒤로가기"
                         >
-                            <img
-                                src="/assets/quiz/vector.svg"
-                                alt="뒤로가기"
-                                width={24}
-                                height={24}
-                                className="tw-w-6 tw-h-6 tw-object-contain"
-                            />
+                            <BackArrow color="#140805" />
                         </button>
 
                         <div className="tw-space-y-6">
