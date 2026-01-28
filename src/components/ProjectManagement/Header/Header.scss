@@ -2,21 +2,21 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  align-items: stretch; // ensure children stretch full width
-  height: 110px; // 160px → 110px (감소)
+  align-items: stretch;
   width: 100%;
   box-sizing: border-box;
-
   background-color: #fff;
 
   .header-first {
-    padding: 20px 22px 16px; // 31px → 20px (상단 패딩 감소)
+    height: 64px;
+    padding: 16px 20px;
     display: flex;
+    align-items: center;
     justify-content: space-between;
 
     .header-right {
       display: flex;
-      gap: 16px; // 아이콘 간격
+      gap: 16px;
 
       .btn-calendar,
       .btn-bookmark {
@@ -29,7 +29,7 @@
         justify-content: center;
 
         img {
-          width: 24px; // 통일된 크기
+          width: 24px;
           height: 24px;
           display: block;
         }
@@ -41,7 +41,7 @@
     font-family: 'KIMM_Bold', sans-serif;
     font-size: 24px;
     font-weight: 700;
-    color: #f76241;
+    color: #F76241;
   }
 
   // allow full-bleed tab in second row
