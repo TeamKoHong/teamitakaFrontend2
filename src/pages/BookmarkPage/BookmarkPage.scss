@@ -4,6 +4,7 @@
   background-color: #f8f9fa;
   display: flex;
   flex-direction: column;
+  padding-top: 64px; // 헤더 높이만큼 상단 패딩
 }
 
 .bookmark-main {
@@ -182,13 +183,36 @@
       max-width: 116px;
       aspect-ratio: 1;
       border-radius: 8px;
-      overflow: hidden;
+      overflow: visible; // 북마크 아이콘이 밖으로 나올 수 있도록
       flex-shrink: 0;
+      position: relative; // 북마크 아이콘 absolute 위치 기준
       
       img {
         width: 100%;
         height: 100%;
         object-fit: cover;
+        border-radius: 8px;
+      }
+
+      .bookmark-toggle-icon {
+        position: absolute;
+        top: 6px;
+        right: 6px;
+        width: 16px;
+        height: 24px;
+        flex-shrink: 0;
+        cursor: pointer;
+        z-index: 10;
+        transition: transform 0.2s ease;
+        filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+
+        &:hover {
+          transform: scale(1.15);
+        }
+
+        &:active {
+          transform: scale(0.9);
+        }
       }
     }
 }
@@ -207,6 +231,13 @@
       width: 25%;
       min-width: 70px;
       max-width: 100px;
+
+      .bookmark-toggle-icon {
+        width: 14px;
+        height: 20px;
+        top: 4px;
+        right: 4px;
+      }
     }
   }
   
