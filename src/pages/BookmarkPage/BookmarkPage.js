@@ -35,25 +35,24 @@ function BookmarkPage() {
           getMyApplications().catch(() => ({ data: [] })), // 지원 내역 실패해도 북마크는 표시
         ]);
 
-        // 북마크 처리 - API 응답의 Recruitment 객체를 flatten
+        // 북마크 처리 - 백엔드가 이미 평탄화된 데이터를 반환함
         const bookmarksData = bookmarksResponse.data || [];
         const bookmarksWithUniv = bookmarksData.map(item => {
-          const recruitment = item.Recruitment || {};
           return {
             scrap_id: item.scrap_id,
-            recruitment_id: recruitment.recruitment_id,
-            id: recruitment.recruitment_id, // 호환성을 위해
-            title: recruitment.title || '제목 없음',
-            description: recruitment.description || '',
-            status: recruitment.status, // 'ACTIVE' or 'CLOSED'
-            photo_url: recruitment.photo_url,
-            imageUrl: recruitment.photo_url, // 호환성을 위해
-            scrap_count: recruitment.scrap_count,
-            created_at: item.createdAt,
-            start_date: recruitment.recruitment_start || item.createdAt,
-            deadline: recruitment.recruitment_end,
-            end_date: recruitment.recruitment_end,
-            university: recruitment.User?.university || null,
+            recruitment_id: item.recruitment_id,
+            id: item.recruitment_id, // 호환성을 위해
+            title: item.title || '제목 없음',
+            description: item.description || '',
+            status: item.status, // 'ACTIVE' or 'CLOSED'
+            photo_url: item.photo_url,
+            imageUrl: item.photo_url, // 호환성을 위해
+            scrap_count: item.scrap_count,
+            created_at: item.created_at,
+            start_date: item.start_date || item.created_at,
+            deadline: item.deadline,
+            end_date: item.deadline,
+            university: item.university || null, // 백엔드에서 User 정보 미포함 시 null
           };
         });
         setBookmarks(bookmarksWithUniv);
