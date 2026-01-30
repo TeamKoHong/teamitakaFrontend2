@@ -78,7 +78,7 @@ export default function RecruitmentPage() {
     <div className="recruitment-page">
       <header className="recruitment-header">
         <button className="back-button" onClick={() => navigate(-1)}>
-          <BackArrow />
+          <BackArrow width={10} height={18} />
         </button>
         <h1 className="header-title">모집글</h1>
       </header>
