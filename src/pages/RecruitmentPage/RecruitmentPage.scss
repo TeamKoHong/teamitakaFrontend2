@@ -16,20 +16,20 @@
   position: relative; // 수정: 백버튼 위치 고정을 위해 추가
 
   .back-button {
-    padding-left: 16px;
     background: none;
     border: none;
     cursor: pointer;
     display: flex;
     align-items: center;
-    position: absolute; // 수정: 절대 위치로 왼쪽 고정
-    left: 0;
-    width: 24px; // 아이콘 크기에 맞춰 여백 확보
-    height: 100%;
+    justify-content: center;
+    position: absolute;
+    left: 16px;
+    width: 40px;
+    height: 40px;
 
     img {
-      width: 8px;
-      height: 16px;
+      width: 10px;
+      height: 18px;
     }
   }
 
