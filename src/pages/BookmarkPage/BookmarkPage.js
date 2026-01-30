@@ -7,7 +7,7 @@ import BookmarkCheckCircleIcon from "../../assets/icons/bookMark_checkCircle.svg
 import BookmarkCalendarIcon from "../../assets/icons/bookMark_calendar.svg";
 import ApplicationHistorySlide from "../../components/BookmarkPage/ApplicationHistorySlide";
 import MyRecruitmentSlide from "../../components/BookmarkPage/MyRecruitmentSlide";
-import { getBookmarkedRecruitments, getMyApplications } from "../../services/recruitment";
+import { getBookmarkedRecruitments, getMyApplications, toggleRecruitmentScrap } from "../../services/recruitment";
 import { useUniversityFilter } from "../../hooks/useUniversityFilter";
 import "./BookmarkPage.scss";
 
@@ -35,12 +35,27 @@ function BookmarkPage() {
           getMyApplications().catch(() => ({ data: [] })), // 지원 내역 실패해도 북마크는 표시
         ]);
 
-        // 북마크 처리
+        // 북마크 처리 - API 응답의 Recruitment 객체를 flatten
         const bookmarksData = bookmarksResponse.data || [];
-        const bookmarksWithUniv = bookmarksData.map(item => ({
-          ...item,
-          university: item.university || item.author?.university || item.User?.university || null,
-        }));
+        const bookmarksWithUniv = bookmarksData.map(item => {
+          const recruitment = item.Recruitment || {};
+          return {
+            scrap_id: item.scrap_id,
+            recruitment_id: recruitment.recruitment_id,
+            id: recruitment.recruitment_id, // 호환성을 위해
+            title: recruitment.title || '제목 없음',
+            description: recruitment.description || '',
+            status: recruitment.status, // 'ACTIVE' or 'CLOSED'
+            photo_url: recruitment.photo_url,
+            imageUrl: recruitment.photo_url, // 호환성을 위해
+            scrap_count: recruitment.scrap_count,
+            created_at: item.createdAt,
+            start_date: recruitment.recruitment_start || item.createdAt,
+            deadline: recruitment.recruitment_end,
+            end_date: recruitment.recruitment_end,
+            university: recruitment.User?.university || null,
+          };
+        });
         setBookmarks(bookmarksWithUniv);
 
         // 지원 내역 카운트 설정
@@ -68,12 +83,12 @@ function BookmarkPage() {
     return filterByUniv(bookmarks, 'university');
   }, [bookmarks, filterByUniv]);
 
-  // 모집 중/마감 필터링
+  // 모집 중/마감 필터링 (백엔드 status: 'ACTIVE', 'CLOSED', 'FILLED')
   const filteredProjects = univFilteredBookmarks.filter(project => {
     if (activeTab === "recruiting") {
-      return project.status === 'open' || project.status === 'recruiting' || !project.status;
+      return project.status === 'ACTIVE' || project.status === 'open' || project.status === 'recruiting' || !project.status;
     } else {
-      return project.status === 'closed' || project.status === 'completed';
+      return project.status === 'CLOSED' || project.status === 'FILLED' || project.status === 'closed' || project.status === 'completed';
     }
   });
 
@@ -98,6 +113,19 @@ function BookmarkPage() {
     if (!dateString) return '00.00';
     const date = new Date(dateString);
     return `${String(date.getMonth() + 1).padStart(2, '0')}.${String(date.getDate()).padStart(2, '0')}`;
+  };
+
+  const handleBookmarkToggle = async (e, recruitmentId) => {
+    e.stopPropagation(); // 카드 클릭 이벤트 방지
+
+    try {
+      await toggleRecruitmentScrap(recruitmentId);
+      // 북마크 해제 후 목록에서 제거
+      setBookmarks(prev => prev.filter(b => b.recruitment_id !== recruitmentId));
+    } catch (err) {
+      console.error('북마크 토글 실패:', err);
+      alert('북마크 해제에 실패했습니다.');
+    }
   };
 
   return (
@@ -197,6 +225,17 @@ function BookmarkPage() {
                     alt={project.title}
                     onError={(e) => { e.target.src = projectDefaultImg; }}
                   />
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="22"
+                    viewBox="0 0 16 22"
+                    fill="none"
+                    className="bookmark-toggle-icon"
+                    onClick={(e) => handleBookmarkToggle(e, project.recruitment_id)}
+                  >
+                    <path d="M0 2C0 0.89543 0.895431 0 2 0H14C15.1046 0 16 0.895431 16 2V19.8851C16 21.5539 14.0766 22.4888 12.7644 21.4577L9.23564 18.6851C8.51042 18.1153 7.48958 18.1153 6.76436 18.6851L3.23564 21.4577C1.92338 22.4888 0 21.5539 0 19.8851V2Z" fill="#F76241"/>
+                  </svg>
                 </div>
               </div>
             ))
