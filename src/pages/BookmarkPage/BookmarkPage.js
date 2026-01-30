@@ -83,12 +83,12 @@ function BookmarkPage() {
     return filterByUniv(bookmarks, 'university');
   }, [bookmarks, filterByUniv]);
 
-  // 모집 중/마감 필터링 (백엔드 status: 'ACTIVE' or 'CLOSED')
+  // 모집 중/마감 필터링 (백엔드 status: 'ACTIVE', 'CLOSED', 'FILLED')
   const filteredProjects = univFilteredBookmarks.filter(project => {
     if (activeTab === "recruiting") {
       return project.status === 'ACTIVE' || project.status === 'open' || project.status === 'recruiting' || !project.status;
     } else {
-      return project.status === 'CLOSED' || project.status === 'closed' || project.status === 'completed';
+      return project.status === 'CLOSED' || project.status === 'FILLED' || project.status === 'closed' || project.status === 'completed';
     }
   });
 
