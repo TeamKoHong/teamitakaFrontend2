@@ -7,7 +7,7 @@ import BookmarkCheckCircleIcon from "../../assets/icons/bookMark_checkCircle.svg
 import BookmarkCalendarIcon from "../../assets/icons/bookMark_calendar.svg";
 import ApplicationHistorySlide from "../../components/BookmarkPage/ApplicationHistorySlide";
 import MyRecruitmentSlide from "../../components/BookmarkPage/MyRecruitmentSlide";
-import { getBookmarkedRecruitments } from "../../services/recruitment";
+import { getBookmarkedRecruitments, getMyApplications } from "../../services/recruitment";
 import { useUniversityFilter } from "../../hooks/useUniversityFilter";
 import "./BookmarkPage.scss";
 
@@ -19,22 +19,33 @@ function BookmarkPage() {
   const { filterByUniv } = useUniversityFilter();
 
   const [bookmarks, setBookmarks] = useState([]);
+  const [applicationCount, setApplicationCount] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchBookmarks = async () => {
+    const fetchData = async () => {
       try {
         setIsLoading(true);
         setError(null);
-        const response = await getBookmarkedRecruitments();
-        const data = response.data || [];
-        // 대학 필터링을 위해 university 필드 추가
-        const bookmarksWithUniv = data.map(item => ({
+
+        // 북마크와 지원 내역을 병렬로 조회
+        const [bookmarksResponse, applicationsResponse] = await Promise.all([
+          getBookmarkedRecruitments(),
+          getMyApplications().catch(() => ({ data: [] })), // 지원 내역 실패해도 북마크는 표시
+        ]);
+
+        // 북마크 처리
+        const bookmarksData = bookmarksResponse.data || [];
+        const bookmarksWithUniv = bookmarksData.map(item => ({
           ...item,
           university: item.university || item.author?.university || item.User?.university || null,
         }));
         setBookmarks(bookmarksWithUniv);
+
+        // 지원 내역 카운트 설정
+        const applicationsData = applicationsResponse.data || [];
+        setApplicationCount(applicationsData.length);
       } catch (err) {
         console.error('북마크 목록 조회 실패:', err);
         if (err.message === 'UNAUTHORIZED' || err.code === 'UNAUTHORIZED') {
@@ -43,12 +54,13 @@ function BookmarkPage() {
           setError('북마크 목록을 불러오는데 실패했습니다.');
         }
         setBookmarks([]);
+        setApplicationCount(0);
       } finally {
         setIsLoading(false);
       }
     };
 
-    fetchBookmarks();
+    fetchData();
   }, []);
 
   // 대학 필터 적용
@@ -68,7 +80,7 @@ function BookmarkPage() {
   // 통계 계산 (대학 필터 적용된 데이터 기준)
   const bookmarkStats = {
     totalBookmarks: univFilteredBookmarks.length,
-    appliedProjects: 0, // TODO: 지원 내역 API 연동 시 업데이트
+    appliedProjects: applicationCount,
     myRecruitmentPosts: 0, // TODO: 내 모집글 API 연동 시 업데이트
     urgentDeadlines: univFilteredBookmarks.filter(b => {
       if (!b.deadline) return false;
