@@ -28,27 +28,25 @@ function BookmarkPage() {
         const response = await getBookmarkedRecruitments();
         const data = response.data || [];
         
-        // API 응답의 Recruitment 객체를 flatten하고 필요한 필드 매핑
-        const bookmarksWithUniv = data.map(item => {
-          const recruitment = item.Recruitment || {};
-          return {
-            scrap_id: item.scrap_id,
-            recruitment_id: recruitment.recruitment_id,
-            id: recruitment.recruitment_id, // 호환성을 위해
-            title: recruitment.title || '제목 없음',
-            description: recruitment.description || '',
-            status: recruitment.status, // 'ACTIVE' or 'CLOSED'
-            photo_url: recruitment.photo_url,
-            imageUrl: recruitment.photo_url, // 호환성을 위해
-            scrap_count: recruitment.scrap_count,
-            created_at: item.createdAt,
-            // 날짜 필드는 API에서 제공하지 않으므로 createdAt 사용
-            start_date: item.createdAt,
-            deadline: null, // API에서 제공하지 않음
-            end_date: null, // API에서 제공하지 않음
-            university: recruitment.User?.university || null,
-          };
-        });
+        // API 응답 데이터를 그대로 매핑 (이미 flat한 구조)
+        const bookmarksWithUniv = data.map(item => ({
+          scrap_id: item.scrap_id,
+          recruitment_id: item.recruitment_id,
+          id: item.recruitment_id, // 호환성을 위해
+          title: item.title || '제목 없음',
+          description: item.description || '',
+          status: item.status, // 'ACTIVE' or 'CLOSED'
+          photo_url: item.photo_url,
+          imageUrl: item.photo_url, // 호환성을 위해
+          scrap_count: item.scrap_count,
+          created_at: item.created_at,
+          start_date: item.start_date,
+          deadline: item.deadline,
+          end_date: item.deadline, // 호환성을 위해
+          project_type: item.project_type,
+          user_id: item.user_id,
+          university: null, // API에서 제공하지 않음
+        }));
         
         console.log('📋 북마크 데이터 매핑 완료:', bookmarksWithUniv);
         setBookmarks(bookmarksWithUniv);
@@ -86,9 +84,16 @@ function BookmarkPage() {
     myRecruitmentPosts: 0, // TODO: 내 모집글 API 연동 시 업데이트
     urgentDeadlines: bookmarks.filter(b => {
       if (!b.deadline) return false;
-      const deadline = new Date(b.deadline);
+      
+      // 시간대 차이를 방지하기 위해 날짜만 비교
+      const deadlineDate = new Date(b.deadline);
       const today = new Date();
-      return deadline.toDateString() === today.toDateString();
+      
+      // 날짜만 추출해서 비교 (YYYY-MM-DD)
+      const deadlineStr = `${deadlineDate.getFullYear()}-${String(deadlineDate.getMonth() + 1).padStart(2, '0')}-${String(deadlineDate.getDate()).padStart(2, '0')}`;
+      const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+      
+      return deadlineStr === todayStr;
     }).length
   };
 
@@ -203,7 +208,7 @@ function BookmarkPage() {
               >
                 <div className="bookmark-project-content">
                   <div className="bookmark-project-dates">
-                    등록일: {formatDate(project.created_at)}
+                    {formatDate(project.start_date)} ~ {formatDate(project.deadline)}
                   </div>
                   <h3 className="bookmark-project-title">{project.title}</h3>
                   <p className="bookmark-project-description">{project.description}</p>
