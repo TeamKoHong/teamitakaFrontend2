@@ -8,7 +8,6 @@ import BookmarkCalendarIcon from "../../assets/icons/bookMark_calendar.svg";
 import ApplicationHistorySlide from "../../components/BookmarkPage/ApplicationHistorySlide";
 import MyRecruitmentSlide from "../../components/BookmarkPage/MyRecruitmentSlide";
 import { getBookmarkedRecruitments, getMyApplications, toggleRecruitmentScrap } from "../../services/recruitment";
-import { useUniversityFilter } from "../../hooks/useUniversityFilter";
 import "./BookmarkPage.scss";
 
 function BookmarkPage() {
@@ -76,13 +75,8 @@ function BookmarkPage() {
     fetchData();
   }, []);
 
-  // 대학 필터 적용
-  const univFilteredBookmarks = useMemo(() => {
-    return filterByUniv(bookmarks, 'university');
-  }, [bookmarks, filterByUniv]);
-
   // 모집 중/마감 필터링 (백엔드 status: 'ACTIVE', 'CLOSED', 'FILLED')
-  const filteredProjects = univFilteredBookmarks.filter(project => {
+  const filteredProjects = bookmarks.filter(project => {
     if (activeTab === "recruiting") {
       return project.status === 'ACTIVE' || project.status === 'open' || project.status === 'recruiting' || !project.status;
     } else {
@@ -92,7 +86,7 @@ function BookmarkPage() {
 
   // 통계 계산
   const bookmarkStats = {
-    totalBookmarks: univFilteredBookmarks.length,
+    totalBookmarks: bookmarks.length,
     appliedProjects: applicationCount,
     myRecruitmentPosts: 0, // TODO: 내 모집글 API 연동 시 업데이트
     urgentDeadlines: bookmarks.filter(b => {
