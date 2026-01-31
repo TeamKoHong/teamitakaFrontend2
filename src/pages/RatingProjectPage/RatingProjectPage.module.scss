@@ -151,6 +151,7 @@ $border-light: #e0e0e0;
 }
 
 // Figma 스펙: 각 섹션별 개별 padding, gap 없음
+// 좌우 패딩은 각 섹션에서 16px로 개별 관리 (scrollArea에서는 0)
 .scrollArea {
   display: flex;
   flex-direction: column;
@@ -826,8 +827,8 @@ $border-light: #e0e0e0;
   }
 
   .scrollArea {
-    padding: var(--spacing-md) var(--padding-xs) 0 var(--padding-xs);
-    gap: var(--gap-sm);
+    padding: 0; // 좌우 패딩은 각 섹션에서 16px로 개별 관리
+    gap: 0;
   }
 
   .contentWrap {
@@ -912,8 +913,8 @@ $border-light: #e0e0e0;
   }
 
   .scrollArea {
-    padding: var(--spacing-lg) var(--padding-sm) 0 var(--padding-sm);
-    gap: var(--gap-md);
+    padding: 0; // 좌우 패딩은 각 섹션에서 16px로 개별 관리
+    gap: 0;
   }
 
   .contentWrap {
@@ -1003,7 +1004,7 @@ $border-light: #e0e0e0;
   }
 
   .scrollArea {
-    padding: var(--spacing-xl) var(--padding-md) 0 var(--padding-md);
+    padding: 0; // 좌우 패딩은 각 섹션에서 16px로 개별 관리
   }
 }
 
@@ -1056,7 +1057,7 @@ $border-light: #e0e0e0;
   }
 
   .scrollArea {
-    padding: var(--spacing-xxl) var(--padding-lg) 0 var(--padding-lg);
+    padding: 0; // 좌우 패딩은 각 섹션에서 16px로 개별 관리
   }
 }
 

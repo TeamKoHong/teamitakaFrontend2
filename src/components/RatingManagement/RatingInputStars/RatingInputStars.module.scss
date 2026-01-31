@@ -11,9 +11,9 @@ $star-color-inactive: #D7D1CF; // 비활성 별: 베이지 회색 (디자인 시
   // margin-right는 ProjectRatingCard.module.scss에서 관리
 }
 
-// Figma: 16.1px, gap 4px
+// Figma: 16.08px, gap 4px
 .star {
-  font-size: 16.1px;
+  font-size: 16.08px;
   color: $star-color-inactive; // 기본 비활성 색상
   cursor: pointer;
   transition: color 0.2s ease-in-out;
@@ -40,7 +40,7 @@ $star-color-inactive: #D7D1CF; // 비활성 별: 베이지 회색 (디자인 시
 // 반응형 미디어 쿼리 - Figma 스펙 유지
 @media (max-width: 767px) {
   .star {
-    font-size: 16.1px; // Figma 스펙 유지
+    font-size: 16.08px; // Figma 스펙 유지
 
     &:not(:last-child) {
       margin-right: 4px; // Figma 스펙 유지
@@ -56,7 +56,7 @@ $star-color-inactive: #D7D1CF; // 비활성 별: 베이지 회색 (디자인 시
 // 터치 기기 최적화 - Figma 스펙 유지
 @media (hover: none) {
   .star {
-    font-size: 16.1px; // Figma 스펙 유지
+    font-size: 16.08px; // Figma 스펙 유지
     padding: 2px; // 터치 영역
 
     &:not(:last-child) {

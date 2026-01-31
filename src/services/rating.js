@@ -141,6 +141,7 @@ export async function fetchRatingProjectData(projectId, currentUserId) {
         id: review.reviewee_id,
         name: review.reviewee_username || '팀원',
         avatar: null,
+        task: review.target_member_task || review.reviewee_task || null, // 담당 업무
       },
       overallScore: review.overall_rating,
       categoryScores: [

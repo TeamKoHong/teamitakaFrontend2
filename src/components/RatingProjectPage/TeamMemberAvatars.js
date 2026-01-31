@@ -14,6 +14,14 @@ const getRoleLabel = (role) => {
   return roleMap[role?.toUpperCase?.()] || role || '담당업무';
 };
 
+// 담당 업무 또는 역할 표시 (task 우선, 없으면 role)
+const getTaskOrRole = (member) => {
+  if (member.task) {
+    return member.task;
+  }
+  return getRoleLabel(member.role);
+};
+
 export default function TeamMemberAvatars({
   members = [],
   selectedId = null,
@@ -46,7 +54,7 @@ export default function TeamMemberAvatars({
           />
           <div className={styles.textGroup}>
             <span className={styles.name}>{member.name}</span>
-            <span className={styles.role}>{getRoleLabel(member.role)}</span>
+            <span className={styles.role}>{getTaskOrRole(member)}</span>
           </div>
         </div>
       ))}
