@@ -221,11 +221,24 @@ $track-bg: #ececec;
 
 // Step Container
 .stepContainer {
-  position: relative; // Required for absolute-positioned topBackgroundBox
+  position: relative;
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+// Step 3 Full Page Container
+.step3Container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  background-color: #f2f2f2;
+  z-index: 1000;
 }
 
 .stepIndicatorContainer {
@@ -415,26 +428,25 @@ $track-bg: #ececec;
 
 // Top Section - White background with header, card and date
 .topSection {
-  width: calc(100% + 32px);
-  margin-left: -16px;
-  margin-right: -16px;
+  width: 100%;
   background-color: #fffdfc;
   box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.15);
-  padding: 0 16px 20px; // Increased bottom padding
+  padding: 0 16px 16px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 12px; // Increased gap between elements
+  gap: 8px;
 
   // Modal header with title and close button
   .modalHeader {
     width: 100%;
+    max-width: 390px;
     display: flex;
     justify-content: center;
     align-items: center;
     position: relative;
-    height: 56px; // Slightly taller for better spacing
-    margin-bottom: 4px; // Reduced bottom margin
+    height: 56px;
+    margin-bottom: 4px;
 
     .headerTitle {
       font-size: 17px;
@@ -444,7 +456,7 @@ $track-bg: #ececec;
 
     .closeButton {
       position: absolute;
-      right: 16px;
+      right: 0;
       background: none;
       border: none;
       font-size: 22px;
@@ -519,29 +531,21 @@ $track-bg: #ececec;
 .evaluationDate {
   width: 100%;
   max-width: 420px;
-  font-size: 13px; // Slightly larger
-  color: #666666; // Slightly lighter gray
+  font-size: 12px;
+  color: #807c7c;
   text-align: right;
-  margin-top: -8px; // Pull closer to card
-  // User wanted position fix. Usually right aligned below card is standard, 
-  // but if user says "position fix", maybe they want it inside? 
-  // For now keeping right aligned but ensuring margin.
-  margin-top: 4px;
+  padding-right: 4px;
 }
 
-// Bottom Section - Gray background with centered content
-.bottomSection {
-  width: calc(100% + 32px);
-  margin-left: -16px;
-  margin-right: -16px;
+// Gray Section - fills remaining space
+.graySection {
   flex: 1;
-  min-height: calc(100vh - 280px);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
-  padding: 24px 16px 34px; // Adjusted padding-bottom for Safari balance
-  background-color: inherit;
+  padding: 40px 16px 34px;
+  background-color: #f2f2f2;
 
   // Centered content wrapper (check icon + message)
   .centeredContent {
