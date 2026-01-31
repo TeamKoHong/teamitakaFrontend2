@@ -353,13 +353,15 @@ $border-light: #e0e0e0;
   color: #C7C7CB;
 }
 
-// 섹션 라벨 통일 - 좌측 정렬
+// Figma: Pretendard SemiBold 16px, color #000
 .sectionLabel {
+  font-family: 'Pretendard', sans-serif;
   padding: 0;
   font-size: 16px;
   font-weight: 600;
-  color: #222;
-  margin: 0 0 8px 0;
+  color: #000;
+  margin: 0;
+  line-height: 140.98%;
   text-align: left;
 }
 
@@ -392,12 +394,15 @@ $border-light: #e0e0e0;
   }
 }
 
-// 섹션 부제목 스타일 - 부모 섹션의 padding과 정렬
+// Figma: Pretendard Medium 12px, color #403e3e
 .sectionSubLabel {
+  font-family: 'Pretendard', sans-serif;
   padding: 0;
-  font-size: 14px;
-  color: #666;
-  margin-bottom: 12px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #403e3e;
+  line-height: 140.98%;
+  margin: 0;
 }
 
 // ===== Figma 스펙 기준 섹션 간격 =====
@@ -431,21 +436,40 @@ $border-light: #e0e0e0;
   padding: 8px 16px;
 }
 
-// 카테고리별 점수 (내가 한 평가 모드)
+// 카테고리별 점수 (내가 한 평가 모드) - 제목은 카드 밖에 위치
 .slidersSection {
-  background: #fff;
-  border-radius: var(--border-radius-xl);
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
-  padding: var(--spacing-lg);
-  margin: 8px 16px;
+  padding: 0 16px;
+  margin: 0;
 }
 
-// 팀원 평가지: Figma padding, 하단 여백 = 31px + BottomNav 60px = 91px
+// Figma: Pretendard SemiBold 16px, x값 16px (padding으로 처리)
+.slidersSectionTitle {
+  font-family: 'Pretendard', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  color: #000;
+  margin: 0 0 8px 0;
+}
+
+// 팀원 평가지: Figma padding 0 16px, 하단 여백 = 30px + BottomNav 61px = 91px
 .commentsSection {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  padding: 16px 16px 91px;
+  gap: 0;
+  padding: 0 16px 91px;
+}
+
+// 팀원 평가지 헤더 (제목 + 부제목) - Figma: gap 4px, padding-bottom 8px
+.commentsSectionHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-bottom: 8px;
+}
+
+// 코멘트 카드 wrapper - Figma: padding 4px 0 (좌우는 부모에서 처리)
+.commentCardWrapper {
+  padding: 4px 0;
 }
 
 .emptyComments {

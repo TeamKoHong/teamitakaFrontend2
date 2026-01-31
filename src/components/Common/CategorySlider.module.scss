@@ -61,7 +61,7 @@
   }
 
   &.disabled {
-    opacity: 0.6;
+    opacity: 1; // readOnly 상태에서도 선명하게 표시
     pointer-events: none;
   }
 
@@ -78,8 +78,9 @@
   margin-bottom: var(--spacing-md);
   width: 100%;
 
-  // Figma: 13px, weight 600, color #140805
+  // Figma: Pretendard SemiBold 13px, color #140805
   .categoryName {
+    font-family: 'Pretendard', sans-serif;
     font-size: 13px;
     font-weight: 600;
     color: #140805;
@@ -87,9 +88,11 @@
     letter-spacing: -0.01em;
   }
 
-  // Figma: 10px, letter-spacing -0.01em, color #807c7c
+  // Figma: Pretendard Regular 10px, color #807c7c
   .categoryDescription {
+    font-family: 'Pretendard', sans-serif;
     font-size: 10px;
+    font-weight: 400;
     color: #807c7c;
     line-height: 1.4;
     letter-spacing: -0.01em;
