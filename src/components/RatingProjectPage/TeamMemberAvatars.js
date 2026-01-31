@@ -44,8 +44,10 @@ export default function TeamMemberAvatars({
             alt={member.name}
             className={styles.avatar}
           />
-          <span className={styles.name}>{member.name}</span>
-          <span className={styles.role}>{getRoleLabel(member.role)}</span>
+          <div className={styles.textGroup}>
+            <span className={styles.name}>{member.name}</span>
+            <span className={styles.role}>{getRoleLabel(member.role)}</span>
+          </div>
         </div>
       ))}
     </section>
