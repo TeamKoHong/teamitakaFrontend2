@@ -87,7 +87,7 @@
     &.md {
         height: 59px; // Figma spec
         font-size: 15px;
-        padding: 0 $spacing-xxl;
+        padding: 18px 24px; // Figma spec: 18px vertical
     }
 
     &.lg {

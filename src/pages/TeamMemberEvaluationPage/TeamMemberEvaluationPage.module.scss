@@ -242,7 +242,7 @@ $track-bg: #ececec;
 }
 
 .stepIndicatorContainer {
-  margin: 8px 0; // Adjusted to match Figma spec
+  margin: 16px 0 14px; // Figma spec: 16px top, 14px bottom
   display: flex;
   justify-content: flex-start;
   width: 100%;
@@ -382,7 +382,7 @@ $track-bg: #ececec;
   align-items: flex-start;
   text-align: left;
   padding: 0;
-  gap: 4px;
+  gap: 0;
   width: 100%;
 
   .overallLabel {
@@ -390,14 +390,14 @@ $track-bg: #ececec;
     font-weight: 600;
     color: #140805;
     line-height: 140.98%;
-    margin-bottom: 0;
+    margin-bottom: 4px; // 14px gap to subtitle
   }
 
   .overallSubtitle {
     font-size: 12px;
     color: #807c7c;
     letter-spacing: -0.01em;
-    margin-bottom: 16px;
+    margin-bottom: 32px; // Figma spec: 32px gap to stars
   }
 }
 
@@ -406,14 +406,14 @@ $track-bg: #ececec;
   width: 100%;
   display: flex;
   justify-content: center;
-  padding: 8px 0;
+  padding: 0;
 }
 
 // Role Section - TextArea without white box
 .roleSection {
   width: 100%;
   padding: 0;
-  margin-top: 16px;
+  margin-top: 32px; // Figma spec: 32px gap from stars
 }
 
 // Custom TextArea styling - remove white box background
