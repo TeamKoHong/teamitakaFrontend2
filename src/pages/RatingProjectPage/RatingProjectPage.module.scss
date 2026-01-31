@@ -143,7 +143,7 @@ $border-light: #e0e0e0;
 }
 
 .pageBg {
-  padding-top: 69px; // Header(47px) + margin(22px)
+  padding-top: 88px; // Header(64px) + margin(24px)
   padding-bottom: 0; // BottomNav는 fixed이므로 scrollArea에서 처리
   background: #f2f2f2;
   min-height: 100vh;
@@ -408,9 +408,9 @@ $border-light: #e0e0e0;
 
 // ===== Figma 스펙 기준 섹션 간격 =====
 
-// 프로젝트 카드: Figma padding 24px 16px 8px
+// 프로젝트 카드: Figma padding 0 16px 8px (상단 여백은 pageBg에서 처리)
 .projectCardSection {
-  padding: 24px 16px 8px;
+  padding: 0 16px 8px;
 }
 
 // 팀원 목록: Figma padding 8px 16px
@@ -423,12 +423,12 @@ $border-light: #e0e0e0;
   padding: 8px 16px;
 }
 
-// 별점 섹션: Figma padding 24px 16px 24px
+// 별점 섹션: Figma padding 32px 16px 24px
 .ratingSection {
   background: transparent;
   border-radius: 0;
   box-shadow: none;
-  padding: 24px 16px 24px;
+  padding: 32px 16px 24px;
   text-align: center;
 }
 
