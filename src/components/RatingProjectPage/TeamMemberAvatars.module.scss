@@ -11,12 +11,12 @@
   }
 }
 
-// Figma: gap 8px (avatar-name), gap 4px (name-role)
+// Figma: gap 6px (avatar-name), gap 2px (name-role)
 .item {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   min-width: 60px;
 }
 

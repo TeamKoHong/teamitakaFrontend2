@@ -49,7 +49,7 @@ const EvaluationStep3 = ({
       </div>
 
       {/* Gray Section - Check Icon + Message + Buttons */}
-      <BottomCTA>
+      <BottomCTA variant="solid">
         <div className={styles.bottomSection}>
           {/* Centered content: Check Icon and Message */}
           <div className={styles.centeredContent}>

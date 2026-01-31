@@ -124,7 +124,7 @@ $border-light: #e0e0e0;
   transition: background-color 0.3s ease, transform 0.2s ease;
 
   &:hover {
-    background-color: darken($accent-color, 10%); // Use darken or color.adjust
+    background-color: #208538; // darkened accent-color
     transform: translateY(-2px);
   }
 
@@ -357,13 +357,14 @@ $border-light: #e0e0e0;
   color: #C7C7CB;
 }
 
-// 섹션 라벨 통일 - 부모 섹션의 padding과 정렬되도록 padding 제거
+// 섹션 라벨 통일 - 좌측 정렬
 .sectionLabel {
   padding: 0;
   font-size: 16px;
   font-weight: 600;
   color: #222;
   margin: 0 0 8px 0;
+  text-align: left;
 }
 
 .sectionLabelTight {
@@ -520,7 +521,7 @@ $border-light: #e0e0e0;
   transition: background 0.2s;
 
   &:hover {
-    background: darken(#f76241, 8%);
+    background: #e55536;
   }
 }
 
@@ -667,7 +668,7 @@ $border-light: #e0e0e0;
   box-shadow: 0 2px 8px rgba(247, 98, 65, 0.08);
 
   &:hover {
-    background: darken(#f76241, 8%);
+    background: #e55536;
     transform: translateY(-1px);
   }
 
