@@ -186,7 +186,11 @@
       overflow: visible; // 북마크 아이콘이 밖으로 나올 수 있도록
       flex-shrink: 0;
       position: relative; // 북마크 아이콘 absolute 위치 기준
+<<<<<<< HEAD
       
+=======
+
+>>>>>>> develop
       img {
         width: 100%;
         height: 100%;
@@ -226,7 +230,7 @@
   .bookmark-page-container .bookmark-project-list .bookmark-project-card {
     padding: 12px !important;
     gap: 12px;
-    
+
     .bookmark-project-image {
       width: 25%;
       min-width: 70px;
