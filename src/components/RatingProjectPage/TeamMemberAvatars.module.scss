@@ -73,8 +73,13 @@
   }
 }
 
-// 선택된 아이템 스타일 - Figma: name #000, role #403e3e
+// 선택된 아이템 스타일 - Figma: name #000, role #403e3e, avatar orange stroke (outside)
 .selected {
+  .avatar {
+    outline: 2px solid #F76241;
+    outline-offset: 0px;
+  }
+
   .name {
     color: #000;
   }

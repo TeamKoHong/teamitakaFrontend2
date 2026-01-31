@@ -11,8 +11,9 @@ $star-color-inactive: #D7D1CF; // 비활성 별: 베이지 회색 (디자인 시
   // margin-right는 ProjectRatingCard.module.scss에서 관리
 }
 
+// Figma: 16.1px, gap 4px
 .star {
-  font-size: clamp(20px, 5vw, 24px); // 더 작은 사이즈로 조정
+  font-size: 16.1px;
   color: $star-color-inactive; // 기본 비활성 색상
   cursor: pointer;
   transition: color 0.2s ease-in-out;
@@ -23,9 +24,9 @@ $star-color-inactive: #D7D1CF; // 비활성 별: 베이지 회색 (디자인 시
     color: $star-color-active; // 활성 색상
   }
 
-  // 별들 사이의 간격 (반응형)
+  // Figma: gap 4px
   &:not(:last-child) {
-    margin-right: clamp(4px, 1vw, 6px); // 더 좁은 간격
+    margin-right: 4px;
   }
 }
 
@@ -36,13 +37,13 @@ $star-color-inactive: #D7D1CF; // 비활성 별: 베이지 회색 (디자인 시
   }
 }
 
-// 반응형 미디어 쿼리 (평가 페이지와 일관성 확보)
+// 반응형 미디어 쿼리 - Figma 스펙 유지
 @media (max-width: 767px) {
   .star {
-    font-size: 24px; // 모바일에서 적절한 크기
+    font-size: 16.1px; // Figma 스펙 유지
 
     &:not(:last-child) {
-      margin-right: 8px; // 적절한 간격
+      margin-right: 4px; // Figma 스펙 유지
     }
   }
 
@@ -52,14 +53,14 @@ $star-color-inactive: #D7D1CF; // 비활성 별: 베이지 회색 (디자인 시
   }
 }
 
-// 터치 기기 최적화
+// 터치 기기 최적화 - Figma 스펙 유지
 @media (hover: none) {
   .star {
-    font-size: clamp(22px, 5.5vw, 26px); // 터치 기기에서 적절한 크기
+    font-size: 16.1px; // Figma 스펙 유지
     padding: 2px; // 터치 영역
 
     &:not(:last-child) {
-      margin-right: clamp(6px, 1.5vw, 10px);
+      margin-right: 4px; // Figma 스펙 유지
     }
   }
 }
