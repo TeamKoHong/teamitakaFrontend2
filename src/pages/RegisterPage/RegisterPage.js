@@ -71,6 +71,7 @@ function RegisterPage() {
     const [verificationErrorCode, setVerificationErrorCode] = useState('');
     const [codeVerificationError, setCodeVerificationError] = useState(''); // 인증코드 확인 에러
     const [isVerificationLoading, setIsVerificationLoading] = useState(false);
+    const [supabaseAccessToken, setSupabaseAccessToken] = useState(null); // Supabase OTP 인증 토큰
 
     // 이미 로그인된 사용자는 메인 페이지로 리디렉션
     useEffect(() => {
@@ -99,6 +100,10 @@ function RegisterPage() {
                     const result = await verifyCode(email, verificationCode);
 
                     if (result.success) {
+                        // Supabase accessToken 저장
+                        if (result.accessToken) {
+                            setSupabaseAccessToken(result.accessToken);
+                        }
                         // 인증 성공 → 완료 화면으로 이동
                         setCurrentStep(4);
                     } else {
@@ -132,7 +137,8 @@ function RegisterPage() {
                         marketingAgreed: consents.marketing,
                         thirdPartyAgreed: consents.thirdParty,
                         isSmsVerified: true,
-                        isEmailVerified: true
+                        isEmailVerified: true,
+                        supabaseAccessToken: supabaseAccessToken
                     };
 
                     const result = await registerUser(payload);
