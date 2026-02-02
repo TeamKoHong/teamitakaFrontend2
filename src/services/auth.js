@@ -104,12 +104,6 @@ const isValidEmail = (email) => {
     return emailRegex.test(email);
 };
 
-// 재시도 여부 판단 함수
-const shouldRetry = (statusCode, retryCount) => {
-    const retryableStatuses = [408, 429, 502, 503, 504];
-    return retryableStatuses.includes(statusCode) && retryCount < 2;
-};
-
 // 네트워크 에러 판단 함수
 const isNetworkError = (error) => {
     return error.name === 'TypeError' ||
