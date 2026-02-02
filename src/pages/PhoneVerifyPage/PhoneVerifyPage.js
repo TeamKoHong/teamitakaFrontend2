@@ -131,7 +131,14 @@ function PhoneVerifyPage() {
 
                 {/* Error Message */}
                 {smsError && (
-                    <div className={styles.errorMessage}>{smsError}</div>
+                    <div className={styles.errorMessage}>
+                        <div>{smsError.message}</div>
+                        {smsError.isServiceError && (
+                            <div className={styles.errorContact}>
+                                문제가 지속되면 teamitaka.official@gmail.com으로 문의해주세요.
+                            </div>
+                        )}
+                    </div>
                 )}
             </div>
 

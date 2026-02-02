@@ -9,13 +9,18 @@ interface UseSmsAuthOptions {
     initialPhone?: string;
 }
 
+interface SmsError {
+    message: string;
+    isServiceError?: boolean; // 서비스 장애 여부 (문의 안내 표시용)
+}
+
 interface UseSmsAuthReturn {
     phone: string;
     code: string;
     step: SmsAuthStep;
     timer: number;
     isLoading: boolean;
-    error: string | null;
+    error: SmsError | null;
     sessionId: string | null;
     handlePhoneChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     handleCodeChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -48,7 +53,7 @@ export const useSmsAuth = (options?: UseSmsAuthOptions): UseSmsAuthReturn => {
     );
     const [timer, setTimer] = useState(calculateInitialTimer);
     const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
+    const [error, setError] = useState<SmsError | null>(null);
     const [sessionId, setSessionId] = useState<string | null>(
         options?.initialSessionId || null
     );
@@ -80,7 +85,7 @@ export const useSmsAuth = (options?: UseSmsAuthOptions): UseSmsAuthReturn => {
         const phoneRegex = /^01([0|1|6|7|8|9])([0-9]{3,4})([0-9]{4})$/;
 
         if (!phoneRegex.test(plainPhone)) {
-            setError('올바른 전화번호를 입력해주세요 (010-XXXX-XXXX).');
+            setError({ message: '올바른 전화번호를 입력해주세요 (010-XXXX-XXXX).' });
             return;
         }
 
@@ -98,16 +103,26 @@ export const useSmsAuth = (options?: UseSmsAuthOptions): UseSmsAuthReturn => {
 
             if (!response.ok) {
                 const errorData = await response.json().catch(() => ({}));
+                const errorCode = errorData.errorCode || errorData.code;
 
                 if (response.status === 409) {
                     // 전화번호 중복 (백엔드에서 체크)
-                    setError(errorData.message || '이미 가입된 전화번호입니다.');
+                    setError({ message: errorData.message || '이미 가입된 전화번호입니다.' });
                 } else if (response.status === 429) {
-                    setError('요청이 너무 많습니다. 잠시 후 다시 시도해주세요.');
+                    setError({ message: '요청이 너무 많습니다. 잠시 후 다시 시도해주세요.' });
                 } else if (response.status === 400) {
-                    setError(errorData.message || '입력값 오류입니다.');
+                    setError({ message: errorData.message || '입력값 오류입니다.' });
+                } else if (errorCode === 'SMS_SERVICE_UNAVAILABLE') {
+                    // 잔액 부족 등 서비스 장애
+                    setError({
+                        message: '인증 서비스가 일시적으로 이용 불가합니다.',
+                        isServiceError: true,
+                    });
+                } else if (errorCode === 'SMS_SEND_FAILED') {
+                    // 일반 발송 실패
+                    setError({ message: '인증번호 발송에 실패했습니다. 잠시 후 다시 시도해주세요.' });
                 } else {
-                    setError('서버 오류입니다. 인증번호 전송에 실패했습니다.');
+                    setError({ message: '서버 오류입니다. 인증번호 전송에 실패했습니다.' });
                 }
                 return;
             }
@@ -121,7 +136,7 @@ export const useSmsAuth = (options?: UseSmsAuthOptions): UseSmsAuthReturn => {
 
             return newSessionId;
         } catch (err) {
-            setError('네트워크 오류입니다. 연결 상태를 확인해주세요.');
+            setError({ message: '네트워크 오류가 발생했습니다. 인터넷 연결을 확인해주세요.' });
         } finally {
             setIsLoading(false);
         }
@@ -129,12 +144,12 @@ export const useSmsAuth = (options?: UseSmsAuthOptions): UseSmsAuthReturn => {
 
     const verifySms = async () => {
         if (code.length !== 4) {
-            setError('4자리 인증번호를 입력해주세요.');
+            setError({ message: '4자리 인증번호를 입력해주세요.' });
             return;
         }
 
         if (!sessionId) {
-            setError('인증 세션이 만료되었습니다. 다시 시도해주세요.');
+            setError({ message: '인증 세션이 만료되었습니다. 다시 시도해주세요.' });
             return;
         }
 
@@ -152,9 +167,9 @@ export const useSmsAuth = (options?: UseSmsAuthOptions): UseSmsAuthReturn => {
 
             if (!response.ok) {
                 if (response.status === 400 || response.status === 401) {
-                    setError('인증번호가 일치하지 않습니다.');
+                    setError({ message: '인증번호가 일치하지 않습니다.' });
                 } else {
-                    setError('인증에 실패했습니다. 다시 시도해주세요.');
+                    setError({ message: '인증에 실패했습니다. 다시 시도해주세요.' });
                 }
                 return;
             }
@@ -162,7 +177,7 @@ export const useSmsAuth = (options?: UseSmsAuthOptions): UseSmsAuthReturn => {
             setStep('VERIFIED');
             setTimer(0);
         } catch (err) {
-            setError('네트워크 오류입니다. 연결 상태를 확인해주세요.');
+            setError({ message: '네트워크 오류가 발생했습니다. 인터넷 연결을 확인해주세요.' });
         } finally {
             setIsLoading(false);
         }
