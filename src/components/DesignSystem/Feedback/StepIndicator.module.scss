@@ -1,24 +1,77 @@
-.indicatorContainer {
+// ========================================
+// Pill 스타일 (회원가입용)
+// ========================================
+.pillContainer {
     display: flex;
     align-items: center;
+    justify-content: flex-start;
     gap: 4px;
-    width: 100%;
 }
 
 .dot {
-    height: 6px;
     width: 6px;
+    height: 6px;
     border-radius: 50%;
-    background-color: #dadada;
-    transition: all 0.3s ease;
+    background-color: #DADADA;
+    transition: all 0.2s ease;
 }
 
-.dot.active {
-    background-color: #f76241;
+.dot.completed {
+    background-color: #F76241;
 }
 
 .dot.current {
     width: 22px;
+    height: 6px;
     border-radius: 3px;
+    background-color: #F76241;
+}
+
+// ========================================
+// Numbered 스타일 (팀원 평가용)
+// ========================================
+.numberedContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+}
+
+.numberedStep {
+    width: 17px;
+    height: 17px;
+    border-radius: 8.5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+}
+
+.numberedStep.numberedCurrent {
     background-color: #f76241;
+    color: #fff;
+}
+
+.numberedStep.numberedCompleted {
+    background-color: #fff;
+    border: 1.5px solid #f76241;
+}
+
+.numberedStep.numberedPending {
+    background-color: #d1cccb;
+    color: #fff;
+}
+
+.stepNumber {
+    font-family: 'Pretendard', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.dashedLine {
+    width: 16px;
+    height: 0;
+    margin: 0 4px;
+    border-top: 1px dashed #f76241;
 }

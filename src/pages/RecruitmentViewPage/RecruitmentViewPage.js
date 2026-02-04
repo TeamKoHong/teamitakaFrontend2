@@ -3,8 +3,8 @@ import { useParams, useNavigate } from 'react-router-dom';
 import './RecruitmentViewPage.scss';
 
 // 아이콘 및 이미지 임포트
-import { IoChevronBack } from "react-icons/io5";
 import { BsThreeDotsVertical } from "react-icons/bs";
+import BackArrow from "../../components/Common/UI/BackArrow";
 
 import viewIcon from "../../assets/view.png"; 
 import applyIcon from "../../assets/apply.png"; 
@@ -168,7 +168,7 @@ export default function RecruitmentViewPage() {
         <div className="view-page">
             <header className="topbar">
                 <button onClick={() => navigate(-1)} className="back-button">
-                    <IoChevronBack size={24} />
+                    <BackArrow />
                 </button>
                 <h1 className="title">모집글</h1>
                 {isOwner && (
@@ -245,11 +245,20 @@ export default function RecruitmentViewPage() {
 
             <footer className="footer">
                 <div className="footer-buttons-new">
-                    <button onClick={handleBookmarkToggle} className="bookmark-btn">
-                        <img src={isBookmarked ? bookmarkActiveIcon : bookmarkIcon} alt="b" />
-                        <span className="bookmark-count">{post.bookmarkCount}</span>
-                    </button>
-                    <button onClick={handleApply} className="apply-btn-expanded">지원하기</button>
+                    {isOwner ? (
+                        <>
+                            <button onClick={handleViewApplicants} className="apply-btn-expanded">지원자 보기</button>
+                            <button onClick={() => navigate(-1)} className="close-btn">닫기</button>
+                        </>
+                    ) : (
+                        <>
+                            <button onClick={handleBookmarkToggle} className="bookmark-btn">
+                                <img src={isBookmarked ? bookmarkActiveIcon : bookmarkIcon} alt="b" />
+                                <span className="bookmark-count">{post.bookmarkCount}</span>
+                            </button>
+                            <button onClick={handleApply} className="apply-btn-expanded">지원하기</button>
+                        </>
+                    )}
                 </div>
             </footer>
 

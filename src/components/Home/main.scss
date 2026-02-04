@@ -13,7 +13,7 @@ $shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
 $line: #e5e7eb;
 $radius-lg: 16px;
 $radius-md: 12px;
-$header-h: 56px;
+$header-h: 64px;
 
 $card-gap-top: 0px;
 $pull-up: $header-h;
@@ -37,8 +37,9 @@ $keywords-bottom-space: 16px;
     align-items: center;
     justify-content: space-between;
     background: $card;
-    padding: 0 16px;
+    padding: 16px 20px;
     border-bottom: none;
+    box-sizing: border-box;
   }
 
   .logo {

@@ -177,7 +177,7 @@ export default function ProfileMainPage() {
           </div>
         </div>
 
-        <div className={styles.activityCard} onClick={() => navigate('/type-test')}>
+        <div className={styles.activityCard} onClick={() => navigate('/type-test', { state: { from: '/profile' } })}>
           <img src={CHARACTER_IMAGES[mbtiType] || 비회원배너} alt="배너" />
         </div>
 

@@ -1,27 +1,29 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import "./Header.css";
-import BackIcon from "../assets/back.png";
+import BackArrow from "./Common/UI/BackArrow";
 
-export default function Header({ title = "프로필 편집", onBack, rightAction }) {
+export default function Header({ title = "프로필 편집", onBack, rightAction, backPath = -1 }) {
+  const navigate = useNavigate();
+
   const handleBack = () => {
-    if (onBack) {
+    if (typeof onBack === "function") {
       onBack();
     } else {
-      // 기본 동작: 브라우저 히스토리 뒤로가기
-      window.history.back();
+      navigate(backPath);
     }
   };
 
   return (
     <div className="header-container">
       <div className="header-left">
-        <img
-          src={BackIcon}
-          className="back-icon"
-          alt="back"
+        <button
+          className="back-button"
           onClick={handleBack}
-          style={{ cursor: 'pointer' }}
-        />
+          aria-label="뒤로가기"
+        >
+          <BackArrow />
+        </button>
       </div>
       <h1 className="header-title">{title}</h1>
       <div className="header-right">

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import search_icon from "../../assets/search_icon.png";
-import back_icon from "../../assets/back.png";
+import BackArrow from "../../components/Common/UI/BackArrow";
 import './SearchPage.scss';
 import { getAllRecruitments } from '../../api/recruit';
 import { useUniversityFilter } from '../../hooks/useUniversityFilter';
@@ -91,7 +91,7 @@ export default function SearchPage() {
     <div className="search-page">
       <header className="search-header">
         <button className="back-button" onClick={() => navigate('/team-matching')}>
-          <img src={back_icon} alt="back" />
+          <BackArrow />
         </button>
         <h1 className="header-title">검색</h1>
         <div className="spacer"></div>

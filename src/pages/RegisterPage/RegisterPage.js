@@ -4,8 +4,10 @@ import './RegisterPage.step2.scss';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { sendVerificationCode, verifyCode, registerUser } from '../../services/auth.js';
+import { isUniversityEmail } from '../../utils/emailValidator';
 import StepIndicator from '../../components/DesignSystem/Feedback/StepIndicator';
 import DefaultHeader from '../../components/Common/DefaultHeader';
+import BackArrow from '../../components/Common/UI/BackArrow';
 
 function RegisterPage() {
     const navigate = useNavigate();
@@ -70,6 +72,7 @@ function RegisterPage() {
     const [verificationErrorCode, setVerificationErrorCode] = useState('');
     const [codeVerificationError, setCodeVerificationError] = useState(''); // 인증코드 확인 에러
     const [isVerificationLoading, setIsVerificationLoading] = useState(false);
+    const [supabaseAccessToken, setSupabaseAccessToken] = useState(null); // Supabase OTP 인증 토큰
 
     // 이미 로그인된 사용자는 메인 페이지로 리디렉션
     useEffect(() => {
@@ -98,6 +101,10 @@ function RegisterPage() {
                     const result = await verifyCode(email, verificationCode);
 
                     if (result.success) {
+                        // Supabase accessToken 저장
+                        if (result.accessToken) {
+                            setSupabaseAccessToken(result.accessToken);
+                        }
                         // 인증 성공 → 완료 화면으로 이동
                         setCurrentStep(4);
                     } else {
@@ -131,7 +138,8 @@ function RegisterPage() {
                         marketingAgreed: consents.marketing,
                         thirdPartyAgreed: consents.thirdParty,
                         isSmsVerified: true,
-                        isEmailVerified: true
+                        isEmailVerified: true,
+                        supabaseAccessToken: supabaseAccessToken
                     };
 
                     const result = await registerUser(payload);
@@ -319,6 +327,13 @@ function RegisterPage() {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(email)) {
             setVerificationError('올바른 이메일 형식이 아닙니다.');
+            return;
+        }
+
+        // 대학교 이메일 도메인 검증
+        if (!isUniversityEmail(email)) {
+            setVerificationError('대학교 이메일만 사용 가능합니다. (.ac.kr 또는 .edu)');
+            setVerificationErrorCode('INVALID_DOMAIN');
             return;
         }
 
@@ -703,9 +718,7 @@ function RegisterPage() {
             <div className="terms-page-container">
                 <div className="terms-header">
                     <button className="back-button" onClick={handleBackToRegister}>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="10" height="17" viewBox="0 0 10 17" fill="none">
-                            <path d="M8.81641 1L1.99822 8.5L8.81641 16" stroke="#140805" strokeWidth="2" />
-                        </svg>
+                        <BackArrow />
                     </button>
                     <div className="header-title">{getTermsContent(currentTermsType).title}</div>
                 </div>

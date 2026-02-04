@@ -6,7 +6,7 @@ import styles from './ProjectDetailPage.module.scss';
 import { fetchProjectDetails, fetchReviewSummary, fetchProjectMembers } from '../../services/rating';
 
 // Assets
-import backIcon from '../../assets/back.png';
+import BackArrow from '../../components/Common/UI/BackArrow';
 
 const formatDateWithDay = (dateString) => {
   if (!dateString) return '미정';
@@ -65,7 +65,7 @@ export default function ProjectDetailPage() {
     <div className={styles.container}>
       <header className={styles.header}>
         <button onClick={() => navigate(-1)} className={styles.backButton}>
-          <img src={backIcon} alt="뒤로가기" className={styles.backIconImg} />
+          <BackArrow />
         </button>
         <h1 className={styles.headerTitle}>나의 프로젝트</h1>
         <div style={{ width: '15px' }} /> 

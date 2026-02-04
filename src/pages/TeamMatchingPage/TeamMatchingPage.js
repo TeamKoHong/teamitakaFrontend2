@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useLocation, useNavigate, Link } from 'react-router-dom';
-import { AiOutlineArrowLeft } from 'react-icons/ai';
 import './TeamMatchingPage.scss';
 
 // --- 컴포넌트 및 에셋 임포트 ---
 import BottomNav from "../../components/Common/BottomNav/BottomNav";
+import BackArrow from "../../components/Common/UI/BackArrow";
 import Header from "../../components/TeamMatching/Header/Header";
 import recruit_write from "../../assets/recruit_write.png";
 import bookmark from "../../assets/bookmark.png";
@@ -218,7 +218,7 @@ export default function TeamMatchingPage() {
                 <section className="section">
                     {passedSearchQuery ? (
                         <div style={{ padding: '10px 20px', display: 'flex', alignItems: 'center' }}>
-                            <button onClick={() => navigate('/search')} style={{ background: 'none', border: 'none', cursor: 'pointer', marginRight: '8px', display: 'flex', alignItems: 'center', padding: '4px' }}><AiOutlineArrowLeft size={24} color="#333" /></button>
+                            <button onClick={() => navigate('/search')} style={{ background: 'none', border: 'none', cursor: 'pointer', marginRight: '8px', display: 'flex', alignItems: 'center', padding: '4px' }}><BackArrow /></button>
                             <h2 className="section-title" style={{ margin: 0 }}>"{passedSearchQuery}" 검색 결과</h2>
                         </div>
                     ) : (
