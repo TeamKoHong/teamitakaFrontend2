@@ -183,9 +183,9 @@
       max-width: 116px;
       aspect-ratio: 1;
       border-radius: 8px;
-      overflow: visible; // 북마크 아이콘이 밖으로 나올 수 있도록
+      overflow: visible;
       flex-shrink: 0;
-      position: relative; // 북마크 아이콘 absolute 위치 기준
+      position: relative;
 
       img {
         width: 100%;

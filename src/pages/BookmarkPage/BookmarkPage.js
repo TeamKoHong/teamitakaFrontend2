@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import DefaultHeader from "../../components/Common/DefaultHeader";
 import projectDefaultImg from "../../assets/icons/project_default_img.png";
@@ -8,7 +8,6 @@ import BookmarkCalendarIcon from "../../assets/icons/bookMark_calendar.svg";
 import ApplicationHistorySlide from "../../components/BookmarkPage/ApplicationHistorySlide";
 import MyRecruitmentSlide from "../../components/BookmarkPage/MyRecruitmentSlide";
 import { getBookmarkedRecruitments, getMyApplications, toggleRecruitmentScrap } from "../../services/recruitment";
-import { useUniversityFilter } from "../../hooks/useUniversityFilter";
 import "./BookmarkPage.scss";
 
 function BookmarkPage() {
@@ -16,7 +15,6 @@ function BookmarkPage() {
   const [activeTab, setActiveTab] = useState("recruiting"); // "recruiting" | "completed"
   const [isApplicationHistoryOpen, setIsApplicationHistoryOpen] = useState(false);
   const [isMyRecruitmentOpen, setIsMyRecruitmentOpen] = useState(false);
-  const { filterByUniv } = useUniversityFilter();
 
   const [bookmarks, setBookmarks] = useState([]);
   const [applicationCount, setApplicationCount] = useState(0);
@@ -77,13 +75,8 @@ function BookmarkPage() {
     fetchData();
   }, []);
 
-  // 대학 필터 적용
-  const univFilteredBookmarks = useMemo(() => {
-    return filterByUniv(bookmarks, 'university');
-  }, [bookmarks, filterByUniv]);
-
   // 모집 중/마감 필터링 (백엔드 status: 'ACTIVE', 'CLOSED', 'FILLED')
-  const filteredProjects = univFilteredBookmarks.filter(project => {
+  const filteredProjects = bookmarks.filter(project => {
     if (activeTab === "recruiting") {
       return project.status === 'ACTIVE' || project.status === 'open' || project.status === 'recruiting' || !project.status;
     } else {
@@ -91,21 +84,29 @@ function BookmarkPage() {
     }
   });
 
-  // 통계 계산 (대학 필터 적용된 데이터 기준)
+  // 통계 계산
   const bookmarkStats = {
-    totalBookmarks: univFilteredBookmarks.length,
+    totalBookmarks: bookmarks.length,
     appliedProjects: applicationCount,
     myRecruitmentPosts: 0, // TODO: 내 모집글 API 연동 시 업데이트
-    urgentDeadlines: univFilteredBookmarks.filter(b => {
+    urgentDeadlines: bookmarks.filter(b => {
       if (!b.deadline) return false;
-      const deadline = new Date(b.deadline);
+      
+      // 시간대 차이를 방지하기 위해 날짜만 비교
+      const deadlineDate = new Date(b.deadline);
       const today = new Date();
-      return deadline.toDateString() === today.toDateString();
+      
+      // 날짜만 추출해서 비교 (YYYY-MM-DD)
+      const deadlineStr = `${deadlineDate.getFullYear()}-${String(deadlineDate.getMonth() + 1).padStart(2, '0')}-${String(deadlineDate.getDate()).padStart(2, '0')}`;
+      const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+      
+      return deadlineStr === todayStr;
     }).length
   };
 
-  const handleProjectClick = (projectId) => {
-    navigate(`/recruitment/${projectId}`);
+  const handleProjectClick = (recruitmentId) => {
+    console.log('📍 모집글 클릭:', recruitmentId);
+    navigate(`/recruitment/${recruitmentId}`);
   };
 
   const formatDate = (dateString) => {
@@ -207,20 +208,20 @@ function BookmarkPage() {
           ) : (
             filteredProjects.map((project) => (
               <div
-                key={project.recruitment_id || project.id}
+                key={project.recruitment_id}
                 className="bookmark-project-card"
-                onClick={() => handleProjectClick(project.recruitment_id || project.id)}
+                onClick={() => handleProjectClick(project.recruitment_id)}
               >
                 <div className="bookmark-project-content">
                   <div className="bookmark-project-dates">
-                    {formatDate(project.start_date || project.created_at)} ~ {formatDate(project.deadline || project.end_date)}
+                    {formatDate(project.start_date)} ~ {formatDate(project.deadline)}
                   </div>
                   <h3 className="bookmark-project-title">{project.title}</h3>
                   <p className="bookmark-project-description">{project.description}</p>
                 </div>
                 <div className="bookmark-project-image">
                   <img
-                    src={project.photo_url || project.imageUrl || projectDefaultImg}
+                    src={project.photo_url || projectDefaultImg}
                     alt={project.title}
                     onError={(e) => { e.target.src = projectDefaultImg; }}
                   />
