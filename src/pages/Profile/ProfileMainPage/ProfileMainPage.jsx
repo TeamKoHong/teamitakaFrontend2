@@ -248,7 +248,7 @@ export default function ProfileMainPage() {
                   {/* 🔥 아래 텍스트 추가 */}
                   <span 
                     className={styles.emptyProjectText} 
-                    style={{ fontSize: '12px', marginTop: '4px' }}
+                    style={{ fontSize: '12px' }}
                   >
                     프로젝트 등록하기
                   </span>
