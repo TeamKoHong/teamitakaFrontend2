@@ -68,6 +68,8 @@ import VerificationCodePage from './pages/VerificationCodePage/VerificationCodeP
 import ProfileSetupPage from './pages/ProfileSetupPage/ProfileSetupPage';
 import WelcomePage from './pages/WelcomePage/WelcomePage';
 import RegisterCompletePage from './pages/RegisterCompletePage/RegisterCompletePage';
+import PrivacyPolicyPage from './pages/PrivacyPolicyPage/PrivacyPolicyPage';
+import TermsOfServicePage from './pages/TermsOfServicePage/TermsOfServicePage';
 
 // 인증 관련 임포트
 import { AuthProvider } from './contexts/AuthContext';
@@ -388,6 +390,13 @@ const App = () => {
             <Route path="/recruit/preview" element={<ProtectedRoute><ProjectRecruitPreview /></ProtectedRoute>} />
             <Route path="/recruit/publish" element={<ProtectedRoute><ProjectRecruitPublish /></ProtectedRoute>} />
             <Route path="/recruit/publish/done" element={<ProtectedRoute><ProjectRecruitPublishDone /></ProtectedRoute>} />
+
+            {/* 법적 페이지 (로그인 없이 접근 가능) */}
+            <Route path="/privacy" element={<PrivacyPolicyPage />} />
+            <Route path="/terms" element={<TermsOfServicePage />} />
+
+            <Route path="/" element={<Navigate to={MAIN_ROUTES.HOME} replace />} />
+            <Route path="*" element={<Navigate to={MAIN_ROUTES.HOME} replace />} />
           </Routes>
         </UniversityFilterProvider>
       </AuthProvider>
