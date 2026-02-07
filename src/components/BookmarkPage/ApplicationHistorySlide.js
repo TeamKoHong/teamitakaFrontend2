@@ -32,13 +32,15 @@ const formatDate = (dateString) => {
   return `${String(date.getMonth() + 1).padStart(2, '0')}.${String(date.getDate()).padStart(2, '0')}`;
 };
 
-function ApplicationHistorySlide({ isOpen, onClose }) {
+function ApplicationHistorySlide({ isOpen, onClose, inline = false, isActive = false }) {
   const [applications, setApplications] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
+  const shouldFetch = isOpen || (inline && isActive);
+
   useEffect(() => {
-    if (!isOpen) return;
+    if (!shouldFetch) return;
 
     const fetchApplications = async () => {
       try {
@@ -78,9 +80,9 @@ function ApplicationHistorySlide({ isOpen, onClose }) {
     };
 
     fetchApplications();
-  }, [isOpen]);
+  }, [shouldFetch]);
 
-  if (!isOpen) return null;
+  if (!isOpen && !inline) return null;
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -94,19 +96,8 @@ function ApplicationHistorySlide({ isOpen, onClose }) {
     }
   };
 
-  return (
-    <div className="application-history-overlay">
-      <div className="application-history-slide">
-        {/* 헤더 */}
-        <div className="application-history-header">
-          <h2 className="application-history-title">지원 내역</h2>
-          <button className="application-history-close" onClick={onClose}>
-            ✕
-          </button>
-        </div>
-
-        {/* 프로젝트 목록 */}
-        <div className="application-history-list">
+  const listContent = (
+    <div className={`application-history-list ${inline ? 'application-history-inline' : ''}`}>
           {isLoading ? (
             <div className="application-history-loading">로딩 중...</div>
           ) : error ? (
@@ -155,6 +146,28 @@ function ApplicationHistorySlide({ isOpen, onClose }) {
             ))
           )}
         </div>
+  );
+
+  if (inline) {
+    return (
+      <div className="application-history-inline-wrapper">
+        {listContent}
+      </div>
+    );
+  }
+
+  return (
+    <div className="application-history-overlay">
+      <div className="application-history-slide">
+        {/* 헤더 */}
+        <div className="application-history-header">
+          <h2 className="application-history-title">지원 내역</h2>
+          <button className="application-history-close" onClick={onClose}>
+            ✕
+          </button>
+        </div>
+
+        {listContent}
       </div>
     </div>
   );
