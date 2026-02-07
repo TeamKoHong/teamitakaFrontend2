@@ -13,10 +13,10 @@
   padding-bottom: 20px;
 }
 
-// 북마크 요약 섹션
+// 북마크 요약 문구
 .bookmark-summary {
   margin-bottom: 20px;
-  
+
   .summary-text {
     font-size: 20px;
     color: #140805;
@@ -25,73 +25,17 @@
     font-family: Pretendard;
     text-transform: capitalize;
     line-height: 140%;
-    
+
     .urgent-count {
       color: #ff6b35;
       font-weight: 600;
     }
+
+    .summary-second-line {
+      font-size: 15px;
+    }
   }
 }
-
-// 통계 섹션
-.bookmark-stats {
-  display: flex;
-  align-items: center;
-  
-  
-  
-  .stat-item {
-    display: flex;
-    flex-direction: column;
-    cursor: pointer;
-    transition: opacity 0.2s ease;
-    
-    &:hover {
-      opacity: 0.7;
-    }
-    
-    .stat-top {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    
-    .stat-icon {
-      width: 20px;
-      height: 20px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      
-      img {
-        width: 100%;
-        height: 100%;
-        object-fit: contain;
-      }
-    }
-    
-    .stat-number {
-      font-size: 18px;
-      font-weight: 600;
-      color: #333;
-    }
-    
-    .stat-label {
-      font-size: 14px;
-      color: #666;
-      font-weight: 400;
-    }
-  }
-  
-  .stat-divider {
-    width: 1px;
-    height: 28px;
-    margin: 0 20px;
-    background-color: #e0e0e0;
-  }
-}
-
-
 
 // 탭 네비게이션
 .tab-navigation {
@@ -237,28 +181,6 @@
         height: 20px;
         top: 4px;
         right: 4px;
-      }
-    }
-  }
-  
-  .bookmark-stats {
-    
-    .stat-item {
-      .stat-icon {
-        width: 11px;
-        height: 11px;
-      }
-      
-      .stat-number {
-        font-size: 12px;
-        font-weight: 600;
-        line-height: normal;
-        text-transform: capitalize;
-        font-family: Pretendard;
-      }
-      
-      .stat-label {
-        font-size: 12px;
       }
     }
   }
