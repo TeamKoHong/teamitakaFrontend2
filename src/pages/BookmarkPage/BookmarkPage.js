@@ -2,22 +2,15 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import DefaultHeader from "../../components/Common/DefaultHeader";
 import projectDefaultImg from "../../assets/icons/project_default_img.png";
-import SmallBookmarkIcon from "../../assets/icons/small_bookMark.svg";
-import BookmarkCheckCircleIcon from "../../assets/icons/bookMark_checkCircle.svg";
-import BookmarkCalendarIcon from "../../assets/icons/bookMark_calendar.svg";
 import ApplicationHistorySlide from "../../components/BookmarkPage/ApplicationHistorySlide";
-import MyRecruitmentSlide from "../../components/BookmarkPage/MyRecruitmentSlide";
-import { getBookmarkedRecruitments, getMyApplications, toggleRecruitmentScrap } from "../../services/recruitment";
+import { getBookmarkedRecruitments, toggleRecruitmentScrap } from "../../services/recruitment";
 import "./BookmarkPage.scss";
 
 function BookmarkPage() {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState("recruiting"); // "recruiting" | "completed"
-  const [isApplicationHistoryOpen, setIsApplicationHistoryOpen] = useState(false);
-  const [isMyRecruitmentOpen, setIsMyRecruitmentOpen] = useState(false);
+  const [mainTab, setMainTab] = useState("bookmark"); // "bookmark" | "application"
 
   const [bookmarks, setBookmarks] = useState([]);
-  const [applicationCount, setApplicationCount] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -27,11 +20,7 @@ function BookmarkPage() {
         setIsLoading(true);
         setError(null);
 
-        // 북마크와 지원 내역을 병렬로 조회
-        const [bookmarksResponse, applicationsResponse] = await Promise.all([
-          getBookmarkedRecruitments(),
-          getMyApplications().catch(() => ({ data: [] })), // 지원 내역 실패해도 북마크는 표시
-        ]);
+        const bookmarksResponse = await getBookmarkedRecruitments();
 
         // 북마크 처리 - 백엔드가 이미 평탄화된 데이터를 반환함
         const bookmarksData = bookmarksResponse.data || [];
@@ -54,10 +43,6 @@ function BookmarkPage() {
           };
         });
         setBookmarks(bookmarksWithUniv);
-
-        // 지원 내역 카운트 설정
-        const applicationsData = applicationsResponse.data || [];
-        setApplicationCount(applicationsData.length);
       } catch (err) {
         console.error('북마크 목록 조회 실패:', err);
         if (err.message === 'UNAUTHORIZED' || err.code === 'UNAUTHORIZED') {
@@ -66,7 +51,6 @@ function BookmarkPage() {
           setError('북마크 목록을 불러오는데 실패했습니다.');
         }
         setBookmarks([]);
-        setApplicationCount(0);
       } finally {
         setIsLoading(false);
       }
@@ -75,34 +59,8 @@ function BookmarkPage() {
     fetchData();
   }, []);
 
-  // 모집 중/마감 필터링 (백엔드 status: 'ACTIVE', 'CLOSED', 'FILLED')
-  const filteredProjects = bookmarks.filter(project => {
-    if (activeTab === "recruiting") {
-      return project.status === 'ACTIVE' || project.status === 'open' || project.status === 'recruiting' || !project.status;
-    } else {
-      return project.status === 'CLOSED' || project.status === 'FILLED' || project.status === 'closed' || project.status === 'completed';
-    }
-  });
-
-  // 통계 계산
-  const bookmarkStats = {
-    totalBookmarks: bookmarks.length,
-    appliedProjects: applicationCount,
-    myRecruitmentPosts: 0, // TODO: 내 모집글 API 연동 시 업데이트
-    urgentDeadlines: bookmarks.filter(b => {
-      if (!b.deadline) return false;
-      
-      // 시간대 차이를 방지하기 위해 날짜만 비교
-      const deadlineDate = new Date(b.deadline);
-      const today = new Date();
-      
-      // 날짜만 추출해서 비교 (YYYY-MM-DD)
-      const deadlineStr = `${deadlineDate.getFullYear()}-${String(deadlineDate.getMonth() + 1).padStart(2, '0')}-${String(deadlineDate.getDate()).padStart(2, '0')}`;
-      const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
-      
-      return deadlineStr === todayStr;
-    }).length
-  };
+  // 북마크 총 개수 (요약 문구용)
+  const totalBookmarkCount = bookmarks.length;
 
   const handleProjectClick = (recruitmentId) => {
     console.log('📍 모집글 클릭:', recruitmentId);
@@ -133,80 +91,46 @@ function BookmarkPage() {
       <DefaultHeader title="북마크" />
 
       <main className="bookmark-main">
-        {/* 북마크 요약 */}
+        {/* 북마크 요약 문구 */}
         <div className="bookmark-summary">
           <p className="summary-text">
-            오늘 지원 마감인 북마크
+            내가 저장한 프로젝트입니다.
             <br />
-            프로젝트가 총{" "}
-            <span className="urgent-count">{bookmarkStats.urgentDeadlines}건</span>
-            {" "}있습니다
+            <span className="summary-second-line">
+              지원한 프로젝트가 총{" "}
+              <span className="urgent-count">{totalBookmarkCount}건</span>
+              {" "}있습니다.
+            </span>
           </p>
         </div>
 
-        {/* 통계 섹션 */}
-        <div className="bookmark-stats">
-          <div className="stat-item">
-            <div className="stat-top">
-              <div className="stat-icon">
-                <img src={SmallBookmarkIcon} alt="북마크" />
-              </div>
-              <span className="stat-number">{bookmarkStats.totalBookmarks}</span>
-            </div>
-            <div className="stat-label">북마크수</div>
-          </div>
-          <div className="stat-divider"></div>
-          <div className="stat-item" onClick={() => setIsApplicationHistoryOpen(true)}>
-            <div className="stat-top">
-              <div className="stat-icon">
-                <img src={BookmarkCheckCircleIcon} alt="지원완료" />
-              </div>
-              <span className="stat-number">{bookmarkStats.appliedProjects}</span>
-            </div>
-            <div className="stat-label">지원완료</div>
-          </div>
-          <div className="stat-divider"></div>
-          <div className="stat-item" onClick={() => setIsMyRecruitmentOpen(true)}>
-            <div className="stat-top">
-              <div className="stat-icon">
-                <img src={BookmarkCalendarIcon} alt="내가올린모집" />
-              </div>
-              <span className="stat-number">{bookmarkStats.myRecruitmentPosts}</span>
-            </div>
-            <div className="stat-label">내가올린 모집</div>
-          </div>
-        </div>
-
-        {/* 탭 네비게이션 */}
+        {/* 탭: 북마크 | 지원 내역 (기존 모집중/모집마감 버튼을 변경) */}
         <div className="tab-navigation">
           <button
-            className={`tab-button ${activeTab === "recruiting" ? "active" : ""}`}
-            onClick={() => setActiveTab("recruiting")}
+            className={`tab-button ${mainTab === "bookmark" ? "active" : ""}`}
+            onClick={() => setMainTab("bookmark")}
           >
-            모집 중
+            북마크
           </button>
           <button
-            className={`tab-button ${activeTab === "completed" ? "active" : ""}`}
-            onClick={() => setActiveTab("completed")}
+            className={`tab-button ${mainTab === "application" ? "active" : ""}`}
+            onClick={() => setMainTab("application")}
           >
-            모집 마감
+            지원 내역
           </button>
         </div>
 
-        {/* 프로젝트 목록 */}
-        <div className="bookmark-project-list">
+        {/* 북마크 탭: 프로젝트 목록 */}
+        {mainTab === "bookmark" && (
+          <div className="bookmark-project-list">
           {isLoading ? (
             <div className="bookmark-loading">로딩 중...</div>
           ) : error ? (
             <div className="bookmark-error">{error}</div>
-          ) : filteredProjects.length === 0 ? (
-            <div className="bookmark-empty">
-              {activeTab === "recruiting"
-                ? "모집 중인 북마크가 없습니다."
-                : "마감된 북마크가 없습니다."}
-            </div>
+          ) : bookmarks.length === 0 ? (
+            <div className="bookmark-empty">북마크가 없습니다.</div>
           ) : (
-            filteredProjects.map((project) => (
+            bookmarks.map((project) => (
               <div
                 key={project.recruitment_id}
                 className="bookmark-project-card"
@@ -240,20 +164,17 @@ function BookmarkPage() {
               </div>
             ))
           )}
-        </div>
+          </div>
+        )}
+
+        {/* 지원 내역 탭: API 연결된 지원 내역 레이아웃 */}
+        {mainTab === "application" && (
+          <ApplicationHistorySlide
+            inline={true}
+            isActive={true}
+          />
+        )}
       </main>
-
-      {/* 지원 내역 슬라이드 */}
-      <ApplicationHistorySlide
-        isOpen={isApplicationHistoryOpen}
-        onClose={() => setIsApplicationHistoryOpen(false)}
-      />
-
-      {/* 내가 올린 모집글 슬라이드 */}
-      <MyRecruitmentSlide
-        isOpen={isMyRecruitmentOpen}
-        onClose={() => setIsMyRecruitmentOpen(false)}
-      />
     </div>
   );
 }
