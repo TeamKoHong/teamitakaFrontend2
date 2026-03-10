@@ -128,7 +128,8 @@ export default function ProfileMainPage() {
   
   // 등록된 ID에 해당하는 프로젝트만 필터링
   const displayProjects = allProjects.filter(p => {
-    const pId = p.projectId || p.id || p._id;
+    // 🔥 백엔드 응답 키값 차이에 대비 (project_id 추가)
+    const pId = p.projectId || p.id || p._id || p.project_id;
     return registeredProjectIds.includes(pId);
   });
 
@@ -221,7 +222,8 @@ export default function ProfileMainPage() {
           ) : (
             <div className={styles.projectGrid}>
               {displayProjects.map((p, i) => {
-                const targetId = p.projectId || p.id || p._id;
+                // 🔥 ID를 좀 더 안전하게 찾도록 수정
+                const targetId = p.projectId || p.id || p._id || p.project_id;
                 
                 // [UI] 제목에서 "[상호평가 완료]" 제거
                 const cleanTitle = (p.title || "").replace("[상호평가 완료]", "").trim();
@@ -230,22 +232,29 @@ export default function ProfileMainPage() {
                     <div 
                       key={targetId || i} 
                       className={styles.projectCard} 
-                      onClick={() => targetId && navigate(`/profile/project/view/${targetId}`)}
+                      onClick={() => {
+                        // 🔥 ID가 존재할 때만 이동하도록 방어 로직 추가
+                        if (targetId) {
+                          navigate(`/profile/project/view/${targetId}`);
+                        } else {
+                          console.warn("프로젝트 ID가 없습니다. 데이터를 확인하세요:", p);
+                        }
+                      }}
                     >
-                      <img src={p.thumbnail || profileDefault} alt="썸네일" className={styles.projectThumbnail} />
+                      {/* 🔥 백엔드 구조에 따라 사진 URL이 photo_url에 올 수도 있으니 대비 */}
+                      <img src={p.thumbnail || p.photo_url || profileDefault} alt="썸네일" className={styles.projectThumbnail} />
                       <div className={styles.projectTitle}>{cleanTitle}</div>
                     </div>
                 );
               })}
               
-               {/* 🔥 등록된 프로젝트가 있을 때 뜨는 작은 추가 카드 */}
+               {/* 등록된 프로젝트가 있을 때 뜨는 작은 추가 카드 */}
                <div 
                  className={styles.emptyProjectCard} 
                  style={{height: 'auto', minHeight: '100px'}} 
                  onClick={() => navigate('/profile/register-project')}
                >
                   <span className={styles.plusIcon}>+</span>
-                  {/* 🔥 아래 텍스트 추가 */}
                   <span 
                     className={styles.emptyProjectText} 
                     style={{ fontSize: '12px' }}
