@@ -7,6 +7,9 @@ import PentagonChart from '../../../components/Common/UI/PentagonChart';
 import ProfileImageEdit from '../../../components/ProfileImage';
 import styles from './ProfileMainPage.module.scss';
 
+// 🔥 라우트 상수 임포트 (App.js와 동일한 경로 규칙 적용)
+import { PROJECT_ROUTES } from '../../../constants/routes';
+
 // Assets
 import backIcon from '../../../assets/back.png';
 import settingIcon from '../../../assets/setting.png'; 
@@ -42,7 +45,7 @@ const SettingsIcon = () => (
 const GraduationCapIcon = () => (
   <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
     <path d="M10 2L1 7L10 12L19 7L10 2Z" stroke="#807C7C" strokeWidth="1.5" strokeLinejoin="round" />
-    <path d="M4 9V14C4 14 6 17 10 17C14 17 16 14 16 14V9" stroke="#807C7C" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M4 9V14C4 14 6 17 10 17C14 16 16 14 16 14V9" stroke="#807C7C" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
   </svg>
 );
 
@@ -128,7 +131,7 @@ export default function ProfileMainPage() {
   
   // 등록된 ID에 해당하는 프로젝트만 필터링
   const displayProjects = allProjects.filter(p => {
-    const pId = p.projectId || p.id || p._id;
+    const pId = p.projectId || p.id || p._id || p.project_id;
     return registeredProjectIds.includes(pId);
   });
 
@@ -221,31 +224,36 @@ export default function ProfileMainPage() {
           ) : (
             <div className={styles.projectGrid}>
               {displayProjects.map((p, i) => {
-                const targetId = p.projectId || p.id || p._id;
-                
-                // [UI] 제목에서 "[상호평가 완료]" 제거
+                const targetId = p.projectId || p.id || p._id || p.project_id;
                 const cleanTitle = (p.title || "").replace("[상호평가 완료]", "").trim();
 
                 return (
                     <div 
                       key={targetId || i} 
                       className={styles.projectCard} 
-                      onClick={() => targetId && navigate(`/profile/project/view/${targetId}`)}
+                      onClick={() => {
+                        if (targetId) {
+                          // 🔥 상수에 맞춰서 동적으로 URL 생성 (예: /project/:projectId -> /project/123)
+                          // 만약 상수가 import 되지 않는 에러가 발생하면 이 줄을 navigate(`/project/${targetId}`) 로 바꿔주세요.
+                          const targetRoute = PROJECT_ROUTES?.DETAIL?.replace(':projectId', targetId) || `/project/${targetId}`;
+                          navigate(targetRoute);
+                        } else {
+                          console.warn("프로젝트 ID가 없습니다.");
+                        }
+                      }}
                     >
-                      <img src={p.thumbnail || profileDefault} alt="썸네일" className={styles.projectThumbnail} />
+                      <img src={p.thumbnail || p.photo_url || profileDefault} alt="썸네일" className={styles.projectThumbnail} />
                       <div className={styles.projectTitle}>{cleanTitle}</div>
                     </div>
                 );
               })}
               
-               {/* 🔥 등록된 프로젝트가 있을 때 뜨는 작은 추가 카드 */}
                <div 
                  className={styles.emptyProjectCard} 
                  style={{height: 'auto', minHeight: '100px'}} 
                  onClick={() => navigate('/profile/register-project')}
                >
                   <span className={styles.plusIcon}>+</span>
-                  {/* 🔥 아래 텍스트 추가 */}
                   <span 
                     className={styles.emptyProjectText} 
                     style={{ fontSize: '12px' }}
