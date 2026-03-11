@@ -7,9 +7,6 @@ import PentagonChart from '../../../components/Common/UI/PentagonChart';
 import ProfileImageEdit from '../../../components/ProfileImage';
 import styles from './ProfileMainPage.module.scss';
 
-// 🔥 라우트 상수 임포트 (App.js와 동일한 경로 규칙 적용)
-import { PROJECT_ROUTES } from '../../../constants/routes';
-
 // Assets
 import backIcon from '../../../assets/back.png';
 import settingIcon from '../../../assets/setting.png'; 
@@ -233,10 +230,8 @@ export default function ProfileMainPage() {
                       className={styles.projectCard} 
                       onClick={() => {
                         if (targetId) {
-                          // 🔥 상수에 맞춰서 동적으로 URL 생성 (예: /project/:projectId -> /project/123)
-                          // 만약 상수가 import 되지 않는 에러가 발생하면 이 줄을 navigate(`/project/${targetId}`) 로 바꿔주세요.
-                          const targetRoute = PROJECT_ROUTES?.DETAIL?.replace(':projectId', targetId) || `/project/${targetId}`;
-                          navigate(targetRoute);
+                          // 🔥 대시보드가 아닌 '프로필용 별점 페이지'로 이동하도록 경로 수정 완료!
+                          navigate(`/profile/project/${targetId}`);
                         } else {
                           console.warn("프로젝트 ID가 없습니다.");
                         }
