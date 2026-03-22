@@ -221,8 +221,10 @@ function TodoBox({ showFeed = true, projectId }) {
 
   // 입력창 포커스
   useEffect(() => {
-    if (isAddingTodo && inputRef.current) {
-      inputRef.current.focus();
+    if (isAddingTodo) {
+      setTimeout(() => {
+        inputRef.current?.focus();
+      }, 0);
     }
   }, [isAddingTodo]);
 
@@ -350,7 +352,7 @@ function TodoBox({ showFeed = true, projectId }) {
             {projects.length > 0 ? projects.map((project) => (
               <div key={project.id} className="todo-project-section">
                 <div className="project-todos-list">
-                  {project.todos.length > 0 ? project.todos.map((todo) => (
+                  {project.todos.map((todo) => (
                     <div key={todo.id} className={`todo-item ${todo.checked ? "completed" : ""}`}>
                       <div className="todo-content">
                         <span className="todo-text">{todo.text}</span>
@@ -384,9 +386,7 @@ function TodoBox({ showFeed = true, projectId }) {
                         </label>
                       </div>
                     </div>
-                  )) : (
-                    <div style={{ padding: '10px', color: '#999' }}>등록된 할 일이 없습니다.</div>
-                  )}
+                  ))}
                 </div>
               </div>
             )) : (

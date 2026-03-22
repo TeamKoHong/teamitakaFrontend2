@@ -256,8 +256,7 @@ const App = () => {
             {/* ===== 프로젝트 관리 라우트 ===== */}
             <Route path={PROJECT_ROUTES.MANAGEMENT} element={<ProjectManagement />} />
             
-            {/* 🔥 디테일 페이지로 파라미터가 정확히 넘어가도록 수정됨 */}
-            <Route path="/project/:projectId" element={<ProjectDetailPage />} />
+            <Route path={PROJECT_ROUTES.DETAIL} element={<ProjectDetailPage />} />
             
             <Route path={PROJECT_ROUTES.MEMBER} element={<ProjectMemberPage />} />
             <Route path={PROJECT_ROUTES.PROCEEDINGS} element={<ProceedingsPage />} />

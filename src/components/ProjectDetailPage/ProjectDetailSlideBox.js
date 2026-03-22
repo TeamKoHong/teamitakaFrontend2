@@ -69,8 +69,7 @@ function ProjectDetailSlideBox({ project }) {
             </div>
 
             <p className="progress-subtext">
-              목표일 {endDate.replace(/-/g, ".")}까지 {remainingDays}일
-              남았어요!
+              목표일 {endDate.split('T')[0].replace(/-/g, ".")}까지 {remainingDays}일 남았어요!
             </p>
           </div>
         </SwiperSlide>
