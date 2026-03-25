@@ -22,9 +22,6 @@ export default function ProfileEditPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // 이미지 파일 상태 (업로드용)
-  const [imageFile, setImageFile] = useState(null);
-
   // 폼 데이터 상태
   const [formData, setFormData] = useState({
     major: "",
@@ -79,36 +76,21 @@ export default function ProfileEditPage() {
   // 이전 데이터와 비교를 위한 참조
   const prevDataRef = React.useRef(null);
 
-  // 자동 저장 로직
-  const saveData = React.useCallback(async (currentFormData, currentImageFile) => {
+  // 텍스트 정보(전공, 팀플 경험, 키워드) 자동 저장 로직
+  const saveData = React.useCallback(async (currentFormData) => {
     // 저장 중이거나 데이터 로드 전이면 중단
     if (!userData) return;
 
     try {
-      let profileImageUrl = userData.avatar || userData.profileImage;
-
-      // 이미지가 변경되었다면 업로드
-      if (currentImageFile) {
-        // 이미 업로드 중인 경우 등 방어 로직이 필요할 수 있으나, 
-        // 간단히 파일이 있을 때만 업로드 수행
-        const uploadRes = await uploadProfileImage(currentImageFile);
-        if (uploadRes?.success) {
-          profileImageUrl = uploadRes.data.photo_url;
-          setImageFile(null); // 업로드 완료 후 초기화하여 재업로드 방지
-        }
-      }
-
-      // 프로필 데이터 구성
+      // 프로필 데이터 구성 (이미지는 현재 userData에 있는 것을 그대로 유지)
       const updatedData = {
         ...userData,
-        profileImage: profileImageUrl,
         major: currentFormData.major,
         teamExperience: currentFormData.teamExperience,
         keywords: currentFormData.keywords,
       };
 
       // API 호출
-      // 사용자 경험을 위해 백그라운드에서 조용히 처리 (에러만 표시)
       const res = await updateProfile(updatedData);
 
       if (res?.success) {
@@ -121,15 +103,13 @@ export default function ProfileEditPage() {
       }
     } catch (err) {
       console.error("Autosave error:", err);
-      // 토큰 만료 등 치명적 에러 외에는 사용자에게 방해되지 않도록 조용히 처리하거나
-      // 우측 상단에 작게 표시할 수 있음. 여기선 치명적 에러만 처리.
       if (err?.code === "UNAUTHORIZED") {
         navigate("/login", { replace: true });
       }
     }
   }, [userData, navigate]);
 
-  // Debounce Effect
+  // 텍스트 자동 저장 (Debounce Effect)
   useEffect(() => {
     // 초기 로딩 시 실행 방지
     if (isLoading || !userData) return;
@@ -137,11 +117,11 @@ export default function ProfileEditPage() {
     // 변경 사항 확인 (Simple Deep Compare or Field Check)
     // 실제 변경이 있을 때만 타이머 설정
     const timeoutId = setTimeout(() => {
-      saveData(formData, imageFile);
+      saveData(formData);
     }, 1000); // 1초 디바운스
 
     return () => clearTimeout(timeoutId);
-  }, [formData, imageFile, userData, isLoading, saveData]);
+  }, [formData, userData, isLoading, saveData]);
 
   // 뒤로가기 핸들러
   const handleBack = () => {
@@ -158,10 +138,39 @@ export default function ProfileEditPage() {
     navigate('/login', { replace: true });
   };
 
-  // 이미지 변경 핸들러
-  const handleImageChange = (file) => {
-    setImageFile(file);
-    // 이미지는 파일 선택 즉시 저장을 시도하거나, useEffect에 의해 감지됨.
+  // 💡 이미지 변경 핸들러 (즉시 저장 로직으로 교체됨)
+  const handleImageChange = async (file) => {
+    if (!file) return;
+
+    try {
+      // 1. 서버에 파일 업로드 요청
+      const uploadRes = await uploadProfileImage(file);
+      
+      if (uploadRes?.success) {
+        // 2. 백엔드에서 생성해준 새로운 이미지 URL 가져오기
+        const newImageUrl = uploadRes.data.photo_url;
+        
+        // 3. 현재 내 프로필 데이터에 새 이미지 주소 덮어쓰기
+        const updatedData = {
+          ...userData,
+          profileImage: newImageUrl,
+          major: formData.major,
+          teamExperience: formData.teamExperience,
+          keywords: formData.keywords,
+        };
+        
+        // 4. 프로필 정보 최종 업데이트
+        const updateRes = await updateProfile(updatedData);
+        
+        if (updateRes?.success) {
+          setUserData(updatedData); // 화면 데이터 즉시 동기화
+          alert("프로필 이미지가 성공적으로 변경되었습니다! 🎉");
+        }
+      }
+    } catch (error) {
+      console.error("이미지 업로드 오류:", error);
+      alert("이미지 업로드에 실패했습니다. (용량 초과 혹은 서버 오류)");
+    }
   };
 
   // 로그아웃 버튼 컴포넌트
@@ -236,7 +245,6 @@ export default function ProfileEditPage() {
         )}
       </div>
 
-      {/* 하단 영역: 저장 버튼 제거됨 */}
       <div className={styles.bottomSection}>
         {/* 탈퇴하기 */}
         <Withdrawal />
